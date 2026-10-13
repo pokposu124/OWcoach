@@ -27,6 +27,7 @@ from pydantic import BaseModel, ValidationError
 
 from . import __version__
 from .config import ANALYZER_ROOT, fingerprint
+from .hud import check_use_claim, sample_hud
 from .heroes import HeroProfile
 from .media import (
     InputRejected,
@@ -105,6 +106,19 @@ def compute_cost(usage: list[StageUsage], pricing: dict, is_mock: bool) -> CostS
         total=round(total, 6), currency=currency,
         note="추정치: 토큰 수 × pricing.yaml 단가. thinking 토큰은 출력 단가로 계산. 단가 출처: " + ", ".join(sorted(sources)),
     )
+
+
+def team_context_text(overview: OverviewResponse) -> str:
+    """Team / roster facts from the overview, handed to the detail stage as plain text."""
+    ti = overview.team_identification
+    side = {"left": "왼쪽", "right": "오른쪽", "unknown": "판별 못 함"}[ti.ally_side]
+    lines = [f"- 플레이어 이름: {ti.player_name or '판독 못 함'}",
+             f"- 아군 팀: 상단 팀 목록 {side}, 아군 색 {ti.ally_color}, 적 색 {ti.enemy_color}",
+             f"- 판단 근거: {ti.evidence}"]
+    team_ko = {"ally": "아군", "enemy": "적", "unknown": "소속 불명"}
+    for r in overview.roster:
+        lines.append(f"- {r.player_name}: {team_ko[r.team]}, 영웅 {r.hero} (초상화 판독 확신도 {r.hero_confidence})")
+    return "\n".join(lines)
 
 
 class RunStore:
@@ -228,6 +242,29 @@ class Pipeline:
         store.set_stage(name, status="done", finished_at=now_iso(), elapsed_seconds=elapsed)
         return output
 
+    def _hud_check_scene(self, video: Path, rec: dict, hcfg: dict) -> None:
+        slots = {a.id: a.hud_slot for a in self.hero.abilities}
+        events = rec["ability_events"]
+        if not events:
+            return
+        if not hcfg.get("enabled"):
+            for e in events:
+                e["hud_check"] = {"status": "not_checked", "hud_slot": None, "hud_use_time_seconds": None,
+                                  "note": "HUD 대조 비활성화"}
+            return
+        pad = float(hcfg["search_seconds"]) + 1.0
+        samples = sample_hud(video, rec["window_start"] - pad, rec["window_end"] + pad, hcfg)
+        for e in events:
+            slot = slots.get(e["ability_id"])
+            if e["ability_id"] not in slots:
+                e["hud_check"] = {"status": "not_checked", "hud_slot": None, "hud_use_time_seconds": None,
+                                  "note": f"알 수 없는 스킬 id: {e['ability_id']}"}
+            elif not slot or slot not in hcfg["regions"]:
+                e["hud_check"] = {"status": "not_checked", "hud_slot": slot, "hud_use_time_seconds": None,
+                                  "note": "HUD 대조 영역이 없는 스킬"}
+            else:
+                e["hud_check"] = {"hud_slot": slot, **check_use_claim(e["time_seconds"], slot, samples, hcfg)}
+
     # ---------------------------------------------------------------- run
 
     def run(self, video: Path, run_id: str | None = None, game_patch: str | None = None,
@@ -331,6 +368,9 @@ class Pipeline:
             raise StageFailed("overview", f"HUD를 판독할 수 없습니다: {overview.video_quality_notes}")
         if overview.hud_readable == "partial":
             self.warnings.append(f"HUD 일부만 판독 가능: {overview.video_quality_notes}")
+        if overview.team_identification.ally_side == "unknown":
+            self.warnings.append(f"아군 팀을 판별하지 못함: {overview.team_identification.evidence}")
+        team_context = team_context_text(overview)
 
         scenes = plan_scenes(overview, duration, cfg["detail"], ocfg["max_candidates"], self.discarded)
         self.log(f"  후보 장면 {len(scenes)}개: " + ", ".join(f"{s.window_start:.1f}-{s.window_end:.1f}s" for s in scenes))
@@ -342,9 +382,10 @@ class Pipeline:
         dp = self.prompts["detail"]
         scene_records: dict[str, dict] = {}
         detail_fps = []
-        abilities = "\n".join(f"- {a.name_ko} ({a.name_en}): {a.hud_hint or ''}" for a in hero.abilities)
+        abilities = "\n".join(f"- id={a.id}: {a.name_ko} ({a.name_en}) — {a.hud_hint or ''}" for a in hero.abilities)
+        hcfg = cfg.get("hud_check") or {"enabled": False}
         for scene in scenes:
-            fp = fingerprint(ai_fp_base, sha, scene.to_dict(), dcfg, pcfg, dp.version)
+            fp = fingerprint(ai_fp_base, sha, scene.to_dict(), dcfg, pcfg, dp.version, team_context)
             detail_fps.append(fp)
 
             def run_detail(scene: Scene = scene):
@@ -354,6 +395,7 @@ class Pipeline:
                     clip_duration_seconds=scene.duration, hero_name_ko=hero.display_name_ko,
                     hero_name_en=hero.display_name_en, candidate_reasons=" / ".join(scene.reasons),
                     observable_signals="\n".join(f"- {s}" for s in hero.observable_signals), abilities=abilities,
+                    team_context=team_context,
                 )
                 parsed, usage = self._call(f"detail:{scene.scene_id}", "detail", DetailResponse,
                                            lambda schema, note: VideoRequest(
@@ -369,12 +411,21 @@ class Pipeline:
                 scene, DetailResponse.model_validate(raw), cfg["output"]["window_tolerance_seconds"], self.warnings)
         self.timings["detail"] = round(time.monotonic() - t, 3)
 
+        # 3b. HUD check of claimed ability/ultimate use (no AI) ---------------------------
+        t = time.monotonic()
+        for rec in scene_records.values():
+            self._hud_check_scene(video, rec, hcfg)
+        n_checked = [e["hud_check"]["status"] for r in scene_records.values() for e in r["ability_events"]]
+        if n_checked:
+            self.log("  HUD 대조: " + ", ".join(f"{s} {n_checked.count(s)}" for s in sorted(set(n_checked))))
+        self.timings["hud_check"] = round(time.monotonic() - t, 3)
+
         # 4. coaching -------------------------------------------------------------------
         self.log("[4/5] 코칭 기준 적용")
         t = time.monotonic()
         cp = self.prompts["coaching"]
         out = cfg["output"]
-        coaching_fp = fingerprint(ai_fp_base, detail_fps, cfg["coaching"], out["max_feedback_items"],
+        coaching_fp = fingerprint(ai_fp_base, detail_fps, scene_records, cfg["coaching"], out["max_feedback_items"],
                                   out["max_action_items"], cp.version, hero.criteria_for_prompt())
         if scene_records:
             prompt = cp.render(
@@ -414,7 +465,8 @@ class Pipeline:
             self.warnings.append(f"근거 프레임 추출 실패: {ts}s")
             return None
 
-        feedback, actions = finalize_feedback(coaching, scene_records, hero, duration, out, extract, self.discarded)
+        feedback, actions = finalize_feedback(coaching, scene_records, hero, duration, out, extract, self.discarded,
+                                              hud_enabled=bool(hcfg.get("enabled")))
         self.timings["finalize"] = round(time.monotonic() - t, 3)
 
         result = AnalysisResult(

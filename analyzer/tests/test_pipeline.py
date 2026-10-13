@@ -95,7 +95,9 @@ def test_validate_input(video, cfg):
 
 def _overview(cands):
     return OverviewResponse(hero_confirmed=True, hero_evidence="", hud_readable="yes", video_quality_notes="",
-                            timeline=[], candidates=cands)
+                            team_identification={"player_name": "P", "ally_side": "left", "ally_color": "파랑",
+                                                 "enemy_color": "빨강", "evidence": ""},
+                            roster=[], timeline=[], candidates=cands)
 
 
 def test_plan_scenes_expands_clamps_merges_and_discards(cfg):
@@ -118,11 +120,14 @@ def test_detail_times_converted_to_original():
     detail = DetailResponse(
         observations=[{"time_seconds": 5, "end_time_seconds": 7, "fact": "x", "visibility": "clear"},
                       {"time_seconds": 45, "fact": "out of clip", "visibility": "clear"}],
-        hud_readings=[], not_determinable=[], outcome="", key_moment_times=[3, 99])
+        hud_readings=[], not_determinable=[], outcome="", key_moment_times=[3, 99],
+        ability_events=[{"time_seconds": 4, "ability_id": "nano_boost", "target": "", "evidence": ""},
+                        {"time_seconds": 60, "ability_id": "nano_boost", "target": "", "evidence": "out"}])
     warnings = []
     rec = detail_to_original(scene, detail, 1.0, warnings)
     assert [(o["time_seconds"], o["end_time_seconds"]) for o in rec["observations"]] == [(105.0, 107.0)]
     assert rec["key_moment_times"] == [103.0]
+    assert [e["time_seconds"] for e in rec["ability_events"]] == [104.0]
     assert warnings
 
 
@@ -146,6 +151,12 @@ def test_mock_end_to_end(video, cfg, tmp_path):
     outcome = [f for f in result.feedback if "결과(사망 등)만을 근거로 한 판단" in f.display_reasons]
     assert outcome and all(f.judgement == "withheld" for f in outcome)
     assert all(a.related_feedback_ids for a in result.action_items)
+    # draft criteria + no HUD-verified ability use (synthetic video has no HUD) -> nothing assertive
+    assert all(f.display_mode == "tentative" for f in result.feedback)
+    assert any(f.hud_checks for f in result.feedback)
+    statuses = {c.status for f in result.feedback for c in f.hud_checks}
+    assert "not_checked" in statuses  # unknown ability id
+    assert result.overview["team_identification"]["ally_side"] == "left"
     assert result.cost.total is None
     AnalysisResult.model_validate_json((run_dir / "result.json").read_text())
     meta = json.loads((run_dir / "run.json").read_text())
@@ -230,6 +241,7 @@ def test_report_written(video, cfg, tmp_path):
     _, run_dir = make_pipeline(cfg, tmp_path, MockProvider()).run(video, run_id="job7")
     html = write_report(run_dir).read_text()
     assert "실제 AI 분석 결과가 아닙니다" in html and "coach_review.json" in html
+    assert "팀 판별" in html and "HUD 대조" in html
 
 
 # ---------------------------------------------------------------- cost
@@ -296,3 +308,87 @@ def test_gemini_request_wiring_offline(monkeypatch, cfg, tmp_path):
     assert seen["contents"][0].parts[0].video_metadata.fps == 2.0
     assert seen["config"].response_mime_type == "application/json"
     assert p.generate_json(TextRequest("t", {"type": "object"})).data == {"ok": 1}
+
+
+# ---------------------------------------------------------------- HUD check (no AI)
+
+@pytest.fixture(scope="session")
+def hud_video(tmp_path_factory, cfg_static=None) -> Path:
+    """Black 1280x720 video: ability_1 tile white (ready) for 0-5s then cooldown digit only (used at 5s);
+    ability_2 tile always white so the HUD is not treated as hidden; ultimate disc white 0-8s."""
+    if not shutil.which("ffmpeg"):
+        pytest.skip("ffmpeg not installed")
+    p = tmp_path_factory.mktemp("hud") / "hud.mp4"
+    # cooldown tile keeps a small white digit (~10% of the tile), as on the real HUD
+    vf = ("drawbox=x=977:y=614:w=34:h=34:color=white:t=fill:enable='lt(t,5)',"
+          "drawbox=x=990:y=622:w=8:h=16:color=white:t=fill:enable='gte(t,5)',"
+          "drawbox=x=1030:y=614:w=34:h=34:color=white:t=fill,"
+          "drawbox=x=618:y=598:w=44:h=44:color=white:t=fill:enable='lt(t,8)'")
+    subprocess.run(["ffmpeg", "-y", "-v", "error", "-f", "lavfi", "-i", "color=c=black:size=1280x720:rate=30",
+                    "-t", "12", "-vf", vf, "-pix_fmt", "yuv420p", str(p)], check=True)
+    return p
+
+
+def test_hud_detects_use_and_checks_claims(hud_video, cfg):
+    from owcoach.hud import check_use_claim, min_run_for, sample_hud, use_times
+
+    hcfg = cfg["hud_check"]
+    samples = sample_hud(hud_video, 0, 12, hcfg)
+    assert samples and all(s.states["ability_2"] == "ready" for s in samples)
+    assert use_times(samples, "ability_1", min_run_for(hcfg, "ability_1")) == [pytest.approx(5.0, abs=0.5)]
+    assert use_times(samples, "ultimate", min_run_for(hcfg, "ultimate")) == [pytest.approx(8.0, abs=0.5)]
+    assert check_use_claim(5.5, "ability_1", samples, hcfg)["status"] == "verified"
+    bad = check_use_claim(1.0, "ability_1", samples, hcfg)  # still ready around 1s
+    assert bad["status"] == "contradicted" and "준비 상태" in bad["note"]
+    assert check_use_claim(1.0, "ability_2", samples, hcfg)["status"] == "contradicted"
+    # claim far from the only use: contradicted and the actual use time is reported
+    far = check_use_claim(11.6, "ultimate", samples, hcfg)
+    assert far["status"] == "contradicted" and "8." in far["note"]
+
+
+def test_hud_hidden_frames_are_unverifiable(cfg):
+    from owcoach.hud import HudSample, check_use_claim
+
+    hcfg = cfg["hud_check"]
+    samples = [HudSample(t / 4, {"ultimate": None}, {}) for t in range(40)]
+    assert check_use_claim(5.0, "ultimate", samples, hcfg)["status"] == "unverifiable"
+
+
+def _scene_rec(status):
+    return {"scene_id": "scene-01", "window_start": 0.0, "window_end": 20.0, "observations": [], "hud_readings": [],
+            "ability_events": [{"time_seconds": 10.0, "ability_id": "nano_boost", "target": "A", "evidence": "e",
+                                "hud_check": {"status": status, "hud_slot": "ultimate",
+                                              "hud_use_time_seconds": 10.0 if status == "verified" else None,
+                                              "note": "n"}}],
+            "not_determinable": [], "outcome": "", "key_moment_times": []}
+
+
+def _coaching_item(**kw):
+    base = {"scene_id": "scene-01", "start_time_seconds": 9.0, "end_time_seconds": 12.0, "category": "skill_usage",
+            "observation": "o", "assessment": "a", "suggestion": "s", "criterion_ids": ["ana.skill.nano_boost_usage"],
+            "judgement": "good", "confidence": 1.0, "uncertainty": "", "uncertainty_level": "low",
+            "relies_on_outcome_only": False, "evidence_frame_timestamps": [10.0]}
+    return {**base, **kw}
+
+
+@pytest.mark.parametrize("status,approved,expect", [
+    ("verified", True, "assertive"),
+    ("verified", False, "tentative"),       # draft criterion
+    ("contradicted", True, "tentative"),    # HUD disagrees with the model
+    ("unverifiable", True, "tentative"),    # nothing HUD-verified
+])
+def test_assertive_requires_hud_verification_and_approved_criteria(cfg, status, approved, expect):
+    from owcoach.postprocess import finalize_feedback
+
+    hero = load_hero("ana")
+    if approved:
+        hero = hero.model_copy(deep=True)
+        for c in hero.criteria:
+            c.status = "approved"
+    coaching = CoachingResponse(items=[_coaching_item()], action_items=[])
+    fb, _ = finalize_feedback(coaching, {"scene-01": _scene_rec(status)}, hero, 30.0, cfg["output"],
+                              lambda t: f"evidence/{t}.jpg", [])
+    assert len(fb) == 1 and fb[0].display_mode == expect
+    assert fb[0].hud_checks[0].status == status
+    if status == "contradicted":
+        assert any("HUD 대조 불일치" in r for r in fb[0].display_reasons)

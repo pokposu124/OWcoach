@@ -39,10 +39,13 @@ docs/COACH_REVIEW.md      코치 검수 방법
 1. **입력 확인** — ffprobe로 길이(≤300초), 해상도(≥1280x720), 형식, 크기 확인. 불충족 시 한국어 사유와 함께 중단.
 2. **전체 흐름 분석** — 원본과 타임라인이 같은 720p 프록시를 `overview.fps`(기본 1fps)로 분석. 영웅 일치 여부, HUD 판독 가능 여부, 사건 타임라인, 후보 장면(최대 `max_candidates`).
 3. **후보 장면 재분석** — 후보 구간을 `pre_seconds`/`post_seconds` 만큼 넓혀 FFmpeg로 잘라내고 `detail.fps`(기본 4fps)로 다시 분석. 모델은 클립 기준 시간으로 답하고, 코드가 `구간 시작 + t` 로 **원본 시간으로 환산**한다. 구간 밖 시간은 버린다.
+3b. **HUD 대조 (AI 없음)** — 상세 분석이 기록한 스킬/궁극기 사용(`ability_events`)마다, 원본 영상의 HUD 고정 영역(스킬 칸 2개, 궁극기 원판)에서 "준비됨 → 사용됨" 전환이 그 시각 ±`search_seconds` 안에 있는지 픽셀로 확인해 `verified / contradicted / unverifiable` 로 표시한다(`owcoach/hud.py`, 설정 `hud_check`). 숫자(쿨다운 초·궁극기 %)는 읽지 않는다 — OCR(rapidocr)은 이 HUD 숫자를 자주 놓쳐 쓰지 않았다. 영역 좌표는 기본 HUD 배치의 1280x720 녹화 1개로만 보정되어 있다.
 4. **코칭 기준 적용** — 영상 없이 관찰 기록 + 영웅 기준만 텍스트로 넘겨 observation / assessment / suggestion 을 분리해 작성.
 5. **검증·정리 (AI 없음)** — 스키마 검증, 영상 길이·분석 구간 범위 확인, 근거 프레임을 원본에서 실제로 추출해 존재 확인, 존재하지 않는 기준 제거, 중복 제거, 최대 5개 선택, 근거 없는 과제 제거.
 
-단정적 피드백(`display_mode: assertive`)이 되려면: 유효한 코칭 기준 ≥1, 추출된 근거 프레임 ≥1, `judgement != withheld`, 결과(사망)만을 근거로 하지 않음, 확신도 ≥ `min_confidence_for_assertive`, 불확실성 high 아님. 하나라도 어기면 `tentative`(참고·보류)로 표시하고 `display_reasons` 에 이유를 남긴다. `require_approved_criteria_for_assertive: true` 로 하면 코치 검수된 기준만 단정 표시한다.
+단정적 피드백(`display_mode: assertive`)이 되려면: 유효한 코칭 기준 ≥1, 추출된 근거 프레임 ≥1, `judgement != withheld`, 결과(사망)만을 근거로 하지 않음, 확신도 ≥ `min_confidence_for_assertive`, 불확실성 high 아님, 그리고 기본 설정에서는 **코치 검수된(approved) 기준**(`require_approved_criteria_for_assertive: true`)과 **HUD로 확인된 스킬/궁극기 사용 ≥1, HUD 불일치 0**(`require_hud_verification_for_assertive: true`). 하나라도 어기면 `tentative`(참고·보류)로 표시하고 `display_reasons` 에 이유를 남긴다. 모델이 스스로 매기는 확신도는 첫 실제 실행에서 틀린 항목도 1.0이어서 단독 근거로 쓰지 않는다. 각 피드백의 `hud_checks` 에 대조 결과가 남는다.
+
+전체 흐름 분석은 아군/적 판별 근거(`team_identification`: 플레이어 이름, 아군 팀 목록 위치·색)와 팀 목록 초상화로 판독한 영웅 목록(`roster`)을 기록하고, 이 내용이 상세 분석 프롬프트에 전달된다. 팀 색은 사용자 설정으로 바뀔 수 있어 "빨강=적"을 가정하지 않는다.
 
 ### 결과 JSON
 

@@ -16,6 +16,7 @@ from .schemas import (
     DiscardedItem,
     EvidenceFrame,
     FeedbackItem,
+    HudCheck,
     OverviewResponse,
 )
 
@@ -102,10 +103,18 @@ def detail_to_original(scene: Scene, detail: DetailResponse, tolerance: float,
         if t is not None:
             hud.append({**h.model_dump(), "time_seconds": t})
     keys = [t for t in (conv(k) for k in detail.key_moment_times) if t is not None]
+    events = []
+    for a in detail.ability_events:
+        t = conv(a.time_seconds)
+        if t is None:
+            warnings.append(f"{scene.scene_id}: 구간 밖 스킬 사용 시간({a.time_seconds}s) 제외")
+            continue
+        events.append({**a.model_dump(), "time_seconds": t})
     return {
         **scene.to_dict(),
         "observations": obs,
         "hud_readings": hud,
+        "ability_events": events,
         "not_determinable": detail.not_determinable,
         "outcome": detail.outcome,
         "key_moment_times": keys,
@@ -130,6 +139,7 @@ def finalize_feedback(
     out_cfg: dict,
     extract_evidence: Callable[[float], str | None],
     discarded: list[DiscardedItem],
+    hud_enabled: bool = True,
 ) -> tuple[list[FeedbackItem], list[ActionItem]]:
     tol = out_cfg["window_tolerance_seconds"]
     candidates: list[FeedbackItem] = []
@@ -179,6 +189,18 @@ def finalize_feedback(
         if out_cfg["require_approved_criteria_for_assertive"] and review_status != "approved":
             reasons.append("코치 검수되지 않은 기준")
 
+        checks = [HudCheck(time_seconds=ev["time_seconds"], ability_id=ev["ability_id"],
+                           claimed_by_model=" / ".join(x for x in (ev.get("target"), ev.get("evidence")) if x),
+                           **ev["hud_check"])
+                  for ev in scene.get("ability_events", [])
+                  if "hud_check" in ev and s - tol <= ev["time_seconds"] <= e + tol]
+        bad = [c for c in checks if c.status == "contradicted"]
+        if bad:
+            reasons.append("HUD 대조 불일치: " + "; ".join(f"{c.ability_id} {c.time_seconds:.1f}초 — {c.note}" for c in bad))
+        if (out_cfg.get("require_hud_verification_for_assertive") and hud_enabled
+                and not any(c.status == "verified" for c in checks)):
+            reasons.append("HUD로 확인된 스킬/궁극기 사용 근거 없음")
+
         candidates.append(FeedbackItem(
             id="", scene_id=item.scene_id,
             start_time_seconds=s, end_time_seconds=e, category=item.category,
@@ -189,6 +211,7 @@ def finalize_feedback(
             judgement=judgement, confidence=max(0.0, min(1.0, item.confidence)),
             criterion_ids=valid_criteria, criteria_review_status=review_status,
             display_mode="tentative" if reasons else "assertive", display_reasons=reasons,
+            hud_checks=checks,
         ))
 
     # assertive first, then by confidence; drop duplicates of already-kept items

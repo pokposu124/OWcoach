@@ -15,6 +15,8 @@ from pathlib import Path
 from .schemas import AnalysisResult
 
 CATEGORY_KO = {"positioning": "포지셔닝", "survival": "생존", "skill_usage": "스킬 사용"}
+HUD_KO = {"verified": "HUD 확인", "contradicted": "HUD 불일치", "unverifiable": "확인 불가", "not_checked": "대조 안 함"}
+HUD_CLASS = {"verified": "ok", "contradicted": "bad", "unverifiable": "warn", "not_checked": "warn"}
 JUDGEMENT_KO = {"good": "잘한 플레이", "needs_improvement": "개선 필요", "withheld": "판단 보류"}
 
 
@@ -42,6 +44,10 @@ def write_report(run_dir: Path) -> Path:
         badge = ('<span class="b ok">단정</span>' if f.display_mode == "assertive"
                  else f'<span class="b warn">참고·보류</span> <span class=muted>{_e(", ".join(f.display_reasons))}</span>')
         crit = ", ".join(f.criterion_ids) or "없음"
+        hud = "".join(
+            f"<li><span class='b {HUD_CLASS[c.status]}'>{_e(HUD_KO[c.status])}</span> {_t(c.time_seconds)} {_e(c.ability_id)}"
+            f" — {_e(c.note)} <span class=muted>(모델 근거: {_e(c.claimed_by_model or '-')})</span></li>"
+            for c in f.hud_checks) or "<li class=muted>이 구간에 스킬/궁극기 사용 기록 없음</li>"
         cards.append(f"""
 <section class=card id="{_e(f.id)}">
   <header><button class=seek data-t="{f.start_time_seconds}">▶ {_t(f.start_time_seconds)} – {_t(f.end_time_seconds)}</button>
@@ -51,6 +57,7 @@ def write_report(run_dir: Path) -> Path:
     <dt>판단</dt><dd>{_e(f.assessment)}</dd>
     <dt>제안</dt><dd>{_e(f.suggestion)}</dd>
     <dt>불확실성</dt><dd>[{_e(f.uncertainty_level)}] {_e(f.uncertainty or '-')}</dd>
+    <dt>HUD 대조</dt><dd><ul class=hud>{hud}</ul></dd>
     <dt>적용 기준</dt><dd>{_e(crit)} <span class=muted>(기준 상태: {_e(f.criteria_review_status)}, 패치: {_e(f.patch_version)})</span></dd>
   </dl>
   <div class=frames>{frames}</div>
@@ -73,6 +80,13 @@ def write_report(run_dir: Path) -> Path:
         f"<td>{u.output_tokens}</td><td>{u.thinking_tokens}</td><td>{u.latency_seconds}</td><td>{u.attempts}</td><td>{'예' if u.from_cache else ''}</td></tr>"
         for u in result.usage)
     mock_banner = f'<div class="banner">{_e(result.notice)}</div>' if result.analysis_mode == "mock" else ""
+    ov = result.overview
+    ti = ov.get("team_identification") or {}
+    roster = "".join(f"<tr><td>{_e(r['player_name'])}</td><td>{_e(r['team'])}</td><td>{_e(r['hero'])}</td><td>{_e(r['hero_confidence'])}</td></tr>"
+                     for r in ov.get("roster") or [])
+    team = (f"<p>플레이어 {_e(ti.get('player_name') or '-')} · 아군 팀 목록 {_e(ti.get('ally_side', '-'))} · 아군 색 {_e(ti.get('ally_color', '-'))}"
+            f" · 적 색 {_e(ti.get('enemy_color', '-'))}<br><span class=muted>근거: {_e(ti.get('evidence', '-'))}</span></p>"
+            f"<table><tr><th>플레이어</th><th>팀</th><th>영웅(초상화)</th><th>확신도</th></tr>{roster}</table>") if ti else "<p class=muted>없음</p>"
     timings = ", ".join(f"{k} {v}s" for k, v in result.timings_seconds.items())
     cost = f"{result.cost.total} {result.cost.currency or ''}" if result.cost.total is not None else "미계산"
 
@@ -88,7 +102,7 @@ video{{width:100%;max-height:60vh;background:#000;border-radius:8px;position:sti
 dl{{display:grid;grid-template-columns:7em 1fr;gap:4px 10px;margin:8px 0}} dt{{color:var(--muted)}} dd{{margin:0}}
 .frames{{display:flex;gap:8px;overflow-x:auto}} figure{{margin:0}} img{{height:120px;border-radius:6px;cursor:pointer}}
 figcaption,.muted{{color:var(--muted);font-size:13px}} .b{{font-size:12px;padding:1px 6px;border-radius:6px;color:#fff}}
-.ok{{background:var(--ok)}} .warn{{background:var(--warn)}} button{{cursor:pointer}}
+.ok{{background:var(--ok)}} .warn{{background:var(--warn)}} .bad{{background:#b00020}} ul.hud{{margin:0;padding-left:1.1em}} button{{cursor:pointer}}
 fieldset{{border:1px dashed var(--bd);border-radius:8px;margin-top:10px;display:flex;flex-wrap:wrap;gap:8px 16px}}
 textarea{{width:100%;min-height:48px}} table{{border-collapse:collapse;font-size:13px}} td,th{{border:1px solid var(--bd);padding:2px 6px}}
 @media (max-width:600px){{dl{{grid-template-columns:1fr}}}}
@@ -98,6 +112,7 @@ textarea{{width:100%;min-height:48px}} table{{border-collapse:collapse;font-size
 <p class=muted>run {_e(result.run_id)} · 모드 {_e(result.analysis_mode)} · 모델 {_e(result.versions.model)} · 프롬프트 {_e(', '.join(f'{k} {v}' for k, v in result.versions.prompts.items()))} ·
 영웅 기준 {_e(result.versions.hero_profile)} ({_e(result.versions.hero_profile_review_status)}) · 기준 패치 {_e(result.criteria_patch_version)} · 게임 패치 {_e(result.game_patch_version or '미입력')}</p>
 <video id=v src="{_e(video_src)}" controls preload=metadata></video>
+<details open><summary>팀 판별 (모델 판독, 검수 필요)</summary>{team}</details>
 <h2>피드백 ({len(result.feedback)})</h2>
 {''.join(cards) or '<p class=muted>근거가 충분한 피드백이 없습니다.</p>'}
 <h2>다음 경기 과제</h2><ul>{actions}</ul>

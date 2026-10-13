@@ -15,7 +15,7 @@ Category = Literal["positioning", "survival", "skill_usage"]
 Visibility = Literal["clear", "partial", "unclear"]
 Level = Literal["low", "medium", "high"]
 
-RESULT_SCHEMA_VERSION = "1.0.0"
+RESULT_SCHEMA_VERSION = "1.1.0"
 
 
 # ---------------------------------------------------------------- stage 2: overview (model output)
@@ -34,9 +34,26 @@ class SceneCandidate(BaseModel):
     priority: int = Field(description="1(낮음)~5(높음)")
 
 
+class TeamIdentification(BaseModel):
+    player_name: str = Field(description="좌하단 HUD의 플레이어 이름. 읽지 못하면 빈 문자열")
+    ally_side: Literal["left", "right", "unknown"] = Field(description="상단 팀 목록 중 플레이어 이름이 있는 쪽")
+    ally_color: str = Field(description="이 영상에서 아군 표시 색 (예: 빨강, 파랑). 모르면 '불명'")
+    enemy_color: str = Field(description="이 영상에서 적 표시 색. 모르면 '불명'")
+    evidence: str = Field(description="판단 근거 (팀 목록, 킬피드 등 화면에서 본 것)")
+
+
+class RosterEntry(BaseModel):
+    player_name: str = Field(description="상단 팀 목록에 표시된 플레이어 이름")
+    team: Literal["ally", "enemy", "unknown"]
+    hero: str = Field(description="팀 목록 초상화로 판독한 영웅 이름(한국어). 확실하지 않으면 '불명'")
+    hero_confidence: Level
+
+
 class OverviewResponse(BaseModel):
     hero_confirmed: bool
     hero_evidence: str
+    team_identification: TeamIdentification
+    roster: list[RosterEntry] = Field(description="상단 팀 목록의 플레이어별 팀·영웅 (최대 10명)")
     hud_readable: Literal["yes", "partial", "no"]
     video_quality_notes: str
     timeline: list[TimelineEvent]
@@ -59,9 +76,17 @@ class HudReading(BaseModel):
     confidence: Level
 
 
+class AbilityEvent(BaseModel):
+    time_seconds: float = Field(description="플레이어가 스킬/궁극기를 사용한 시각")
+    ability_id: str = Field(description="스킬 정보에 나온 id")
+    target: str = Field(description="대상 플레이어 이름(머리 위 이름·화면 메시지로 확인). 모르면 빈 문자열")
+    evidence: str = Field(description="사용을 확인한 화면 근거")
+
+
 class DetailResponse(BaseModel):
     observations: list[DetailObservation]
     hud_readings: list[HudReading]
+    ability_events: list[AbilityEvent] = Field(description="플레이어 본인의 스킬/궁극기 사용 (기본 사격 제외)")
     not_determinable: list[str]
     outcome: str
     key_moment_times: list[float]
@@ -99,6 +124,16 @@ class CoachingResponse(BaseModel):
 
 # ---------------------------------------------------------------- final result
 
+class HudCheck(BaseModel):
+    time_seconds: float = Field(description="모델이 말한 사용 시각 (원본 기준)")
+    ability_id: str
+    hud_slot: str | None
+    status: Literal["verified", "contradicted", "unverifiable", "not_checked"]
+    hud_use_time_seconds: float | None = None
+    note: str
+    claimed_by_model: str = Field(description="모델이 기록한 근거/대상")
+
+
 class EvidenceFrame(BaseModel):
     timestamp_seconds: float
     path: str = Field(description="run 디렉터리 기준 상대 경로")
@@ -126,6 +161,7 @@ class FeedbackItem(BaseModel):
     display_reasons: list[str] = Field(description="tentative 로 표시된 이유")
     evidence_frames: list[EvidenceFrame]
     scene_id: str
+    hud_checks: list[HudCheck] = Field(default_factory=list, description="이 피드백 구간 안의 스킬/궁극기 사용 주장과 HUD 대조 결과")
 
     @model_validator(mode="after")
     def _check_times(self) -> "FeedbackItem":

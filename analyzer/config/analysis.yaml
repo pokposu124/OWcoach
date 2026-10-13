@@ -36,13 +36,39 @@ detail:
 coaching:
   temperature: 0.2
 
+# 모델이 말한 스킬/궁극기 사용을 HUD 픽셀로 대조 (AI 없음). owcoach/hud.py 참고.
+# 슬롯별 "준비됨(흰 타일/원판)" vs "쿨다운/충전 중" 상태만 판별한다. 숫자(쿨다운 초, 궁극기 %)는 읽지 않는다.
+# 좌표는 기본 HUD 배치·HUD 크기 100%의 1280x720 기준. 실제 영상 1개(1280x720 녹화)로만 보정되었으므로
+# 다른 해상도 비율/HUD 설정에서는 영역을 다시 확인해야 한다.
+hud_check:
+  enabled: true
+  fps: 4.0                         # 장면 구간 HUD 샘플링
+  reference_resolution: [1280, 720]
+  white_threshold: 185             # RGB 최솟값이 이 값을 넘으면 '흰 픽셀'
+  ready_ratio: 0.5                 # 영역 내 흰 픽셀 비율이 이 이상이면 준비 상태 (실측: 준비 0.70~0.87, 쿨다운 0.06~0.20)
+  # 스킬 칸 흰 비율이 이 미만이면 그 칸은 판독 불가(쿨다운 종료 순간 칸이 깜빡임. 실측 쿨다운은 0.05 이상),
+  # 스킬 칸이 모두 이 미만이면 HUD 가려짐(사망 화면 등)으로 보고 궁극기도 판단하지 않음
+  hidden_ratio: 0.03
+  hidden_check_slots: [ability_1, ability_2]
+  # 이 횟수 연속 같은 상태일 때만 상태로 인정. 궁극기 원판 영역은 밝은 배경·섬광으로 최대 약 1.25초
+  # 흰색이 되는 경우가 있어(실측) 준비 상태를 2초(8회) 이상 유지할 때만 인정한다.
+  min_run_samples: {default: 2, ultimate: 8}
+  search_seconds: 2.5              # 모델이 말한 시각 ±이 범위에서 준비→사용 전환을 찾음
+  regions:
+    ultimate: {shape: circle, cx: 640, cy: 620, r: 22}
+    ability_1: {shape: rect, x0: 977, y0: 614, x1: 1011, y1: 648}
+    ability_2: {shape: rect, x0: 1030, y0: 614, x1: 1064, y1: 648}
+
 output:
   max_feedback_items: 5
   max_action_items: 3
   # 단정적 피드백(assertive)으로 표시하기 위한 최소 확신도
   min_confidence_for_assertive: 0.6
   # true면 코치 검수(approved)된 기준이 적용된 피드백만 단정적으로 표시
-  require_approved_criteria_for_assertive: false
+  require_approved_criteria_for_assertive: true
+  # true면 HUD 대조로 확인된 스킬/궁극기 사용이 1개 이상 있고 불일치가 없는 피드백만 단정적으로 표시
+  # (모델이 스스로 매긴 확신도는 첫 실제 실행에서 틀린 항목도 1.0이어서 단정 판정 근거로 부족했음)
+  require_hud_verification_for_assertive: true
   # 같은 카테고리에서 시간 구간이 이 비율 이상 겹치면 중복으로 간주
   dedup_overlap_ratio: 0.5
   # 모델이 제시한 시간이 분석한 구간 밖으로 벗어나도 허용하는 오차(초)

@@ -52,6 +52,12 @@ class MockProvider(AnalysisProvider):
         return {
             "hero_confirmed": True,
             "hero_evidence": "[모의] 무기와 스킬 아이콘으로 확인",
+            "team_identification": {"player_name": "MOCK", "ally_side": "left", "ally_color": "파랑",
+                                    "enemy_color": "빨강", "evidence": "[모의] 왼쪽 팀 목록에 플레이어 이름"},
+            "roster": [
+                {"player_name": "MOCK", "team": "ally", "hero": "아나", "hero_confidence": "high"},
+                {"player_name": "ENEMY1", "team": "enemy", "hero": "불명", "hero_confidence": "low"},
+            ],
             "hud_readable": "yes",
             "video_quality_notes": "[모의] 화질 양호",
             "timeline": [
@@ -81,6 +87,11 @@ class MockProvider(AnalysisProvider):
             ],
             "hud_readings": [
                 {"time_seconds": mid, "item": "health", "value": "[모의] 약 80", "confidence": "low"},
+            ],
+            # sleep dart claim (checked against HUD pixels) + an unknown ability id
+            "ability_events": [
+                {"time_seconds": round(mid - 0.5, 1), "ability_id": "sleep_dart", "target": "", "evidence": "[모의] 쿨다운 숫자 표시"},
+                {"time_seconds": mid, "ability_id": "does_not_exist", "target": "", "evidence": "[모의] 없는 스킬"},
             ],
             "not_determinable": ["[모의] 화면 밖 적 위치"],
             "outcome": "[모의] 생존",

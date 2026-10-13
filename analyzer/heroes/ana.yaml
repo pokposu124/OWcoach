@@ -10,7 +10,7 @@ hero_id: ana
 display_name_ko: 아나
 display_name_en: Ana
 role: support
-profile_version: "0.1.0-draft"
+profile_version: "0.1.1-draft"
 review_status: draft
 # 이 기준이 검증된 게임 패치 버전. 아직 어떤 패치로도 검증되지 않았음.
 patch_version: unverified
@@ -25,14 +25,17 @@ abilities:
     name_ko: 수면총
     name_en: Sleep Dart
     hud_hint: "HUD 하단 스킬 아이콘. 사용 후 쿨다운 숫자가 표시됨"
+    hud_slot: ability_1
   - id: biotic_grenade
     name_ko: 생체 수류탄
     name_en: Biotic Grenade
     hud_hint: "HUD 하단 스킬 아이콘. 사용 후 쿨다운 숫자가 표시됨"
+    hud_slot: ability_2
   - id: nano_boost
     name_ko: 나노 강화제
     name_en: Nano Boost
     hud_hint: "궁극기 게이지(%)가 화면 하단 중앙에 표시됨"
+    hud_slot: ultimate
 
 # 화면에서 확인 가능한 관찰 신호 (모델에게 무엇을 보라고 안내하는 용도)
 observable_signals:

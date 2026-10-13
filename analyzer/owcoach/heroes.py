@@ -36,6 +36,8 @@ class Ability(BaseModel):
     name_ko: str
     name_en: str
     hud_hint: str | None = None
+    # HUD 대조용 슬롯 (config hud_check.regions 의 키). 없으면 HUD로 검증하지 않음
+    hud_slot: str | None = None
 
 
 class NumericFact(BaseModel):

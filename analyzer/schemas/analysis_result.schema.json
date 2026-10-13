@@ -235,6 +235,14 @@
         "scene_id": {
           "title": "Scene Id",
           "type": "string"
+        },
+        "hud_checks": {
+          "description": "이 피드백 구간 안의 스킬/궁극기 사용 주장과 HUD 대조 결과",
+          "items": {
+            "$ref": "#/$defs/HudCheck"
+          },
+          "title": "Hud Checks",
+          "type": "array"
         }
       },
       "required": [
@@ -260,6 +268,71 @@
         "scene_id"
       ],
       "title": "FeedbackItem",
+      "type": "object"
+    },
+    "HudCheck": {
+      "properties": {
+        "time_seconds": {
+          "description": "모델이 말한 사용 시각 (원본 기준)",
+          "title": "Time Seconds",
+          "type": "number"
+        },
+        "ability_id": {
+          "title": "Ability Id",
+          "type": "string"
+        },
+        "hud_slot": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Hud Slot"
+        },
+        "status": {
+          "enum": [
+            "verified",
+            "contradicted",
+            "unverifiable",
+            "not_checked"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "hud_use_time_seconds": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Hud Use Time Seconds"
+        },
+        "note": {
+          "title": "Note",
+          "type": "string"
+        },
+        "claimed_by_model": {
+          "description": "모델이 기록한 근거/대상",
+          "title": "Claimed By Model",
+          "type": "string"
+        }
+      },
+      "required": [
+        "time_seconds",
+        "ability_id",
+        "hud_slot",
+        "status",
+        "note",
+        "claimed_by_model"
+      ],
+      "title": "HudCheck",
       "type": "object"
     },
     "StageUsage": {
@@ -492,7 +565,7 @@
   },
   "properties": {
     "schema_version": {
-      "default": "1.0.0",
+      "default": "1.1.0",
       "title": "Schema Version",
       "type": "string"
     },
