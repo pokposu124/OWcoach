@@ -26,6 +26,9 @@ team:
   frame_fractions: [0.35, 0.65]    # 영상 길이의 이 비율 시각 프레임 사용 (대기실·처치 화면을 피하려고 중간 구간)
   upscale: 2
   media_resolution: MEDIA_RESOLUTION_HIGH
+  # 영웅 초상화 참고표(이미지 + 영웅 이름 목록). 함께 보내 초상화를 대조하게 하고, 영웅 이름을 이 목록으로 제한한다.
+  # 모델이 모르는 최신 영웅(예: 독트린)을 아는 영웅으로 잘못 맞추는 문제 때문(실측). null 이면 사용 안 함.
+  hero_reference: config/hero_portraits/heroes.yaml
   reference_resolution: [1280, 720]
   regions:                         # 1280x720 기준 x, y, w, h
     team_lists: {x: 0, y: 0, w: 1280, h: 110}

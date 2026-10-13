@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import copy
 import fcntl
+import hashlib
 import json
 import shutil
 import time
@@ -26,7 +27,7 @@ from typing import Any, Callable
 from pydantic import BaseModel, ValidationError
 
 from . import __version__
-from .config import ANALYZER_ROOT, fingerprint
+from .config import ANALYZER_ROOT, fingerprint, load_yaml
 from .hud import check_use_claim, sample_hud
 from .heroes import HeroProfile
 from .media import (
@@ -108,6 +109,19 @@ def compute_cost(usage: list[StageUsage], pricing: dict, is_mock: bool) -> CostS
         total=round(total, 6), currency=currency,
         note="추정치: 토큰 수 × pricing.yaml 단가. thinking 토큰은 출력 단가로 계산. 단가 출처: " + ", ".join(sorted(sources)),
     )
+
+
+def load_hero_reference(path: str | None) -> dict | None:
+    """Hero portrait sheet + allowed hero names (config/hero_portraits/heroes.yaml)."""
+    if not path:
+        return None
+    meta_path = ANALYZER_ROOT / path
+    meta = load_yaml(meta_path)
+    sheet = meta_path.parent / meta["sheet"]
+    data = sheet.read_bytes()
+    mime = {".jpg": "image/jpeg", ".jpeg": "image/jpeg", ".png": "image/png", ".webp": "image/webp"}[sheet.suffix.lower()]
+    return {"heroes": list(meta["heroes"]), "image": data, "mime": mime, "source": meta.get("source"),
+            "sheet": str(sheet.relative_to(ANALYZER_ROOT)), "sha256": hashlib.sha256(data).hexdigest()}
 
 
 def team_context_text(team: TeamResponse | None) -> str:
@@ -260,11 +274,20 @@ class Pipeline:
         fp = fingerprint(ai_fp_base, sha, tcfg, tp.version)
         labels = {"team_lists": "팀 목록(화면 상단)", "player_hud": "플레이어 HUD(화면 좌하단)", "kill_feed": "킬피드(화면 우상단)"}
         image_list = "\n".join(f"{i}. {labels.get(k, k)}" for i, k in enumerate(tcfg["regions"], 1))
-        prompt = tp.render(frame_count=len(times), image_list=image_list)
+        ref = load_hero_reference(tcfg.get("hero_reference"))
+        if ref:
+            ref_text = ("영웅 초상화 참고표\n- 위 프레임 이미지들 다음, **마지막 이미지**는 영웅 초상화 참고표입니다. 초상화 아래에 영웅 이름이 적혀 있습니다.\n"
+                        "- 사용할 수 있는 영웅 이름: " + ", ".join(ref["heroes"]))
+        else:
+            ref_text = "영웅 초상화 참고표: 없음"
+        prompt = tp.render(frame_count=len(times), image_list=image_list, hero_reference=ref_text)
+        fp = fingerprint(fp, ref["sha256"] if ref else None, ref["heroes"] if ref else None)
 
         def run_team():
             images = [(extract_crop_png(video, ts, tuple(tcfg["reference_resolution"]), region, int(tcfg["upscale"])),
                        "image/png") for ts in times for region in tcfg["regions"].values()]
+            if ref:
+                images.append((ref["image"], ref["mime"]))
             parsed, usage = self._call("team", "team", TeamResponse, lambda schema, note: ImageRequest(
                 images=images, prompt=prompt + note, response_schema=schema,
                 media_resolution=tcfg.get("media_resolution"), temperature=self.cfg["provider"].get("temperature"),
@@ -276,9 +299,14 @@ class Pipeline:
         ti = team.team_identification
         if ti.ally_side == "unknown":
             self.warnings.append(f"아군 팀을 판별하지 못함: {ti.evidence}")
+        if ref:
+            unknown = [f"{r.player_name}={r.hero}" for r in team.roster if r.hero not in ref["heroes"] and r.hero != "불명"]
+            if unknown:
+                self.warnings.append("참고표에 없는 영웅 이름: " + ", ".join(unknown))
         if ti.player_name and ti.player_name not in {r.player_name for r in team.roster}:
             self.warnings.append(f"플레이어 이름 '{ti.player_name}'이(가) 팀 목록 판독 결과에 없음")
-        return team, {**team.model_dump(), "frame_times_seconds": times}
+        return team, {**team.model_dump(), "frame_times_seconds": times,
+                      "hero_reference": {"source": ref["source"], "sheet": ref["sheet"]} if ref else None}
 
     def _hud_check_scene(self, video: Path, rec: dict, hcfg: dict) -> None:
         slots = {a.id: a.hud_slot for a in self.hero.abilities}
