@@ -184,17 +184,36 @@ def test_team_stage_sends_cropped_stills(video, cfg, tmp_path):
     make_pipeline(cfg, tmp_path, prov).run(video, run_id="team1")
     tcfg = cfg["team"]
     assert prov.calls[:2] == ["team", "overview"]
-    crops, sheet = prov.images[:-1], prov.images[-1]
-    assert len(crops) == len(tcfg["frame_fractions"]) * len(tcfg["regions"])
-    assert all(d[:8] == b"\x89PNG\r\n\x1a\n" and m == "image/png" for d, m in crops)
-    assert sheet[1] == "image/jpeg" and sheet[0][:2] == b"\xff\xd8"  # hero portrait reference sheet
+    assert len(prov.images) == len(tcfg["frame_fractions"]) * len(tcfg["regions"])
+    assert all(d[:8] == b"\x89PNG\r\n\x1a\n" and m == "image/png" for d, m in prov.images)
 
 
-def test_hero_reference_sheet_loads():
-    from owcoach.pipeline import load_hero_reference
+def test_portrait_matching_finds_planted_hero(tmp_path, cfg):
+    """Plant a downscaled crop of a reference portrait into a team-list slot of a synthetic frame;
+    the matcher must name that hero for the slot and leave the empty slots as 불명."""
+    from PIL import Image
 
-    ref = load_hero_reference(load_config()["team"]["hero_reference"])
-    assert "독트린" in ref["heroes"] and "아나" in ref["heroes"] and len(set(ref["heroes"])) == len(ref["heroes"])
+    from owcoach.portraits import identify, load_portraits
+
+    tcfg = cfg["team"]
+    refs = load_portraits(tcfg["portraits"])["heroes"]
+    names = [n for n, _ in refs]
+    assert "독트린" in names and "아나" in names and len(set(names)) == len(names) == 54
+    slots = tcfg["portrait_slots"]
+    name, img = next((n, i) for n, i in refs if n == "독트린")
+    small = img.resize((int(img.width * 0.35), int(img.height * 0.35)), Image.BILINEAR)
+    patch = small.crop((10, 12, 10 + slots["w"] + 6, 12 + slots["h"] + 6))
+    frame = Image.new("RGB", (1280, 720), (90, 90, 120))
+    x = slots["right_x"][1]
+    frame.paste(patch, (x - 3, slots["y"] - 3))
+    png = tmp_path / "f.png"
+    frame.save(png)
+    video = tmp_path / "f.mp4"
+    subprocess.run(["ffmpeg", "-y", "-v", "error", "-loop", "1", "-i", str(png), "-t", "1", "-pix_fmt", "yuv444p",
+                    "-c:v", "libx264", "-crf", "0", str(video)], check=True)
+    res = identify(video, [0.5], tcfg, refs)
+    assert res[6]["slot"] == 7 and res[6]["hero"] == "독트린" and res[6]["confidence"] == "high"
+    assert res[0]["hero"] == "불명"
 
 
 def test_config_change_invalidates_only_affected_stages(video, cfg, tmp_path):

@@ -26,9 +26,25 @@ team:
   frame_fractions: [0.35, 0.65]    # 영상 길이의 이 비율 시각 프레임 사용 (대기실·처치 화면을 피하려고 중간 구간)
   upscale: 2
   media_resolution: MEDIA_RESOLUTION_HIGH
-  # 영웅 초상화 참고표(이미지 + 영웅 이름 목록). 함께 보내 초상화를 대조하게 하고, 영웅 이름을 이 목록으로 제한한다.
-  # 모델이 모르는 최신 영웅(예: 독트린)을 아는 영웅으로 잘못 맞추는 문제 때문(실측). null 이면 사용 안 함.
-  hero_reference: config/hero_portraits/heroes.yaml
+  # 영웅은 모델이 아니라 코드가 판독한다: 팀 목록 초상화를 참고 초상화와 이미지 대조(owcoach/portraits.py).
+  # 모델은 초상화 참고표를 줘도 MMG(독트린)를 실행마다 마우가/솜브라로 high 확신도로 답했다(실측).
+  portraits: config/hero_portraits/portraits.yaml
+  portrait_slots:                  # 팀 목록 초상화 영역 (1280x720, 숫자 % 표시를 피한 오른쪽 부분)
+    y: 49
+    h: 24
+    w: 30
+    left_x: [63, 133, 203, 273, 343]
+    right_x: [935, 1005, 1075, 1145, 1215]
+    # 초상화 대조용 프레임(영상 길이 비율). 사망 등으로 초상화가 흐려진 프레임이 있어 여러 장에서 가장 잘 맞는 점수를 쓴다.
+    frame_fractions: [0.15, 0.3, 0.45, 0.6, 0.75, 0.9]
+    scale_min: 0.30                # 참고 초상화 축소 배율 탐색 범위 (실측 최적 0.34~0.36)
+    scale_max: 0.40
+    scale_step: 0.02
+    thresholds:                    # 실측: 정답 0.77~0.93, 2위 0.46~0.68
+      high_score: 0.75
+      high_margin: 0.15
+      min_score: 0.6
+      min_margin: 0.05             # 이보다 2위와 차이가 작으면 '불명'
   reference_resolution: [1280, 720]
   regions:                         # 1280x720 기준 x, y, w, h
     team_lists: {x: 0, y: 0, w: 1280, h: 110}

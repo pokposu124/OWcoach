@@ -44,8 +44,8 @@ class MockProvider(AnalysisProvider):
             "team_identification": {"player_name": "MOCK", "ally_side": "left", "ally_color": "파랑",
                                     "enemy_color": "빨강", "evidence": "[모의] 왼쪽 팀 목록에 플레이어 이름"},
             "roster": [
-                {"player_name": "MOCK", "team": "ally", "hero": "아나", "hero_confidence": "high"},
-                {"player_name": "ENEMY1", "team": "enemy", "hero": "불명", "hero_confidence": "low"},
+                {"slot": 1, "player_name": "MOCK", "team": "ally"},
+                {"slot": 6, "player_name": "ENEMY1", "team": "enemy"},
             ],
         })
 

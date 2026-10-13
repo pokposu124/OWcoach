@@ -82,11 +82,15 @@ def write_report(run_dir: Path) -> Path:
     mock_banner = f'<div class="banner">{_e(result.notice)}</div>' if result.analysis_mode == "mock" else ""
     ov = result.team or {}
     ti = ov.get("team_identification") or {}
-    roster = "".join(f"<tr><td>{_e(r['player_name'])}</td><td>{_e(r['team'])}</td><td>{_e(r['hero'])}</td><td>{_e(r['hero_confidence'])}</td></tr>"
+    def _match(r):
+        m = r.get("hero_match")
+        return f"{m['score']:.2f} (2위 {_e(m['runner_up'])} 차이 {m['margin']:.2f})" if m else "-"
+    roster = "".join(f"<tr><td>{r.get('slot', '')}</td><td>{_e(r['player_name'])}</td><td>{_e(r['team'])}</td><td>{_e(r.get('hero') or '불명')}</td>"
+                     f"<td>{_e(r.get('hero_confidence') or '-')}</td><td>{_match(r)}</td></tr>"
                      for r in ov.get("roster") or [])
     team = (f"<p>플레이어 {_e(ti.get('player_name') or '-')} · 아군 팀 목록 {_e(ti.get('ally_side', '-'))} · 아군 색 {_e(ti.get('ally_color', '-'))}"
             f" · 적 색 {_e(ti.get('enemy_color', '-'))}<br><span class=muted>근거: {_e(ti.get('evidence', '-'))}</span></p>"
-            f"<table><tr><th>플레이어</th><th>팀</th><th>영웅(초상화)</th><th>확신도</th></tr>{roster}</table>") if ti else "<p class=muted>없음</p>"
+            f"<table><tr><th>칸</th><th>플레이어</th><th>팀</th><th>영웅(초상화 대조)</th><th>확신도</th><th>대조 점수</th></tr>{roster}</table>") if ti else "<p class=muted>없음</p>"
     timings = ", ".join(f"{k} {v}s" for k, v in result.timings_seconds.items())
     cost = f"{result.cost.total} {result.cost.currency or ''}" if result.cost.total is not None else "미계산"
 
@@ -112,7 +116,7 @@ textarea{{width:100%;min-height:48px}} table{{border-collapse:collapse;font-size
 <p class=muted>run {_e(result.run_id)} · 모드 {_e(result.analysis_mode)} · 모델 {_e(result.versions.model)} · 프롬프트 {_e(', '.join(f'{k} {v}' for k, v in result.versions.prompts.items()))} ·
 영웅 기준 {_e(result.versions.hero_profile)} ({_e(result.versions.hero_profile_review_status)}) · 기준 패치 {_e(result.criteria_patch_version)} · 게임 패치 {_e(result.game_patch_version or '미입력')}</p>
 <video id=v src="{_e(video_src)}" controls preload=metadata></video>
-<details open><summary>팀 판별 (모델 판독, 검수 필요)</summary>{team}</details>
+<details open><summary>팀 판별 (이름·팀: 모델 판독, 영웅: 초상화 이미지 대조 — 검수 필요)</summary>{team}</details>
 <h2>피드백 ({len(result.feedback)})</h2>
 {''.join(cards) or '<p class=muted>근거가 충분한 피드백이 없습니다.</p>'}
 <h2>다음 경기 과제</h2><ul>{actions}</ul>

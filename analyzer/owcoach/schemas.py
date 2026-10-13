@@ -43,10 +43,9 @@ class TeamIdentification(BaseModel):
 
 
 class RosterEntry(BaseModel):
+    slot: int = Field(description="상단 팀 목록에서 왼쪽 끝부터 1~10 (왼쪽 팀 1~5, 오른쪽 팀 6~10)")
     player_name: str = Field(description="상단 팀 목록에 표시된 플레이어 이름")
     team: Literal["ally", "enemy", "unknown"]
-    hero: str = Field(description="팀 목록 초상화로 판독한 영웅 이름(한국어). 확실하지 않으면 '불명'")
-    hero_confidence: Level
 
 
 class TeamResponse(BaseModel):

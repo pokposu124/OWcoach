@@ -15,7 +15,6 @@ from __future__ import annotations
 
 import copy
 import fcntl
-import hashlib
 import json
 import shutil
 import time
@@ -27,9 +26,10 @@ from typing import Any, Callable
 from pydantic import BaseModel, ValidationError
 
 from . import __version__
-from .config import ANALYZER_ROOT, fingerprint, load_yaml
+from .config import ANALYZER_ROOT, fingerprint
 from .hud import check_use_claim, sample_hud
 from .heroes import HeroProfile
+from .portraits import identify, load_portraits
 from .media import (
     InputRejected,
     cut_clip,
@@ -111,31 +111,20 @@ def compute_cost(usage: list[StageUsage], pricing: dict, is_mock: bool) -> CostS
     )
 
 
-def load_hero_reference(path: str | None) -> dict | None:
-    """Hero portrait sheet + allowed hero names (config/hero_portraits/heroes.yaml)."""
-    if not path:
-        return None
-    meta_path = ANALYZER_ROOT / path
-    meta = load_yaml(meta_path)
-    sheet = meta_path.parent / meta["sheet"]
-    data = sheet.read_bytes()
-    mime = {".jpg": "image/jpeg", ".jpeg": "image/jpeg", ".png": "image/png", ".webp": "image/webp"}[sheet.suffix.lower()]
-    return {"heroes": list(meta["heroes"]), "image": data, "mime": mime, "source": meta.get("source"),
-            "sheet": str(sheet.relative_to(ANALYZER_ROOT)), "sha256": hashlib.sha256(data).hexdigest()}
-
-
-def team_context_text(team: TeamResponse | None) -> str:
-    """Team / roster facts from the team stage, handed to the overview and detail prompts as plain text."""
+def team_context_text(team: dict | None) -> str:
+    """Team / roster facts (team stage + portrait matching), handed to the overview and detail prompts."""
     if team is None:
         return "- 팀 판별 안 함: 아군/적 색을 가정하지 말고 화면 상단 팀 목록과 플레이어 이름으로 직접 판단하세요."
-    ti = team.team_identification
-    side = {"left": "왼쪽", "right": "오른쪽", "unknown": "판별 못 함"}[ti.ally_side]
-    lines = [f"- 플레이어 이름: {ti.player_name or '판독 못 함'}",
-             f"- 아군 팀: 상단 팀 목록 {side}, 아군 색 {ti.ally_color}, 적 색 {ti.enemy_color}",
-             f"- 판단 근거: {ti.evidence}"]
+    ti = team["team_identification"]
+    side = {"left": "왼쪽", "right": "오른쪽", "unknown": "판별 못 함"}[ti["ally_side"]]
+    lines = [f"- 플레이어 이름: {ti['player_name'] or '판독 못 함'}",
+             f"- 아군 팀: 상단 팀 목록 {side}, 아군 색 {ti['ally_color']}, 적 색 {ti['enemy_color']}",
+             f"- 판단 근거: {ti['evidence']}"]
     team_ko = {"ally": "아군", "enemy": "적", "unknown": "소속 불명"}
-    for r in team.roster:
-        lines.append(f"- {r.player_name}: {team_ko[r.team]}, 영웅 {r.hero} (초상화 판독 확신도 {r.hero_confidence})")
+    for r in team["roster"]:
+        hero = r.get("hero") or "불명"
+        note = f"초상화 대조 {r['hero_confidence']}" if r.get("hero_confidence") else "영웅 판독 안 함"
+        lines.append(f"- {r['player_name']}: {team_ko[r['team']]}, 영웅 {hero} ({note})")
     return "\n".join(lines)
 
 
@@ -274,20 +263,11 @@ class Pipeline:
         fp = fingerprint(ai_fp_base, sha, tcfg, tp.version)
         labels = {"team_lists": "팀 목록(화면 상단)", "player_hud": "플레이어 HUD(화면 좌하단)", "kill_feed": "킬피드(화면 우상단)"}
         image_list = "\n".join(f"{i}. {labels.get(k, k)}" for i, k in enumerate(tcfg["regions"], 1))
-        ref = load_hero_reference(tcfg.get("hero_reference"))
-        if ref:
-            ref_text = ("영웅 초상화 참고표\n- 위 프레임 이미지들 다음, **마지막 이미지**는 영웅 초상화 참고표입니다. 초상화 아래에 영웅 이름이 적혀 있습니다.\n"
-                        "- 사용할 수 있는 영웅 이름: " + ", ".join(ref["heroes"]))
-        else:
-            ref_text = "영웅 초상화 참고표: 없음"
-        prompt = tp.render(frame_count=len(times), image_list=image_list, hero_reference=ref_text)
-        fp = fingerprint(fp, ref["sha256"] if ref else None, ref["heroes"] if ref else None)
+        prompt = tp.render(frame_count=len(times), image_list=image_list)
 
         def run_team():
             images = [(extract_crop_png(video, ts, tuple(tcfg["reference_resolution"]), region, int(tcfg["upscale"])),
                        "image/png") for ts in times for region in tcfg["regions"].values()]
-            if ref:
-                images.append((ref["image"], ref["mime"]))
             parsed, usage = self._call("team", "team", TeamResponse, lambda schema, note: ImageRequest(
                 images=images, prompt=prompt + note, response_schema=schema,
                 media_resolution=tcfg.get("media_resolution"), temperature=self.cfg["provider"].get("temperature"),
@@ -299,14 +279,22 @@ class Pipeline:
         ti = team.team_identification
         if ti.ally_side == "unknown":
             self.warnings.append(f"아군 팀을 판별하지 못함: {ti.evidence}")
-        if ref:
-            unknown = [f"{r.player_name}={r.hero}" for r in team.roster if r.hero not in ref["heroes"] and r.hero != "불명"]
-            if unknown:
-                self.warnings.append("참고표에 없는 영웅 이름: " + ", ".join(unknown))
         if ti.player_name and ti.player_name not in {r.player_name for r in team.roster}:
             self.warnings.append(f"플레이어 이름 '{ti.player_name}'이(가) 팀 목록 판독 결과에 없음")
-        return team, {**team.model_dump(), "frame_times_seconds": times,
-                      "hero_reference": {"source": ref["source"], "sheet": ref["sheet"]} if ref else None}
+        record = {**team.model_dump(), "frame_times_seconds": times, "portraits": None}
+        if tcfg.get("portraits"):
+            refs = load_portraits(tcfg["portraits"])
+            ptimes = [round(duration * f, 2) for f in tcfg["portrait_slots"]["frame_fractions"]]
+            matches = {m["slot"]: m for m in identify(video, ptimes, tcfg, refs["heroes"])}
+            for r in record["roster"]:
+                m = matches.get(r["slot"])
+                if m:
+                    r.update(hero=m["hero"], hero_confidence=m["confidence"], hero_match=m)
+            record["portraits"] = {"source": refs["source"], "sheet": refs["sheet"]}
+            low = [f"{r['player_name']}" for r in record["roster"] if r.get("hero_confidence") == "low"]
+            if low:
+                self.warnings.append("초상화 대조로 영웅을 확정하지 못함(불명 처리): " + ", ".join(low))
+        return team, record
 
     def _hud_check_scene(self, video: Path, rec: dict, hcfg: dict) -> None:
         slots = {a.id: a.hud_slot for a in self.hero.abilities}
@@ -409,7 +397,7 @@ class Pipeline:
         self.log("[2/5] 팀 판별 · 전체 흐름 분석")
         t = time.monotonic()
         team, team_record = self._team_stage(store, video, sha, duration, ai_fp_base, force)
-        team_context = team_context_text(team)
+        team_context = team_context_text(team_record)
         self.timings["team"] = round(time.monotonic() - t, 3)
 
         # 2b. overview ------------------------------------------------------------------
