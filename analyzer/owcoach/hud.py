@@ -251,3 +251,47 @@ def scan_dead_periods(video: Path, duration: float, cfg: dict) -> list[tuple[flo
                 out.append((round(start / fps, 2), round(i / fps, 2)))
             start = None
     return out
+
+
+def detect_status_icon(video: Path, use_time: float, slots: list[dict], cfg: dict) -> dict:
+    """Which enemy team-list slot shows a status icon right after a disabling skill was used.
+
+    Sleep Dart: a white "zz" appears over the upper-right of the slept enemy's portrait for a few
+    seconds. Per slot, frames whose white share in that zone rises over the slot's own baseline are
+    counted. One slot clearly ahead -> hit on that enemy; no slot rising at all -> missed.
+    """
+    if not slots:
+        return {"status": "unverifiable", "note": "대상 후보(적 칸)가 없음"}
+    fps = float(cfg["fps"])
+    y0, y1 = cfg["y"], cfg["y"] + cfg["h"]
+    xs = [s["x"] for s in slots]
+    x_lo, x_hi = min(xs) + cfg["dx0"], max(xs) + cfg["dx1"]
+    start = max(0.0, use_time - cfg["baseline_seconds"])
+    ref_w, ref_h = cfg["reference_resolution"]
+    proc = subprocess.run([
+        _require("ffmpeg"), "-v", "error", "-ss", f"{start:.3f}", "-i", str(video),
+        "-t", f"{use_time + cfg['window_seconds'] - start:.3f}",
+        "-vf", f"fps={fps},scale={ref_w}:{ref_h},crop={x_hi - x_lo}:{y1 - y0}:{x_lo}:{y0}",
+        "-f", "rawvideo", "-pix_fmt", "rgb24", "-",
+    ], capture_output=True)
+    if proc.returncode != 0:
+        raise MediaError(f"status icon extraction failed: {proc.stderr[-300:]!r}")
+    frames = np.frombuffer(proc.stdout, np.uint8).reshape(-1, y1 - y0, x_hi - x_lo, 3)
+    white = frames.min(axis=3) > cfg["white_threshold"]
+    ratios = np.array([[w[:, s["x"] + cfg["dx0"] - x_lo:s["x"] + cfg["dx1"] - x_lo].mean() for s in slots] for w in white])
+    times = start + np.arange(len(ratios)) / fps
+    before, after = ratios[times < use_time], ratios[times >= use_time]
+    if len(before) == 0 or len(after) == 0:
+        return {"status": "unverifiable", "note": "판별용 프레임 부족"}
+    hits = ((after - np.median(before, axis=0)) >= cfg["min_increase"]).sum(axis=0)
+    order = np.argsort(hits)[::-1]
+    best = int(order[0])
+    second = int(hits[order[1]]) if len(order) > 1 else 0
+    if hits[best] >= cfg["min_frames"] and second * 2 <= hits[best]:
+        s = slots[best]
+        return {"status": "verified", "slot": s["slot"], "player_name": s["player_name"], "hero": s.get("hero"),
+                "icon_frames": int(hits[best]),
+                "note": f"명중: 팀 목록 {s['slot']}번 칸({s['player_name']})에 {cfg.get('icon_name', '상태 표시')} {int(hits[best])}프레임"}
+    if hits.max() == 0:
+        return {"status": "missed", "note": f"어느 적 칸에도 {cfg.get('icon_name', '상태 표시')}가 뜨지 않음: 빗나감"}
+    return {"status": "unverifiable", "note": "표시가 약하거나 여러 칸에 걸쳐 있어 대상 특정 불가"}

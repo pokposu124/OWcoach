@@ -228,6 +228,16 @@ def finalize_feedback(
                     and not any(c.status == "verified" for c in checks)):
                 reasons.append("HUD로 확인된 스킬/궁극기 사용 근거 없음")
         verified = item.category in HUD_CATEGORIES and any(c.status == "verified" for c in checks)
+        missed = [c for c in checks if (c.target_check or {}).get("status") == "missed"]
+        if missed and grade in ("best", "excellent"):
+            grade = "withheld"
+            reasons.append("; ".join(f"{c.ability_id} {fmt_time(c.hud_use_time_seconds or c.time_seconds)}: 코드 확인 결과 빗나감 "
+                                     f"({c.target_check.get('note', '')}), 명중을 전제로 한 판정 보류" for c in missed))
+        doubtful = [c for c in checks if c.death_after_seconds is not None and c not in missed]
+        if doubtful and grade in ("best", "excellent"):
+            grade = "withheld"
+            reasons.append("; ".join(f"{c.ability_id} {fmt_time(c.hud_use_time_seconds or c.time_seconds)} 사용 {c.death_after_seconds:g}초 뒤 사망: "
+                                     "명중했다면 대상이 행동하지 못했어야 하므로 명중 여부 미확인, 판단 보류" for c in doubtful))
         if item.category in out_cfg.get("hold_categories", []):
             reasons.append(f"{CATEGORY_KO[item.category]}은(는) 코드로 확인할 수 없어 보류")
 

@@ -145,6 +145,7 @@ class HudCheck(BaseModel):
     claimed_by_model: str = Field(description="모델이 기록한 근거/대상")
     target_check: dict | None = Field(default=None, description="대상 판별 결과 (나노 강화제 등: 팀 목록 칸 강화 화살표)")
     moment_check: dict | None = Field(default=None, description="사용 순간 확인 (대상, 적 대응 스킬 활성 여부, 결과)")
+    death_after_seconds: float | None = Field(default=None, description="무력화 스킬 사용 후 플레이어가 죽기까지 걸린 시간(초)")
 
 
 class EvidenceFrame(BaseModel):
@@ -256,6 +257,8 @@ class AnalysisResult(BaseModel):
     criteria_patch_version: str
     video: VideoInfo
     player_deaths: list[dict] = Field(default_factory=list, description="감지한 플레이어 사망 (time_seconds, source)")
+    skill_uses: list[dict] = Field(default_factory=list,
+                                   description="HUD로 확인한 스킬·궁극기 사용과 코드 판별 결과(대상·명중), 순간 확인(모델) 포함")
     hud_ultimate_uses_seconds: list[float] = Field(default_factory=list, description="HUD로 감지한 궁극기 사용 시각(초)")
     team: dict | None = Field(default=None, description="팀 판별 단계 결과 (team_identification, roster, 사용한 프레임 시각)")
     overview: dict

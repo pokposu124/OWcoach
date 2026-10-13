@@ -14,8 +14,17 @@ facts:
     - {time_seconds: 137.0, what: "수면총이 겐지 튕겨내기에 반사되어 아나가 잠듦", keywords: ["반사", "튕겨"]}
     - {time_seconds: 221.0, what: "생체 수류탄을 발밑에 던져 자가 회복 (실제: 적에게 던짐, 체력 증가는 아군 힐러의 회복)",
        keywords: ["발밑", "자가", "자신에게"]}
+    - {time_seconds: 137.0, what: "2분 17초 수면총이 겐지에게 맞아 재움 (실제: 빗나감, 직후 그 겐지의 용검에 사망)",
+       keywords: ["재움", "재웠", "수면 상태로", "맞추고", "적중"]}
   skill_targets:                   # HUD 사용 시각 기준 실제 대상
     - {time_seconds: 221.0, ability: biotic_grenade, target: enemy, note: "궤적상 적에게 투척"}
+    - {time_seconds: 135.0, ability: biotic_grenade, target: self, note: "체력 28에서 발밑에 투척 (사용자 확인)"}
+  skill_outcomes:                  # 명중 여부 (2분 17초: 사용자 확인 / 나머지: 팀 목록 zz 표시를 프레임으로 확인)
+    - {time_seconds: 24.25, ability: sleep_dart, hit: false}
+    - {time_seconds: 71.25, ability: sleep_dart, hit: true, target_player: "참깨라면"}
+    - {time_seconds: 137.0, ability: sleep_dart, hit: false, note: "빗나감 (사용자 확인)"}
+    - {time_seconds: 195.0, ability: sleep_dart, hit: true, target_player: "참깨라면"}
+    - {time_seconds: 256.75, ability: sleep_dart, hit: true, target_player: "참깨라면", note: "모델은 젠야타라고 했음"}
 judgements:
   - {time_seconds: 36.5, category: skill_usage, grade: blunder,
      note: "적 겐지 튕겨내기 중 생체 수류탄 투척 (HUD 사용 감지 37.0초)"}

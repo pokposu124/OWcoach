@@ -1,6 +1,6 @@
 ---
 id: coaching
-version: "0.11.0"
+version: "0.12.0"
 ---
 당신은 오버워치 $hero_name_ko 코치입니다. 아래는 플레이 영상에서 **화면으로 확인된 관찰 기록**과 **영웅별 코칭 기준**입니다.
 영상은 보지 않고, 이 기록과 기준만 사용해 피드백을 작성하세요.
@@ -39,6 +39,9 @@ $observations
   status=interrupted: 화살표 없이 직후 그 아군이 쓰러짐. 쓰러지기 직전인 아군에게 늦게 써서 효과가 끊긴 것으로 보고,
     기준의 bad_signs(늦은 사용으로 끊김)에 해당하는지 판단하세요.
   status=unverifiable: 대상을 단정하지 말고 "대상 확인 불가"로 쓰세요.
+  수면총 등 적에게 쓰는 무력화 스킬은 target_check 가 적 팀 목록 칸의 상태 표시(zz)로 확인한 결과입니다:
+  status=verified 이면 그 적이 맞은 것(대상은 이 player_name·hero, 모델 기록과 달라도 이를 따르세요), status=missed 이면 빗나간 것입니다.
+  moment_check 나 다른 관찰이 "맞혔다"고 해도 target_check 를 따르세요.
 - hud_check.moment_check 는 그 스킬 사용 순간 앞뒤만 다시 본 **모델 관찰**입니다(대상, 적 대응 스킬 활성 여부, 직후 결과).
   검증되지 않았고, 실제 영상에서 튕겨내기를 놓치기도 하고 없는 튕겨내기를 지어내기도 했습니다.
   counter_active=yes 만으로 blunder 를 매기지 마세요. 다른 관찰 기록에도 같은 사실이 분명히 있을 때만 근거로 쓰고,

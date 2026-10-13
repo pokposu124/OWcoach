@@ -723,6 +723,23 @@ def test_evaluate_against_user_labels(video, cfg, tmp_path):
         evaluate(run_dir, bad)
 
 
+def test_disable_then_death_withholds_good_grade(cfg):
+    """A sleep dart 1.5 s before the player's death cannot back a 'best' grade (a hit would have stopped
+    the attacker); a blunder on the same evidence is kept."""
+    from owcoach.postprocess import finalize_feedback
+
+    hero = load_hero("ana")
+    rec = _scene_rec("verified")
+    rec["ability_events"][0].update(ability_id="sleep_dart")
+    rec["ability_events"][0]["hud_check"].update(hud_slot="ability_1", death_after_seconds=1.5)
+    for grade, want in (("best", "withheld"), ("blunder", "blunder")):
+        item = _coaching_item(category="skill_usage", grade=grade, criterion_ids=["ana.skill.sleep_dart_usage"])
+        fb, _ = finalize_feedback(CoachingResponse(items=[item], action_items=[]), {"scene-01": rec}, hero, 30.0,
+                                  cfg["output"], lambda t: f"evidence/{t}.jpg", [])
+        assert fb[0].grade == want
+    assert any("명중 여부 미확인" in r for r in fb[0].display_reasons) is False
+
+
 def test_unverifiable_criterion_alone_cannot_grade(cfg):
     """A blunder resting only on the deflect criterion (enemy counter seen by the model, not by code) is
     withheld; the same item with a code-checkable criterion keeps its grade."""
@@ -738,3 +755,33 @@ def test_unverifiable_criterion_alone_cannot_grade(cfg):
     fb, _ = finalize_feedback(CoachingResponse(items=[mixed], action_items=[]), {"scene-01": _scene_rec("verified")},
                               hero, 30.0, cfg["output"], lambda t: f"evidence/{t}.jpg", [])
     assert fb[0].grade == "blunder"
+
+
+def test_sleep_hit_from_enemy_status_icon(tmp_path, cfg):
+    """A white "zz" over enemy slot 5's portrait from 2.5 s: the sleep dart at 2 s hit that enemy;
+    with no icon anywhere it missed."""
+    from owcoach.hud import detect_status_icon
+
+    icfg = cfg["hud_check"]["sleep_icon"]
+    xs = cfg["team"]["portrait_slots"]["left_x"]
+    vf = f"drawbox=x={xs[4] + icfg['dx0'] + 2}:y={icfg['y'] + 1}:w=10:h=7:color=white:t=fill:enable='between(t,2.5,4.5)'"
+    video = tmp_path / "zz.mp4"
+    subprocess.run(["ffmpeg", "-y", "-v", "error", "-f", "lavfi", "-i", "color=c=0x2a6fb8:size=1280x720:rate=30",
+                    "-t", "6", "-vf", vf, "-pix_fmt", "yuv420p", str(video)], check=True)
+    enemies = [{"slot": i + 1, "x": x, "player_name": f"E{i}", "hero": None} for i, x in enumerate(xs)]
+    hit = detect_status_icon(video, 2.0, enemies, icfg)
+    assert hit["status"] == "verified" and hit["slot"] == 5
+    assert detect_status_icon(video, 0.8, enemies, {**icfg, "window_seconds": 1.0})["status"] == "missed"
+
+
+def test_missed_sleep_withholds_good_grade(cfg):
+    from owcoach.postprocess import finalize_feedback
+
+    hero = load_hero("ana")
+    rec = _scene_rec("verified")
+    rec["ability_events"][0].update(ability_id="sleep_dart")
+    rec["ability_events"][0]["hud_check"].update(hud_slot="ability_1", target_check={"status": "missed", "note": "zz 없음"})
+    item = _coaching_item(category="skill_usage", grade="excellent", criterion_ids=["ana.skill.sleep_dart_usage"])
+    fb, _ = finalize_feedback(CoachingResponse(items=[item], action_items=[]), {"scene-01": rec}, hero, 30.0,
+                              cfg["output"], lambda t: f"evidence/{t}.jpg", [])
+    assert fb[0].grade == "withheld" and any("빗나감" in r for r in fb[0].display_reasons)

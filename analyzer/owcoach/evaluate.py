@@ -19,6 +19,17 @@ def _near(a: float, b: float, tol: float) -> bool:
     return abs(a - b) <= tol
 
 
+def _moment(run_dir: Path, fb_checks: list, ability: str, t: float) -> dict | None:
+    """Moment check of the use of `ability` near t: from a feedback item, else from the stored stage."""
+    mc = next((c.moment_check for c in fb_checks if c.ability_id == ability and c.hud_use_time_seconds is not None
+               and _near(c.hud_use_time_seconds, t, 1.5) and c.moment_check), None)
+    if mc is None:  # the use may not be in any feedback; its moment check is still stored as a stage
+        for path in sorted((Path(run_dir) / "stages").glob(f"moment-{ability}-*.json")):
+            if _near(int(path.stem.rsplit("-", 1)[1]) / 100, t, 1.5):
+                return json.loads(path.read_text("utf-8"))["output"]
+    return mc
+
+
 def evaluate(run_dir: Path, labels_path: Path) -> dict:
     result = AnalysisResult.model_validate_json((Path(run_dir) / "result.json").read_text("utf-8"))
     labels = load_yaml(Path(labels_path))
@@ -70,13 +81,7 @@ def evaluate(run_dir: Path, labels_path: Path) -> dict:
     # who / where a skill was aimed at, as the moment check saw it
     for st in facts.get("skill_targets", []):
         t = st["time_seconds"]
-        mc = next((c.moment_check for c in fb_checks if c.ability_id == st["ability"] and c.hud_use_time_seconds is not None
-                   and _near(c.hud_use_time_seconds, t, 1.5) and c.moment_check), None)
-        if mc is None:  # the use may not be in any feedback; its moment check is still stored as a stage
-            for path in sorted((Path(run_dir) / "stages").glob(f"moment-{st['ability']}-*.json")):
-                if _near(int(path.stem.rsplit("-", 1)[1]) / 100, t, 1.5):
-                    mc = json.loads(path.read_text("utf-8"))["output"]
-                    break
+        mc = _moment(run_dir, fb_checks, st["ability"], t)
         if mc is None:
             check("스킬 대상", None, f"{fmt_time(t)} {st['ability']} — 결과에 해당 피드백/순간 확인 없음")
         else:
@@ -84,6 +89,29 @@ def evaluate(run_dir: Path, labels_path: Path) -> dict:
             self_aimed = any(k in said for k in ("발밑", "자신", "자기", "바닥"))
             check("스킬 대상", self_aimed == (st["target"] == "self"),
                   f"{fmt_time(t)} 정답 {st['target']} / 순간 확인 '{said}'")
+
+    # hit / miss and target as the code saw it (team-list status icon)
+    for so in facts.get("skill_outcomes", []):
+        t = so["time_seconds"]
+        use = next((u for u in result.skill_uses if u["ability_id"] == so["ability"] and _near(u["time_seconds"], t, 1.5)), None)
+        tc = (use or {}).get("target_check") or {}
+        if not tc:
+            check("스킬 명중(코드)", None, f"{fmt_time(t)} {so['ability']} — 코드 판별 없음")
+        else:
+            ok = (tc.get("status") == "verified") == so["hit"] and (not so.get("target_player") or tc.get("player_name") == so["target_player"])
+            check("스킬 명중(코드)", ok, f"{fmt_time(t)} 정답 {'명중 ' + so.get('target_player', '') if so['hit'] else '빗나감'}"
+                  f" / 코드 {tc.get('status')} {tc.get('player_name') or ''}")
+
+    # hit / miss, as the moment check (model) reported the result
+    for so in facts.get("skill_outcomes", []):
+        t = so["time_seconds"]
+        mc = _moment(run_dir, fb_checks, so["ability"], t)
+        if mc is None:
+            check("스킬 명중(모델)", None, f"{fmt_time(t)} {so['ability']} — 순간 확인 없음")
+            continue
+        said = mc.get("result", "")
+        missed = any(k in said for k in ("빗나", "맞지 않", "실패"))
+        check("스킬 명중(모델)", missed == (not so["hit"]), f"{fmt_time(t)} 정답 {'명중' if so['hit'] else '빗나감'} / 순간 확인 '{said}'")
 
     # the player's own grades for specific plays
     for j in labels.get("judgements", []):

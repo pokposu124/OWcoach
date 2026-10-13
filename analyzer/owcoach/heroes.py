@@ -42,6 +42,8 @@ class Ability(BaseModel):
     hud_slot: str | None = None
     # 대상 판별 방식 (config hud_check 의 키, 예: buff_arrow). 없으면 대상을 판별하지 않음
     target_marker: str | None = None
+    # 맞으면 대상이 몇 초간 행동하지 못하는 스킬(수면총 등). 사용 직후 플레이어가 죽었다면 명중 주장을 의심한다
+    disables_target: bool = False
 
 
 class NumericFact(BaseModel):

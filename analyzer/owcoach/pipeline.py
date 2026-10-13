@@ -30,6 +30,7 @@ from .config import ANALYZER_ROOT, fingerprint
 from .hud import (
     check_use_claim,
     detect_buff_target,
+    detect_status_icon,
     min_run_for,
     sample_hud,
     scan_dead_periods,
@@ -334,6 +335,7 @@ class Pipeline:
     def _hud_check_scene(self, video: Path, rec: dict, hcfg: dict) -> None:
         slots = {a.id: a.hud_slot for a in self.hero.abilities}
         markers = {a.id: a.target_marker for a in self.hero.abilities}
+        by_id_all = {a.id: a for a in self.hero.abilities}
         events = rec["ability_events"]
         if not hcfg.get("enabled"):
             for e in events:
@@ -354,10 +356,20 @@ class Pipeline:
                 e["hud_check"] = {"hud_slot": slot, **check_use_claim(e["time_seconds"], slot, samples, hcfg)}
                 marker = markers.get(e["ability_id"])
                 if marker and e["hud_check"]["status"] == "verified" and marker in hcfg:
-                    tc = detect_buff_target(video, e["hud_check"]["hud_use_time_seconds"], self._ally_slots(), hcfg[marker])
+                    tc = self._target_check(video, e["hud_check"]["hud_use_time_seconds"], hcfg[marker])
                     if tc["status"] in ("verified", "interrupted") and e.get("target") and e["target"] != tc["player_name"]:
                         tc["note"] += f"; 모델이 기록한 대상({e['target']})과 다름"
                     e["hud_check"]["target_check"] = tc
+        # a disabling skill (sleep dart) followed at once by the player's death: a "hit" claim is doubtful
+        window = float(self.cfg["output"].get("disable_then_death_seconds", 0) or 0)
+        for e in events:
+            a, hc = by_id_all.get(e["ability_id"]), e.get("hud_check") or {}
+            x = hc.get("hud_use_time_seconds")
+            if a and a.disables_target and hc.get("status") == "verified" and x is not None and window:
+                died = [d["time_seconds"] for d in self._deaths if 0 <= d["time_seconds"] - x <= window]
+                if died:
+                    hc["death_after_seconds"] = round(died[0] - x, 2)
+
         # skill / ultimate uses seen on the HUD in this window but not (correctly) recorded by the model
         by_id = {a.id: a for a in self.hero.abilities}
         claimed = {(e["ability_id"], e["hud_check"].get("hud_use_time_seconds")) for e in events
@@ -369,7 +381,7 @@ class Pipeline:
             hc = {"status": "verified", "hud_slot": a.hud_slot, "hud_use_time_seconds": x,
                   "note": f"HUD: {fmt_time(x)}에 준비 → 사용됨 전환 확인 (모델 기록 없음, 코드가 추가)"}
             if a.target_marker and a.target_marker in hcfg:
-                hc["target_check"] = detect_buff_target(video, x, self._ally_slots(), hcfg[a.target_marker])
+                hc["target_check"] = self._target_check(video, x, hcfg[a.target_marker])
             events.append({"time_seconds": x, "ability_id": a.id, "target": "", "source": "hud",
                            "evidence": "HUD에서 감지", "hud_check": hc})
 
@@ -433,7 +445,28 @@ class Pipeline:
             uses += [{"ability_id": ult.id, "time_seconds": x} for x in self._hud_ult_uses if start <= x <= end]
         return sorted(uses, key=lambda u: u["time_seconds"])
 
-    def _ally_slots(self) -> list[dict]:
+    @staticmethod
+    def _skill_uses(scene_records: dict) -> list[dict]:
+        seen, out = set(), []
+        for rec in scene_records.values():
+            for e in rec["ability_events"]:
+                hc = e.get("hud_check") or {}
+                x = hc.get("hud_use_time_seconds")
+                if hc.get("status") != "verified" or (e["ability_id"], x) in seen:
+                    continue
+                seen.add((e["ability_id"], x))
+                out.append({"time_seconds": x, "ability_id": e["ability_id"], "source": e.get("source", "model"),
+                            "target_check": hc.get("target_check"), "moment_check": hc.get("moment_check"),
+                            "death_after_seconds": hc.get("death_after_seconds")})
+        return sorted(out, key=lambda u: u["time_seconds"])
+
+    def _target_check(self, video: Path, use_time: float, mcfg: dict) -> dict:
+        """Code-side target check from the team list: buff arrow on an ally, status icon on an enemy."""
+        if mcfg.get("side") == "enemy":
+            return detect_status_icon(video, use_time, self._ally_slots(side="enemy"), mcfg)
+        return detect_buff_target(video, use_time, self._ally_slots(), mcfg)
+
+    def _ally_slots(self, side: str = "ally") -> list[dict]:
         """Team-list slots of the player's teammates (player excluded) with portrait x positions."""
         team = self._team_record
         tcfg = self.cfg.get("team") or {}
@@ -443,7 +476,7 @@ class Pipeline:
         xs = ps["left_x"] + ps["right_x"]
         me = team["team_identification"]["player_name"]
         return [{"slot": r["slot"], "x": xs[r["slot"] - 1], "player_name": r["player_name"], "hero": r.get("hero")}
-                for r in team["roster"] if r["team"] == "ally" and r["player_name"] != me and 1 <= r["slot"] <= len(xs)]
+                for r in team["roster"] if r["team"] == side and r["player_name"] != me and 1 <= r["slot"] <= len(xs)]
 
     # ---------------------------------------------------------------- run
 
@@ -705,6 +738,7 @@ class Pipeline:
             hero=hero.hero_id, hero_display_name=hero.display_name_ko,
             game_patch_version=game_patch, criteria_patch_version=hero.patch_version, team=team_record,
             hud_ultimate_uses_seconds=self._hud_ult_uses, player_deaths=self._deaths,
+            skill_uses=self._skill_uses(scene_records),
             video=VideoInfo(file_name=video.name, sha256=sha, duration_seconds=duration, width=info.width,
                             height=info.height, fps=info.fps, codec=info.codec),
             overview=overview.model_dump(),

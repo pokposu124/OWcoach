@@ -122,6 +122,7 @@ hud_check:
   # min_increase 이상 오른 프레임을 세어, min_frames 이상이고 2위의 2배 이상인 칸을 대상으로 본다.
   # 실측(136초 나노 → 목포산아이): 대상 칸 12프레임 중 9, 다른 칸 0~1.
   buff_arrow:
+    side: ally
     fps: 4.0
     reference_resolution: [1280, 720]
     y: 43
@@ -140,6 +141,22 @@ hud_check:
     death_w: 30
     death_hold_seconds: 1.0        # 창 마지막 이 시간 동안 어두운 상태 유지
     death_min_drop: 0.12
+  # 수면총 명중: 맞은 적의 팀 목록 칸 초상화 오른쪽 위에 흰 "zz" 표시가 몇 초간 뜬다(사용자 확인).
+  # 실측(두 번째 아나 영상 수면총 5회): 명중 3회 해당 칸 2~7프레임·다른 칸 0, 빗나감 2회 모든 칸 0. 화면 확인과 5/5 일치.
+  sleep_icon:
+    side: enemy
+    icon_name: "zz 표시"
+    fps: 8.0
+    reference_resolution: [1280, 720]
+    y: 48
+    h: 10
+    dx0: 16                        # 칸의 초상화 x(team.portrait_slots) 기준 영역
+    dx1: 32
+    white_threshold: 200
+    baseline_seconds: 1.0
+    window_seconds: 3.0
+    min_increase: 0.08
+    min_frames: 2
   regions:
     ultimate: {shape: circle, cx: 640, cy: 620, r: 22}
     ability_1: {shape: rect, x0: 977, y0: 614, x1: 1011, y1: 648}
@@ -160,6 +177,9 @@ output:
   # 이 기준만으로 내린 등급은 '판단 보류'로 바꾼다: 근거(적 대응 스킬 활성)를 코드로 확인할 수 없고, 모델 판단이
   # 실제 영상에서 두 번 다 틀렸다(두 번째 아나 영상: 36초 튕겨내기 놓침, 2분 17초 없는 튕겨내기 반사를 지어냄).
   unverifiable_criteria: [common.skill.no_skills_into_deflect]
+  # 무력화 스킬(수면총 등)을 쓴 뒤 이 시간 안에 플레이어가 죽으면, 그 사용을 근거로 한 최선·탁월 판정은 보류한다
+  # (명중했다면 대상이 행동하지 못함). 실측: 2분 17초 수면총을 '명중'으로 판단했으나 빗나갔고 1.5초 뒤 사망.
+  disable_then_death_seconds: 3.0
   # 같은 카테고리에서 시간 구간이 이 비율 이상 겹치면 중복으로 간주
   dedup_overlap_ratio: 0.5
   # 모델이 제시한 시간이 분석한 구간 밖으로 벗어나도 허용하는 오차(초)

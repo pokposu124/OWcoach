@@ -26,6 +26,9 @@ abilities:
     name_en: Sleep Dart
     hud_hint: "HUD 하단 스킬 아이콘. 사용 후 쿨다운 숫자가 표시됨"
     hud_slot: ability_1
+    disables_target: true
+    # 명중한 적의 팀 목록 칸에 zz 표시 (config hud_check.sleep_icon)
+    target_marker: sleep_icon
   - id: biotic_grenade
     name_ko: 생체 수류탄
     name_en: Biotic Grenade
@@ -106,6 +109,8 @@ criteria:
     description: >
       수면총을 위협(본인에게 근접한 적, 돌진하는 적, 궁극기 사용 중인 적)에 대응해 쓰는지,
       위협이 없는 상황에서 낭비했는지 본다. 명중 여부는 화면에서 확인될 때만 판단한다.
+      맞은 적은 몇 초간 쓰러져 행동하지 못한다. 쏜 직후 그 적이 공격하거나 움직였다면(예: 그 적에게 바로 처치당함)
+      빗나간 것으로 본다 (사용자 확인: 두 번째 아나 영상 2분 17초, 용검 겐지에게 빗나간 뒤 사망).
     good_signs:
       - "본인에게 달려드는 적을 재우고 이탈하거나 처치로 연결"
     bad_signs:
