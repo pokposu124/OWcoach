@@ -3,6 +3,7 @@
   python -m owcoach analyze VIDEO --hero ana [--provider gemini|mock] [--run-id ID] [--rerun team,overview,detail,coaching]
   python -m owcoach probe VIDEO
   python -m owcoach report RUN_DIR
+  python -m owcoach export RUN_DIR OUT_DIR --video VIDEO   # 웹 호스팅용 정적 결과 화면
   python -m owcoach heroes
   python -m owcoach schema [--out FILE]
 """
@@ -79,6 +80,13 @@ def cmd_report(args) -> int:
     return 0
 
 
+def cmd_export(args) -> int:
+    from .report import export_site
+
+    print(export_site(Path(args.run_dir), Path(args.out_dir), Path(args.video), args.height, args.kbps))
+    return 0
+
+
 def cmd_heroes(args) -> int:
     for h in available_heroes():
         p = load_hero(h)
@@ -117,6 +125,14 @@ def main(argv: list[str] | None = None) -> int:
     r = sub.add_parser("report", help="검수용 HTML 리포트 생성")
     r.add_argument("run_dir")
     r.set_defaults(fn=cmd_report)
+
+    x = sub.add_parser("export", help="웹 호스팅용 정적 결과 화면(index.html + 축소 영상 + 근거 프레임)")
+    x.add_argument("run_dir")
+    x.add_argument("out_dir")
+    x.add_argument("--video", required=True, help="원본 영상 (축소본을 만들어 함께 저장)")
+    x.add_argument("--height", type=int, default=480)
+    x.add_argument("--kbps", type=int, default=360)
+    x.set_defaults(fn=cmd_export)
 
     sub.add_parser("heroes", help="지원 영웅 목록").set_defaults(fn=cmd_heroes)
 

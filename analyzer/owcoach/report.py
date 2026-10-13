@@ -241,3 +241,34 @@ def write_report(run_dir: Path) -> Path:
     path = run_dir / "report.html"
     path.write_text(build_report_html(result, video_src), "utf-8")
     return path
+
+
+def export_site(run_dir: Path, out_dir: Path, video: Path, video_height: int = 480, video_kbps: int = 360) -> Path:
+    """Static, self-contained copy of the result view for web hosting (e.g. GitHub Pages).
+
+    Writes out_dir/index.html, out_dir/evidence/*.jpg and out_dir/media/web.mp4, a smaller two-pass
+    re-encode of the source video (same timeline) so the page stays light enough to host.
+    """
+    import shutil
+    import subprocess
+
+    from .media import _require
+
+    run_dir, out_dir = Path(run_dir), Path(out_dir)
+    result = AnalysisResult.model_validate_json((run_dir / "result.json").read_text("utf-8"))
+    (out_dir / "evidence").mkdir(parents=True, exist_ok=True)
+    (out_dir / "media").mkdir(parents=True, exist_ok=True)
+    for old in (out_dir / "evidence").glob("*.jpg"):
+        old.unlink()
+    for f in result.feedback:
+        for fr in f.evidence_frames:
+            shutil.copy2(run_dir / fr.path, out_dir / fr.path)
+    web = out_dir / "media" / "web.mp4"
+    common = ["-i", str(video), "-vf", f"scale=-2:{video_height}", "-c:v", "libx264", "-preset", "medium",
+              "-b:v", f"{video_kbps}k", "-an", "-passlogfile", str(out_dir / "media" / "pass")]
+    subprocess.run([_require("ffmpeg"), "-v", "error", "-y", *common, "-pass", "1", "-f", "mp4", "/dev/null"], check=True)
+    subprocess.run([_require("ffmpeg"), "-v", "error", "-y", *common, "-pass", "2", "-movflags", "+faststart", str(web)], check=True)
+    for log in (out_dir / "media").glob("pass*"):
+        log.unlink()
+    (out_dir / "index.html").write_text(build_report_html(result, "media/web.mp4"), "utf-8")
+    return out_dir / "index.html"

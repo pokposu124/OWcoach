@@ -1,0 +1,181 @@
+<!doctype html><html lang=ko><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>아나 플레이 분석</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;700&family=IBM+Plex+Mono:wght@500;700&display=swap"><style>
+/* layout: two panes, video 3/5 (sticky) | numbered feedback 2/5; stacks under 900px */
+:root{--bg:#f3f4f7;--panel:#ffffff;--fg:#151a22;--muted:#5f6a78;--line:#dde1e8;--accent:#2457c5;
+--excellent:#0e7c86;--excellent-bg:#dff3f4;--best:#257a3e;--best-bg:#e3f2e7;--blunder:#b4232a;--blunder-bg:#fbe5e6;
+--hold:#6b6f78;--hold-bg:#eceef2;--warn:#8a5a00;--warn-bg:#fbefd6;
+--sans:"IBM Plex Sans KR",system-ui,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;--mono:"IBM Plex Mono",ui-monospace,monospace}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1218;--panel:#171c24;--fg:#e5e9f0;--muted:#97a2b0;--line:#2a313c;--accent:#7ea6f2;
+--excellent:#5fd0d8;--excellent-bg:#123336;--best:#6fd08c;--best-bg:#16301f;--blunder:#f4878b;--blunder-bg:#3a1a1c;
+--hold:#a3a9b3;--hold-bg:#242a33;--warn:#e9b860;--warn-bg:#352a12;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0f1218;--panel:#171c24;--fg:#e5e9f0;--muted:#97a2b0;--line:#2a313c;--accent:#7ea6f2;
+--excellent:#5fd0d8;--excellent-bg:#123336;--best:#6fd08c;--best-bg:#16301f;--blunder:#f4878b;--blunder-bg:#3a1a1c;
+--hold:#a3a9b3;--hold-bg:#242a33;--warn:#e9b860;--warn-bg:#352a12;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:14px/1.6 var(--sans);margin:0}
+.app{display:grid;grid-template-columns:minmax(0,3fr) minmax(0,2fr);gap:20px;padding-inline:16px;padding-block:16px;max-width:1600px;margin:0 auto}
+.stage{position:sticky;top:env(safe-area-inset-top,0px);align-self:start;display:grid;gap:10px;min-width:0}
+video{width:100%;aspect-ratio:16/9;background:#000;border-radius:10px;display:block}
+.title{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 12px}
+.title h1{font-size:1.25rem;margin:0;text-wrap:balance}
+.muted{color:var(--muted)} small.muted{font-size:.8rem}
+.notice{background:var(--warn-bg);color:var(--warn);border-radius:8px;padding:8px 12px;margin:0;font-size:.88rem}
+.notice.mock{background:var(--blunder-bg);color:var(--blunder);font-weight:700}
+.teams{display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:.85rem}
+.teams ul{list-style:none;margin:0;padding:0;display:grid;gap:2px}
+.teams li{display:flex;justify-content:space-between;gap:8px;padding:2px 8px;border-left:3px solid var(--line);min-width:0}
+.teams li span{color:var(--muted);overflow-wrap:anywhere;text-align:right}
+.teams .ally li{border-left-color:var(--blunder)} .teams .enemy li{border-left-color:var(--accent)}
+.teams h2{font-size:.75rem;letter-spacing:.06em;color:var(--muted);margin:0 0 4px}
+.feed{display:grid;gap:12px;align-content:start;min-width:0}
+.summary{display:flex;flex-wrap:wrap;gap:6px 14px;margin:0;color:var(--muted);font-size:.88rem}
+.summary b{color:var(--fg)}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 14px;display:grid;gap:8px;min-width:0;scroll-margin-top:12px}
+.card.active{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.card header{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px}
+.num{width:2.1em;height:2.1em;border-radius:50%;border:none;background:var(--accent);color:var(--panel);font:700 .95rem var(--mono);cursor:pointer;flex:0 0 auto}
+.num:focus-visible,.thumb:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.time{font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:.85rem;color:var(--accent)}
+.chip{font-size:.75rem;font-weight:700;padding:1px 8px;border-radius:999px;white-space:nowrap}
+.cat{background:var(--hold-bg);color:var(--fg)}
+.g-excellent{background:var(--excellent-bg);color:var(--excellent)} .g-best{background:var(--best-bg);color:var(--best)}
+.g-blunder{background:var(--blunder-bg);color:var(--blunder)} .g-withheld{background:var(--hold-bg);color:var(--hold)}
+.mode{margin-left:auto} .m-assertive{background:var(--best-bg);color:var(--best)} .m-tentative{background:var(--warn-bg);color:var(--warn)}
+.reasons{margin:0;font-size:.8rem;color:var(--warn)}
+dl{display:grid;grid-template-columns:3em minmax(0,1fr);gap:3px 10px;margin:0} dt{color:var(--muted);font-size:.82rem;padding-top:1px} dd{margin:0}
+ul.hud{list-style:none;margin:0;padding:0;display:grid;gap:3px;font-size:.84rem}
+.h-verified{color:var(--best)} .h-contradicted{color:var(--blunder)} .h-unverifiable,.h-not_checked{color:var(--hold)}
+.frames{display:flex;gap:6px;overflow-x:auto}
+.thumb{border:none;padding:0;background:none;cursor:pointer;flex:0 0 auto;text-align:left;color:var(--muted);font:.72rem var(--mono)}
+.thumb img{width:132px;max-width:100%;border-radius:5px;display:block}
+details{font-size:.85rem} summary{cursor:pointer;color:var(--muted)}
+fieldset{border:1px dashed var(--line);border-radius:8px;display:flex;flex-wrap:wrap;gap:6px 14px;margin:6px 0 0}
+textarea{width:100%;min-height:44px;font:inherit}
+.meta{display:grid;gap:6px}
+table{border-collapse:collapse;font-size:.8rem} td,th{border:1px solid var(--line);padding:2px 6px;text-align:left}
+.scroll{overflow-x:auto}
+@media (max-width:900px){.app{grid-template-columns:minmax(0,1fr)} .stage{z-index:2;background:var(--bg);padding-bottom:6px}
+  .stage .teams,.stage .notice{display:none}}
+@media (max-width:480px){.teams{grid-template-columns:1fr} dl{grid-template-columns:minmax(0,1fr)}}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+</style></head><body>
+<div class=app>
+<section class=stage>
+  <video id=v src="media/web.mp4" controls preload=metadata playsinline></video>
+  <div class=title><h1>아나 플레이 분석</h1>
+    <small class=muted>ana.mp4 · 4분 47초 · 실제 AI 분석 · gemini-3.6-flash</small></div>
+  <p class=notice>코칭 기준이 코치 검수 전 초안입니다. 등급과 판단은 참고용입니다.</p><div class=teams><section class=ally><h2>아군</h2><ul><li><b>아나 (나)</b><span>BERNAR</span></li><li><b>독트린</b><span>MMG</span></li><li><b>파라</b><span>목포산아이</span></li><li><b>솔저: 76</b><span>결식아동</span></li><li><b>시그마</b><span>인도양쭈꾸미</span></li></ul></section><section class=enemy><h2>적</h2><ul><li><b>주노</b><span>서팔광</span></li><li><b>라이프위버</b><span>블켄</span></li><li><b>D.Va</b><span>따까리</span></li><li><b>소전</b><span>HWIWHA</span></li><li><b>시에라</b><span>전도리</span></li></ul></section></div>
+</section>
+<section class=feed aria-label="피드백">
+  <p class=summary><span>스킬 사용 <b>1</b></span><span>포지셔닝 <b>1</b></span><span>궁극기 사용 <b>2</b></span><span>최선 <b>3</b></span><span>블런더 <b>1</b></span></p>
+  
+<article class=card id="fb-1" data-start="66.5" data-end="71.0">
+  <header><button class=num type=button data-seek="66.5" aria-label="1번 피드백 1분 6초로 이동">1</button>
+    <span class=time>1분 6초 ~ 1분 11초</span>
+    <span class="chip cat">스킬 사용</span>
+    <span class="chip g-best">최선</span><span class="chip mode m-tentative">참고·보류</span></header>
+  <p class=reasons>코치 검수되지 않은 기준</p>
+  <dl><dt>관찰</dt><dd>1분 7초에 전방 교전 지역으로 생체 수류탄을 투척함.</dd><dt>판단</dt><dd>교전이 일어나는 핵심 지역에 생체 수류탄을 투척하여 효과적으로 스킬을 활용함.</dd><dt>제안</dt><dd>아군과 적이 밀집하여 교전하는 타이밍에 맞춰 생체 수류탄을 적극적으로 사용하세요.</dd>
+  </dl>
+  <ul class=hud><li class='h-verified'>HUD 확인 · 생체 수류탄 1분 7초</li></ul>
+  <div class=frames><button class=thumb data-seek="66.5" type=button><img src="evidence/frame_000066500ms.jpg" loading="lazy" alt="1분 6초 화면">1분 6초</button><button class=thumb data-seek="67.0" type=button><img src="evidence/frame_000067000ms.jpg" loading="lazy" alt="1분 7초 화면">1분 7초</button></div>
+  <details><summary>코치 검수 · 적용 기준 ana.skill.biotic_grenade_usage (draft)</summary>
+  <fieldset class=review data-id="fb-01">
+    <label>관찰 사실 <select name=fact><option value="">-</option><option>정확</option><option>일부 틀림</option><option>틀림</option><option>확인 불가</option></select></label>
+    <label>판단 <select name=assessment><option value="">-</option><option>동의</option><option>부분 동의</option><option>반대</option></select></label>
+    <label>맞는 등급 <select name=grade><option value="">-</option><option value=excellent>탁월</option><option value=best>최선</option><option value=blunder>블런더</option><option value=withheld>판단 보류</option></select></label>
+    <label>시간 <select name=timing><option value="">-</option><option>정확</option><option>3초 이내</option><option>틀림</option></select></label>
+    <label>기준 수정 필요 <input type=checkbox name=criterion_change></label>
+    <textarea name=comment placeholder="코멘트 (오인식, 놓친 맥락, 기준 수정안 등)"></textarea>
+  </fieldset></details>
+</article>
+<article class=card id="fb-2" data-start="132.75" data-end="141.0">
+  <header><button class=num type=button data-seek="132.75" aria-label="2번 피드백 2분 13초로 이동">2</button>
+    <span class=time>2분 13초 ~ 2분 21초</span>
+    <span class="chip cat">궁극기 사용</span>
+    <span class="chip g-best">최선</span><span class="chip mode m-tentative">참고·보류</span></header>
+  <p class=reasons>코치 검수되지 않은 기준</p>
+  <dl><dt>관찰</dt><dd>2분 12초에 궁극기 게이지 100%를 달성한 뒤 2분 16초에 화면 안 교전 중인 아군 목포산아이(파라)에게 나노 강화제를 투여함.</dd><dt>판단</dt><dd>궁극기 충전 직후 교전 시작 타이밍에 맞춰 아군에게 나노 강화제를 적절히 사용하여 진격 교전을 유효하게 지원함.</dd><dt>제안</dt><dd>궁극기가 준비되었을 때 지금처럼 교전 중인 아군의 진입 타이밍에 맞춰 신속하게 나노 강화제를 부여하세요.</dd>
+  </dl>
+  <ul class=hud><li class='h-verified'>HUD 확인 · 나노 강화제 2분 16초 → 대상 목포산아이(파라)</li></ul>
+  <div class=frames><button class=thumb data-seek="132.75" type=button><img src="evidence/frame_000132750ms.jpg" loading="lazy" alt="2분 13초 화면">2분 13초</button><button class=thumb data-seek="135.5" type=button><img src="evidence/frame_000135500ms.jpg" loading="lazy" alt="2분 16초 화면">2분 16초</button><button class=thumb data-seek="136.0" type=button><img src="evidence/frame_000136000ms.jpg" loading="lazy" alt="2분 16초 화면">2분 16초</button></div>
+  <details><summary>코치 검수 · 적용 기준 ana.ultimate.nano_boost_usage (draft)</summary>
+  <fieldset class=review data-id="fb-02">
+    <label>관찰 사실 <select name=fact><option value="">-</option><option>정확</option><option>일부 틀림</option><option>틀림</option><option>확인 불가</option></select></label>
+    <label>판단 <select name=assessment><option value="">-</option><option>동의</option><option>부분 동의</option><option>반대</option></select></label>
+    <label>맞는 등급 <select name=grade><option value="">-</option><option value=excellent>탁월</option><option value=best>최선</option><option value=blunder>블런더</option><option value=withheld>판단 보류</option></select></label>
+    <label>시간 <select name=timing><option value="">-</option><option>정확</option><option>3초 이내</option><option>틀림</option></select></label>
+    <label>기준 수정 필요 <input type=checkbox name=criterion_change></label>
+    <textarea name=comment placeholder="코멘트 (오인식, 놓친 맥락, 기준 수정안 등)"></textarea>
+  </fieldset></details>
+</article>
+<article class=card id="fb-3" data-start="181.0" data-end="198.0">
+  <header><button class=num type=button data-seek="181.0" aria-label="3번 피드백 3분 1초로 이동">3</button>
+    <span class=time>3분 1초 ~ 3분 18초</span>
+    <span class="chip cat">포지셔닝</span>
+    <span class="chip g-best">최선</span><span class="chip mode m-tentative">참고·보류</span></header>
+  <p class=reasons>코치 검수되지 않은 기준 · 포지셔닝은(는) 코드로 확인할 수 없어 보류</p>
+  <dl><dt>관찰</dt><dd>3분 1초 평지 화물 경로에서 우측 건물 계단을 통해 고지대로 이동한 후 3분 9초에 기둥 엄폐물 옆에서 전방 사격 시야를 확보함.</dd><dt>판단</dt><dd>평지 개활지에 머무르지 않고 엄폐물이 확보되는 고지대로 위치를 옮겨 안전하게 아군 지원 시야를 확보함.</dd><dt>제안</dt><dd>교전 위치를 잡을 때는 엄폐물 이용이 용이한 고지대나 모서리 근처 포지션을 계속 유지하세요.</dd>
+  </dl>
+  <ul class=hud><li class=muted>모델 관찰 · 위치·엄폐는 코드로 확인하지 않음</li></ul>
+  <div class=frames><button class=thumb data-seek="181.0" type=button><img src="evidence/frame_000181000ms.jpg" loading="lazy" alt="3분 1초 화면">3분 1초</button><button class=thumb data-seek="189.0" type=button><img src="evidence/frame_000189000ms.jpg" loading="lazy" alt="3분 9초 화면">3분 9초</button><button class=thumb data-seek="194.0" type=button><img src="evidence/frame_000194000ms.jpg" loading="lazy" alt="3분 14초 화면">3분 14초</button></div>
+  <details><summary>코치 검수 · 적용 기준 ana.positioning.cover_access (draft)</summary>
+  <fieldset class=review data-id="fb-03">
+    <label>관찰 사실 <select name=fact><option value="">-</option><option>정확</option><option>일부 틀림</option><option>틀림</option><option>확인 불가</option></select></label>
+    <label>판단 <select name=assessment><option value="">-</option><option>동의</option><option>부분 동의</option><option>반대</option></select></label>
+    <label>맞는 등급 <select name=grade><option value="">-</option><option value=excellent>탁월</option><option value=best>최선</option><option value=blunder>블런더</option><option value=withheld>판단 보류</option></select></label>
+    <label>시간 <select name=timing><option value="">-</option><option>정확</option><option>3초 이내</option><option>틀림</option></select></label>
+    <label>기준 수정 필요 <input type=checkbox name=criterion_change></label>
+    <textarea name=comment placeholder="코멘트 (오인식, 놓친 맥락, 기준 수정안 등)"></textarea>
+  </fieldset></details>
+</article>
+<article class=card id="fb-4" data-start="239.5" data-end="250.5">
+  <header><button class=num type=button data-seek="239.5" aria-label="4번 피드백 4분 0초로 이동">4</button>
+    <span class=time>4분 0초 ~ 4분 10초</span>
+    <span class="chip cat">궁극기 사용</span>
+    <span class="chip g-blunder">블런더</span><span class="chip mode m-tentative">참고·보류</span></header>
+  <p class=reasons>코치 검수되지 않은 기준</p>
+  <dl><dt>관찰</dt><dd>4분 10초에 궁극기 게이지 100% 상태에서 체력이 저하된 아군 결식아동(솔저: 76)에게 나노 강화제를 사용했으나, 대상이 즉시 쓰러져 궁극기 효과가 끊어짐.</dd><dt>판단</dt><dd>이미 쓰러지기 직전인 아군에게 나노 강화제를 늦게 투여하여 효과를 살리지 못하고 궁극기를 소모함.</dd><dt>제안</dt><dd>아군의 체력이 급감하여 쓰러지기 전에 미리 나노 강화제를 주거나, 타이밍이 늦었다면 해당 아군을 포기하고 궁극기를 아끼거나 다른 아군에게 사용하세요.</dd>
+  </dl>
+  <ul class=hud><li class='h-verified'>HUD 확인 · 나노 강화제 4분 10초 → 대상 결식아동(솔저: 76) 쓰러져 끊김(추정)</li></ul>
+  <div class=frames><button class=thumb data-seek="239.5" type=button><img src="evidence/frame_000239500ms.jpg" loading="lazy" alt="4분 0초 화면">4분 0초</button><button class=thumb data-seek="249.0" type=button><img src="evidence/frame_000249000ms.jpg" loading="lazy" alt="4분 9초 화면">4분 9초</button><button class=thumb data-seek="249.5" type=button><img src="evidence/frame_000249500ms.jpg" loading="lazy" alt="4분 10초 화면">4분 10초</button></div>
+  <details><summary>코치 검수 · 적용 기준 ana.ultimate.nano_boost_usage (draft)</summary>
+  <fieldset class=review data-id="fb-04">
+    <label>관찰 사실 <select name=fact><option value="">-</option><option>정확</option><option>일부 틀림</option><option>틀림</option><option>확인 불가</option></select></label>
+    <label>판단 <select name=assessment><option value="">-</option><option>동의</option><option>부분 동의</option><option>반대</option></select></label>
+    <label>맞는 등급 <select name=grade><option value="">-</option><option value=excellent>탁월</option><option value=best>최선</option><option value=blunder>블런더</option><option value=withheld>판단 보류</option></select></label>
+    <label>시간 <select name=timing><option value="">-</option><option>정확</option><option>3초 이내</option><option>틀림</option></select></label>
+    <label>기준 수정 필요 <input type=checkbox name=criterion_change></label>
+    <textarea name=comment placeholder="코멘트 (오인식, 놓친 맥락, 기준 수정안 등)"></textarea>
+  </fieldset></details>
+</article>
+  <details><summary>다음 경기 과제</summary><ul><li class=muted>없음 (단정 피드백이 있어야 과제가 만들어집니다)</li></ul></details>
+  <details class=meta><summary>검수 · 기록</summary>
+    <textarea id=missed placeholder="AI가 놓친 중요한 장면: 시간 + 설명"></textarea><p><button id=save type=button>검수 결과 저장 (coach_review.json)</button></p>
+    <details><summary>제외된 항목 (2)</summary><ul><li><b>근거가 되는 단정적 피드백이 없는 과제</b> 쓰러지기 직전인 아군에게 나노 강화제 반응이 늦었다면 투여를 포기하고 궁극기 아끼기</li><li><b>근거가 되는 단정적 피드백이 없는 과제</b> 개활지에 오래 머무르지 않고 엄폐물 및 고지대를 끼고 교전 지원하기</li></ul></details>
+    <details><summary>경고</summary><ul><li>없음</li></ul></details>
+    <details><summary>사용량 · 비용</summary><p>비용: 미계산 — 모델 &#x27;gemini-3.6-flash&#x27;의 확인된 단가가 config/pricing.yaml에 없어 비용을 계산하지 않았습니다. 토큰 사용량만 기록합니다.</p>
+      <div class=scroll><table><tr><th>단계</th><th>모델</th><th>입력</th><th>출력</th><th>thinking</th><th>시도</th><th>캐시</th></tr><tr><td>team</td><td>gemini-3.6-flash</td><td>6867</td><td>275</td><td>840</td><td>1</td><td></td></tr><tr><td>overview</td><td>gemini-3.6-flash</td><td>20243</td><td>1005</td><td>2115</td><td>1</td><td></td></tr><tr><td>detail:scene-01</td><td>gemini-3.6-flash</td><td>6827</td><td>884</td><td>2600</td><td>1</td><td></td></tr><tr><td>detail:scene-02</td><td>gemini-3.6-flash</td><td>6292</td><td>1072</td><td>1494</td><td>1</td><td></td></tr><tr><td>detail:scene-03</td><td>gemini-3.6-flash</td><td>6847</td><td>1175</td><td>2486</td><td>1</td><td></td></tr><tr><td>detail:scene-04</td><td>gemini-3.6-flash</td><td>7353</td><td>995</td><td>2693</td><td>1</td><td></td></tr><tr><td>detail:scene-05</td><td>gemini-3.6-flash</td><td>7504</td><td>991</td><td>2430</td><td>1</td><td></td></tr><tr><td>coaching</td><td>gemini-3.6-flash</td><td>9150</td><td>1418</td><td>3363</td><td>1</td><td></td></tr></table></div></details>
+    <p class=muted>run 066030940318-ana · 프롬프트 team 0.3.0, overview 0.5.0, detail 0.4.0, coaching 0.6.0 · 영웅 기준 0.3.0-draft · 게임 패치 최신 (사용자 기준, 버전 번호 미확인)</p>
+  </details>
+</section>
+</div>
+<script type="application/json" id=review-meta>{"run_id": "066030940318-ana", "analysis_mode": "real", "model": "gemini-3.6-flash", "prompts": {"team": "0.3.0", "overview": "0.5.0", "detail": "0.4.0", "coaching": "0.6.0"}, "hero_profile": "0.3.0-draft"}</script>
+<script>
+const v=document.getElementById('v');
+const cards=[...document.querySelectorAll('.card')];
+function seek(t){v.currentTime=t;v.play().catch(()=>{});}
+document.querySelectorAll('[data-seek]').forEach(el=>el.addEventListener('click',()=>seek(parseFloat(el.dataset.seek))));
+v.addEventListener('timeupdate',()=>{const t=v.currentTime;
+  cards.forEach(c=>c.classList.toggle('active',t>=parseFloat(c.dataset.start)-0.5&&t<=parseFloat(c.dataset.end)+0.5));});
+
+document.getElementById('save').addEventListener('click',()=>{
+  const items=[...document.querySelectorAll('fieldset.review')].map(fs=>({feedback_id:fs.dataset.id,
+    fact:fs.querySelector('[name=fact]').value,assessment:fs.querySelector('[name=assessment]').value,
+    grade:fs.querySelector('[name=grade]').value,timing:fs.querySelector('[name=timing]').value,
+    criterion_change:fs.querySelector('[name=criterion_change]').checked,comment:fs.querySelector('[name=comment]').value}));
+  const out=Object.assign(JSON.parse(document.getElementById('review-meta').textContent),
+    {reviewed_at:new Date().toISOString(),items,missed_scenes:document.getElementById('missed').value});
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(out,null,2)],{type:'application/json'}));
+  a.download='coach_review.json';a.click();
+});
+</script></body></html>

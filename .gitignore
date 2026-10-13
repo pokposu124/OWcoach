@@ -14,3 +14,6 @@ samples/
 node_modules/
 # 검수용 로컬 산출물 (비교 이미지 등)
 review/
+
+# 웹 호스팅용 결과 화면(GitHub Pages)의 축소 영상은 커밋한다
+!docs/demo/media/*.mp4

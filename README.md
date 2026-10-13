@@ -2,7 +2,7 @@
 
 오버워치 플레이 영상(HUD가 보이는 본인 1인칭, 최대 5분)을 넣으면 AI가 시간대별로 포지셔닝·생존·스킬 사용 피드백을 주는 서비스.
 
-**현재 단계: 1단계 — 로컬 영상 분석 프로토타입** (`analyzer/`). 웹 UI, 클라우드 저장소, 작업 큐는 실제 영상 분석을 검증한 뒤 추가한다.
+**현재 단계: 1단계 — 로컬 영상 분석 프로토타입** (`analyzer/`). 결과 화면 예시: `docs/demo/` (GitHub Pages로 게시, 아나 영상 1개의 실제 분석 결과). 웹 UI, 클라우드 저장소, 작업 큐는 실제 영상 분석을 검증한 뒤 추가한다.
 
 | 단계 | 내용 | 상태 |
 |---|---|---|
@@ -81,6 +81,7 @@ export OWCOACH_GEMINI_MODEL=<공식 문서에서 확인한 모델 ID>
 python -m owcoach analyze /path/to/video.mp4 --hero ana --patch "<게임 패치 버전>"
 
 python -m owcoach report runs/<run_id>        # 검수 리포트 재생성
+python -m owcoach export runs/<run_id> ../docs/demo --video /path/to/video.mp4   # 웹 게시용 정적 결과 화면 (GitHub Pages: /docs)
 python -m pytest                              # 테스트 (FFmpeg로 합성 영상을 만들어 mock으로 전체 흐름 검증)
 ```
 
