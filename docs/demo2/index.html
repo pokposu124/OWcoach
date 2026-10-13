@@ -1,0 +1,241 @@
+<!doctype html><html lang=ko><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>아나 플레이 분석</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;700&family=IBM+Plex+Mono:wght@500;700&display=swap"><style>
+/* layout: two panes, video 3/5 (sticky) | numbered feedback 2/5; stacks under 900px */
+:root{--bg:#f3f4f7;--panel:#ffffff;--fg:#151a22;--muted:#5f6a78;--line:#dde1e8;--accent:#2457c5;
+--excellent:#0e7c86;--excellent-bg:#dff3f4;--best:#257a3e;--best-bg:#e3f2e7;--blunder:#b4232a;--blunder-bg:#fbe5e6;
+--hold:#6b6f78;--hold-bg:#eceef2;--warn:#8a5a00;--warn-bg:#fbefd6;
+--sans:"IBM Plex Sans KR",system-ui,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;--mono:"IBM Plex Mono",ui-monospace,monospace}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1218;--panel:#171c24;--fg:#e5e9f0;--muted:#97a2b0;--line:#2a313c;--accent:#7ea6f2;
+--excellent:#5fd0d8;--excellent-bg:#123336;--best:#6fd08c;--best-bg:#16301f;--blunder:#f4878b;--blunder-bg:#3a1a1c;
+--hold:#a3a9b3;--hold-bg:#242a33;--warn:#e9b860;--warn-bg:#352a12;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0f1218;--panel:#171c24;--fg:#e5e9f0;--muted:#97a2b0;--line:#2a313c;--accent:#7ea6f2;
+--excellent:#5fd0d8;--excellent-bg:#123336;--best:#6fd08c;--best-bg:#16301f;--blunder:#f4878b;--blunder-bg:#3a1a1c;
+--hold:#a3a9b3;--hold-bg:#242a33;--warn:#e9b860;--warn-bg:#352a12;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:14px/1.6 var(--sans);margin:0}
+.app{display:grid;grid-template-columns:minmax(0,3fr) minmax(0,2fr);gap:20px;padding-inline:16px;padding-block:16px;max-width:1600px;margin:0 auto}
+.stage{position:sticky;top:env(safe-area-inset-top,0px);align-self:start;display:grid;gap:10px;min-width:0}
+video{width:100%;aspect-ratio:16/9;background:#000;border-radius:10px;display:block}
+.title{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 12px}
+.title h1{font-size:1.25rem;margin:0;text-wrap:balance}
+.muted{color:var(--muted)} small.muted{font-size:.8rem}
+.notice{background:var(--warn-bg);color:var(--warn);border-radius:8px;padding:8px 12px;margin:0;font-size:.88rem}
+.notice.mock{background:var(--blunder-bg);color:var(--blunder);font-weight:700}
+.teams{display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:.85rem}
+.teams ul{list-style:none;margin:0;padding:0;display:grid;gap:2px}
+.teams li{display:flex;justify-content:space-between;gap:8px;padding:2px 8px;border-left:3px solid var(--line);min-width:0}
+.teams li span{color:var(--muted);overflow-wrap:anywhere;text-align:right}
+.teams .ally li{border-left-color:var(--blunder)} .teams .enemy li{border-left-color:var(--accent)}
+.teams h2{font-size:.75rem;letter-spacing:.06em;color:var(--muted);margin:0 0 4px}
+.feed{display:grid;gap:12px;align-content:start;min-width:0}
+.summary{display:flex;flex-wrap:wrap;gap:6px 14px;margin:0;color:var(--muted);font-size:.88rem}
+.summary b{color:var(--fg)}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 14px;display:grid;gap:8px;min-width:0;scroll-margin-top:12px}
+.card.active{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.card header{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px}
+.num{width:2.1em;height:2.1em;border-radius:50%;border:none;background:var(--accent);color:var(--panel);font:700 .95rem var(--mono);cursor:pointer;flex:0 0 auto}
+.num:focus-visible,.thumb:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.time{font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:.85rem;color:var(--accent)}
+.chip{font-size:.75rem;font-weight:700;padding:1px 8px;border-radius:999px;white-space:nowrap}
+.cat{background:var(--hold-bg);color:var(--fg)}
+.g-excellent{background:var(--excellent-bg);color:var(--excellent)} .g-best{background:var(--best-bg);color:var(--best)}
+.g-blunder{background:var(--blunder-bg);color:var(--blunder)} .g-withheld{background:var(--hold-bg);color:var(--hold)}
+.mode{margin-left:auto} .m-assertive{background:var(--best-bg);color:var(--best)} .m-tentative{background:var(--warn-bg);color:var(--warn)}
+.reasons{margin:0;font-size:.8rem;color:var(--warn)}
+dl{display:grid;grid-template-columns:3em minmax(0,1fr);gap:3px 10px;margin:0} dt{color:var(--muted);font-size:.82rem;padding-top:1px} dd{margin:0}
+ul.hud{list-style:none;margin:0;padding:0;display:grid;gap:3px;font-size:.84rem}
+.h-verified{color:var(--best)} .h-contradicted{color:var(--blunder)} .h-unverifiable,.h-not_checked{color:var(--hold)}
+.frames{display:flex;gap:6px;overflow-x:auto}
+.thumb{border:none;padding:0;background:none;cursor:pointer;flex:0 0 auto;text-align:left;color:var(--muted);font:.72rem var(--mono)}
+.thumb img{width:132px;max-width:100%;border-radius:5px;display:block}
+details{font-size:.85rem} summary{cursor:pointer;color:var(--muted)}
+fieldset{border:1px dashed var(--line);border-radius:8px;display:flex;flex-wrap:wrap;gap:6px 14px;margin:6px 0 0}
+textarea{width:100%;min-height:44px;font:inherit}
+.meta{display:grid;gap:6px}
+table{border-collapse:collapse;font-size:.8rem} td,th{border:1px solid var(--line);padding:2px 6px;text-align:left}
+.scroll{overflow-x:auto}
+@media (max-width:900px){.app{grid-template-columns:minmax(0,1fr)} .stage{z-index:2;background:var(--bg);padding-bottom:6px}
+  .stage .teams,.stage .notice{display:none}}
+@media (max-width:480px){.teams{grid-template-columns:1fr} dl{grid-template-columns:minmax(0,1fr)}}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+</style></head><body>
+<div class=app>
+<section class=stage>
+  <video id=v src="media/web.mp4" controls preload=metadata playsinline></video>
+  <div class=title><h1>아나 플레이 분석</h1>
+    <small class=muted>ana2.mp4 · 4분 52초 · 실제 AI 분석 · gemini-3.6-flash</small></div>
+  <p class=notice>코칭 기준이 코치 검수 전 초안입니다. 등급과 판단은 참고용입니다.</p><div class=teams><section class=ally><h2>아군</h2><ul><li><b>키리코</b><span>GS20010</span></li><li><b>불명</b><span>거대한라임마법사</span></li><li><b>정크랫</b><span>윤아</span></li><li><b>아나 (나)</b><span>BERNAR</span></li><li><b>윈스턴</b><span>LEAF</span></li></ul></section><section class=enemy><h2>적</h2><ul><li><b>겐지</b><span>KIVAZERO</span></li><li><b>젠야타</b><span>감옥에서돌아온성</span></li><li><b>시에라</b><span>GFRIEND</span></li><li><b>모이라</b><span>기대하지마</span></li><li><b>라마트라</b><span>참깨라면</span></li></ul></section></div>
+</section>
+<section class=feed aria-label="피드백">
+  <p class=summary><span>스킬 사용 <b>1</b></span><span>포지셔닝 <b>5</b></span><span>궁극기 사용 <b>1</b></span><span>최선 <b>2</b></span><span>블런더 <b>5</b></span><span>사망 <b>5</b></span></p>
+  
+<article class=card id="fb-1" data-start="21.0" data-end="39.0">
+  <header><button class=num type=button data-seek="21.0" aria-label="1번 피드백 21초로 이동">1</button>
+    <span class=time>21초 ~ 39초</span>
+    <span class="chip cat">포지셔닝</span>
+    <span class="chip g-blunder">블런더</span><span class="chip mode m-tentative">참고·보류</span></header>
+  <p class=reasons>코치 검수되지 않은 기준 · 포지셔닝은(는) 코드로 확인할 수 없어 보류</p>
+  <dl><dt>관찰</dt><dd>21초부터 도로 중앙 개활지에서 사격하다가 23초경 체력이 97까지 급감했음에도 엄폐물로 이동하지 않고 계속 노출되어 39초에 사망함.</dd><dt>판단</dt><dd>주변에 엄폐물이 보이지 않는 도로 중앙에 머무르며 피격 후에도 시야를 끊지 않아 적의 집중 사격을 받아 사망함.</dd><dt>제안</dt><dd>도로 중앙 개활지에 서지 말고 항상 1~2걸음 내에 시야를 끊을 수 있는 엄폐물 모서리를 끼고 사격하세요.</dd>
+  </dl>
+  <ul class=hud><li class=muted>모델 관찰 · 위치·엄폐는 코드로 확인하지 않음</li></ul>
+  <div class=frames><button class=thumb data-seek="21.0" type=button><img src="evidence/frame_000021000ms.jpg" loading="lazy" alt="21초 화면">21초</button><button class=thumb data-seek="25.0" type=button><img src="evidence/frame_000025000ms.jpg" loading="lazy" alt="25초 화면">25초</button><button class=thumb data-seek="39.0" type=button><img src="evidence/frame_000039000ms.jpg" loading="lazy" alt="39초 화면">39초</button></div>
+  <details><summary>코치 검수 · 적용 기준 ana.positioning.cover_access (draft)</summary>
+  <fieldset class=review data-id="fb-01">
+    <label>관찰 사실 <select name=fact><option value="">-</option><option>정확</option><option>일부 틀림</option><option>틀림</option><option>확인 불가</option></select></label>
+    <label>판단 <select name=assessment><option value="">-</option><option>동의</option><option>부분 동의</option><option>반대</option></select></label>
+    <label>맞는 등급 <select name=grade><option value="">-</option><option value=excellent>탁월</option><option value=best>최선</option><option value=blunder>블런더</option><option value=withheld>판단 보류</option></select></label>
+    <label>시간 <select name=timing><option value="">-</option><option>정확</option><option>3초 이내</option><option>틀림</option></select></label>
+    <label>기준 수정 필요 <input type=checkbox name=criterion_change></label>
+    <textarea name=comment placeholder="코멘트 (오인식, 놓친 맥락, 기준 수정안 등)"></textarea>
+  </fieldset></details>
+</article>
+<article class=card id="fb-2" data-start="57.0" data-end="71.0">
+  <header><button class=num type=button data-seek="57.0" aria-label="2번 피드백 57초로 이동">2</button>
+    <span class=time>57초 ~ 1분 11초</span>
+    <span class="chip cat">포지셔닝</span>
+    <span class="chip g-blunder">블런더</span><span class="chip mode m-tentative">참고·보류</span></header>
+  <p class=reasons>코치 검수되지 않은 기준 · 포지셔닝은(는) 코드로 확인할 수 없어 보류</p>
+  <dl><dt>관찰</dt><dd>57초경 도로로 진입하여 버스 옆 개활지에서 조준 사격을 하다가 1분 6초에 체력이 131로 감소했음에도 전방에 노출된 자리를 유지하다가 1분 11초에 적의 집중 사격으로 사망함.</dd><dt>판단</dt><dd>엄폐물이 없는 노출된 도로 지역에서 사격하다가 체력이 낮아졌음에도 즉시 엄폐물 뒤로 이동하지 않음.</dd><dt>제안</dt><dd>피격 직후 바로 버스나 건물 모서리 뒤로 몸을 숨겨 적의 사격을 끊고 위치를 재정비하세요.</dd>
+  </dl>
+  <ul class=hud><li class=muted>모델 관찰 · 위치·엄폐는 코드로 확인하지 않음</li></ul>
+  <div class=frames><button class=thumb data-seek="57.25" type=button><img src="evidence/frame_000057250ms.jpg" loading="lazy" alt="57초 화면">57초</button><button class=thumb data-seek="66.25" type=button><img src="evidence/frame_000066250ms.jpg" loading="lazy" alt="1분 6초 화면">1분 6초</button><button class=thumb data-seek="71.25" type=button><img src="evidence/frame_000071250ms.jpg" loading="lazy" alt="1분 11초 화면">1분 11초</button></div>
+  <details><summary>코치 검수 · 적용 기준 ana.positioning.cover_access (draft)</summary>
+  <fieldset class=review data-id="fb-02">
+    <label>관찰 사실 <select name=fact><option value="">-</option><option>정확</option><option>일부 틀림</option><option>틀림</option><option>확인 불가</option></select></label>
+    <label>판단 <select name=assessment><option value="">-</option><option>동의</option><option>부분 동의</option><option>반대</option></select></label>
+    <label>맞는 등급 <select name=grade><option value="">-</option><option value=excellent>탁월</option><option value=best>최선</option><option value=blunder>블런더</option><option value=withheld>판단 보류</option></select></label>
+    <label>시간 <select name=timing><option value="">-</option><option>정확</option><option>3초 이내</option><option>틀림</option></select></label>
+    <label>기준 수정 필요 <input type=checkbox name=criterion_change></label>
+    <textarea name=comment placeholder="코멘트 (오인식, 놓친 맥락, 기준 수정안 등)"></textarea>
+  </fieldset></details>
+</article>
+<article class=card id="fb-3" data-start="97.0" data-end="107.0">
+  <header><button class=num type=button data-seek="97.0" aria-label="3번 피드백 1분 37초로 이동">3</button>
+    <span class=time>1분 37초 ~ 1분 47초</span>
+    <span class="chip cat">포지셔닝</span>
+    <span class="chip g-blunder">블런더</span><span class="chip mode m-tentative">참고·보류</span></header>
+  <p class=reasons>코치 검수되지 않은 기준 · 포지셔닝은(는) 코드로 확인할 수 없어 보류</p>
+  <dl><dt>관찰</dt><dd>1분 37초에 적 궁극기 이펙트와 피격으로 체력이 74까지 떨어져 엄폐물 뒤로 이동했으나, 1분 41초에 다시 조준경을 열고 사격하다 체력이 14까지 감소하였고 1분 47초에 사망함.</dd><dt>판단</dt><dd>체력이 크게 감소한 위기 상황에서 완전히 이탈하거나 체력을 회복하지 않고 다시 사격선에 몸을 노출시킴.</dd><dt>제안</dt><dd>체력이 낮은 상태에서 적의 압박이 계속될 때는 조준 사격을 멈추고 안전한 위치로 완전히 이탈해 체력을 먼저 회복하세요.</dd>
+  </dl>
+  <ul class=hud><li class=muted>모델 관찰 · 위치·엄폐는 코드로 확인하지 않음</li></ul>
+  <div class=frames><button class=thumb data-seek="97.0" type=button><img src="evidence/frame_000097000ms.jpg" loading="lazy" alt="1분 37초 화면">1분 37초</button><button class=thumb data-seek="101.25" type=button><img src="evidence/frame_000101250ms.jpg" loading="lazy" alt="1분 41초 화면">1분 41초</button><button class=thumb data-seek="106.75" type=button><img src="evidence/frame_000106750ms.jpg" loading="lazy" alt="1분 47초 화면">1분 47초</button></div>
+  <details><summary>코치 검수 · 적용 기준 ana.positioning.disengage_on_pressure (draft)</summary>
+  <fieldset class=review data-id="fb-03">
+    <label>관찰 사실 <select name=fact><option value="">-</option><option>정확</option><option>일부 틀림</option><option>틀림</option><option>확인 불가</option></select></label>
+    <label>판단 <select name=assessment><option value="">-</option><option>동의</option><option>부분 동의</option><option>반대</option></select></label>
+    <label>맞는 등급 <select name=grade><option value="">-</option><option value=excellent>탁월</option><option value=best>최선</option><option value=blunder>블런더</option><option value=withheld>판단 보류</option></select></label>
+    <label>시간 <select name=timing><option value="">-</option><option>정확</option><option>3초 이내</option><option>틀림</option></select></label>
+    <label>기준 수정 필요 <input type=checkbox name=criterion_change></label>
+    <textarea name=comment placeholder="코멘트 (오인식, 놓친 맥락, 기준 수정안 등)"></textarea>
+  </fieldset></details>
+</article>
+<article class=card id="fb-4" data-start="127.0" data-end="139.0">
+  <header><button class=num type=button data-seek="127.0" aria-label="4번 피드백 2분 7초로 이동">4</button>
+    <span class=time>2분 7초 ~ 2분 19초</span>
+    <span class="chip cat">포지셔닝</span>
+    <span class="chip g-blunder">블런더</span><span class="chip mode m-tentative">참고·보류</span></header>
+  <p class=reasons>코치 검수되지 않은 기준 · 포지셔닝은(는) 코드로 확인할 수 없어 보류</p>
+  <dl><dt>관찰</dt><dd>2분 14초에 적 겐지의 접근으로 체력이 165에서 28까지 급감하였고, 엄폐물 뒤로 후퇴를 시도했으나 2분 18초에 사망함.</dd><dt>판단</dt><dd>근접한 적의 위협에 체력이 급감하였으나 사전에 안전한 엄폐 거리나 후퇴로를 확보하지 못해 후퇴 도중 처치당함.</dd><dt>제안</dt><dd>적 돌진 영웅이 근접할 때는 사격 각도를 좁히고 미리 건물 내부나 아군 쪽으로 이탈할 수 있는 동선을 확보하세요.</dd>
+  </dl>
+  <ul class=hud><li class=muted>모델 관찰 · 위치·엄폐는 코드로 확인하지 않음</li></ul>
+  <div class=frames><button class=thumb data-seek="127.5" type=button><img src="evidence/frame_000127500ms.jpg" loading="lazy" alt="2분 8초 화면">2분 8초</button><button class=thumb data-seek="134.5" type=button><img src="evidence/frame_000134500ms.jpg" loading="lazy" alt="2분 14초 화면">2분 14초</button><button class=thumb data-seek="138.5" type=button><img src="evidence/frame_000138500ms.jpg" loading="lazy" alt="2분 18초 화면">2분 18초</button></div>
+  <details><summary>코치 검수 · 적용 기준 ana.positioning.disengage_on_pressure (draft)</summary>
+  <fieldset class=review data-id="fb-04">
+    <label>관찰 사실 <select name=fact><option value="">-</option><option>정확</option><option>일부 틀림</option><option>틀림</option><option>확인 불가</option></select></label>
+    <label>판단 <select name=assessment><option value="">-</option><option>동의</option><option>부분 동의</option><option>반대</option></select></label>
+    <label>맞는 등급 <select name=grade><option value="">-</option><option value=excellent>탁월</option><option value=best>최선</option><option value=blunder>블런더</option><option value=withheld>판단 보류</option></select></label>
+    <label>시간 <select name=timing><option value="">-</option><option>정확</option><option>3초 이내</option><option>틀림</option></select></label>
+    <label>기준 수정 필요 <input type=checkbox name=criterion_change></label>
+    <textarea name=comment placeholder="코멘트 (오인식, 놓친 맥락, 기준 수정안 등)"></textarea>
+  </fieldset></details>
+</article>
+<article class=card id="fb-5" data-start="180.75" data-end="191.0">
+  <header><button class=num type=button data-seek="180.75" aria-label="5번 피드백 3분 1초로 이동">5</button>
+    <span class=time>3분 1초 ~ 3분 11초</span>
+    <span class="chip cat">궁극기 사용</span>
+    <span class="chip g-best">최선</span><span class="chip mode m-tentative">참고·보류</span></header>
+  <p class=reasons>코치 검수되지 않은 기준</p>
+  <dl><dt>관찰</dt><dd>3분 9초(HUD 3분 11초)에 궁극기 게이지 100% 상태에서 교전 중인 아군 윈스턴(LEAF)에게 나노 강화제를 사용함.</dd><dt>판단</dt><dd>교전 시작 및 진행 상황에서 아군 탱커에게 나노 강화제를 적절한 시점에 투여하여 교전을 지원함.</dd><dt>제안</dt><dd>지금처럼 교전 한복판에서 영향을 크게 줄 수 있는 아군 탱커에게 적극적으로 나노 강화제를 활용하세요.</dd>
+  </dl>
+  <ul class=hud><li class='h-verified'>HUD 확인 · 나노 강화제 3분 11초 → 대상 LEAF(윈스턴)</li></ul>
+  <div class=frames><button class=thumb data-seek="180.75" type=button><img src="evidence/frame_000180750ms.jpg" loading="lazy" alt="3분 1초 화면">3분 1초</button><button class=thumb data-seek="189.0" type=button><img src="evidence/frame_000189000ms.jpg" loading="lazy" alt="3분 9초 화면">3분 9초</button></div>
+  <details><summary>코치 검수 · 적용 기준 ana.ultimate.nano_boost_usage (draft)</summary>
+  <fieldset class=review data-id="fb-05">
+    <label>관찰 사실 <select name=fact><option value="">-</option><option>정확</option><option>일부 틀림</option><option>틀림</option><option>확인 불가</option></select></label>
+    <label>판단 <select name=assessment><option value="">-</option><option>동의</option><option>부분 동의</option><option>반대</option></select></label>
+    <label>맞는 등급 <select name=grade><option value="">-</option><option value=excellent>탁월</option><option value=best>최선</option><option value=blunder>블런더</option><option value=withheld>판단 보류</option></select></label>
+    <label>시간 <select name=timing><option value="">-</option><option>정확</option><option>3초 이내</option><option>틀림</option></select></label>
+    <label>기준 수정 필요 <input type=checkbox name=criterion_change></label>
+    <textarea name=comment placeholder="코멘트 (오인식, 놓친 맥락, 기준 수정안 등)"></textarea>
+  </fieldset></details>
+</article>
+<article class=card id="fb-6" data-start="190.0" data-end="201.0">
+  <header><button class=num type=button data-seek="190.0" aria-label="6번 피드백 3분 10초로 이동">6</button>
+    <span class=time>3분 10초 ~ 3분 21초</span>
+    <span class="chip cat">포지셔닝</span>
+    <span class="chip g-blunder">블런더</span><span class="chip mode m-tentative">참고·보류</span></header>
+  <p class=reasons>코치 검수되지 않은 기준 · 포지셔닝은(는) 코드로 확인할 수 없어 보류</p>
+  <dl><dt>관찰</dt><dd>3분 9초에 나노 강화제 투여 후 거점을 향해 사격 지원을 하다가 3분 18초부터 외곽 지속 피해를 입고 3분 21초에 사망함.</dd><dt>판단</dt><dd>나노 강화제 사용 후 개활지에서 사격 지원에만 집중하다 지속 피격을 인지하고 빠르게 엄폐하지 못함.</dd><dt>제안</dt><dd>궁극기를 사용한 후에도 사격 시 항상 가까운 엄폐물 모서리를 끼고 적의 사격으로부터 피할 수 있는 위치를 유지하세요.</dd>
+  </dl>
+  <ul class=hud><li class=muted>모델 관찰 · 위치·엄폐는 코드로 확인하지 않음</li></ul>
+  <div class=frames><button class=thumb data-seek="189.0" type=button><img src="evidence/frame_000189000ms.jpg" loading="lazy" alt="3분 9초 화면">3분 9초</button><button class=thumb data-seek="198.75" type=button><img src="evidence/frame_000198750ms.jpg" loading="lazy" alt="3분 19초 화면">3분 19초</button><button class=thumb data-seek="201.0" type=button><img src="evidence/frame_000201000ms.jpg" loading="lazy" alt="3분 21초 화면">3분 21초</button></div>
+  <details><summary>코치 검수 · 적용 기준 ana.positioning.cover_access (draft)</summary>
+  <fieldset class=review data-id="fb-06">
+    <label>관찰 사실 <select name=fact><option value="">-</option><option>정확</option><option>일부 틀림</option><option>틀림</option><option>확인 불가</option></select></label>
+    <label>판단 <select name=assessment><option value="">-</option><option>동의</option><option>부분 동의</option><option>반대</option></select></label>
+    <label>맞는 등급 <select name=grade><option value="">-</option><option value=excellent>탁월</option><option value=best>최선</option><option value=blunder>블런더</option><option value=withheld>판단 보류</option></select></label>
+    <label>시간 <select name=timing><option value="">-</option><option>정확</option><option>3초 이내</option><option>틀림</option></select></label>
+    <label>기준 수정 필요 <input type=checkbox name=criterion_change></label>
+    <textarea name=comment placeholder="코멘트 (오인식, 놓친 맥락, 기준 수정안 등)"></textarea>
+  </fieldset></details>
+</article>
+<article class=card id="fb-7" data-start="217.0" data-end="222.0">
+  <header><button class=num type=button data-seek="217.0" aria-label="7번 피드백 3분 37초로 이동">7</button>
+    <span class=time>3분 37초 ~ 3분 42초</span>
+    <span class="chip cat">스킬 사용</span>
+    <span class="chip g-best">최선</span><span class="chip mode m-tentative">참고·보류</span></header>
+  <p class=reasons>코치 검수되지 않은 기준</p>
+  <dl><dt>관찰</dt><dd>3분 38초에 적의 사격으로 체력이 169로 감소하자 3분 40초(HUD 3분 41초)에 발밑에 생체 수류탄을 투척하여 체력을 249까지 자가 회복함.</dd><dt>판단</dt><dd>본인이 압박받아 체력이 깎인 순간에 생체 수류탄을 자가 회복용으로 적절히 사용하여 생존을 도모함.</dd><dt>제안</dt><dd>적의 압박을 받아 위급할 때는 생체 수류탄을 아끼지 않고 자신에게 투척하여 생존율을 높이세요.</dd>
+  </dl>
+  <ul class=hud><li class='h-verified'>HUD 확인 · 생체 수류탄 3분 41초</li></ul>
+  <div class=frames><button class=thumb data-seek="217.75" type=button><img src="evidence/frame_000217750ms.jpg" loading="lazy" alt="3분 38초 화면">3분 38초</button><button class=thumb data-seek="219.75" type=button><img src="evidence/frame_000219750ms.jpg" loading="lazy" alt="3분 40초 화면">3분 40초</button></div>
+  <details><summary>코치 검수 · 적용 기준 ana.skill.biotic_grenade_usage (draft)</summary>
+  <fieldset class=review data-id="fb-07">
+    <label>관찰 사실 <select name=fact><option value="">-</option><option>정확</option><option>일부 틀림</option><option>틀림</option><option>확인 불가</option></select></label>
+    <label>판단 <select name=assessment><option value="">-</option><option>동의</option><option>부분 동의</option><option>반대</option></select></label>
+    <label>맞는 등급 <select name=grade><option value="">-</option><option value=excellent>탁월</option><option value=best>최선</option><option value=blunder>블런더</option><option value=withheld>판단 보류</option></select></label>
+    <label>시간 <select name=timing><option value="">-</option><option>정확</option><option>3초 이내</option><option>틀림</option></select></label>
+    <label>기준 수정 필요 <input type=checkbox name=criterion_change></label>
+    <textarea name=comment placeholder="코멘트 (오인식, 놓친 맥락, 기준 수정안 등)"></textarea>
+  </fieldset></details>
+</article>
+  <details><summary>다음 경기 과제</summary><ul><li class=muted>없음 (단정 피드백이 있어야 과제가 만들어집니다)</li></ul></details>
+  <details class=meta><summary>검수 · 기록</summary>
+    <textarea id=missed placeholder="AI가 놓친 중요한 장면: 시간 + 설명"></textarea><p><button id=save type=button>검수 결과 저장 (coach_review.json)</button></p>
+    <details><summary>제외된 항목 (6)</summary><ul><li><b>후보 장면 시간이 영상 범위를 벗어남</b> 5분 8초 ~ 5분 18초 ultimate_usage: 궁극기 게이지 100% 충전 직후 교전 중인 아군 진영에 나노 강화제 투여</li><li><b>후보 장면 시간이 영상 범위를 벗어남</b> 6분 54초 ~ 7분 0초 skill_usage: 근접 진입하는 적 겐지에게 정확하게 수면총을 적중시켜 제압함</li><li><b>후보 장면 시간이 영상 범위를 벗어남</b> 7분 25초 ~ 7분 31초 ultimate_usage: 거점 수비 마지막 한타 시점에서 아군에게 나노 강화제를 시전함</li><li><b>근거가 되는 단정적 피드백이 없는 과제</b> 개활지 노출 최소화 및 엄폐물 끼고 사격하기</li><li><b>근거가 되는 단정적 피드백이 없는 과제</b> 체력 급감 시 사격 중단 후 완전히 이탈하기</li><li><b>근거가 되는 단정적 피드백이 없는 과제</b> 위기 상황 시 생체 수류탄 자가 회복 활용하기</li></ul></details>
+    <details><summary>경고</summary><ul><li>초상화 대조로 영웅을 확정하지 못함(불명 처리): 거대한라임마법사</li></ul></details>
+    <details><summary>사용량 · 비용</summary><p>비용: 미계산 — 모델 &#x27;gemini-3.6-flash&#x27;의 확인된 단가가 config/pricing.yaml에 없어 비용을 계산하지 않았습니다. 토큰 사용량만 기록합니다.</p>
+      <div class=scroll><table><tr><th>단계</th><th>모델</th><th>입력</th><th>출력</th><th>thinking</th><th>시도</th><th>캐시</th></tr><tr><td>team</td><td>gemini-3.6-flash</td><td>6867</td><td>462</td><td>595</td><td>1</td><td>예</td></tr><tr><td>overview</td><td>gemini-3.6-flash</td><td>20548</td><td>1385</td><td>1604</td><td>1</td><td>예</td></tr><tr><td>detail:scene-01</td><td>gemini-3.6-flash</td><td>7620</td><td>997</td><td>2606</td><td>1</td><td>예</td></tr><tr><td>detail:scene-02</td><td>gemini-3.6-flash</td><td>7331</td><td>1044</td><td>3139</td><td>1</td><td>예</td></tr><tr><td>detail:scene-03</td><td>gemini-3.6-flash</td><td>7331</td><td>1132</td><td>1725</td><td>1</td><td>예</td></tr><tr><td>detail:scene-04</td><td>gemini-3.6-flash</td><td>9869</td><td>1135</td><td>2344</td><td>1</td><td></td></tr><tr><td>detail:scene-05</td><td>gemini-3.6-flash</td><td>7812</td><td>798</td><td>1058</td><td>1</td><td>예</td></tr><tr><td>detail:scene-06</td><td>gemini-3.6-flash</td><td>6806</td><td>1058</td><td>1594</td><td>1</td><td>예</td></tr><tr><td>coaching</td><td>gemini-3.6-flash</td><td>10886</td><td>2470</td><td>6468</td><td>1</td><td></td></tr></table></div></details>
+    <p class=muted>run bc7deeef7d44-ana · 프롬프트 team 0.3.0, overview 0.5.0, detail 0.4.0, coaching 0.8.0 · 영웅 기준 0.3.0-draft · 게임 패치 최신 (사용자 기준, 버전 번호 미확인)</p>
+  </details>
+</section>
+</div>
+<script type="application/json" id=review-meta>{"run_id": "bc7deeef7d44-ana", "analysis_mode": "real", "model": "gemini-3.6-flash", "prompts": {"team": "0.3.0", "overview": "0.5.0", "detail": "0.4.0", "coaching": "0.8.0"}, "hero_profile": "0.3.0-draft"}</script>
+<script>
+const v=document.getElementById('v');
+const cards=[...document.querySelectorAll('.card')];
+function seek(t){v.currentTime=t;v.play().catch(()=>{});}
+document.querySelectorAll('[data-seek]').forEach(el=>el.addEventListener('click',()=>seek(parseFloat(el.dataset.seek))));
+v.addEventListener('timeupdate',()=>{const t=v.currentTime;
+  cards.forEach(c=>c.classList.toggle('active',t>=parseFloat(c.dataset.start)-0.5&&t<=parseFloat(c.dataset.end)+0.5));});
+
+document.getElementById('save').addEventListener('click',()=>{
+  const items=[...document.querySelectorAll('fieldset.review')].map(fs=>({feedback_id:fs.dataset.id,
+    fact:fs.querySelector('[name=fact]').value,assessment:fs.querySelector('[name=assessment]').value,
+    grade:fs.querySelector('[name=grade]').value,timing:fs.querySelector('[name=timing]').value,
+    criterion_change:fs.querySelector('[name=criterion_change]').checked,comment:fs.querySelector('[name=comment]').value}));
+  const out=Object.assign(JSON.parse(document.getElementById('review-meta').textContent),
+    {reviewed_at:new Date().toISOString(),items,missed_scenes:document.getElementById('missed').value});
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(out,null,2)],{type:'application/json'}));
+  a.download='coach_review.json';a.click();
+});
+</script></body></html>

@@ -3,12 +3,24 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>OWcoach</title>
-<meta http-equiv="refresh" content="0; url=demo/">
-<style>body{font:15px/1.6 system-ui,sans-serif;margin:0;padding:24px 16px;background:#f3f4f7;color:#151a22}
-@media (prefers-color-scheme:dark){body{background:#0f1218;color:#e5e9f0}a{color:#7ea6f2}}</style>
+<title>OWcoach 분석 결과</title>
+<style>
+:root{--bg:#f3f4f7;--panel:#fff;--fg:#151a22;--muted:#5f6a78;--line:#dde1e8;--accent:#2457c5}
+@media (prefers-color-scheme:dark){:root{--bg:#0f1218;--panel:#171c24;--fg:#e5e9f0;--muted:#97a2b0;--line:#2a313c;--accent:#7ea6f2}}
+body{background:var(--bg);color:var(--fg);font:15px/1.6 system-ui,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;margin:0}
+main{max-width:640px;margin:0 auto;padding:32px 16px;display:grid;gap:12px}
+h1{font-size:1.4rem;margin:0 0 8px}
+a.card{display:grid;gap:2px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 16px;color:inherit;text-decoration:none}
+a.card:hover,a.card:focus-visible{border-color:var(--accent)}
+a.card b{color:var(--accent)} .muted{color:var(--muted);font-size:.9rem}
+</style>
 </head>
 <body>
-<p><a href="demo/">아나 플레이 분석 결과 보기</a></p>
+<main>
+<h1>OWcoach 분석 결과</h1>
+<a class="card" href="demo/"><b>아나 경기 1 · 화물 호위</b><span class="muted">4분 47초 · 사망 0 · 나노 2회(2분 16초 파라, 4분 10초 솔저 끊김)</span></a>
+<a class="card" href="demo2/"><b>아나 경기 2 · 거점</b><span class="muted">4분 52초 · 사망 5 · 나노 1회(3분 11초 윈스턴) · 피드백 개수 제한 없이 분석</span></a>
+<p class="muted">실제 Gemini 분석 결과입니다. 코칭 기준은 코치 검수 전 초안이라 모든 피드백이 참고·보류로 표시됩니다.</p>
+</main>
 </body>
 </html>
