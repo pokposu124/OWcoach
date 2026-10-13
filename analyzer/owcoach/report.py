@@ -13,6 +13,7 @@ import os
 from pathlib import Path
 
 from .schemas import AnalysisResult
+from .timefmt import fmt_time
 
 CATEGORY_KO = {"positioning": "포지셔닝", "survival": "생존", "skill_usage": "스킬 사용"}
 HUD_KO = {"verified": "HUD 확인", "contradicted": "HUD 불일치", "unverifiable": "확인 불가", "not_checked": "대조 안 함"}
@@ -20,9 +21,7 @@ HUD_CLASS = {"verified": "ok", "contradicted": "bad", "unverifiable": "warn", "n
 JUDGEMENT_KO = {"good": "잘한 플레이", "needs_improvement": "개선 필요", "withheld": "판단 보류"}
 
 
-def _t(sec: float) -> str:
-    m, s = divmod(sec, 60)
-    return f"{int(m):02d}:{s:04.1f}"
+_t = fmt_time
 
 
 def _e(x) -> str:
@@ -35,7 +34,7 @@ def write_report(run_dir: Path) -> Path:
     meta = json.loads((run_dir / "run.json").read_text("utf-8"))
     video_src = "media/proxy.mp4" if (run_dir / "media" / "proxy.mp4").exists() else os.path.relpath(meta["video"], run_dir)
 
-    cards = []
+    cards: dict[bool, list[str]] = {True: [], False: []}  # True: 스킬 사용, False: 포지셔닝·생존
     for f in result.feedback:
         frames = "".join(
             f'<figure><img src="{_e(fr.path)}" loading="lazy" data-t="{fr.timestamp_seconds}">'
@@ -44,15 +43,15 @@ def write_report(run_dir: Path) -> Path:
         badge = ('<span class="b ok">단정</span>' if f.display_mode == "assertive"
                  else f'<span class="b warn">참고·보류</span> <span class=muted>{_e(", ".join(f.display_reasons))}</span>')
         crit = ", ".join(f.criterion_ids) or "없음"
-        hud = "".join(
+        hud = "<li class=muted>모델 관찰 (포지셔닝·생존은 HUD로 확인하지 않음)</li>" if f.category != "skill_usage" else "".join(
             f"<li><span class='b {HUD_CLASS[c.status]}'>{_e(HUD_KO[c.status])}</span> {_t(c.time_seconds)} {_e(c.ability_id)}"
             f" — {_e(c.note)}"
             + (f" · 대상: {_e(c.target_check.get('note', ''))}" if c.target_check else "")
             + f" <span class=muted>(모델 근거: {_e(c.claimed_by_model or '-')})</span></li>"
             for c in f.hud_checks) or "<li class=muted>이 구간에 스킬/궁극기 사용 기록 없음</li>"
-        cards.append(f"""
+        cards[f.category == "skill_usage"].append(f"""
 <section class=card id="{_e(f.id)}">
-  <header><button class=seek data-t="{f.start_time_seconds}">▶ {_t(f.start_time_seconds)} – {_t(f.end_time_seconds)}</button>
+  <header><button class=seek data-t="{f.start_time_seconds}">▶ {_t(f.start_time_seconds)} ~ {_t(f.end_time_seconds)}</button>
   <b>{_e(CATEGORY_KO[f.category])}</b> · {_e(JUDGEMENT_KO[f.judgement])} · 확신도 {f.confidence:.2f} {badge}</header>
   <dl>
     <dt>관찰 사실</dt><dd>{_e(f.observation)}</dd>
@@ -119,8 +118,10 @@ textarea{{width:100%;min-height:48px}} table{{border-collapse:collapse;font-size
 영웅 기준 {_e(result.versions.hero_profile)} ({_e(result.versions.hero_profile_review_status)}) · 기준 패치 {_e(result.criteria_patch_version)} · 게임 패치 {_e(result.game_patch_version or '미입력')}</p>
 <video id=v src="{_e(video_src)}" controls preload=metadata></video>
 <details open><summary>팀 판별 (이름·팀: 모델 판독, 영웅: 초상화 이미지 대조 — 검수 필요)</summary>{team}</details>
-<h2>피드백 ({len(result.feedback)})</h2>
-{''.join(cards) or '<p class=muted>근거가 충분한 피드백이 없습니다.</p>'}
+<h2>스킬 사용 ({len(cards[True])}) <small class=muted>HUD로 사용 시각·대상 확인</small></h2>
+{''.join(cards[True]) or '<p class=muted>스킬 사용 피드백 없음</p>'}
+<h2>포지셔닝·생존 ({len(cards[False])}) <small class=muted>모델 관찰, 코드로 확인하지 않음</small></h2>
+{''.join(cards[False]) or '<p class=muted>포지셔닝·생존 피드백 없음</p>'}
 <h2>다음 경기 과제</h2><ul>{actions}</ul>
 <h2>놓친 장면 (코치 입력)</h2><textarea id=missed placeholder="AI가 놓친 중요한 장면: 시간 + 설명"></textarea>
 <p><button id=save>검수 결과 저장 (coach_review.json)</button></p>

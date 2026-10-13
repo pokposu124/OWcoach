@@ -164,7 +164,10 @@ class FeedbackItem(BaseModel):
     display_reasons: list[str] = Field(description="tentative 로 표시된 이유")
     evidence_frames: list[EvidenceFrame]
     scene_id: str
-    hud_checks: list[HudCheck] = Field(default_factory=list, description="이 피드백 구간 안의 스킬/궁극기 사용 주장과 HUD 대조 결과")
+    hud_checks: list[HudCheck] = Field(default_factory=list, description="스킬 사용 피드백에만: 구간 안의 스킬/궁극기 사용 주장과 HUD 대조 결과")
+    verification: Literal["hud", "model_observation"] = Field(
+        default="model_observation",
+        description="hud: 스킬 사용이 HUD 대조로 확인됨 / model_observation: 모델 관찰(포지셔닝·생존 등, 코드로 확인하지 않음)")
 
     @model_validator(mode="after")
     def _check_times(self) -> "FeedbackItem":

@@ -384,7 +384,7 @@ def test_hud_detects_use_and_checks_claims(hud_video, cfg):
     assert check_use_claim(1.0, "ability_2", samples, hcfg)["status"] == "contradicted"
     # claim far from the only use: contradicted and the actual use time is reported
     far = check_use_claim(11.6, "ultimate", samples, hcfg)
-    assert far["status"] == "contradicted" and "8." in far["note"]
+    assert far["status"] == "contradicted" and "8초" in far["note"]
 
 
 def test_hud_hidden_frames_are_unverifiable(cfg):
@@ -451,3 +451,35 @@ def test_buff_target_from_team_list_arrow(tmp_path, cfg):
     hit = detect_buff_target(video, 2.0, allies, bcfg)
     assert hit["status"] == "verified" and hit["slot"] == 8 and hit["player_name"] == "P2"
     assert detect_buff_target(video, 0.8, allies, {**bcfg, "window_seconds": 1.0})["status"] == "unverifiable"
+
+
+def test_time_format_minutes_seconds():
+    from owcoach.timefmt import fmt_range, fmt_time, normalize_times
+
+    assert fmt_time(136.0) == "2분 16초" and fmt_time(39.5) == "40초" and fmt_time(120) == "2분 0초"
+    assert fmt_range(14.5, 44.0) == "14초 ~ 44초"
+    text = "132.75초에 궁극기 100%, 136.00초에 나노. 쿨다운 12초, 2분 16초 그대로"
+    assert normalize_times(text) == "2분 13초에 궁극기 100%, 2분 16초에 나노. 쿨다운 12초, 2분 16초 그대로"
+
+
+def test_hud_evidence_applies_to_skill_usage_only(cfg):
+    """A positioning item is neither helped by a HUD-verified grenade in its window nor hurt by a
+    HUD-contradicted one: HUD checks belong to skill-usage feedback only."""
+    from owcoach.postprocess import finalize_feedback
+
+    hero = load_hero("ana").model_copy(deep=True)
+    for c in hero.criteria:
+        c.status = "approved"
+    for status in ("verified", "contradicted"):
+        item = _coaching_item(category="positioning", criterion_ids=["ana.positioning.cover_access"],
+                              observation="132.75초에 모서리 엄폐")
+        fb, _ = finalize_feedback(CoachingResponse(items=[item], action_items=[]), {"scene-01": _scene_rec(status)},
+                                  hero, 30.0, cfg["output"], lambda t: f"evidence/{t}.jpg", [])
+        f = fb[0]
+        assert f.hud_checks == [] and f.verification == "model_observation"
+        assert not any("HUD" in r for r in f.display_reasons) and f.display_mode == "assertive"
+        assert f.observation == "2분 13초에 모서리 엄폐"
+    skill, _ = finalize_feedback(CoachingResponse(items=[_coaching_item()], action_items=[]),
+                                 {"scene-01": _scene_rec("verified")}, hero, 30.0, cfg["output"],
+                                 lambda t: f"evidence/{t}.jpg", [])
+    assert skill[0].verification == "hud" and skill[0].hud_checks

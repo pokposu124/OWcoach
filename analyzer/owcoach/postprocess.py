@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Callable
 
 from .heroes import HeroProfile
+from .timefmt import fmt_range, fmt_time, normalize_times
 from .schemas import (
     ActionItem,
     AnalysisResult,
@@ -50,7 +51,7 @@ def plan_scenes(overview: OverviewResponse, duration: float, cfg: dict, max_cand
         if c.start_time_seconds < 0 or c.end_time_seconds > duration or c.end_time_seconds < c.start_time_seconds:
             discarded.append(DiscardedItem(
                 reason="후보 장면 시간이 영상 범위를 벗어남",
-                summary=f"{c.start_time_seconds}-{c.end_time_seconds}s {c.category}: {c.reason_observed}",
+                summary=f"{fmt_range(c.start_time_seconds, c.end_time_seconds)} {c.category}: {c.reason_observed}",
             ))
             continue
         valid.append(c)
@@ -94,7 +95,7 @@ def detail_to_original(scene: Scene, detail: DetailResponse, tolerance: float,
     for o in detail.observations:
         t = conv(o.time_seconds)
         if t is None:
-            warnings.append(f"{scene.scene_id}: 구간 밖 관찰 시간({o.time_seconds}s) 제외")
+            warnings.append(f"{scene.scene_id}: 구간 밖 관찰 시간(구간 기준 {fmt_time(o.time_seconds)}) 제외")
             continue
         obs.append({**o.model_dump(), "time_seconds": t, "end_time_seconds": conv(o.end_time_seconds)})
     hud = []
@@ -107,7 +108,7 @@ def detail_to_original(scene: Scene, detail: DetailResponse, tolerance: float,
     for a in detail.ability_events:
         t = conv(a.time_seconds)
         if t is None:
-            warnings.append(f"{scene.scene_id}: 구간 밖 스킬 사용 시간({a.time_seconds}s) 제외")
+            warnings.append(f"{scene.scene_id}: 구간 밖 스킬 사용 시간(구간 기준 {fmt_time(a.time_seconds)}) 제외")
             continue
         events.append({**a.model_dump(), "time_seconds": t})
     return {
@@ -145,7 +146,7 @@ def finalize_feedback(
     candidates: list[FeedbackItem] = []
 
     for item in coaching.items:
-        summary = f"{item.start_time_seconds}-{item.end_time_seconds}s {item.category}: {item.observation[:80]}"
+        summary = f"{fmt_range(item.start_time_seconds, item.end_time_seconds)} {item.category}: {normalize_times(item.observation[:80])}"
         scene = scenes.get(item.scene_id)
         if scene is None:
             discarded.append(DiscardedItem(reason="존재하지 않는 장면 참조", scene_id=item.scene_id, summary=summary))
@@ -189,29 +190,36 @@ def finalize_feedback(
         if out_cfg["require_approved_criteria_for_assertive"] and review_status != "approved":
             reasons.append("코치 검수되지 않은 기준")
 
-        checks = [HudCheck(time_seconds=ev["time_seconds"], ability_id=ev["ability_id"],
-                           claimed_by_model=" / ".join(x for x in (ev.get("target"), ev.get("evidence")) if x),
-                           **ev["hud_check"])
-                  for ev in scene.get("ability_events", [])
-                  if "hud_check" in ev and s - tol <= ev["time_seconds"] <= e + tol]
-        bad = [c for c in checks if c.status == "contradicted"]
-        if bad:
-            reasons.append("HUD 대조 불일치: " + "; ".join(f"{c.ability_id} {c.time_seconds:.1f}초 — {c.note}" for c in bad))
-        if (out_cfg.get("require_hud_verification_for_assertive") and hud_enabled
-                and not any(c.status == "verified" for c in checks)):
-            reasons.append("HUD로 확인된 스킬/궁극기 사용 근거 없음")
+        # HUD evidence belongs to skill-usage feedback only. Positioning / survival are judged on the
+        # model's observation alone: a grenade verified in the same window says nothing about where
+        # the player stood, so it must neither raise nor lower those items.
+        checks: list[HudCheck] = []
+        if item.category == "skill_usage":
+            checks = [HudCheck(time_seconds=ev["time_seconds"], ability_id=ev["ability_id"],
+                               claimed_by_model=" / ".join(x for x in (ev.get("target"), ev.get("evidence")) if x),
+                               **ev["hud_check"])
+                      for ev in scene.get("ability_events", [])
+                      if "hud_check" in ev and s - tol <= ev["time_seconds"] <= e + tol]
+            bad = [c for c in checks if c.status == "contradicted"]
+            if bad:
+                reasons.append("HUD 대조 불일치: " + "; ".join(f"{c.ability_id} {fmt_time(c.time_seconds)} — {c.note}" for c in bad))
+            if (out_cfg.get("require_hud_verification_for_assertive") and hud_enabled
+                    and not any(c.status == "verified" for c in checks)):
+                reasons.append("HUD로 확인된 스킬/궁극기 사용 근거 없음")
+        verified = item.category == "skill_usage" and any(c.status == "verified" for c in checks)
 
         candidates.append(FeedbackItem(
             id="", scene_id=item.scene_id,
             start_time_seconds=s, end_time_seconds=e, category=item.category,
-            observation=item.observation, assessment=item.assessment, suggestion=item.suggestion,
+            observation=normalize_times(item.observation), assessment=normalize_times(item.assessment),
+            suggestion=normalize_times(item.suggestion),
             evidence_frame_timestamps=[f.timestamp_seconds for f in frames], evidence_frames=frames,
-            uncertainty=item.uncertainty, uncertainty_level=item.uncertainty_level,
+            uncertainty=normalize_times(item.uncertainty), uncertainty_level=item.uncertainty_level,
             hero=hero.hero_id, patch_version=hero.patch_version,
             judgement=judgement, confidence=max(0.0, min(1.0, item.confidence)),
             criterion_ids=valid_criteria, criteria_review_status=review_status,
             display_mode="tentative" if reasons else "assertive", display_reasons=reasons,
-            hud_checks=checks,
+            hud_checks=checks, verification="hud" if verified else "model_observation",
         ))
 
     # assertive first, then by confidence; drop duplicates of already-kept items
@@ -240,7 +248,7 @@ def finalize_feedback(
         if len(actions) >= out_cfg["max_action_items"]:
             discarded.append(DiscardedItem(reason="과제 최대 개수 초과", summary=a.task))
             continue
-        actions.append(ActionItem(task=a.task, why=a.why, related_feedback_ids=related))
+        actions.append(ActionItem(task=normalize_times(a.task), why=normalize_times(a.why), related_feedback_ids=related))
     return kept, actions
 
 

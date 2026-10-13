@@ -21,6 +21,7 @@ from pathlib import Path
 import numpy as np
 
 from .media import MediaError, _require
+from .timefmt import fmt_time
 
 READY, NOT_READY = "ready", "not_ready"
 
@@ -129,7 +130,7 @@ def check_use_claim(claim_time: float, slot: str, samples: list[HudSample], cfg:
     if hits:
         t = min(hits, key=lambda x: abs(x - claim_time))
         return {"status": "verified", "hud_use_time_seconds": t,
-                "note": f"HUD: {t:.2f}초에 준비 → 사용됨 전환 확인"}
+                "note": f"HUD: {fmt_time(t)}에 준비 → 사용됨 전환 확인"}
     if not near or len(known) < max(min_run, len(near) // 2):
         return {"status": "unverifiable", "hud_use_time_seconds": None,
                 "note": "해당 시각 전후 HUD가 가려졌거나 샘플이 부족함"}
@@ -142,7 +143,7 @@ def check_use_claim(claim_time: float, slot: str, samples: list[HudSample], cfg:
         what = "주장 시각 전후에 준비 → 사용됨 전환이 없음"
     other = [t for t in uses if abs(t - claim_time) > tol]
     if other:
-        what += f"; 이 구간에서 HUD상 사용 감지 시각: {', '.join(f'{t:.2f}초' for t in other)}"
+        what += f"; 이 구간에서 HUD상 사용 감지 시각: {', '.join(fmt_time(t) for t in other)}"
     return {"status": "contradicted", "hud_use_time_seconds": None, "note": what}
 
 
