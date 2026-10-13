@@ -172,7 +172,8 @@ def build_report_html(result: AnalysisResult, video_src: str, fragment: bool = F
     counts = {k: sum(f.category == k for f in feedback) for k in CATEGORY_KO}
     grades = {k: sum(f.grade == k for f in feedback) for k in GRADE_KO}
     summary = ("".join(f"<span>{v} <b>{counts[k]}</b></span>" for k, v in CATEGORY_KO.items())
-               + "".join(f"<span>{v} <b>{grades[k]}</b></span>" for k, v in GRADE_KO.items() if grades[k]))
+               + "".join(f"<span>{v} <b>{grades[k]}</b></span>" for k, v in GRADE_KO.items() if grades[k])
+               + f"<span>사망 <b>{len(result.player_deaths)}</b></span>")
     num_of = {f.id: i for i, f in enumerate(feedback, 1)}
     actions = "".join(
         f"<li>{_e(a.task)} <span class=muted>— {_e(a.why)} ({', '.join(f'{num_of[r]}번' for r in a.related_feedback_ids if r in num_of)})</span></li>"

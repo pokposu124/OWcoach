@@ -246,6 +246,7 @@ class AnalysisResult(BaseModel):
     game_patch_version: str | None
     criteria_patch_version: str
     video: VideoInfo
+    player_deaths: list[dict] = Field(default_factory=list, description="감지한 플레이어 사망 (time_seconds, source)")
     hud_ultimate_uses_seconds: list[float] = Field(default_factory=list, description="HUD로 감지한 궁극기 사용 시각(초)")
     team: dict | None = Field(default=None, description="팀 판별 단계 결과 (team_identification, roster, 사용한 프레임 시각)")
     overview: dict

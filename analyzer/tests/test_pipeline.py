@@ -561,3 +561,41 @@ def test_hud_ultimate_uses_become_scenes(video, cfg, tmp_path, monkeypatch):
     ev = seen["events"]
     assert len(ev) == 1 and ev[0]["time_seconds"] == 18.5 and ev[0]["ability_id"] == "nano_boost"
     assert ev[0]["hud_check"]["target_check"]["status"] == "interrupted"
+
+
+def test_player_death_from_hidden_hud(tmp_path, cfg):
+    """Ability tiles visible except 4.0-8.0s (HUD gone while dead) and one 0.1s flash at 2s:
+    one death at ~4s; the flash is not a death."""
+    from owcoach.hud import scan_player_deaths
+
+    tiles = "".join(f"drawbox=x={x}:y=614:w=34:h=34:color=white:t=fill:enable='not(between(t,4,8))*not(between(t,2,2.1))',"
+                    for x in (977, 1030))
+    video = tmp_path / "death.mp4"
+    subprocess.run(["ffmpeg", "-y", "-v", "error", "-f", "lavfi", "-i", "color=c=black:size=1280x720:rate=30",
+                    "-t", "12", "-vf", tiles.rstrip(","), "-pix_fmt", "yuv420p", str(video)], check=True)
+    deaths = scan_player_deaths(video, 12.0, cfg["hud_check"], cfg["death_check"]["hud_hidden_min_seconds"])
+    assert deaths == [pytest.approx(4.0, abs=0.5)]
+
+
+def test_deaths_force_scenes_and_coverage_warning(video, cfg, tmp_path, monkeypatch):
+    """A death the model did not pick becomes a scene covering the 10 s before it, the scene record
+    carries it, and a missing feedback for that window is reported as a warning."""
+    import owcoach.pipeline as pl
+
+    monkeypatch.setattr(pl, "scan_player_deaths", lambda *a, **k: [17.0])
+    seen = {}
+    real_plan = pl.plan_scenes
+
+    def spy_plan(overview, *a, **k):
+        seen["cands"] = [(c.start_time_seconds, c.end_time_seconds, c.reason_observed) for c in overview.candidates]
+        scenes = real_plan(overview, *a, **k)
+        seen["windows"] = [(s.window_start, s.window_end) for s in scenes]
+        return scenes
+
+    monkeypatch.setattr(pl, "plan_scenes", spy_plan)
+    result, _ = make_pipeline(cfg, tmp_path, MockProvider()).run(video, run_id="death1")
+    assert result.player_deaths == [{"time_seconds": 17.0, "source": "HUD 사라짐"}]
+    assert any(c[0] == 7.0 and c[1] == 17.0 and "사망" in c[2] for c in seen["cands"])
+    assert any(a <= 7.0 and b >= 17.0 for a, b in seen["windows"])
+    covered = any(f.start_time_seconds <= 18 and f.end_time_seconds >= 7 for f in result.feedback)
+    assert covered or any("사망 17초" in w for w in result.warnings)

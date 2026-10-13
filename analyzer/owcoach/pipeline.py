@@ -27,7 +27,7 @@ from pydantic import BaseModel, ValidationError
 
 from . import __version__
 from .config import ANALYZER_ROOT, fingerprint
-from .hud import check_use_claim, detect_buff_target, sample_hud, scan_uses
+from .hud import check_use_claim, detect_buff_target, sample_hud, scan_player_deaths, scan_uses
 from .timefmt import fmt_time
 from .heroes import HeroProfile
 from .portraits import identify, load_portraits
@@ -194,6 +194,7 @@ class Pipeline:
         self.discarded: list[DiscardedItem] = []
         self._team_record: dict | None = None
         self._hud_ult_uses: list[float] = []
+        self._deaths: list[dict] = []
 
     # ---------------------------------------------------------------- AI call helper
 
@@ -256,6 +257,26 @@ class Pipeline:
                                 "created_at": now_iso()})
         store.set_stage(name, status="done", finished_at=now_iso(), elapsed_seconds=elapsed)
         return output
+
+    def _find_deaths(self, video: Path, duration: float, overview: OverviewResponse, hcfg: dict) -> list[dict]:
+        dcfg = self.cfg.get("death_check") or {}
+        if not dcfg.get("enabled"):
+            return []
+        found: list[dict] = []
+        if hcfg.get("enabled"):
+            found += [{"time_seconds": t, "source": "HUD 사라짐"}
+                      for t in scan_player_deaths(video, duration, hcfg, float(dcfg["hud_hidden_min_seconds"]))]
+        for ev in overview.timeline:
+            if any(k in ev.event for k in dcfg.get("model_keywords", [])) and 0 <= ev.time_seconds <= duration:
+                found.append({"time_seconds": ev.time_seconds, "source": "모델 기록"})
+        merged: list[dict] = []
+        for d in sorted(found, key=lambda d: d["time_seconds"]):
+            if merged and d["time_seconds"] - merged[-1]["time_seconds"] <= float(dcfg["merge_seconds"]):
+                if d["source"] not in merged[-1]["source"]:
+                    merged[-1]["source"] += " + " + d["source"]
+                continue
+            merged.append(dict(d))
+        return merged
 
     def _team_stage(self, store: RunStore, video: Path, sha: str, duration: float, ai_fp_base: dict,
                     force: set[str]) -> tuple[TeamResponse | None, dict | None]:
@@ -477,7 +498,16 @@ class Pipeline:
             start_time_seconds=max(0.0, round(x - 2.0, 2)), end_time_seconds=min(duration, round(x + 2.0, 2)),
             category="ultimate_usage", reason_observed=f"HUD: {fmt_time(x)}에 궁극기 사용 감지", priority=5)
             for x in self._hud_ult_uses]
-        plan_input = overview.model_copy(update={"candidates": [*overview.candidates, *hud_candidates]})
+        self._deaths = self._find_deaths(video, duration, overview, hcfg)
+        if self._deaths:
+            self.log("  사망 감지: " + ", ".join(f"{fmt_time(d['time_seconds'])}({d['source']})" for d in self._deaths))
+        dpre = float((cfg.get("death_check") or {}).get("pre_seconds", 10.0))
+        death_candidates = [SceneCandidate(
+            start_time_seconds=max(0.0, round(d["time_seconds"] - dpre, 2)), end_time_seconds=d["time_seconds"],
+            category="positioning", priority=5,
+            reason_observed=f"사망 {fmt_time(d['time_seconds'])}: 직전 {dpre:g}초 상황 분석 필수 ({d['source']})")
+            for d in self._deaths]
+        plan_input = overview.model_copy(update={"candidates": [*overview.candidates, *hud_candidates, *death_candidates]})
         scenes = plan_scenes(plan_input, duration, cfg["detail"], ocfg["max_candidates"], self.discarded)
         self.log(f"  후보 장면 {len(scenes)}개: " + ", ".join(f"{s.window_start:.1f}-{s.window_end:.1f}s" for s in scenes))
 
@@ -515,6 +545,8 @@ class Pipeline:
             raw = self._cached_or_run(store, f"detail-{scene.scene_id}", fp, run_detail, "detail" in force)
             scene_records[scene.scene_id] = detail_to_original(
                 scene, DetailResponse.model_validate(raw), cfg["output"]["window_tolerance_seconds"], self.warnings)
+            scene_records[scene.scene_id]["player_deaths"] = [
+                d for d in self._deaths if scene.window_start <= d["time_seconds"] <= scene.window_end + 0.5]
         self.timings["detail"] = round(time.monotonic() - t, 3)
 
         # 3b. HUD check of claimed ability/ultimate use (no AI) ---------------------------
@@ -573,6 +605,11 @@ class Pipeline:
 
         feedback, actions = finalize_feedback(coaching, scene_records, hero, duration, out, extract, self.discarded,
                                               hud_enabled=bool(hcfg.get("enabled")))
+        dpre = float((cfg.get("death_check") or {}).get("pre_seconds", 10.0))
+        for d in self._deaths:
+            t = d["time_seconds"]
+            if not any(f.start_time_seconds <= t + 1 and f.end_time_seconds >= t - dpre for f in feedback):
+                self.warnings.append(f"사망 {fmt_time(t)} 직전 {dpre:g}초에 대한 피드백이 없음")
         self.timings["finalize"] = round(time.monotonic() - t, 3)
 
         result = AnalysisResult(
@@ -581,7 +618,7 @@ class Pipeline:
             notice=MOCK_NOTICE if prov.is_mock else None,
             hero=hero.hero_id, hero_display_name=hero.display_name_ko,
             game_patch_version=game_patch, criteria_patch_version=hero.patch_version, team=team_record,
-            hud_ultimate_uses_seconds=self._hud_ult_uses,
+            hud_ultimate_uses_seconds=self._hud_ult_uses, player_deaths=self._deaths,
             video=VideoInfo(file_name=video.name, sha256=sha, duration_seconds=duration, width=info.width,
                             height=info.height, fps=info.fps, codec=info.codec),
             overview=overview.model_dump(),

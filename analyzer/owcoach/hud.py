@@ -214,3 +214,29 @@ def detect_buff_target(video: Path, use_time: float, slots: list[dict], cfg: dic
 def scan_uses(video: Path, duration: float, slot: str, cfg: dict) -> list[float]:
     """All ready -> used transitions of one HUD slot over the whole video (e.g. every ultimate)."""
     return use_times(sample_hud(video, 0.0, duration, cfg), slot, min_run_for(cfg, slot))
+
+
+def scan_player_deaths(video: Path, duration: float, cfg: dict, min_hidden_seconds: float) -> list[float]:
+    """Start times of stretches where the player's ability HUD is gone for at least min_hidden_seconds.
+
+    While the player is dead the kill cam / spectator view replaces the HUD, so both ability tiles
+    read blank. Single blank frames (tile flashes) are far shorter than a respawn. Other full-screen
+    states (round transitions, menus) can also hide the HUD; callers treat these times as moments to
+    analyse, not as confirmed deaths.
+    """
+    samples = sample_hud(video, 0.0, duration, cfg)
+    step = 1.0 / float(cfg["fps"])
+    out, run_start, last = [], None, None
+    for s in samples:
+        hidden = all(v is None for v in s.states.values())
+        if hidden and run_start is None:
+            run_start = s.time_seconds
+        if hidden:
+            last = s.time_seconds
+        if not hidden and run_start is not None:
+            if last - run_start + step >= min_hidden_seconds:
+                out.append(run_start)
+            run_start = None
+    if run_start is not None and last - run_start + step >= min_hidden_seconds:
+        out.append(run_start)
+    return out

@@ -645,6 +645,15 @@
     "video": {
       "$ref": "#/$defs/VideoInfo"
     },
+    "player_deaths": {
+      "description": "감지한 플레이어 사망 (time_seconds, source)",
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Player Deaths",
+      "type": "array"
+    },
     "hud_ultimate_uses_seconds": {
       "description": "HUD로 감지한 궁극기 사용 시각(초)",
       "items": {

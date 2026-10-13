@@ -66,19 +66,19 @@ table{border-collapse:collapse;font-size:.8rem} td,th{border:1px solid var(--lin
   <p class=notice>코칭 기준이 코치 검수 전 초안입니다. 등급과 판단은 참고용입니다.</p><div class=teams><section class=ally><h2>아군</h2><ul><li><b>아나 (나)</b><span>BERNAR</span></li><li><b>독트린</b><span>MMG</span></li><li><b>파라</b><span>목포산아이</span></li><li><b>솔저: 76</b><span>결식아동</span></li><li><b>시그마</b><span>인도양쭈꾸미</span></li></ul></section><section class=enemy><h2>적</h2><ul><li><b>주노</b><span>서팔광</span></li><li><b>라이프위버</b><span>블켄</span></li><li><b>D.Va</b><span>따까리</span></li><li><b>소전</b><span>HWIWHA</span></li><li><b>시에라</b><span>전도리</span></li></ul></section></div>
 </section>
 <section class=feed aria-label="피드백">
-  <p class=summary><span>스킬 사용 <b>1</b></span><span>포지셔닝 <b>1</b></span><span>궁극기 사용 <b>2</b></span><span>최선 <b>3</b></span><span>블런더 <b>1</b></span></p>
+  <p class=summary><span>스킬 사용 <b>0</b></span><span>포지셔닝 <b>2</b></span><span>궁극기 사용 <b>2</b></span><span>탁월 <b>1</b></span><span>최선 <b>2</b></span><span>블런더 <b>1</b></span><span>사망 <b>0</b></span></p>
   
-<article class=card id="fb-1" data-start="66.5" data-end="71.0">
-  <header><button class=num type=button data-seek="66.5" aria-label="1번 피드백 1분 6초로 이동">1</button>
-    <span class=time>1분 6초 ~ 1분 11초</span>
-    <span class="chip cat">스킬 사용</span>
+<article class=card id="fb-1" data-start="69.0" data-end="76.0">
+  <header><button class=num type=button data-seek="69.0" aria-label="1번 피드백 1분 9초로 이동">1</button>
+    <span class=time>1분 9초 ~ 1분 16초</span>
+    <span class="chip cat">포지셔닝</span>
     <span class="chip g-best">최선</span><span class="chip mode m-tentative">참고·보류</span></header>
-  <p class=reasons>코치 검수되지 않은 기준</p>
-  <dl><dt>관찰</dt><dd>1분 7초에 전방 교전 지역으로 생체 수류탄을 투척함.</dd><dt>판단</dt><dd>교전이 일어나는 핵심 지역에 생체 수류탄을 투척하여 효과적으로 스킬을 활용함.</dd><dt>제안</dt><dd>아군과 적이 밀집하여 교전하는 타이밍에 맞춰 생체 수류탄을 적극적으로 사용하세요.</dd>
+  <p class=reasons>코치 검수되지 않은 기준 · 포지셔닝은(는) 코드로 확인할 수 없어 보류</p>
+  <dl><dt>관찰</dt><dd>1분 9초에 근접한 적 D.Va를 피해 엄폐물 방향으로 이동한 후 화물 뒤쪽 위치로 우회 이동하여 체력 250을 유지하며 생존함.</dd><dt>판단</dt><dd>근접 위협이 발생했을 때 화물과 엄폐물 뒤로 즉시 이동해 적의 사격선 및 시야를 차단하고 안전하게 생존했습니다.</dd><dt>제안</dt><dd>적 돌진 영웅이나 탱커가 근접할 때 지금처럼 주변 엄폐물 및 화물 뒤로 신속히 이동하여 시야를 끊는 동선을 유지하세요.</dd>
   </dl>
-  <ul class=hud><li class='h-verified'>HUD 확인 · 생체 수류탄 1분 7초</li></ul>
-  <div class=frames><button class=thumb data-seek="66.5" type=button><img src="evidence/frame_000066500ms.jpg" loading="lazy" alt="1분 6초 화면">1분 6초</button><button class=thumb data-seek="67.0" type=button><img src="evidence/frame_000067000ms.jpg" loading="lazy" alt="1분 7초 화면">1분 7초</button></div>
-  <details><summary>코치 검수 · 적용 기준 ana.skill.biotic_grenade_usage (draft)</summary>
+  <ul class=hud><li class=muted>모델 관찰 · 위치·엄폐는 코드로 확인하지 않음</li></ul>
+  <div class=frames><button class=thumb data-seek="69.5" type=button><img src="evidence/frame_000069500ms.jpg" loading="lazy" alt="1분 10초 화면">1분 10초</button><button class=thumb data-seek="72.0" type=button><img src="evidence/frame_000072000ms.jpg" loading="lazy" alt="1분 12초 화면">1분 12초</button><button class=thumb data-seek="75.75" type=button><img src="evidence/frame_000075750ms.jpg" loading="lazy" alt="1분 16초 화면">1분 16초</button></div>
+  <details><summary>코치 검수 · 적용 기준 ana.positioning.cover_access, ana.positioning.disengage_on_pressure (draft)</summary>
   <fieldset class=review data-id="fb-01">
     <label>관찰 사실 <select name=fact><option value="">-</option><option>정확</option><option>일부 틀림</option><option>틀림</option><option>확인 불가</option></select></label>
     <label>판단 <select name=assessment><option value="">-</option><option>동의</option><option>부분 동의</option><option>반대</option></select></label>
@@ -88,13 +88,13 @@ table{border-collapse:collapse;font-size:.8rem} td,th{border:1px solid var(--lin
     <textarea name=comment placeholder="코멘트 (오인식, 놓친 맥락, 기준 수정안 등)"></textarea>
   </fieldset></details>
 </article>
-<article class=card id="fb-2" data-start="132.75" data-end="141.0">
+<article class=card id="fb-2" data-start="132.75" data-end="136.0">
   <header><button class=num type=button data-seek="132.75" aria-label="2번 피드백 2분 13초로 이동">2</button>
-    <span class=time>2분 13초 ~ 2분 21초</span>
+    <span class=time>2분 13초 ~ 2분 16초</span>
     <span class="chip cat">궁극기 사용</span>
     <span class="chip g-best">최선</span><span class="chip mode m-tentative">참고·보류</span></header>
   <p class=reasons>코치 검수되지 않은 기준</p>
-  <dl><dt>관찰</dt><dd>2분 12초에 궁극기 게이지 100%를 달성한 뒤 2분 16초에 화면 안 교전 중인 아군 목포산아이(파라)에게 나노 강화제를 투여함.</dd><dt>판단</dt><dd>궁극기 충전 직후 교전 시작 타이밍에 맞춰 아군에게 나노 강화제를 적절히 사용하여 진격 교전을 유효하게 지원함.</dd><dt>제안</dt><dd>궁극기가 준비되었을 때 지금처럼 교전 중인 아군의 진입 타이밍에 맞춰 신속하게 나노 강화제를 부여하세요.</dd>
+  <dl><dt>관찰</dt><dd>2분 12초에 궁극기 게이지가 100%에 도달한 후, 2분 16초에 교전 중인 아군 목포산아이(파라)에게 나노 강화제를 사용함.</dd><dt>판단</dt><dd>궁극기 충전 직후 교전이 진행 중인 상황에서 적절한 타겟에게 나노 강화제를 빠르게 투여하여 교전 이득을 챙겼습니다.</dd><dt>제안</dt><dd>앞으로도 궁극기가 준비되면 교전 시작 시점에 맞춰 화면에 보이는 핵심 교전 아군에게 신속히 사용하세요.</dd>
   </dl>
   <ul class=hud><li class='h-verified'>HUD 확인 · 나노 강화제 2분 16초 → 대상 목포산아이(파라)</li></ul>
   <div class=frames><button class=thumb data-seek="132.75" type=button><img src="evidence/frame_000132750ms.jpg" loading="lazy" alt="2분 13초 화면">2분 13초</button><button class=thumb data-seek="135.5" type=button><img src="evidence/frame_000135500ms.jpg" loading="lazy" alt="2분 16초 화면">2분 16초</button><button class=thumb data-seek="136.0" type=button><img src="evidence/frame_000136000ms.jpg" loading="lazy" alt="2분 16초 화면">2분 16초</button></div>
@@ -108,17 +108,17 @@ table{border-collapse:collapse;font-size:.8rem} td,th{border:1px solid var(--lin
     <textarea name=comment placeholder="코멘트 (오인식, 놓친 맥락, 기준 수정안 등)"></textarea>
   </fieldset></details>
 </article>
-<article class=card id="fb-3" data-start="181.0" data-end="198.0">
+<article class=card id="fb-3" data-start="181.0" data-end="194.0">
   <header><button class=num type=button data-seek="181.0" aria-label="3번 피드백 3분 1초로 이동">3</button>
-    <span class=time>3분 1초 ~ 3분 18초</span>
+    <span class=time>3분 1초 ~ 3분 14초</span>
     <span class="chip cat">포지셔닝</span>
-    <span class="chip g-best">최선</span><span class="chip mode m-tentative">참고·보류</span></header>
+    <span class="chip g-excellent">탁월</span><span class="chip mode m-tentative">참고·보류</span></header>
   <p class=reasons>코치 검수되지 않은 기준 · 포지셔닝은(는) 코드로 확인할 수 없어 보류</p>
-  <dl><dt>관찰</dt><dd>3분 1초 평지 화물 경로에서 우측 건물 계단을 통해 고지대로 이동한 후 3분 9초에 기둥 엄폐물 옆에서 전방 사격 시야를 확보함.</dd><dt>판단</dt><dd>평지 개활지에 머무르지 않고 엄폐물이 확보되는 고지대로 위치를 옮겨 안전하게 아군 지원 시야를 확보함.</dd><dt>제안</dt><dd>교전 위치를 잡을 때는 엄폐물 이용이 용이한 고지대나 모서리 근처 포지션을 계속 유지하세요.</dd>
+  <dl><dt>관찰</dt><dd>3분 1초에 평지 화물 경로에서 뒤를 돌아 우측 건물 계단을 따라 이동함. 3분 9초에 고지대 기둥 엄폐물 옆에 도달하여 전방 경사로 교전 지역 시야를 확보하고 지원함.</dd><dt>판단</dt><dd>노출되기 쉬운 평지에 머무르지 않고 고지대 기둥 엄폐물을 선점하여 아군 시야 확보와 본인의 생존성을 동시에 극대화한 탁월한 포지셔닝입니다.</dd><dt>제안</dt><dd>평지 교전 시 주변 계단이나 고지대 엄폐물 위치를 우선적으로 파악하고 시야를 확보할 수 있는 고지대를 계속 활용하세요.</dd>
   </dl>
   <ul class=hud><li class=muted>모델 관찰 · 위치·엄폐는 코드로 확인하지 않음</li></ul>
-  <div class=frames><button class=thumb data-seek="181.0" type=button><img src="evidence/frame_000181000ms.jpg" loading="lazy" alt="3분 1초 화면">3분 1초</button><button class=thumb data-seek="189.0" type=button><img src="evidence/frame_000189000ms.jpg" loading="lazy" alt="3분 9초 화면">3분 9초</button><button class=thumb data-seek="194.0" type=button><img src="evidence/frame_000194000ms.jpg" loading="lazy" alt="3분 14초 화면">3분 14초</button></div>
-  <details><summary>코치 검수 · 적용 기준 ana.positioning.cover_access (draft)</summary>
+  <div class=frames><button class=thumb data-seek="181.0" type=button><img src="evidence/frame_000181000ms.jpg" loading="lazy" alt="3분 1초 화면">3분 1초</button><button class=thumb data-seek="185.5" type=button><img src="evidence/frame_000185500ms.jpg" loading="lazy" alt="3분 6초 화면">3분 6초</button><button class=thumb data-seek="189.0" type=button><img src="evidence/frame_000189000ms.jpg" loading="lazy" alt="3분 9초 화면">3분 9초</button><button class=thumb data-seek="194.0" type=button><img src="evidence/frame_000194000ms.jpg" loading="lazy" alt="3분 14초 화면">3분 14초</button></div>
+  <details><summary>코치 검수 · 적용 기준 ana.positioning.cover_access, ana.positioning.sightline_to_team (draft)</summary>
   <fieldset class=review data-id="fb-03">
     <label>관찰 사실 <select name=fact><option value="">-</option><option>정확</option><option>일부 틀림</option><option>틀림</option><option>확인 불가</option></select></label>
     <label>판단 <select name=assessment><option value="">-</option><option>동의</option><option>부분 동의</option><option>반대</option></select></label>
@@ -128,16 +128,16 @@ table{border-collapse:collapse;font-size:.8rem} td,th{border:1px solid var(--lin
     <textarea name=comment placeholder="코멘트 (오인식, 놓친 맥락, 기준 수정안 등)"></textarea>
   </fieldset></details>
 </article>
-<article class=card id="fb-4" data-start="239.5" data-end="250.5">
-  <header><button class=num type=button data-seek="239.5" aria-label="4번 피드백 4분 0초로 이동">4</button>
-    <span class=time>4분 0초 ~ 4분 10초</span>
+<article class=card id="fb-4" data-start="249.0" data-end="250.0">
+  <header><button class=num type=button data-seek="249.0" aria-label="4번 피드백 4분 9초로 이동">4</button>
+    <span class=time>4분 9초 ~ 4분 10초</span>
     <span class="chip cat">궁극기 사용</span>
     <span class="chip g-blunder">블런더</span><span class="chip mode m-tentative">참고·보류</span></header>
   <p class=reasons>코치 검수되지 않은 기준</p>
-  <dl><dt>관찰</dt><dd>4분 10초에 궁극기 게이지 100% 상태에서 체력이 저하된 아군 결식아동(솔저: 76)에게 나노 강화제를 사용했으나, 대상이 즉시 쓰러져 궁극기 효과가 끊어짐.</dd><dt>판단</dt><dd>이미 쓰러지기 직전인 아군에게 나노 강화제를 늦게 투여하여 효과를 살리지 못하고 궁극기를 소모함.</dd><dt>제안</dt><dd>아군의 체력이 급감하여 쓰러지기 전에 미리 나노 강화제를 주거나, 타이밍이 늦었다면 해당 아군을 포기하고 궁극기를 아끼거나 다른 아군에게 사용하세요.</dd>
+  <dl><dt>관찰</dt><dd>4분 10초에 궁극기 게이지 100% 상태에서 아군 결식아동(솔저: 76)에게 나노 강화제를 사용했으나 해당 아군이 직후 쓰러져 효과가 끊김.</dd><dt>판단</dt><dd>이미 쓰러지기 직전인 아군에게 늦게 궁극기를 사용하여 나노 강화제 효과를 살리지 못하고 소모되었습니다.</dd><dt>제안</dt><dd>체력이 소진되어 쓰러지기 직전인 아군에게 뒤늦게 궁극기를 주기보다는, 교전 개시 시점에 미리 주거나 아군의 체력이 안정적일 때 부여하세요.</dd>
   </dl>
   <ul class=hud><li class='h-verified'>HUD 확인 · 나노 강화제 4분 10초 → 대상 결식아동(솔저: 76) 쓰러져 끊김(추정)</li></ul>
-  <div class=frames><button class=thumb data-seek="239.5" type=button><img src="evidence/frame_000239500ms.jpg" loading="lazy" alt="4분 0초 화면">4분 0초</button><button class=thumb data-seek="249.0" type=button><img src="evidence/frame_000249000ms.jpg" loading="lazy" alt="4분 9초 화면">4분 9초</button><button class=thumb data-seek="249.5" type=button><img src="evidence/frame_000249500ms.jpg" loading="lazy" alt="4분 10초 화면">4분 10초</button></div>
+  <div class=frames><button class=thumb data-seek="249.0" type=button><img src="evidence/frame_000249000ms.jpg" loading="lazy" alt="4분 9초 화면">4분 9초</button><button class=thumb data-seek="249.5" type=button><img src="evidence/frame_000249500ms.jpg" loading="lazy" alt="4분 10초 화면">4분 10초</button></div>
   <details><summary>코치 검수 · 적용 기준 ana.ultimate.nano_boost_usage (draft)</summary>
   <fieldset class=review data-id="fb-04">
     <label>관찰 사실 <select name=fact><option value="">-</option><option>정확</option><option>일부 틀림</option><option>틀림</option><option>확인 불가</option></select></label>
@@ -151,15 +151,15 @@ table{border-collapse:collapse;font-size:.8rem} td,th{border:1px solid var(--lin
   <details><summary>다음 경기 과제</summary><ul><li class=muted>없음 (단정 피드백이 있어야 과제가 만들어집니다)</li></ul></details>
   <details class=meta><summary>검수 · 기록</summary>
     <textarea id=missed placeholder="AI가 놓친 중요한 장면: 시간 + 설명"></textarea><p><button id=save type=button>검수 결과 저장 (coach_review.json)</button></p>
-    <details><summary>제외된 항목 (2)</summary><ul><li><b>근거가 되는 단정적 피드백이 없는 과제</b> 쓰러지기 직전인 아군에게 나노 강화제 반응이 늦었다면 투여를 포기하고 궁극기 아끼기</li><li><b>근거가 되는 단정적 피드백이 없는 과제</b> 개활지에 오래 머무르지 않고 엄폐물 및 고지대를 끼고 교전 지원하기</li></ul></details>
+    <details><summary>제외된 항목 (3)</summary><ul><li><b>근거가 되는 단정적 피드백이 없는 과제</b> 쓰러지기 직전인 아군에게 나노 강화제 사용을 자제하고, 교전 시작 시점에 선제적으로 사용하기</li><li><b>근거가 되는 단정적 피드백이 없는 과제</b> 평지 교전 중 우측 건물 계단 등 고지대 기둥 엄폐물을 적극 선점하여 시야 확보하기</li><li><b>근거가 되는 단정적 피드백이 없는 과제</b> 적 근접 영웅의 압박 시 화물 및 모서리 엄폐물 뒤로 신속히 시야 차단하기</li></ul></details>
     <details><summary>경고</summary><ul><li>없음</li></ul></details>
     <details><summary>사용량 · 비용</summary><p>비용: 미계산 — 모델 &#x27;gemini-3.6-flash&#x27;의 확인된 단가가 config/pricing.yaml에 없어 비용을 계산하지 않았습니다. 토큰 사용량만 기록합니다.</p>
-      <div class=scroll><table><tr><th>단계</th><th>모델</th><th>입력</th><th>출력</th><th>thinking</th><th>시도</th><th>캐시</th></tr><tr><td>team</td><td>gemini-3.6-flash</td><td>6867</td><td>275</td><td>840</td><td>1</td><td></td></tr><tr><td>overview</td><td>gemini-3.6-flash</td><td>20243</td><td>1005</td><td>2115</td><td>1</td><td></td></tr><tr><td>detail:scene-01</td><td>gemini-3.6-flash</td><td>6827</td><td>884</td><td>2600</td><td>1</td><td></td></tr><tr><td>detail:scene-02</td><td>gemini-3.6-flash</td><td>6292</td><td>1072</td><td>1494</td><td>1</td><td></td></tr><tr><td>detail:scene-03</td><td>gemini-3.6-flash</td><td>6847</td><td>1175</td><td>2486</td><td>1</td><td></td></tr><tr><td>detail:scene-04</td><td>gemini-3.6-flash</td><td>7353</td><td>995</td><td>2693</td><td>1</td><td></td></tr><tr><td>detail:scene-05</td><td>gemini-3.6-flash</td><td>7504</td><td>991</td><td>2430</td><td>1</td><td></td></tr><tr><td>coaching</td><td>gemini-3.6-flash</td><td>9150</td><td>1418</td><td>3363</td><td>1</td><td></td></tr></table></div></details>
-    <p class=muted>run 066030940318-ana · 프롬프트 team 0.3.0, overview 0.5.0, detail 0.4.0, coaching 0.6.0 · 영웅 기준 0.3.0-draft · 게임 패치 최신 (사용자 기준, 버전 번호 미확인)</p>
+      <div class=scroll><table><tr><th>단계</th><th>모델</th><th>입력</th><th>출력</th><th>thinking</th><th>시도</th><th>캐시</th></tr><tr><td>team</td><td>gemini-3.6-flash</td><td>6867</td><td>275</td><td>840</td><td>1</td><td>예</td></tr><tr><td>overview</td><td>gemini-3.6-flash</td><td>20243</td><td>1005</td><td>2115</td><td>1</td><td>예</td></tr><tr><td>detail:scene-01</td><td>gemini-3.6-flash</td><td>6827</td><td>884</td><td>2600</td><td>1</td><td>예</td></tr><tr><td>detail:scene-02</td><td>gemini-3.6-flash</td><td>6292</td><td>1072</td><td>1494</td><td>1</td><td>예</td></tr><tr><td>detail:scene-03</td><td>gemini-3.6-flash</td><td>6847</td><td>1175</td><td>2486</td><td>1</td><td>예</td></tr><tr><td>detail:scene-04</td><td>gemini-3.6-flash</td><td>7353</td><td>995</td><td>2693</td><td>1</td><td>예</td></tr><tr><td>detail:scene-05</td><td>gemini-3.6-flash</td><td>7504</td><td>991</td><td>2430</td><td>1</td><td>예</td></tr><tr><td>coaching</td><td>gemini-3.6-flash</td><td>9320</td><td>1639</td><td>3798</td><td>1</td><td></td></tr></table></div></details>
+    <p class=muted>run 066030940318-ana · 프롬프트 team 0.3.0, overview 0.5.0, detail 0.4.0, coaching 0.7.0 · 영웅 기준 0.3.0-draft · 게임 패치 최신 (사용자 기준, 버전 번호 미확인)</p>
   </details>
 </section>
 </div>
-<script type="application/json" id=review-meta>{"run_id": "066030940318-ana", "analysis_mode": "real", "model": "gemini-3.6-flash", "prompts": {"team": "0.3.0", "overview": "0.5.0", "detail": "0.4.0", "coaching": "0.6.0"}, "hero_profile": "0.3.0-draft"}</script>
+<script type="application/json" id=review-meta>{"run_id": "066030940318-ana", "analysis_mode": "real", "model": "gemini-3.6-flash", "prompts": {"team": "0.3.0", "overview": "0.5.0", "detail": "0.4.0", "coaching": "0.7.0"}, "hero_profile": "0.3.0-draft"}</script>
 <script>
 const v=document.getElementById('v');
 const cards=[...document.querySelectorAll('.card')];
