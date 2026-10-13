@@ -384,6 +384,11 @@ class Pipeline:
                 hc["target_check"] = self._target_check(video, x, hcfg[a.target_marker])
             events.append({"time_seconds": x, "ability_id": a.id, "target": "", "source": "hud",
                            "evidence": "HUD에서 감지", "hud_check": hc})
+        # every verified use of a force_scene skill (and every ultimate) must get its own feedback item
+        for e in events:
+            a = by_id.get(e["ability_id"])
+            if a and (a.force_scene or a.hud_slot == "ultimate") and e["hud_check"].get("status") == "verified":
+                e["feedback_required"] = True
 
     def _moment_checks(self, store: RunStore, video: Path, sha: str, duration: float, scene_records: dict,
                        ai_fp_base: dict, team_context: str, pcfg: dict, force: set[str]) -> None:
@@ -742,6 +747,14 @@ class Pipeline:
             # the feedback has to run up to the death itself, not merely overlap the 10 s before it
             if not any(f.start_time_seconds <= t + 1 and f.end_time_seconds >= t - 3 for f in feedback):
                 self.warnings.append(f"사망 {fmt_time(t)} 직전 {dpre:g}초에 대한 피드백이 없음")
+        ability_ko = {a.id: a.name_ko for a in hero.abilities}
+        covered = {(c.ability_id, c.hud_use_time_seconds) for f in feedback for c in f.hud_checks if c.status == "verified"}
+        for rec in scene_records.values():
+            for e in rec["ability_events"]:
+                if e.get("feedback_required") and (e["ability_id"], e["hud_check"]["hud_use_time_seconds"]) not in covered:
+                    x = e["hud_check"]["hud_use_time_seconds"]
+                    covered.add((e["ability_id"], x))
+                    self.warnings.append(f"{ability_ko.get(e['ability_id'], e['ability_id'])} {fmt_time(x)} 사용에 대한 피드백이 없음")
         self.timings["finalize"] = round(time.monotonic() - t, 3)
 
         result = AnalysisResult(

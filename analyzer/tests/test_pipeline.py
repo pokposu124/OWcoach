@@ -679,6 +679,27 @@ def test_death_and_ultimate_feedback_exceed_the_limit(cfg):
     assert [d.reason for d in discarded] == ["피드백 최대 개수 초과"]
 
 
+def test_forced_skill_feedback_exceeds_the_limit(cfg):
+    """max_feedback_items=0: a HUD-verified sleep dart (force_scene) item is still kept; an unverified one is not."""
+    from owcoach.postprocess import finalize_feedback
+
+    hero = load_hero("ana")
+    rec = _scene_rec("verified")
+    rec["ability_events"].append({"time_seconds": 2.0, "ability_id": "sleep_dart", "target": "", "evidence": "e",
+                                  "hud_check": {"status": "verified", "hud_slot": "ability_1",
+                                                "hud_use_time_seconds": 2.0, "note": "n"}})
+    items = [
+        _coaching_item(category="skill_usage", criterion_ids=["ana.skill.sleep_dart_usage"],
+                       start_time_seconds=1.0, end_time_seconds=3.0, evidence_frame_timestamps=[2.0]),
+        _coaching_item(category="skill_usage", criterion_ids=["ana.skill.biotic_grenade_usage"],
+                       start_time_seconds=15.0, end_time_seconds=17.0, evidence_frame_timestamps=[16.0]),
+    ]
+    discarded = []
+    fb, _ = finalize_feedback(CoachingResponse(items=items, action_items=[]), {"scene-01": rec}, hero, 60.0,
+                              {**cfg["output"], "max_feedback_items": 0}, lambda t: f"evidence/{t}.jpg", discarded)
+    assert [f.start_time_seconds for f in fb] == [1.0]
+
+
 def test_common_knowledge_applies_to_every_hero():
     """heroes/common.yaml (e.g. no skills into an enemy Genji's deflect) is merged into each hero and is
     not itself offered as a hero."""

@@ -255,8 +255,12 @@ def finalize_feedback(
             hud_checks=checks, verification="hud" if verified else "model_observation",
         ))
 
+    forced_ids = {a.id for a in hero.abilities if a.force_scene}
+
     def must_keep(f: FeedbackItem) -> bool:
         if f.category == "ultimate_usage" and f.verification == "hud":
+            return True
+        if f.category == "skill_usage" and f.verification == "hud" and any(c.ability_id in forced_ids for c in f.hud_checks):
             return True
         return any(f.start_time_seconds <= t + 1 and f.end_time_seconds >= t - 3 for t in death_times or [])
 
