@@ -780,9 +780,9 @@ def test_disable_then_death_withholds_good_grade(cfg):
     assert any("명중 여부 미확인" in r for r in fb[0].display_reasons) is False
 
 
-def test_unverifiable_criterion_alone_cannot_grade(cfg):
-    """A blunder resting only on the deflect criterion (enemy counter seen by the model, not by code) is
-    withheld; the same item with a code-checkable criterion keeps its grade."""
+def test_unverifiable_criterion_cannot_grade(cfg):
+    """A blunder citing the deflect criterion (enemy counter seen by the model, not by code) is withheld,
+    alone or alongside another criterion (video2 2:17: an invented deflect next to the sleep dart criterion)."""
     from owcoach.postprocess import finalize_feedback
 
     hero = load_hero("ana")
@@ -794,7 +794,7 @@ def test_unverifiable_criterion_alone_cannot_grade(cfg):
                            criterion_ids=["common.skill.no_skills_into_deflect", "ana.skill.sleep_dart_usage"])
     fb, _ = finalize_feedback(CoachingResponse(items=[mixed], action_items=[]), {"scene-01": _scene_rec("verified")},
                               hero, 30.0, cfg["output"], lambda t: f"evidence/{t}.jpg", [])
-    assert fb[0].grade == "blunder"
+    assert fb[0].grade == "withheld"
 
 
 def test_sleep_hit_from_enemy_status_icon(tmp_path, cfg):
@@ -825,3 +825,36 @@ def test_missed_sleep_withholds_good_grade(cfg):
     fb, _ = finalize_feedback(CoachingResponse(items=[item], action_items=[]), {"scene-01": rec}, hero, 30.0,
                               cfg["output"], lambda t: f"evidence/{t}.jpg", [])
     assert fb[0].grade == "withheld" and any("빗나감" in r for r in fb[0].display_reasons)
+
+
+def test_reflected_grenade_from_self_antiheal_icon(tmp_path, cfg):
+    """Purple anti-heal icon left of the health number from 2.3 s to 4.5 s: the grenade at 2 s came back.
+    A 0.25 s purple flash (enemy ultimate effect) at 5.5 s is not a reflection."""
+    from owcoach.hud import detect_reflect
+
+    rcfg = cfg["hud_check"]["self_antiheal"]
+    box = f"x={rcfg['x0']}:y={rcfg['y0']}:w={rcfg['x1'] - rcfg['x0']}:h={rcfg['y1'] - rcfg['y0']}:color=0xc040f0:t=fill"
+    vf = f"drawbox={box}:enable='between(t,2.3,4.5)',drawbox={box}:enable='between(t,5.5,5.75)'"
+    video = tmp_path / "antiheal.mp4"
+    subprocess.run(["ffmpeg", "-y", "-v", "error", "-f", "lavfi", "-i", "color=c=0x404040:size=1280x720:rate=30",
+                    "-t", "8", "-vf", vf, "-pix_fmt", "yuv444p", str(video)], check=True)
+    hit = detect_reflect(video, 2.0, rcfg)
+    assert hit["status"] == "reflected" and abs(hit["onset_seconds"] - 2.3) <= 0.2
+    assert detect_reflect(video, 5.3, rcfg)["status"] == "not_reflected"
+
+
+def test_reflected_grenade_is_a_blunder(cfg):
+    """A grenade the code saw come back is a blunder even if the model called it best, and cites the
+    deflect criterion."""
+    from owcoach.postprocess import finalize_feedback
+
+    hero = load_hero("ana")
+    rec = _scene_rec("verified")
+    rec["ability_events"][0].update(ability_id="biotic_grenade")
+    rec["ability_events"][0]["hud_check"].update(hud_slot="ability_2", reflect_check={"status": "reflected", "note": "반사됨"})
+    item = _coaching_item(category="skill_usage", grade="best", criterion_ids=["ana.skill.biotic_grenade_usage"])
+    fb, _ = finalize_feedback(CoachingResponse(items=[item], action_items=[]), {"scene-01": rec}, hero, 30.0,
+                              cfg["output"], lambda t: f"evidence/{t}.jpg", [])
+    assert fb[0].grade == "blunder"
+    assert "common.skill.no_skills_into_deflect" in fb[0].criterion_ids
+    assert any("반사됨" in r for r in fb[0].display_reasons)

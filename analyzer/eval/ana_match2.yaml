@@ -25,6 +25,9 @@ facts:
     - {time_seconds: 137.0, ability: sleep_dart, hit: false, note: "빗나감 (사용자 확인)"}
     - {time_seconds: 195.0, ability: sleep_dart, hit: true, target_player: "참깨라면"}
     - {time_seconds: 256.75, ability: sleep_dart, hit: true, target_player: "참깨라면", note: "모델은 젠야타라고 했음"}
+  reflected:                       # 반사된 스킬 (36초: 사용자 확인 겐지 튕겨내기 / 이 영상의 나머지 수류탄은 반사 없음)
+    ability: biotic_grenade
+    times: [37.0]
 judgements:
   - {time_seconds: 36.5, category: skill_usage, grade: blunder,
      note: "적 겐지 튕겨내기 중 생체 수류탄 투척 (HUD 사용 감지 37.0초)"}

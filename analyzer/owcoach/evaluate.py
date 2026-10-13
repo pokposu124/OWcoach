@@ -113,6 +113,15 @@ def evaluate(run_dir: Path, labels_path: Path) -> dict:
         missed = any(k in said for k in ("빗나", "맞지 않", "실패"))
         check("스킬 명중(모델)", missed == (not so["hit"]), f"{fmt_time(t)} 정답 {'명중' if so['hit'] else '빗나감'} / 순간 확인 '{said}'")
 
+    # reflected skills (code: anti-heal icon on the player right after the grenade)
+    rf = facts.get("reflected")
+    if rf:
+        for u in (u for u in result.skill_uses if u["ability_id"] == rf["ability"]):
+            want = any(_near(u["time_seconds"], t, 1.5) for t in rf["times"])
+            got = (u.get("reflect_check") or {}).get("status")
+            check("반사 판별(코드)", (got == "reflected") == want,
+                  f"{fmt_time(u['time_seconds'])} 정답 {'반사됨' if want else '반사 없음'} / 코드 {got or '판별 없음'}")
+
     # the player's own grades for specific plays
     for j in labels.get("judgements", []):
         t = j["time_seconds"]

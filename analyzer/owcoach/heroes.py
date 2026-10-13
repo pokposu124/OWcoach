@@ -47,6 +47,9 @@ class Ability(BaseModel):
     # True면 HUD로 감지한 이 스킬의 모든 사용 순간을 후보 장면으로 강제 포함 (전체 흐름 모델 선택·장면 수 제한과 무관).
     # 영웅마다 따로 정한다. 궁극기는 이 값과 상관없이 항상 강제 포함
     force_scene: bool = False
+    # 반사(겐지 튕겨내기 등)되어 돌아왔을 때 플레이어에게 남는 표시 (config hud_check 의 키, 예: self_antiheal).
+    # 적 팀에 같은 영웅이 있으면 그 표시가 적의 스킬일 수 있어 판별하지 않음
+    reflect_marker: str | None = None
 
 
 class NumericFact(BaseModel):

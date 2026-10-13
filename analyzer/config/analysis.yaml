@@ -157,6 +157,19 @@ hud_check:
     window_seconds: 3.0
     min_increase: 0.08
     min_frames: 2
+  # 내 체력 숫자 왼쪽 아이콘: 평소 흰 "+", 치유 차단 중엔 보라색 아이콘 (실측 영상2 36.5~38.9초, 반사된 수류탄)
+  self_antiheal:
+    icon_name: "치유 차단 아이콘"
+    fps: 8.0
+    reference_resolution: [1280, 720]
+    x0: 112
+    y0: 597
+    x1: 129
+    y1: 616
+    min_ratio: 0.3                 # 영역 내 보라 픽셀 비율 (실측: 치유 차단 0.6~0.7, 평소 0)
+    min_seconds: 1.0               # 적 궁극기 효과로 잠깐 보라색이 비치는 경우(0.25초 이하 실측) 제외
+    onset_before_seconds: 1.0      # HUD 사용 시각이 실제 투척보다 최대 ~0.6초 늦게 잡힘(실측)
+    onset_after_seconds: 1.5
   regions:
     ultimate: {shape: circle, cx: 640, cy: 620, r: 22}
     ability_1: {shape: rect, x0: 977, y0: 614, x1: 1011, y1: 648}
@@ -177,6 +190,8 @@ output:
   # 이 기준만으로 내린 등급은 '판단 보류'로 바꾼다: 근거(적 대응 스킬 활성)를 코드로 확인할 수 없고, 모델 판단이
   # 실제 영상에서 두 번 다 틀렸다(두 번째 아나 영상: 36초 튕겨내기 놓침, 2분 17초 없는 튕겨내기 반사를 지어냄).
   unverifiable_criteria: [common.skill.no_skills_into_deflect]
+  # 코드가 반사(자신에게 치유 차단)를 확인한 스킬 피드백은 블런더로 하고 이 기준을 근거로 붙인다
+  reflected_criterion: common.skill.no_skills_into_deflect
   # 무력화 스킬(수면총 등)을 쓴 뒤 이 시간 안에 플레이어가 죽으면, 그 사용을 근거로 한 최선·탁월 판정은 보류한다
   # (명중했다면 대상이 행동하지 못함). 실측: 2분 17초 수면총을 '명중'으로 판단했으나 빗나갔고 1.5초 뒤 사망.
   disable_then_death_seconds: 3.0

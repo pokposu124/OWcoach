@@ -30,6 +30,7 @@ from .config import ANALYZER_ROOT, fingerprint
 from .hud import (
     check_use_claim,
     detect_buff_target,
+    detect_reflect,
     detect_status_icon,
     min_run_for,
     sample_hud,
@@ -384,6 +385,18 @@ class Pipeline:
                 hc["target_check"] = self._target_check(video, x, hcfg[a.target_marker])
             events.append({"time_seconds": x, "ability_id": a.id, "target": "", "source": "hud",
                            "evidence": "HUD에서 감지", "hud_check": hc})
+        # did the skill come back at the player (deflected)? Not judged when an enemy plays the same hero,
+        # whose own skill would leave the same mark
+        enemy_heroes = {r.get("hero") for r in (self._team_record or {}).get("roster", []) if r.get("team") == "enemy"}
+        for e in events:
+            a, hc = by_id.get(e["ability_id"]), e["hud_check"]
+            if not (a and a.reflect_marker and hc.get("status") == "verified" and a.reflect_marker in hcfg):
+                continue
+            if self.hero.display_name_ko in enemy_heroes:
+                hc["reflect_check"] = {"status": "unverifiable",
+                                       "note": f"적 팀에 {self.hero.display_name_ko}가 있어 반사 여부 판별 불가"}
+            else:
+                hc["reflect_check"] = detect_reflect(video, hc["hud_use_time_seconds"], hcfg[a.reflect_marker])
         # every verified use of a force_scene skill (and every ultimate) must get its own feedback item
         for e in events:
             a = by_id.get(e["ability_id"])
@@ -462,7 +475,7 @@ class Pipeline:
                 seen.add((e["ability_id"], x))
                 out.append({"time_seconds": x, "ability_id": e["ability_id"], "source": e.get("source", "model"),
                             "target_check": hc.get("target_check"), "moment_check": hc.get("moment_check"),
-                            "death_after_seconds": hc.get("death_after_seconds")})
+                            "death_after_seconds": hc.get("death_after_seconds"), "reflect_check": hc.get("reflect_check")})
         return sorted(out, key=lambda u: u["time_seconds"])
 
     def _target_check(self, video: Path, use_time: float, mcfg: dict) -> dict:

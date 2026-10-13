@@ -125,8 +125,12 @@ def _hud_line(c) -> str:
             target = f" → 대상 {_e(tc['player_name'])}({_e(tc.get('hero') or '?')})"
         elif tc.get("status") == "interrupted":
             target = f" → 대상 {_e(tc['player_name'])}({_e(tc.get('hero') or '?')}) 쓰러져 끊김(추정)"
+        elif tc.get("status") == "missed":
+            target = " → 빗나감(코드 확인)"
         else:
             target = " · 대상 확인 불가"
+    if (c.reflect_check or {}).get("status") == "reflected":
+        target += " → 반사되어 자신이 치유 차단(코드 확인)"
     return (f"<li class='h-{c.status}'>{_e(HUD_KO[c.status])} · {_e(ability)} {when}{target}"
             + (f" <span class=muted>— {_e(c.note)}</span>" if c.status != "verified" else "") + "</li>")
 

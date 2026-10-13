@@ -15,7 +15,7 @@ Category = Literal["skill_usage", "positioning", "ultimate_usage"]
 Visibility = Literal["clear", "partial", "unclear"]
 Level = Literal["low", "medium", "high"]
 
-RESULT_SCHEMA_VERSION = "1.2.0"
+RESULT_SCHEMA_VERSION = "1.3.0"
 
 
 # ---------------------------------------------------------------- stage 2: overview (model output)
@@ -146,6 +146,7 @@ class HudCheck(BaseModel):
     target_check: dict | None = Field(default=None, description="대상 판별 결과 (나노 강화제 등: 팀 목록 칸 강화 화살표)")
     moment_check: dict | None = Field(default=None, description="사용 순간 확인 (대상, 적 대응 스킬 활성 여부, 결과)")
     death_after_seconds: float | None = Field(default=None, description="무력화 스킬 사용 후 플레이어가 죽기까지 걸린 시간(초)")
+    reflect_check: dict | None = Field(default=None, description="반사 판별 (생체 수류탄: 직후 자신에게 치유 차단 아이콘 = 튕겨내기 등에 반사됨)")
 
 
 class EvidenceFrame(BaseModel):

@@ -36,6 +36,8 @@ abilities:
     hud_hint: "HUD 하단 스킬 아이콘. 사용 후 쿨다운 숫자가 표시됨"
     hud_slot: ability_2
     force_scene: true
+    # 튕겨내기에 반사되면 아나 자신이 치유 차단에 걸림 (config hud_check.self_antiheal)
+    reflect_marker: self_antiheal
   - id: nano_boost
     name_ko: 나노 강화제
     name_en: Nano Boost

@@ -183,7 +183,9 @@ def finalize_feedback(
 
         grade = item.grade
         unverifiable = set(out_cfg.get("unverifiable_criteria", []))
-        if valid_criteria and set(valid_criteria) <= unverifiable and grade != "withheld":
+        # any grade resting on such a criterion (e.g. "skill into a deflect") is withheld unless the code
+        # confirms it below (reflect_check), even when other criteria are cited alongside it
+        if set(valid_criteria) & unverifiable and grade != "withheld":
             grade = "withheld"
             unverifiable_note = "근거(적 대응 스킬 활성)가 코드로 확인되지 않는 모델 관찰이라 판단 보류"
         else:
@@ -238,6 +240,16 @@ def finalize_feedback(
             grade = "withheld"
             reasons.append("; ".join(f"{c.ability_id} {fmt_time(c.hud_use_time_seconds or c.time_seconds)} 사용 {c.death_after_seconds:g}초 뒤 사망: "
                                      "명중했다면 대상이 행동하지 못했어야 하므로 명중 여부 미확인, 판단 보류" for c in doubtful))
+        # code saw the skill come back at the player (e.g. a grenade into an enemy Genji's deflect): blunder
+        reflected = [c for c in checks if (c.reflect_check or {}).get("status") == "reflected"]
+        if reflected:
+            grade = "blunder"
+            reasons = [r for r in reasons if r not in (unverifiable_note, "근거 부족으로 판단 보류")]
+            reasons.append("; ".join(f"{c.ability_id} {fmt_time(c.hud_use_time_seconds or c.time_seconds)}: 코드 확인 결과 "
+                                     f"{c.reflect_check.get('note', '반사됨')} → 블런더" for c in reflected))
+            deflect = out_cfg.get("reflected_criterion")
+            if deflect and hero.criterion(deflect) and deflect not in valid_criteria:
+                valid_criteria.append(deflect)
         if item.category in out_cfg.get("hold_categories", []):
             reasons.append(f"{CATEGORY_KO[item.category]}은(는) 코드로 확인할 수 없어 보류")
 

@@ -295,3 +295,44 @@ def detect_status_icon(video: Path, use_time: float, slots: list[dict], cfg: dic
     if hits.max() == 0:
         return {"status": "missed", "note": f"어느 적 칸에도 {cfg.get('icon_name', '상태 표시')}가 뜨지 않음: 빗나감"}
     return {"status": "unverifiable", "note": "표시가 약하거나 여러 칸에 걸쳐 있어 대상 특정 불가"}
+
+
+def detect_reflect(video: Path, use_time: float, cfg: dict) -> dict:
+    """Was the player's own skill reflected back at them (e.g. into an enemy Genji's deflect)?
+
+    Biotic Grenade: when it comes back, the player gets its anti-heal. The icon left of the player's
+    health number turns from a white "+" into a purple broken-heal icon for a few seconds. Enemy
+    ultimate effects can tint that spot purple too, but only for a moment (<= 0.25 s measured), so the
+    icon must stay for min_seconds, starting within onset_before/onset_after of the HUD use time.
+    cfg: hud_check.self_antiheal (region in reference_resolution, fps, purple test, min_ratio, ...).
+    """
+    fps = float(cfg["fps"])
+    w, h = cfg["x1"] - cfg["x0"], cfg["y1"] - cfg["y0"]
+    ref_w, ref_h = cfg["reference_resolution"]
+    start = max(0.0, use_time - cfg["onset_before_seconds"])
+    span = cfg["onset_before_seconds"] + cfg["onset_after_seconds"] + cfg["min_seconds"] + 0.5
+    proc = subprocess.run([
+        _require("ffmpeg"), "-v", "error", "-ss", f"{start:.3f}", "-i", str(video), "-t", f"{span:.3f}",
+        "-vf", f"fps={fps},scale={ref_w}:{ref_h},crop={w}:{h}:{cfg['x0']}:{cfg['y0']}",
+        "-f", "rawvideo", "-pix_fmt", "rgb24", "-",
+    ], capture_output=True)
+    if proc.returncode != 0:
+        raise MediaError(f"reflect check extraction failed: {proc.stderr[-300:]!r}")
+    frames = np.frombuffer(proc.stdout, np.uint8).reshape(-1, h, w, 3).astype(np.int16)
+    if len(frames) == 0:
+        return {"status": "unverifiable", "note": "판별용 프레임 부족"}
+    r, g, b = frames[..., 0], frames[..., 1], frames[..., 2]
+    on = ((b > 150) & (r > 110) & (b - g > 70) & (r - g > 30)).mean(axis=(1, 2)) >= cfg["min_ratio"]
+    times = start + np.arange(len(on)) / fps
+    need = max(1, int(round(cfg["min_seconds"] * fps)))
+    run = 0
+    for i, x in enumerate(on):
+        run = run + 1 if x else 0
+        if run < need:
+            continue
+        onset = times[i - run + 1]
+        if onset <= use_time + cfg["onset_after_seconds"]:
+            return {"status": "reflected", "onset_seconds": round(float(onset), 2),
+                    "note": f"반사됨: {fmt_time(float(onset))}부터 자신에게 {cfg['icon_name']} {cfg['min_seconds']:g}초 이상 유지"}
+    return {"status": "not_reflected", "note": f"사용 직후 자신에게 {cfg['icon_name']} 없음: 반사되지 않음"}
+
