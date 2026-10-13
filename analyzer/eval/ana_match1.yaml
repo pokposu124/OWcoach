@@ -1,0 +1,22 @@
+# 아나 경기 1 (화물 호위, 4분 47초). 사용자 확인 2026-10-13.
+video_sha12: "066030940318"
+hero: ana
+facts:
+  deaths: []                       # 이 영상에서 플레이어는 죽지 않음
+  ultimates:
+    - {time_seconds: 136.0, target_hero: "파라", target_player: "목포산아이"}
+    - {time_seconds: 249.5, target_hero: "솔저: 76", target_player: "결식아동", interrupted: true}
+  roster:                          # 슬롯 1~10 (왼쪽 팀 1~5)
+    - {slot: 1, hero: "주노"}
+    - {slot: 2, hero: "라이프위버"}
+    - {slot: 3, hero: "D.Va"}
+    - {slot: 4, hero: "소전"}
+    - {slot: 5, hero: "시에라"}
+    - {slot: 6, hero: "아나", player: "BERNAR"}
+    - {slot: 7, hero: "독트린", player: "MMG"}
+    - {slot: 8, hero: "파라"}
+    - {slot: 9, hero: "솔저: 76"}
+    - {slot: 10, hero: "시그마"}
+judgements:                        # 사용자가 매긴 등급
+  - {time_seconds: 249.5, category: ultimate_usage, grade: blunder,
+     note: "쓰러지기 직전 솔저에게 늦게 준 나노. 일찍 주거나 포기했어야 함"}

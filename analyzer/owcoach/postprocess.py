@@ -182,6 +182,12 @@ def finalize_feedback(
         review_status = "none" if not valid_criteria else ("approved" if statuses == {"approved"} else "draft")
 
         grade = item.grade
+        unverifiable = set(out_cfg.get("unverifiable_criteria", []))
+        if valid_criteria and set(valid_criteria) <= unverifiable and grade != "withheld":
+            grade = "withheld"
+            unverifiable_note = "근거(적 대응 스킬 활성)가 코드로 확인되지 않는 모델 관찰이라 판단 보류"
+        else:
+            unverifiable_note = ""
         reasons = []
         if not valid_criteria:
             reasons.append("적용할 코칭 기준을 찾을 수 없음")
@@ -191,7 +197,9 @@ def finalize_feedback(
             reasons.append("결과(사망 등)만을 근거로 한 판단")
             if grade == "blunder":
                 grade = "withheld"
-        if grade == "withheld":
+        if unverifiable_note:
+            reasons.append(unverifiable_note)
+        elif grade == "withheld":
             reasons.append("근거 부족으로 판단 보류")
         if item.confidence < out_cfg["min_confidence_for_assertive"]:
             reasons.append(f"확신도 낮음({item.confidence:.2f})")

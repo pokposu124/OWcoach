@@ -92,6 +92,13 @@ def cmd_export(args) -> int:
     return 0
 
 
+def cmd_evaluate(args) -> int:
+    from .evaluate import evaluate, print_report
+
+    print_report(evaluate(Path(args.run_dir), Path(args.labels)))
+    return 0
+
+
 def cmd_heroes(args) -> int:
     for h in available_heroes():
         p = load_hero(h)
@@ -140,6 +147,11 @@ def main(argv: list[str] | None = None) -> int:
     x.add_argument("--height", type=int, default=480)
     x.add_argument("--kbps", type=int, default=360)
     x.set_defaults(fn=cmd_export)
+
+    ev = sub.add_parser("evaluate", help="분석 결과를 사용자 확인 정답 기록(eval/*.yaml)과 비교")
+    ev.add_argument("run_dir")
+    ev.add_argument("labels")
+    ev.set_defaults(fn=cmd_evaluate)
 
     sub.add_parser("heroes", help="지원 영웅 목록").set_defaults(fn=cmd_heroes)
 

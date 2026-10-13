@@ -1,0 +1,17 @@
+# 아나 경기 2 (거점 수비, 4분 52초). 사용자 확인 2026-10-13.
+video_sha12: "bc7deeef7d44"
+hero: ana
+facts:
+  deaths:                          # 체력 0 구간 시작 (프레임으로 확인: 체력 0, 초상화 빨간 해골)
+    - {time_seconds: 39.0}
+    - {time_seconds: 71.0}
+    - {time_seconds: 106.5}
+    - {time_seconds: 138.5, cause: "적 겐지 용검"}
+    - {time_seconds: 200.5}
+  ultimates:
+    - {time_seconds: 190.75, target_player: "LEAF"}
+  not_happened:                    # 모델이 지어낸 적이 있는 사건
+    - {time_seconds: 137.0, what: "수면총이 겐지 튕겨내기에 반사되어 아나가 잠듦"}
+judgements:
+  - {time_seconds: 36.5, category: skill_usage, grade: blunder,
+     note: "적 겐지 튕겨내기 중 생체 수류탄 투척 (HUD 사용 감지 37.0초)"}

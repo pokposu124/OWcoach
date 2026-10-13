@@ -82,6 +82,7 @@ python -m owcoach analyze /path/to/video.mp4 --hero ana --patch "<게임 패치 
 python -m owcoach analyze /path/to/video.mp4 --hero ana --max-scenes 12 --max-feedback 8   # 장면·피드백 개수 지정 (사망·궁극기는 별도로 항상 포함)
 
 python -m owcoach report runs/<run_id>        # 검수 리포트 재생성
+python -m owcoach evaluate runs/<run_id> eval/ana_match2.yaml       # 사용자 확인 정답 기록과 비교
 python -m owcoach export runs/<run_id> ../docs/demo --video /path/to/video.mp4   # 웹 게시용 정적 결과 화면 (GitHub Pages: /docs)
 python -m pytest                              # 테스트 (FFmpeg로 합성 영상을 만들어 mock으로 전체 흐름 검증)
 ```
@@ -123,5 +124,6 @@ OCR·객체 탐지는 넣지 않았다. 실제 영상 검수에서 같은 인식
   대상이 받자마자 사망해 궁이 끊기면 화살표가 뜨지 않으며, 이때는 '대상 확인 불가'가 된다(249.5초 → 솔저, 실제로 끊김).
 - 모델이 매기는 확신도는 틀린 항목에도 0.95~1.0이라 단정 표시 근거로 쓰지 않는다.
 - 개수 제한(`overview.max_candidates` 장면, `output.max_feedback_items` 피드백, CLI `--max-scenes`/`--max-feedback`)은 모델이 고른 장면과 일반 피드백에만 적용한다. 사망 직전 장면·피드백과 HUD로 감지한 궁극기 장면·피드백은 개수와 별도로 항상 포함한다.
+- 짧은 클립(앞뒤 1초, 10fps)으로 스킬 사용 순간의 적 대응 스킬(겐지 튕겨내기)을 물어보면 모델이 놓치기도(36초) 지어내기도(2분 17초) 했다 → 그 판단만으로는 등급을 매기지 않는다(`unverifiable_criteria`). 사용자 확인 사실은 `analyzer/eval/*.yaml` 에 두고 `evaluate` 로 결과와 비교한다(경기 1: 15/15, 경기 2: 8/9).
 - 플레이어 사망 직전 10초는 항상 분석한다(`death_check`: 좌하단 체력 칸이 3초 이상 모두 빈 구간 + overview가 기록한 사망). 사망 중에도 HUD는 그대로 보인다(사망 위치 관전). 두 번째 아나 영상의 사망 5번을 모두 찾았고 첫 영상(사망 없음)은 0건이었다.
 - HUD·초상화 좌표는 이 영상의 기본 HUD 배치에서만 보정했다. 다른 해상도·HUD 설정 영상으로 추가 검증 필요.

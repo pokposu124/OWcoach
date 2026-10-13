@@ -703,3 +703,38 @@ def test_moment_check_runs_for_each_hud_verified_skill(video, cfg, tmp_path, mon
     prompts.clear()
     make_pipeline(cfg, tmp_path, Spy()).run(video, run_id="moment1")
     assert prompts == []  # cached
+
+
+def test_evaluate_against_user_labels(video, cfg, tmp_path):
+    from owcoach.evaluate import evaluate
+
+    result, run_dir = make_pipeline(cfg, tmp_path, MockProvider()).run(video, run_id="eval1")
+    labels = tmp_path / "labels.yaml"
+    labels.write_text(
+        f'video_sha12: "{result.video.sha256[:12]}"\nhero: ana\n'
+        "facts:\n  deaths: [{time_seconds: 5.0}]\n  roster: [{slot: 1, hero: \"아나\"}]\n"
+        "judgements: [{time_seconds: 999.0, category: skill_usage, grade: blunder}]\n", "utf-8")
+    rep = evaluate(run_dir, labels)
+    kinds = {(c["kind"], c["ok"]) for c in rep["checks"]}
+    assert ("사망 감지", False) in kinds and ("사용자 판정 일치", False) in kinds
+    bad = tmp_path / "other.yaml"
+    bad.write_text('video_sha12: "000000000000"\nhero: ana\n', "utf-8")
+    with pytest.raises(ValueError, match="영상이 다릅니다"):
+        evaluate(run_dir, bad)
+
+
+def test_unverifiable_criterion_alone_cannot_grade(cfg):
+    """A blunder resting only on the deflect criterion (enemy counter seen by the model, not by code) is
+    withheld; the same item with a code-checkable criterion keeps its grade."""
+    from owcoach.postprocess import finalize_feedback
+
+    hero = load_hero("ana")
+    only = _coaching_item(category="skill_usage", grade="blunder", criterion_ids=["common.skill.no_skills_into_deflect"])
+    fb, _ = finalize_feedback(CoachingResponse(items=[only], action_items=[]), {"scene-01": _scene_rec("verified")},
+                              hero, 30.0, cfg["output"], lambda t: f"evidence/{t}.jpg", [])
+    assert fb[0].grade == "withheld" and any("판단 보류" in r for r in fb[0].display_reasons)
+    mixed = _coaching_item(category="skill_usage", grade="blunder",
+                           criterion_ids=["common.skill.no_skills_into_deflect", "ana.skill.sleep_dart_usage"])
+    fb, _ = finalize_feedback(CoachingResponse(items=[mixed], action_items=[]), {"scene-01": _scene_rec("verified")},
+                              hero, 30.0, cfg["output"], lambda t: f"evidence/{t}.jpg", [])
+    assert fb[0].grade == "blunder"
