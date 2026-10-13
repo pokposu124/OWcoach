@@ -195,11 +195,14 @@ def finalize_feedback(
         # the player stood, so it must neither raise nor lower those items.
         checks: list[HudCheck] = []
         if item.category == "skill_usage":
+            # only the abilities this item's criteria are about (a nano item is not judged by a grenade claim)
+            abilities = {hero.criterion(c).ability for c in valid_criteria if hero.criterion(c).ability}
             checks = [HudCheck(time_seconds=ev["time_seconds"], ability_id=ev["ability_id"],
                                claimed_by_model=" / ".join(x for x in (ev.get("target"), ev.get("evidence")) if x),
                                **ev["hud_check"])
                       for ev in scene.get("ability_events", [])
-                      if "hud_check" in ev and s - tol <= ev["time_seconds"] <= e + tol]
+                      if "hud_check" in ev and s - tol <= ev["time_seconds"] <= e + tol
+                      and (not abilities or ev["ability_id"] in abilities)]
             bad = [c for c in checks if c.status == "contradicted"]
             if bad:
                 reasons.append("HUD 대조 불일치: " + "; ".join(f"{c.ability_id} {fmt_time(c.time_seconds)} — {c.note}" for c in bad))

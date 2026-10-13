@@ -153,8 +153,10 @@ def test_mock_end_to_end(video, cfg, tmp_path):
     # draft criteria + no HUD-verified ability use (synthetic video has no HUD) -> nothing assertive
     assert all(f.display_mode == "tentative" for f in result.feedback)
     assert any(f.hud_checks for f in result.feedback)
-    statuses = {c.status for f in result.feedback for c in f.hud_checks}
-    assert "not_checked" in statuses  # unknown ability id
+    # HUD checks only on skill items, and only for the ability of the item's criterion (sleep dart here);
+    # the mock's unknown ability id is therefore not attached to any item
+    assert all(f.category == "skill_usage" for f in result.feedback if f.hud_checks)
+    assert {c.ability_id for f in result.feedback for c in f.hud_checks} == {"sleep_dart"}
     assert result.team["team_identification"]["ally_side"] == "left" and len(result.team["frame_times_seconds"]) == 2
     assert result.cost.total is None
     AnalysisResult.model_validate_json((run_dir / "result.json").read_text())
@@ -483,3 +485,19 @@ def test_hud_evidence_applies_to_skill_usage_only(cfg):
                                  {"scene-01": _scene_rec("verified")}, hero, 30.0, cfg["output"],
                                  lambda t: f"evidence/{t}.jpg", [])
     assert skill[0].verification == "hud" and skill[0].hud_checks
+
+
+def test_skill_item_checks_only_its_own_ability(cfg):
+    """A nano feedback item is judged by nano HUD checks only, not by an unrelated grenade claim."""
+    from owcoach.postprocess import finalize_feedback
+
+    hero = load_hero("ana").model_copy(deep=True)
+    for c in hero.criteria:
+        c.status = "approved"
+    rec = _scene_rec("verified")
+    rec["ability_events"].append({"time_seconds": 11.0, "ability_id": "biotic_grenade", "target": "", "evidence": "",
+                                  "hud_check": {"status": "contradicted", "hud_slot": "ability_2",
+                                                "hud_use_time_seconds": None, "note": "n"}})
+    fb, _ = finalize_feedback(CoachingResponse(items=[_coaching_item()], action_items=[]), {"scene-01": rec},
+                              hero, 30.0, cfg["output"], lambda t: f"evidence/{t}.jpg", [])
+    assert [c.ability_id for c in fb[0].hud_checks] == ["nano_boost"] and fb[0].display_mode == "assertive"

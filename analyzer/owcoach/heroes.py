@@ -23,6 +23,8 @@ class Criterion(BaseModel):
     id: str
     category: Category
     status: ReviewStatus
+    # skill_usage 기준이 다루는 스킬 id. 지정되면 그 스킬의 사용 기록만 HUD 대조 근거로 쓴다
+    ability: str | None = None
     title: str
     description: str
     good_signs: list[str] = Field(default_factory=list)

@@ -100,6 +100,7 @@ criteria:
 
   - id: ana.skill.sleep_dart_usage
     category: skill_usage
+    ability: sleep_dart                 # 이 기준의 HUD 대조 대상 스킬
     status: draft
     title: "수면총 사용 판단"
     description: >
@@ -116,6 +117,7 @@ criteria:
 
   - id: ana.skill.biotic_grenade_usage
     category: skill_usage
+    ability: biotic_grenade                 # 이 기준의 HUD 대조 대상 스킬
     status: draft
     title: "생체 수류탄 사용 판단"
     description: >
@@ -132,6 +134,7 @@ criteria:
 
   - id: ana.skill.nano_boost_usage
     category: skill_usage
+    ability: nano_boost                 # 이 기준의 HUD 대조 대상 스킬
     status: draft
     title: "나노 강화제 사용 판단"
     description: >
