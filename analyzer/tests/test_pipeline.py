@@ -547,7 +547,7 @@ def test_hud_ultimate_uses_become_scenes(video, cfg, tmp_path, monkeypatch):
     real_plan, real_check = pl.plan_scenes, pl.Pipeline._hud_check_scene
 
     def spy_plan(overview, *a, **k):
-        seen["cands"] = [(c.category, c.reason_observed) for c in overview.candidates]
+        seen["cands"] = [(c.category, c.reason_observed) for c in k.get("forced", [])]
         return real_plan(overview, *a, **k)
 
     def spy_check(self, video, rec, hcfg):
@@ -589,7 +589,7 @@ def test_deaths_force_scenes_and_coverage_warning(video, cfg, tmp_path, monkeypa
     real_plan = pl.plan_scenes
 
     def spy_plan(overview, *a, **k):
-        seen["cands"] = [(c.start_time_seconds, c.end_time_seconds, c.reason_observed) for c in overview.candidates]
+        seen["cands"] = [(c.start_time_seconds, c.end_time_seconds, c.reason_observed) for c in k.get("forced", [])]
         scenes = real_plan(overview, *a, **k)
         seen["windows"] = [(s.window_start, s.window_end) for s in scenes]
         return scenes
@@ -617,3 +617,44 @@ def test_model_death_inside_dead_period_is_same_death(cfg, monkeypatch):
     pipe = make_pipeline(cfg, Path("/tmp"))
     deaths = pipe._find_deaths(Path("x.mp4"), 290.0, ov, cfg["hud_check"])
     assert [(d["time_seconds"], d["source"]) for d in deaths] == [(138.5, "체력 0 + 모델 기록"), (250.0, "모델 기록")]
+
+
+def test_forced_scenes_do_not_count_toward_the_limit(cfg):
+    """With max_candidates=1 the overview keeps only its best pick, but every forced (death / ultimate)
+    candidate is still planned."""
+    from owcoach.schemas import SceneCandidate
+
+    dcfg = {**cfg["detail"], "pre_seconds": 1, "post_seconds": 1, "merge_gap_seconds": 0, "max_window_seconds": 30}
+    cands = [{"start_time_seconds": 10, "end_time_seconds": 12, "category": "positioning", "reason_observed": "a", "priority": 4},
+             {"start_time_seconds": 30, "end_time_seconds": 32, "category": "positioning", "reason_observed": "b", "priority": 2}]
+    forced = [SceneCandidate(start_time_seconds=t - 10, end_time_seconds=t, category="positioning",
+                             reason_observed=f"death {t}", priority=5) for t in (60, 90, 120)]
+    discarded = []
+    scenes = plan_scenes(_overview(cands), 200.0, dcfg, 1, discarded, forced=forced)
+    assert [(s.window_start, s.window_end) for s in scenes] == [(9, 13), (49, 61), (79, 91), (109, 121)]
+    assert [d.reason for d in discarded] == ["후보 장면 최대 개수 초과"]
+
+
+def test_death_and_ultimate_feedback_exceed_the_limit(cfg):
+    """max_feedback_items=1: one ordinary item survives, plus the death and the HUD-verified ultimate items."""
+    from owcoach.postprocess import finalize_feedback
+
+    hero = load_hero("ana")
+    rec = _scene_rec("verified")
+    rec["window_end"] = 40.0
+    items = [
+        _coaching_item(),  # HUD-verified nano (ultimate_usage)
+        _coaching_item(category="positioning", criterion_ids=["ana.positioning.cover_access"],
+                       start_time_seconds=25.0, end_time_seconds=35.0, evidence_frame_timestamps=[30.0]),  # ends at death 35
+        _coaching_item(category="skill_usage", criterion_ids=["ana.skill.sleep_dart_usage"],
+                       start_time_seconds=1.0, end_time_seconds=3.0, evidence_frame_timestamps=[2.0]),
+        _coaching_item(category="skill_usage", criterion_ids=["ana.skill.biotic_grenade_usage"],
+                       start_time_seconds=15.0, end_time_seconds=17.0, evidence_frame_timestamps=[16.0]),
+    ]
+    discarded = []
+    fb, _ = finalize_feedback(CoachingResponse(items=items, action_items=[]), {"scene-01": rec}, hero, 60.0,
+                              {**cfg["output"], "max_feedback_items": 1}, lambda t: f"evidence/{t}.jpg", discarded,
+                              death_times=[35.0])
+    cats = sorted(f.category for f in fb)
+    assert cats == ["positioning", "skill_usage", "ultimate_usage"]
+    assert [d.reason for d in discarded] == ["피드백 최대 개수 초과"]

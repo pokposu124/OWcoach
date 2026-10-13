@@ -25,6 +25,11 @@ from .schemas import AnalysisResult
 
 def cmd_analyze(args) -> int:
     cfg = load_config(args.config)
+    # user-chosen limits (deaths and HUD-detected ultimates are analysed on top of these)
+    if args.max_scenes is not None:
+        cfg["overview"]["max_candidates"] = args.max_scenes
+    if args.max_feedback is not None:
+        cfg["output"]["max_feedback_items"] = args.max_feedback
     hero = load_hero(args.hero)
     provider_name = args.provider or cfg["provider"]["name"]
     try:
@@ -116,6 +121,8 @@ def main(argv: list[str] | None = None) -> int:
     a.add_argument("--patch", help="영상이 녹화된 게임 패치 버전(기록용)")
     a.add_argument("--rerun", help="강제로 다시 실행할 단계(쉼표 구분): proxy,team,overview,detail,coaching")
     a.add_argument("--runs-dir", default=str(DEFAULT_RUNS_DIR))
+    a.add_argument("--max-scenes", type=int, help="모델이 고르는 상세 분석 장면 최대 개수 (사망·궁극기 장면은 별도로 항상 포함)")
+    a.add_argument("--max-feedback", type=int, help="피드백 최대 개수 (사망 직전·궁극기 피드백은 별도로 항상 포함)")
     a.set_defaults(fn=cmd_analyze)
 
     p = sub.add_parser("probe", help="영상 입력 조건만 확인")

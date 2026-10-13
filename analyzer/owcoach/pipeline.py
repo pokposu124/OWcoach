@@ -508,8 +508,8 @@ class Pipeline:
             category="positioning", priority=5,
             reason_observed=f"사망 {fmt_time(d['time_seconds'])}: 직전 {dpre:g}초 상황 분석 필수 ({d['source']})")
             for d in self._deaths]
-        plan_input = overview.model_copy(update={"candidates": [*overview.candidates, *hud_candidates, *death_candidates]})
-        scenes = plan_scenes(plan_input, duration, cfg["detail"], ocfg["max_candidates"], self.discarded)
+        scenes = plan_scenes(overview, duration, cfg["detail"], ocfg["max_candidates"], self.discarded,
+                             forced=[*hud_candidates, *death_candidates])
         self.log(f"  후보 장면 {len(scenes)}개: " + ", ".join(f"{s.window_start:.1f}-{s.window_end:.1f}s" for s in scenes))
 
         # 3. detail ---------------------------------------------------------------------
@@ -605,7 +605,8 @@ class Pipeline:
             return None
 
         feedback, actions = finalize_feedback(coaching, scene_records, hero, duration, out, extract, self.discarded,
-                                              hud_enabled=bool(hcfg.get("enabled")))
+                                              hud_enabled=bool(hcfg.get("enabled")),
+                                              death_times=[d["time_seconds"] for d in self._deaths])
         dpre = float((cfg.get("death_check") or {}).get("pre_seconds", 10.0))
         for d in self._deaths:
             t = d["time_seconds"]

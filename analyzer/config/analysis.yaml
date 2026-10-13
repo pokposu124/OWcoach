@@ -55,7 +55,7 @@ overview:
   # 전체 영상에서 모델이 받는 초당 프레임 수(샘플링 간격 = 1/fps 초). Gemini 허용 범위 (0, 24]
   fps: 1.0
   media_resolution: null           # null이면 API 기본값. 예: MEDIA_RESOLUTION_LOW / MEDIUM / HIGH
-  max_candidates: 8                # 상세 분석으로 넘길 후보 장면 최대 개수
+  max_candidates: 8                # 모델이 고른 후보 장면 최대 개수 (사망·HUD 궁극기 장면은 별도, 항상 포함). CLI --max-scenes
 
 detail:
   pre_seconds: 8.0                 # 후보 장면 시작 전 추가 분석 범위
@@ -137,7 +137,7 @@ hud_check:
     ability_2: {shape: rect, x0: 1030, y0: 614, x1: 1064, y1: 648}
 
 output:
-  max_feedback_items: 5
+  max_feedback_items: 5            # 일반 피드백 최대 개수 (사망 직전·HUD 확인 궁극기 피드백은 별도, 항상 포함). CLI --max-feedback
   max_action_items: 3
   # 단정적 피드백(assertive)으로 표시하기 위한 최소 확신도
   min_confidence_for_assertive: 0.6

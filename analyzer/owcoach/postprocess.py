@@ -22,6 +22,7 @@ from .schemas import (
     FeedbackItem,
     HudCheck,
     OverviewResponse,
+    SceneCandidate,
 )
 
 
@@ -48,7 +49,10 @@ class Scene:
 
 
 def plan_scenes(overview: OverviewResponse, duration: float, cfg: dict, max_candidates: int,
-                discarded: list[DiscardedItem]) -> list[Scene]:
+                discarded: list[DiscardedItem], forced: list[SceneCandidate] | None = None) -> list[Scene]:
+    """forced: candidates that must be analysed (player deaths, HUD-detected ultimates). They are always
+    kept and do not count toward max_candidates, which limits the overview model's own picks only."""
+    forced = [c for c in (forced or []) if 0 <= c.start_time_seconds <= c.end_time_seconds <= duration]
     valid = []
     for c in overview.candidates:
         if c.start_time_seconds < 0 or c.end_time_seconds > duration or c.end_time_seconds < c.start_time_seconds:
@@ -61,7 +65,7 @@ def plan_scenes(overview: OverviewResponse, duration: float, cfg: dict, max_cand
     valid.sort(key=lambda c: (-c.priority, c.start_time_seconds))
     for c in valid[max_candidates:]:
         discarded.append(DiscardedItem(reason="후보 장면 최대 개수 초과", summary=c.reason_observed))
-    chosen = sorted(valid[:max_candidates], key=lambda c: c.start_time_seconds)
+    chosen = sorted([*valid[:max_candidates], *forced], key=lambda c: c.start_time_seconds)
 
     windows: list[Scene] = []
     for c in chosen:
@@ -144,7 +148,10 @@ def finalize_feedback(
     extract_evidence: Callable[[float], str | None],
     discarded: list[DiscardedItem],
     hud_enabled: bool = True,
+    death_times: list[float] | None = None,
 ) -> tuple[list[FeedbackItem], list[ActionItem]]:
+    """max_feedback_items limits ordinary feedback only: a HUD-verified ultimate use and feedback that
+    runs up to a player death (ends at most 3 s before it) are always kept on top of that limit."""
     tol = out_cfg["window_tolerance_seconds"]
     candidates: list[FeedbackItem] = []
 
@@ -230,18 +237,26 @@ def finalize_feedback(
             hud_checks=checks, verification="hud" if verified else "model_observation",
         ))
 
-    # assertive first, then by confidence; drop duplicates of already-kept items
-    candidates.sort(key=lambda f: (f.display_mode != "assertive", -f.confidence, f.start_time_seconds))
+    def must_keep(f: FeedbackItem) -> bool:
+        if f.category == "ultimate_usage" and f.verification == "hud":
+            return True
+        return any(f.start_time_seconds <= t + 1 and f.end_time_seconds >= t - 3 for t in death_times or [])
+
+    # must-keep first, then assertive, then by confidence; drop duplicates of already-kept items
+    candidates.sort(key=lambda f: (not must_keep(f), f.display_mode != "assertive", -f.confidence, f.start_time_seconds))
     kept: list[FeedbackItem] = []
+    ordinary = 0
     for f in candidates:
         dup = next((k for k in kept if k.category == f.category
                     and _overlap_ratio(k, f) >= out_cfg["dedup_overlap_ratio"]), None)
         if dup:
             discarded.append(DiscardedItem(reason="중복 피드백", scene_id=f.scene_id, summary=f.observation[:80]))
             continue
-        if len(kept) >= out_cfg["max_feedback_items"]:
-            discarded.append(DiscardedItem(reason="피드백 최대 개수 초과", scene_id=f.scene_id, summary=f.observation[:80]))
-            continue
+        if not must_keep(f):
+            if ordinary >= out_cfg["max_feedback_items"]:
+                discarded.append(DiscardedItem(reason="피드백 최대 개수 초과", scene_id=f.scene_id, summary=f.observation[:80]))
+                continue
+            ordinary += 1
         kept.append(f)
     kept.sort(key=lambda f: f.start_time_seconds)
     for i, f in enumerate(kept, 1):
