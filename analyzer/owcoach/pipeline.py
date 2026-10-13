@@ -263,9 +263,8 @@ class Pipeline:
         if not dcfg.get("enabled"):
             return []
         found: list[dict] = []
-        if hcfg.get("enabled"):
-            found += [{"time_seconds": t, "source": "HUD 사라짐"}
-                      for t in scan_player_deaths(video, duration, hcfg, float(dcfg["hud_hidden_min_seconds"]))]
+        if dcfg.get("health_bar"):
+            found += [{"time_seconds": t, "source": "체력 0"} for t in scan_player_deaths(video, duration, dcfg)]
         for ev in overview.timeline:
             if any(k in ev.event for k in dcfg.get("model_keywords", [])) and 0 <= ev.time_seconds <= duration:
                 found.append({"time_seconds": ev.time_seconds, "source": "모델 기록"})

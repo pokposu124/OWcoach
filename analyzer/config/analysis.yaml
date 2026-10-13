@@ -69,13 +69,23 @@ coaching:
   temperature: 0.2
 
 # 플레이어 사망 직전 상황은 모델이 후보로 고르지 않아도 반드시 분석한다.
-# 사망 시각 = (HUD 스킬 칸이 hud_hidden_min_seconds 이상 계속 사라진 구간의 시작) + (overview 타임라인에서
-# model_keywords 가 들어간 사건). 사망마다 [사망 - pre_seconds, 사망] 구간을 상세 분석 장면에 넣고,
-# 코칭 단계는 그 구간에 대한 피드백을 최소 1개 쓴다. 실제 사망 영상으로는 아직 검증하지 않았다.
+# 사망 시각 = (좌하단 체력 칸 10개가 min_seconds 이상 모두 비어 있는(체력 0) 구간의 시작) + (overview 타임라인에서
+# model_keywords 가 들어간 사건). 사망 중에도 HUD는 그대로 보이고(사망 위치에서 관전), 체력 칸이 비고
+# 초상화에 빨간 해골이 뜬다. 실측(두 번째 영상): 체력 0 구간 5번, 각 11~14초(부활 대기), 첫 영상은 0번.
+# 사망마다 [사망 - pre_seconds, 사망] 구간을 상세 분석 장면에 넣고, 코칭 단계는 그 구간 피드백을 최소 1개 쓴다.
 death_check:
   enabled: true
   pre_seconds: 10.0
-  hud_hidden_min_seconds: 3.0
+  health_bar:
+    reference_resolution: [1280, 720]
+    x0: 114
+    y0: 619
+    x1: 278
+    y1: 638
+    white_threshold: 200
+    empty_ratio: 0.03               # 흰 체력 칸 비율이 이 미만이면 체력 0 (실측: 살아 있을 때 최소 0.10)
+    fps: 2.0
+    min_seconds: 3.0
   merge_seconds: 5.0               # 두 신호의 시각이 이 안이면 같은 사망
   model_keywords: ["사망", "처치당", "죽음", "부활 대기", "리스폰 대기"]
 

@@ -216,27 +216,33 @@ def scan_uses(video: Path, duration: float, slot: str, cfg: dict) -> list[float]
     return use_times(sample_hud(video, 0.0, duration, cfg), slot, min_run_for(cfg, slot))
 
 
-def scan_player_deaths(video: Path, duration: float, cfg: dict, min_hidden_seconds: float) -> list[float]:
-    """Start times of stretches where the player's ability HUD is gone for at least min_hidden_seconds.
+def scan_player_deaths(video: Path, duration: float, cfg: dict) -> list[float]:
+    """Start times of stretches where the player's health bar is empty (health 0) for >= min_seconds.
 
-    While the player is dead the kill cam / spectator view replaces the HUD, so both ability tiles
-    read blank. Single blank frames (tile flashes) are far shorter than a respawn. Other full-screen
-    states (round transitions, menus) can also hide the HUD; callers treat these times as moments to
-    analyse, not as confirmed deaths.
+    While dead, the HUD stays on screen (spectating from the death spot) but the ten health blocks
+    under the health number go dark and a red skull covers the portrait, until respawn (~10 s).
+    cfg: death_check.health_bar (region in 1280x720, white_threshold, empty_ratio, fps, min_seconds).
     """
-    samples = sample_hud(video, 0.0, duration, cfg)
-    step = 1.0 / float(cfg["fps"])
-    out, run_start, last = [], None, None
-    for s in samples:
-        hidden = all(v is None for v in s.states.values())
-        if hidden and run_start is None:
-            run_start = s.time_seconds
-        if hidden:
-            last = s.time_seconds
-        if not hidden and run_start is not None:
-            if last - run_start + step >= min_hidden_seconds:
-                out.append(run_start)
-            run_start = None
-    if run_start is not None and last - run_start + step >= min_hidden_seconds:
-        out.append(run_start)
+    hb = cfg["health_bar"]
+    w, h = hb["x1"] - hb["x0"], hb["y1"] - hb["y0"]
+    ref_w, ref_h = hb["reference_resolution"]
+    fps = float(hb["fps"])
+    proc = subprocess.run([
+        _require("ffmpeg"), "-v", "error", "-i", str(video), "-t", f"{duration:.3f}",
+        "-vf", f"fps={fps},scale={ref_w}:{ref_h},crop={w}:{h}:{hb['x0']}:{hb['y0']}",
+        "-f", "rawvideo", "-pix_fmt", "rgb24", "-",
+    ], capture_output=True)
+    if proc.returncode != 0:
+        raise MediaError(f"health bar extraction failed: {proc.stderr[-300:]!r}")
+    frames = np.frombuffer(proc.stdout, np.uint8).reshape(-1, h, w, 3)
+    white = (frames.min(axis=3) > hb["white_threshold"]).mean(axis=(1, 2))
+    empty = white < hb["empty_ratio"]
+    out, start = [], None
+    for i, e in enumerate([*empty, False]):
+        if e and start is None:
+            start = i
+        if not e and start is not None:
+            if (i - start) / fps >= hb["min_seconds"]:
+                out.append(round(start / fps, 2))
+            start = None
     return out
