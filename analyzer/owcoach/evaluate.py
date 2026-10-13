@@ -59,11 +59,26 @@ def evaluate(run_dir: Path, labels_path: Path) -> dict:
         check("영웅 판독", got == r["hero"], f"{r['slot']}번 칸 정답 {r['hero']} / 결과 {got or '없음'}")
 
     # events the model invented before: no feedback near them should state them as fact
+    # (a withheld grade with the claim only in the uncertainty does not count)
     for n in facts.get("not_happened", []):
+        kws = n.get("keywords", [])
         near = [f for f in result.feedback if f.start_time_seconds - 2 <= n["time_seconds"] <= f.end_time_seconds + 2
-                and f.grade == "blunder" and any(c.startswith("common.") for c in f.criterion_ids)]
+                and f.grade != "withheld" and any(k in f.observation + f.assessment for k in kws)]
         check("지어낸 사건 재발", not near, f"{fmt_time(n['time_seconds'])} {n['what']}"
               + (f" → 피드백 {', '.join(f.id for f in near)}" if near else ""))
+
+    # who / where a skill was aimed at, as the moment check saw it
+    for st in facts.get("skill_targets", []):
+        t = st["time_seconds"]
+        mc = next((c.moment_check for c in fb_checks if c.ability_id == st["ability"] and c.hud_use_time_seconds is not None
+                   and _near(c.hud_use_time_seconds, t, 1.5) and c.moment_check), None)
+        if mc is None:
+            check("스킬 대상", None, f"{fmt_time(t)} {st['ability']} — 결과에 해당 피드백/순간 확인 없음")
+        else:
+            said = mc.get("target", "")
+            self_aimed = any(k in said for k in ("발밑", "자신", "자기", "바닥"))
+            check("스킬 대상", self_aimed == (st["target"] == "self"),
+                  f"{fmt_time(t)} 정답 {st['target']} / 순간 확인 '{said}'")
 
     # the player's own grades for specific plays
     for j in labels.get("judgements", []):
@@ -73,15 +88,16 @@ def evaluate(run_dir: Path, labels_path: Path) -> dict:
         check("사용자 판정 일치", j["grade"] in grades,
               f"{fmt_time(t)} {j['category']} 정답 {j['grade']} / 결과 {', '.join(grades) or '피드백 없음'} — {j.get('note', '')}")
 
-    n_ok = sum(c["ok"] is True for c in out["checks"])
-    out["summary"] = f"{n_ok}/{len(out['checks'])} 일치"
+    judged = [c for c in out["checks"] if c["ok"] is not None]
+    n_ok = sum(c["ok"] is True for c in judged)
+    out["summary"] = f"{n_ok}/{len(judged)} 일치" + (f" (판단 불가 {len(out['checks']) - len(judged)})" if len(judged) < len(out["checks"]) else "")
     return out
 
 
 def print_report(report: dict) -> None:
     print(f"{report['run_id']} vs {report['labels']}: {report['summary']}")
     for c in report["checks"]:
-        mark = "OK " if c["ok"] else "NG "
+        mark = {True: "OK ", False: "NG ", None: "-- "}[c["ok"]]
         print(f"  {mark}{c['kind']}: {c['detail']}")
 
 

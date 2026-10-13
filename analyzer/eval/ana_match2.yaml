@@ -10,8 +10,12 @@ facts:
     - {time_seconds: 200.5}
   ultimates:
     - {time_seconds: 190.75, target_player: "LEAF"}
-  not_happened:                    # 모델이 지어낸 적이 있는 사건
-    - {time_seconds: 137.0, what: "수면총이 겐지 튕겨내기에 반사되어 아나가 잠듦"}
+  not_happened:                    # 모델이 지어낸 적이 있는 사건 (근처 피드백에 keywords 가 나오면 재발)
+    - {time_seconds: 137.0, what: "수면총이 겐지 튕겨내기에 반사되어 아나가 잠듦", keywords: ["반사", "튕겨"]}
+    - {time_seconds: 221.0, what: "생체 수류탄을 발밑에 던져 자가 회복 (실제: 적에게 던짐, 체력 증가는 아군 힐러의 회복)",
+       keywords: ["발밑", "자가", "자신에게"]}
+  skill_targets:                   # HUD 사용 시각 기준 실제 대상
+    - {time_seconds: 221.0, ability: biotic_grenade, target: enemy, note: "궤적상 적에게 투척"}
 judgements:
   - {time_seconds: 36.5, category: skill_usage, grade: blunder,
      note: "적 겐지 튕겨내기 중 생체 수류탄 투척 (HUD 사용 감지 37.0초)"}
