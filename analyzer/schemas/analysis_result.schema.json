@@ -322,6 +322,20 @@
           "description": "모델이 기록한 근거/대상",
           "title": "Claimed By Model",
           "type": "string"
+        },
+        "target_check": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "대상 판별 결과 (나노 강화제 등: 팀 목록 칸 강화 화살표)",
+          "title": "Target Check"
         }
       },
       "required": [

@@ -144,3 +144,48 @@ def check_use_claim(claim_time: float, slot: str, samples: list[HudSample], cfg:
     if other:
         what += f"; 이 구간에서 HUD상 사용 감지 시각: {', '.join(f'{t:.2f}초' for t in other)}"
     return {"status": "contradicted", "hud_use_time_seconds": None, "note": what}
+
+
+def detect_buff_target(video: Path, use_time: float, slots: list[dict], cfg: dict) -> dict:
+    """Which team-list slot shows the buff arrow animation right after a buff (e.g. Nano Boost) was used.
+
+    slots: [{"slot": n, "x": portrait_left_x, "player_name": ..., "hero": ...}] — candidate ally slots.
+    The arrow is drawn in white over the upper part of the receiving ally's portrait for a few seconds.
+    Each slot's white-pixel share in that zone is compared with its own baseline just before the use;
+    frames where most slots brighten together (screen flash) are ignored.
+    """
+    if not slots:
+        return {"status": "unverifiable", "note": "대상 후보(아군 칸)가 없음"}
+    fps = float(cfg["fps"])
+    y0, y1 = cfg["y"], cfg["y"] + cfg["h"]
+    xs = [s["x"] for s in slots]
+    x_lo, x_hi = min(xs) + cfg["dx0"], max(xs) + cfg["dx1"]
+    start = max(0.0, use_time - cfg["baseline_seconds"])
+    ref_w, ref_h = cfg["reference_resolution"]
+    proc = subprocess.run([
+        _require("ffmpeg"), "-v", "error", "-ss", f"{start:.3f}", "-i", str(video),
+        "-t", f"{use_time + cfg['window_seconds'] - start:.3f}",
+        "-vf", f"fps={fps},scale={ref_w}:{ref_h},crop={x_hi - x_lo}:{y1 - y0}:{x_lo}:{y0}",
+        "-f", "rawvideo", "-pix_fmt", "rgb24", "-",
+    ], capture_output=True)
+    if proc.returncode != 0:
+        raise MediaError(f"buff arrow extraction failed: {proc.stderr[-300:]!r}")
+    frames = np.frombuffer(proc.stdout, np.uint8).reshape(-1, y1 - y0, x_hi - x_lo, 3)
+    white = frames.min(axis=3) > cfg["white_threshold"]
+    ratios = np.array([[w[:, s["x"] + cfg["dx0"] - x_lo:s["x"] + cfg["dx1"] - x_lo].mean() for s in slots] for w in white])
+    times = start + np.arange(len(ratios)) / fps
+    before, after = ratios[times < use_time - 0.25], ratios[times >= use_time]
+    if len(before) == 0 or len(after) == 0:
+        return {"status": "unverifiable", "note": "대상 판별용 프레임 부족"}
+    rise = after - np.median(before, axis=0) >= cfg["min_increase"]
+    flash = rise.sum(axis=1) > len(slots) / 2
+    hits = rise[~flash].sum(axis=0)
+    order = np.argsort(hits)[::-1]
+    best = int(order[0])
+    second = int(hits[order[1]]) if len(order) > 1 else 0
+    if hits[best] >= cfg["min_frames"] and second * 2 <= hits[best]:
+        s = slots[best]
+        return {"status": "verified", "slot": s["slot"], "player_name": s["player_name"], "hero": s.get("hero"),
+                "arrow_frames": int(hits[best]),
+                "note": f"팀 목록 {s['slot']}번 칸({s['player_name']})에 강화 화살표 {int(hits[best])}프레임"}
+    return {"status": "unverifiable", "note": "어느 아군 칸에도 강화 화살표가 뚜렷하지 않음(대상 사망·화면 가림 등)"}

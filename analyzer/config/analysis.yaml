@@ -86,6 +86,22 @@ hud_check:
   # 흰색이 되는 경우가 있어(실측) 준비 상태를 2초(8회) 이상 유지할 때만 인정한다.
   min_run_samples: {default: 2, ultimate: 8}
   search_seconds: 2.5              # 모델이 말한 시각 ±이 범위에서 준비→사용 전환을 찾음
+  # 강화형 스킬(나노 강화제) 대상: 받은 아군의 팀 목록 칸 초상화 위에 흰 위쪽 화살표가 몇 초간 올라간다.
+  # 사용 직후 window_seconds 동안 각 아군 칸 초상화 윗부분의 흰 픽셀 비율이 직전 baseline 대비
+  # min_increase 이상 오른 프레임을 세어, min_frames 이상이고 2위의 2배 이상인 칸을 대상으로 본다.
+  # 실측(136초 나노 → 목포산아이): 대상 칸 12프레임 중 9, 다른 칸 0~1.
+  buff_arrow:
+    fps: 4.0
+    reference_resolution: [1280, 720]
+    y: 43
+    h: 16
+    dx0: -3                        # 칸의 초상화 x(team.portrait_slots) 기준 영역
+    dx1: 37
+    white_threshold: 200
+    baseline_seconds: 2.5
+    window_seconds: 3.0
+    min_increase: 0.05
+    min_frames: 4
   regions:
     ultimate: {shape: circle, cx: 640, cy: 620, r: 22}
     ability_1: {shape: rect, x0: 977, y0: 614, x1: 1011, y1: 648}

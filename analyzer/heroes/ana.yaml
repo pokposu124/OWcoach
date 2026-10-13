@@ -36,6 +36,8 @@ abilities:
     name_en: Nano Boost
     hud_hint: "궁극기 게이지(%)가 화면 하단 중앙에 표시됨"
     hud_slot: ultimate
+    # 대상 아군의 팀 목록 칸에 강화 화살표가 표시됨 (config hud_check.buff_arrow)
+    target_marker: buff_arrow
 
 # 화면에서 확인 가능한 관찰 신호 (모델에게 무엇을 보라고 안내하는 용도)
 observable_signals:

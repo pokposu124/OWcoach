@@ -134,6 +134,7 @@ class HudCheck(BaseModel):
     hud_use_time_seconds: float | None = None
     note: str
     claimed_by_model: str = Field(description="모델이 기록한 근거/대상")
+    target_check: dict | None = Field(default=None, description="대상 판별 결과 (나노 강화제 등: 팀 목록 칸 강화 화살표)")
 
 
 class EvidenceFrame(BaseModel):

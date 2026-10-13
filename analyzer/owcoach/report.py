@@ -46,7 +46,9 @@ def write_report(run_dir: Path) -> Path:
         crit = ", ".join(f.criterion_ids) or "없음"
         hud = "".join(
             f"<li><span class='b {HUD_CLASS[c.status]}'>{_e(HUD_KO[c.status])}</span> {_t(c.time_seconds)} {_e(c.ability_id)}"
-            f" — {_e(c.note)} <span class=muted>(모델 근거: {_e(c.claimed_by_model or '-')})</span></li>"
+            f" — {_e(c.note)}"
+            + (f" · 대상: {_e(c.target_check.get('note', ''))}" if c.target_check else "")
+            + f" <span class=muted>(모델 근거: {_e(c.claimed_by_model or '-')})</span></li>"
             for c in f.hud_checks) or "<li class=muted>이 구간에 스킬/궁극기 사용 기록 없음</li>"
         cards.append(f"""
 <section class=card id="{_e(f.id)}">

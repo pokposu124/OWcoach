@@ -27,7 +27,7 @@ from pydantic import BaseModel, ValidationError
 
 from . import __version__
 from .config import ANALYZER_ROOT, fingerprint
-from .hud import check_use_claim, sample_hud
+from .hud import check_use_claim, detect_buff_target, sample_hud
 from .heroes import HeroProfile
 from .portraits import identify, load_portraits
 from .media import (
@@ -190,6 +190,7 @@ class Pipeline:
         self.timings: dict[str, float] = {}
         self.warnings: list[str] = []
         self.discarded: list[DiscardedItem] = []
+        self._team_record: dict | None = None
 
     # ---------------------------------------------------------------- AI call helper
 
@@ -298,6 +299,7 @@ class Pipeline:
 
     def _hud_check_scene(self, video: Path, rec: dict, hcfg: dict) -> None:
         slots = {a.id: a.hud_slot for a in self.hero.abilities}
+        markers = {a.id: a.target_marker for a in self.hero.abilities}
         events = rec["ability_events"]
         if not events:
             return
@@ -318,6 +320,24 @@ class Pipeline:
                                   "note": "HUD 대조 영역이 없는 스킬"}
             else:
                 e["hud_check"] = {"hud_slot": slot, **check_use_claim(e["time_seconds"], slot, samples, hcfg)}
+                marker = markers.get(e["ability_id"])
+                if marker and e["hud_check"]["status"] == "verified" and marker in hcfg:
+                    tc = detect_buff_target(video, e["hud_check"]["hud_use_time_seconds"], self._ally_slots(), hcfg[marker])
+                    if tc["status"] == "verified" and e.get("target") and e["target"] != tc["player_name"]:
+                        tc["note"] += f"; 모델이 기록한 대상({e['target']})과 다름"
+                    e["hud_check"]["target_check"] = tc
+
+    def _ally_slots(self) -> list[dict]:
+        """Team-list slots of the player's teammates (player excluded) with portrait x positions."""
+        team = self._team_record
+        tcfg = self.cfg.get("team") or {}
+        if not team or "portrait_slots" not in tcfg:
+            return []
+        ps = tcfg["portrait_slots"]
+        xs = ps["left_x"] + ps["right_x"]
+        me = team["team_identification"]["player_name"]
+        return [{"slot": r["slot"], "x": xs[r["slot"] - 1], "player_name": r["player_name"], "hero": r.get("hero")}
+                for r in team["roster"] if r["team"] == "ally" and r["player_name"] != me and 1 <= r["slot"] <= len(xs)]
 
     # ---------------------------------------------------------------- run
 
@@ -397,6 +417,7 @@ class Pipeline:
         self.log("[2/5] 팀 판별 · 전체 흐름 분석")
         t = time.monotonic()
         team, team_record = self._team_stage(store, video, sha, duration, ai_fp_base, force)
+        self._team_record = team_record
         team_context = team_context_text(team_record)
         self.timings["team"] = round(time.monotonic() - t, 3)
 

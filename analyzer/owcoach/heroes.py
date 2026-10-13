@@ -38,6 +38,8 @@ class Ability(BaseModel):
     hud_hint: str | None = None
     # HUD 대조용 슬롯 (config hud_check.regions 의 키). 없으면 HUD로 검증하지 않음
     hud_slot: str | None = None
+    # 대상 판별 방식 (config hud_check 의 키, 예: buff_arrow). 없으면 대상을 판별하지 않음
+    target_marker: str | None = None
 
 
 class NumericFact(BaseModel):

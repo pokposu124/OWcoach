@@ -433,3 +433,21 @@ def test_assertive_requires_hud_verification_and_approved_criteria(cfg, status, 
     assert fb[0].hud_checks[0].status == status
     if status == "contradicted":
         assert any("HUD 대조 불일치" in r for r in fb[0].display_reasons)
+
+
+def test_buff_target_from_team_list_arrow(tmp_path, cfg):
+    """A white arrow appears over slot 8's portrait from t=2s: that slot is the nano target; a screen-wide
+    flash (all slots white at t=4s) must not be counted for any slot."""
+    from owcoach.hud import detect_buff_target
+
+    bcfg = cfg["hud_check"]["buff_arrow"]
+    xs = cfg["team"]["portrait_slots"]["right_x"]
+    vf = (f"drawbox=x={xs[2] + 8}:y={bcfg['y'] + 2}:w=12:h=12:color=white:t=fill:enable='between(t,2,4.9)',"
+          f"drawbox=x={xs[0] - 5}:y={bcfg['y']}:w={xs[-1] - xs[0] + 50}:h={bcfg['h']}:color=white:t=fill:enable='between(t,4,4.2)'")
+    video = tmp_path / "arrow.mp4"
+    subprocess.run(["ffmpeg", "-y", "-v", "error", "-f", "lavfi", "-i", "color=c=0x502030:size=1280x720:rate=30",
+                    "-t", "6", "-vf", vf, "-pix_fmt", "yuv420p", str(video)], check=True)
+    allies = [{"slot": 6 + i, "x": x, "player_name": f"P{i}", "hero": None} for i, x in enumerate(xs) if i != 0]
+    hit = detect_buff_target(video, 2.0, allies, bcfg)
+    assert hit["status"] == "verified" and hit["slot"] == 8 and hit["player_name"] == "P2"
+    assert detect_buff_target(video, 0.8, allies, {**bcfg, "window_seconds": 1.0})["status"] == "unverifiable"
