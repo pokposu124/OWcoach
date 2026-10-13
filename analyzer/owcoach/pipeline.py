@@ -27,7 +27,15 @@ from pydantic import BaseModel, ValidationError
 
 from . import __version__
 from .config import ANALYZER_ROOT, fingerprint
-from .hud import check_use_claim, detect_buff_target, sample_hud, scan_dead_periods, scan_uses
+from .hud import (
+    check_use_claim,
+    detect_buff_target,
+    min_run_for,
+    sample_hud,
+    scan_dead_periods,
+    scan_uses,
+    use_times,
+)
 from .timefmt import fmt_time
 from .heroes import HeroProfile
 from .portraits import identify, load_portraits
@@ -349,18 +357,37 @@ class Pipeline:
                     if tc["status"] in ("verified", "interrupted") and e.get("target") and e["target"] != tc["player_name"]:
                         tc["note"] += f"; 모델이 기록한 대상({e['target']})과 다름"
                     e["hud_check"]["target_check"] = tc
-        # ultimate uses seen on the HUD in this window but not (correctly) recorded by the model
+        # skill / ultimate uses seen on the HUD in this window but not (correctly) recorded by the model
+        by_id = {a.id: a for a in self.hero.abilities}
+        claimed = {(e["ability_id"], e["hud_check"].get("hud_use_time_seconds")) for e in events
+                   if e["hud_check"]["status"] == "verified"}
+        for u in rec.get("hud_uses", []):
+            a, x = by_id.get(u["ability_id"]), u["time_seconds"]
+            if a is None or (a.id, x) in claimed:
+                continue
+            hc = {"status": "verified", "hud_slot": a.hud_slot, "hud_use_time_seconds": x,
+                  "note": f"HUD: {fmt_time(x)}에 준비 → 사용됨 전환 확인 (모델 기록 없음, 코드가 추가)"}
+            if a.target_marker and a.target_marker in hcfg:
+                hc["target_check"] = detect_buff_target(video, x, self._ally_slots(), hcfg[a.target_marker])
+            events.append({"time_seconds": x, "ability_id": a.id, "target": "", "source": "hud",
+                           "evidence": "HUD에서 감지", "hud_check": hc})
+
+    def _hud_uses_in(self, video: Path, start: float, end: float, hcfg: dict) -> list[dict]:
+        """HUD-detected uses inside [start, end]: ability tiles from this window's samples, the ultimate
+        from the whole-video scan (its 2 s ready-state rule needs more context than a window edge)."""
+        if not hcfg.get("enabled"):
+            return []
+        uses: list[dict] = []
+        tiles = [a for a in self.hero.abilities if a.hud_slot and a.hud_slot != "ultimate" and a.hud_slot in hcfg["regions"]]
+        if tiles:
+            samples = sample_hud(video, max(0.0, start - 3.0), end, hcfg)
+            for a in tiles:
+                uses += [{"ability_id": a.id, "time_seconds": x}
+                         for x in use_times(samples, a.hud_slot, min_run_for(hcfg, a.hud_slot)) if start <= x <= end]
         ult = next((a for a in self.hero.abilities if a.hud_slot == "ultimate"), None)
-        claimed = {e["hud_check"].get("hud_use_time_seconds") for e in events
-                   if e["ability_id"] == (ult.id if ult else None) and e["hud_check"]["status"] == "verified"}
-        for x in getattr(self, "_hud_ult_uses", []):
-            if ult and rec["window_start"] <= x <= rec["window_end"] and x not in claimed:
-                hc = {"status": "verified", "hud_slot": "ultimate", "hud_use_time_seconds": x,
-                      "note": f"HUD: {fmt_time(x)}에 준비 → 사용됨 전환 확인 (모델 기록 없음, 코드가 추가)"}
-                if ult.target_marker and ult.target_marker in hcfg:
-                    hc["target_check"] = detect_buff_target(video, x, self._ally_slots(), hcfg[ult.target_marker])
-                events.append({"time_seconds": x, "ability_id": ult.id, "target": "", "source": "hud",
-                               "evidence": "HUD 궁극기 표시에서 감지", "hud_check": hc})
+        if ult:
+            uses += [{"ability_id": ult.id, "time_seconds": x} for x in self._hud_ult_uses if start <= x <= end]
+        return sorted(uses, key=lambda u: u["time_seconds"])
 
     def _ally_slots(self) -> list[dict]:
         """Team-list slots of the player's teammates (player excluded) with portrait x positions."""
@@ -520,9 +547,15 @@ class Pipeline:
         scene_records: dict[str, dict] = {}
         detail_fps = []
         abilities = "\n".join(f"- id={a.id}: {a.name_ko} ({a.name_en}) — {a.hud_hint or ''}" for a in hero.abilities)
+        names = {a.id: a.name_ko for a in hero.abilities}
         for scene in scenes:
+            # skill / ultimate uses the HUD shows in this window, handed to the model as facts so it
+            # describes the situation at those moments instead of guessing when skills were used
+            hud_uses = self._hud_uses_in(video, scene.window_start, scene.window_end, hcfg)
+            hud_events = "\n".join(f"- 구간 {u['time_seconds'] - scene.window_start:.1f}초: {names.get(u['ability_id'], u['ability_id'])}"
+                                   f" (id={u['ability_id']})" for u in hud_uses) or "- 없음"
             fp = fingerprint(ai_fp_base, sha, scene.to_dict(), dcfg, pcfg, dp.version, team_context,
-                             abilities, hero.observable_signals, hero.display_name_ko)
+                             abilities, hero.observable_signals, hero.display_name_ko, hud_uses)
             detail_fps.append(fp)
 
             def run_detail(scene: Scene = scene):
@@ -532,7 +565,7 @@ class Pipeline:
                     clip_duration_seconds=scene.duration, hero_name_ko=hero.display_name_ko,
                     hero_name_en=hero.display_name_en, candidate_reasons=" / ".join(scene.reasons),
                     observable_signals="\n".join(f"- {s}" for s in hero.observable_signals), abilities=abilities,
-                    team_context=team_context,
+                    team_context=team_context, hud_events=hud_events,
                 )
                 parsed, usage = self._call(f"detail:{scene.scene_id}", "detail", DetailResponse,
                                            lambda schema, note: VideoRequest(
@@ -546,6 +579,7 @@ class Pipeline:
             raw = self._cached_or_run(store, f"detail-{scene.scene_id}", fp, run_detail, "detail" in force)
             scene_records[scene.scene_id] = detail_to_original(
                 scene, DetailResponse.model_validate(raw), cfg["output"]["window_tolerance_seconds"], self.warnings)
+            scene_records[scene.scene_id]["hud_uses"] = hud_uses
             scene_records[scene.scene_id]["player_deaths"] = [
                 d for d in self._deaths if scene.window_start <= d["time_seconds"] <= scene.window_end + 0.5]
         self.timings["detail"] = round(time.monotonic() - t, 3)
