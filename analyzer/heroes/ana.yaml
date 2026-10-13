@@ -26,6 +26,7 @@ abilities:
     name_en: Sleep Dart
     hud_hint: "HUD 하단 스킬 아이콘. 사용 후 쿨다운 숫자가 표시됨"
     hud_slot: ability_1
+    force_scene: true                # 모든 사용 장면 분석 (사용자 지침: 아나는 shift·e 전부)
     disables_target: true
     # 명중한 적의 팀 목록 칸에 zz 표시 (config hud_check.sleep_icon)
     target_marker: sleep_icon
@@ -34,6 +35,7 @@ abilities:
     name_en: Biotic Grenade
     hud_hint: "HUD 하단 스킬 아이콘. 사용 후 쿨다운 숫자가 표시됨"
     hud_slot: ability_2
+    force_scene: true
   - id: nano_boost
     name_ko: 나노 강화제
     name_en: Nano Boost

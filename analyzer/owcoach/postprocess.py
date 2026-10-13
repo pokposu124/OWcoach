@@ -50,7 +50,7 @@ class Scene:
 
 def plan_scenes(overview: OverviewResponse, duration: float, cfg: dict, max_candidates: int,
                 discarded: list[DiscardedItem], forced: list[SceneCandidate] | None = None) -> list[Scene]:
-    """forced: candidates that must be analysed (player deaths, HUD-detected ultimates). They are always
+    """forced: candidates that must be analysed (player deaths, HUD-detected ultimates and force_scene skills). They are always
     kept and do not count toward max_candidates, which limits the overview model's own picks only."""
     forced = [c for c in (forced or []) if 0 <= c.start_time_seconds <= c.end_time_seconds <= duration]
     valid = []

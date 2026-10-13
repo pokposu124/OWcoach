@@ -44,6 +44,9 @@ class Ability(BaseModel):
     target_marker: str | None = None
     # 맞으면 대상이 몇 초간 행동하지 못하는 스킬(수면총 등). 사용 직후 플레이어가 죽었다면 명중 주장을 의심한다
     disables_target: bool = False
+    # True면 HUD로 감지한 이 스킬의 모든 사용 순간을 후보 장면으로 강제 포함 (전체 흐름 모델 선택·장면 수 제한과 무관).
+    # 영웅마다 따로 정한다. 궁극기는 이 값과 상관없이 항상 강제 포함
+    force_scene: bool = False
 
 
 class NumericFact(BaseModel):

@@ -540,7 +540,7 @@ def test_hud_ultimate_uses_become_scenes(video, cfg, tmp_path, monkeypatch):
     scene, a code-added ability event with the target check, even if the model never mentioned it."""
     import owcoach.pipeline as pl
 
-    monkeypatch.setattr(pl, "scan_uses", lambda *a, **k: [18.5])
+    monkeypatch.setattr(pl, "scan_uses", lambda video, dur, slot, cfg: [18.5] if slot == "ultimate" else [])
     monkeypatch.setattr(pl, "detect_buff_target", lambda *a, **k: {"status": "interrupted", "slot": 9,
                                                                      "player_name": "S", "hero": "솔저: 76", "note": "n"})
     seen = {}
@@ -562,6 +562,25 @@ def test_hud_ultimate_uses_become_scenes(video, cfg, tmp_path, monkeypatch):
     ev = seen["events"]
     assert len(ev) == 1 and ev[0]["time_seconds"] == 18.5 and ev[0]["ability_id"] == "nano_boost"
     assert ev[0]["hud_check"]["target_check"]["status"] == "interrupted"
+
+
+def test_force_scene_skills_become_scenes(video, cfg, tmp_path, monkeypatch):
+    """Ana's sleep dart and grenade are force_scene: every HUD-detected use is a forced skill_usage candidate."""
+    import owcoach.pipeline as pl
+
+    uses = {"ability_1": [5.0], "ability_2": [12.0, 25.0], "ultimate": []}
+    monkeypatch.setattr(pl, "scan_uses", lambda video, dur, slot, cfg: uses.get(slot, []))
+    seen = {}
+    real_plan = pl.plan_scenes
+
+    def spy_plan(overview, *a, **k):
+        seen["cands"] = [(c.category, c.reason_observed) for c in k.get("forced", [])]
+        return real_plan(overview, *a, **k)
+
+    monkeypatch.setattr(pl, "plan_scenes", spy_plan)
+    make_pipeline(cfg, tmp_path, MockProvider()).run(video, run_id="hudskill")
+    assert ("skill_usage", "HUD: 5초에 수면총 사용 감지") in seen["cands"]
+    assert [r for c, r in seen["cands"] if "생체 수류탄" in r] == ["HUD: 12초에 생체 수류탄 사용 감지", "HUD: 25초에 생체 수류탄 사용 감지"]
 
 
 def test_player_death_from_empty_health_bar(tmp_path, cfg):

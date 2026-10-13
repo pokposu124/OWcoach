@@ -603,6 +603,19 @@ class Pipeline:
             start_time_seconds=max(0.0, round(x - 2.0, 2)), end_time_seconds=min(duration, round(x + 2.0, 2)),
             category="ultimate_usage", reason_observed=f"HUD: {fmt_time(x)}에 궁극기 사용 감지", priority=5)
             for x in self._hud_ult_uses]
+        # per-hero: abilities marked force_scene get a scene at every HUD-detected use
+        self._hud_skill_uses: dict[str, list[float]] = {}
+        if hcfg.get("enabled"):
+            for a in hero.abilities:
+                if a.force_scene and a.hud_slot and a.hud_slot != "ultimate" and a.hud_slot in hcfg["regions"]:
+                    self._hud_skill_uses[a.id] = scan_uses(video, duration, a.hud_slot, hcfg)
+                    if self._hud_skill_uses[a.id]:
+                        self.log(f"  HUD {a.name_ko} 사용 감지: " + ", ".join(fmt_time(x) for x in self._hud_skill_uses[a.id]))
+        names_ko = {a.id: a.name_ko for a in hero.abilities}
+        skill_candidates = [SceneCandidate(
+            start_time_seconds=max(0.0, round(x - 1.0, 2)), end_time_seconds=min(duration, round(x + 1.0, 2)),
+            category="skill_usage", reason_observed=f"HUD: {fmt_time(x)}에 {names_ko[aid]} 사용 감지", priority=4)
+            for aid, xs in self._hud_skill_uses.items() for x in xs]
         self._deaths = self._find_deaths(video, duration, overview, hcfg)
         if self._deaths:
             self.log("  사망 감지: " + ", ".join(f"{fmt_time(d['time_seconds'])}({d['source']})" for d in self._deaths))
@@ -613,7 +626,7 @@ class Pipeline:
             reason_observed=f"사망 {fmt_time(d['time_seconds'])}: 직전 {dpre:g}초 상황 분석 필수 ({d['source']})")
             for d in self._deaths]
         scenes = plan_scenes(overview, duration, cfg["detail"], ocfg["max_candidates"], self.discarded,
-                             forced=[*hud_candidates, *death_candidates])
+                             forced=[*hud_candidates, *skill_candidates, *death_candidates])
         self.log(f"  후보 장면 {len(scenes)}개: " + ", ".join(f"{s.window_start:.1f}-{s.window_end:.1f}s" for s in scenes))
 
         # 3. detail ---------------------------------------------------------------------
