@@ -27,7 +27,8 @@ from pydantic import BaseModel, ValidationError
 
 from . import __version__
 from .config import ANALYZER_ROOT, fingerprint
-from .hud import check_use_claim, detect_buff_target, sample_hud
+from .hud import check_use_claim, detect_buff_target, sample_hud, scan_uses
+from .timefmt import fmt_time
 from .heroes import HeroProfile
 from .portraits import identify, load_portraits
 from .media import (
@@ -50,6 +51,7 @@ from .schemas import (
     DetailResponse,
     DiscardedItem,
     OverviewResponse,
+    SceneCandidate,
     StageUsage,
     TeamResponse,
     Versions,
@@ -191,6 +193,7 @@ class Pipeline:
         self.warnings: list[str] = []
         self.discarded: list[DiscardedItem] = []
         self._team_record: dict | None = None
+        self._hud_ult_uses: list[float] = []
 
     # ---------------------------------------------------------------- AI call helper
 
@@ -301,8 +304,6 @@ class Pipeline:
         slots = {a.id: a.hud_slot for a in self.hero.abilities}
         markers = {a.id: a.target_marker for a in self.hero.abilities}
         events = rec["ability_events"]
-        if not events:
-            return
         if not hcfg.get("enabled"):
             for e in events:
                 e["hud_check"] = {"status": "not_checked", "hud_slot": None, "hud_use_time_seconds": None,
@@ -323,9 +324,21 @@ class Pipeline:
                 marker = markers.get(e["ability_id"])
                 if marker and e["hud_check"]["status"] == "verified" and marker in hcfg:
                     tc = detect_buff_target(video, e["hud_check"]["hud_use_time_seconds"], self._ally_slots(), hcfg[marker])
-                    if tc["status"] == "verified" and e.get("target") and e["target"] != tc["player_name"]:
+                    if tc["status"] in ("verified", "interrupted") and e.get("target") and e["target"] != tc["player_name"]:
                         tc["note"] += f"; 모델이 기록한 대상({e['target']})과 다름"
                     e["hud_check"]["target_check"] = tc
+        # ultimate uses seen on the HUD in this window but not (correctly) recorded by the model
+        ult = next((a for a in self.hero.abilities if a.hud_slot == "ultimate"), None)
+        claimed = {e["hud_check"].get("hud_use_time_seconds") for e in events
+                   if e["ability_id"] == (ult.id if ult else None) and e["hud_check"]["status"] == "verified"}
+        for x in getattr(self, "_hud_ult_uses", []):
+            if ult and rec["window_start"] <= x <= rec["window_end"] and x not in claimed:
+                hc = {"status": "verified", "hud_slot": "ultimate", "hud_use_time_seconds": x,
+                      "note": f"HUD: {fmt_time(x)}에 준비 → 사용됨 전환 확인 (모델 기록 없음, 코드가 추가)"}
+                if ult.target_marker and ult.target_marker in hcfg:
+                    hc["target_check"] = detect_buff_target(video, x, self._ally_slots(), hcfg[ult.target_marker])
+                events.append({"time_seconds": x, "ability_id": ult.id, "target": "", "source": "hud",
+                               "evidence": "HUD 궁극기 표시에서 감지", "hud_check": hc})
 
     def _ally_slots(self) -> list[dict]:
         """Team-list slots of the player's teammates (player excluded) with portrait x positions."""
@@ -381,8 +394,10 @@ class Pipeline:
     def _run_locked(self, store: RunStore, video: Path, sha: str, run_id: str, game_patch: str | None,
                     force: set[str], t0: float) -> AnalysisResult:
         cfg, hero, prov = self.cfg, self.hero, self.provider
-        ai_fp_base = {"provider": prov.name, "model": prov.model, "hero": hero.hero_id,
-                      "hero_profile": hero.profile_version}
+        # cache keys hold what each stage actually sends: the hero profile version is not part of the
+        # base, so editing coaching criteria re-runs coaching only (detail keys include the abilities and
+        # observable signals, coaching keys the criteria)
+        ai_fp_base = {"provider": prov.name, "model": prov.model, "hero": hero.hero_id}
 
         # 1. probe / input conditions -------------------------------------------------
         self.log("[1/5] 입력 확인")
@@ -451,7 +466,19 @@ class Pipeline:
         if overview.hud_readable == "partial":
             self.warnings.append(f"HUD 일부만 판독 가능: {overview.video_quality_notes}")
 
-        scenes = plan_scenes(overview, duration, cfg["detail"], ocfg["max_candidates"], self.discarded)
+        # every ultimate use the HUD shows gets a scene, whether or not the overview model picked it
+        hcfg = cfg.get("hud_check") or {"enabled": False}
+        self._hud_ult_uses = []
+        if hcfg.get("enabled") and any(a.hud_slot == "ultimate" for a in hero.abilities) and "ultimate" in hcfg["regions"]:
+            self._hud_ult_uses = scan_uses(video, duration, "ultimate", hcfg)
+            if self._hud_ult_uses:
+                self.log("  HUD 궁극기 사용 감지: " + ", ".join(fmt_time(x) for x in self._hud_ult_uses))
+        hud_candidates = [SceneCandidate(
+            start_time_seconds=max(0.0, round(x - 2.0, 2)), end_time_seconds=min(duration, round(x + 2.0, 2)),
+            category="ultimate_usage", reason_observed=f"HUD: {fmt_time(x)}에 궁극기 사용 감지", priority=5)
+            for x in self._hud_ult_uses]
+        plan_input = overview.model_copy(update={"candidates": [*overview.candidates, *hud_candidates]})
+        scenes = plan_scenes(plan_input, duration, cfg["detail"], ocfg["max_candidates"], self.discarded)
         self.log(f"  후보 장면 {len(scenes)}개: " + ", ".join(f"{s.window_start:.1f}-{s.window_end:.1f}s" for s in scenes))
 
         # 3. detail ---------------------------------------------------------------------
@@ -462,9 +489,9 @@ class Pipeline:
         scene_records: dict[str, dict] = {}
         detail_fps = []
         abilities = "\n".join(f"- id={a.id}: {a.name_ko} ({a.name_en}) — {a.hud_hint or ''}" for a in hero.abilities)
-        hcfg = cfg.get("hud_check") or {"enabled": False}
         for scene in scenes:
-            fp = fingerprint(ai_fp_base, sha, scene.to_dict(), dcfg, pcfg, dp.version, team_context)
+            fp = fingerprint(ai_fp_base, sha, scene.to_dict(), dcfg, pcfg, dp.version, team_context,
+                             abilities, hero.observable_signals, hero.display_name_ko)
             detail_fps.append(fp)
 
             def run_detail(scene: Scene = scene):
@@ -554,6 +581,7 @@ class Pipeline:
             notice=MOCK_NOTICE if prov.is_mock else None,
             hero=hero.hero_id, hero_display_name=hero.display_name_ko,
             game_patch_version=game_patch, criteria_patch_version=hero.patch_version, team=team_record,
+            hud_ultimate_uses_seconds=self._hud_ult_uses,
             video=VideoInfo(file_name=video.name, sha256=sha, duration_seconds=duration, width=info.width,
                             height=info.height, fps=info.fps, codec=info.codec),
             overview=overview.model_dump(),

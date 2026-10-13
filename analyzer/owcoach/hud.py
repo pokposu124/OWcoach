@@ -154,11 +154,14 @@ def detect_buff_target(video: Path, use_time: float, slots: list[dict], cfg: dic
     The arrow is drawn in white over the upper part of the receiving ally's portrait for a few seconds.
     Each slot's white-pixel share in that zone is compared with its own baseline just before the use;
     frames where most slots brighten together (screen flash) are ignored.
+
+    No arrow but one ally's portrait turns dark and stays dark (that ally died) -> "interrupted":
+    the buff was cut off, e.g. a late Nano Boost on an ally who was already going down.
     """
     if not slots:
         return {"status": "unverifiable", "note": "대상 후보(아군 칸)가 없음"}
     fps = float(cfg["fps"])
-    y0, y1 = cfg["y"], cfg["y"] + cfg["h"]
+    y0, y1 = min(cfg["y"], cfg["death_y"]), max(cfg["y"] + cfg["h"], cfg["death_y"] + cfg["death_h"])
     xs = [s["x"] for s in slots]
     x_lo, x_hi = min(xs) + cfg["dx0"], max(xs) + cfg["dx1"]
     start = max(0.0, use_time - cfg["baseline_seconds"])
@@ -172,8 +175,11 @@ def detect_buff_target(video: Path, use_time: float, slots: list[dict], cfg: dic
     if proc.returncode != 0:
         raise MediaError(f"buff arrow extraction failed: {proc.stderr[-300:]!r}")
     frames = np.frombuffer(proc.stdout, np.uint8).reshape(-1, y1 - y0, x_hi - x_lo, 3)
-    white = frames.min(axis=3) > cfg["white_threshold"]
+    ay0, dy0 = cfg["y"] - y0, cfg["death_y"] - y0
+    white = frames[:, ay0:ay0 + cfg["h"]].min(axis=3) > cfg["white_threshold"]
     ratios = np.array([[w[:, s["x"] + cfg["dx0"] - x_lo:s["x"] + cfg["dx1"] - x_lo].mean() for s in slots] for w in white])
+    portrait = frames[:, dy0:dy0 + cfg["death_h"]].astype(np.float32).mean(axis=3)
+    lum = np.array([[p[:, s["x"] - x_lo:s["x"] - x_lo + cfg["death_w"]].mean() for s in slots] for p in portrait])
     times = start + np.arange(len(ratios)) / fps
     before, after = ratios[times < use_time - 0.25], ratios[times >= use_time]
     if len(before) == 0 or len(after) == 0:
@@ -189,4 +195,22 @@ def detect_buff_target(video: Path, use_time: float, slots: list[dict], cfg: dic
         return {"status": "verified", "slot": s["slot"], "player_name": s["player_name"], "hero": s.get("hero"),
                 "arrow_frames": int(hits[best]),
                 "note": f"팀 목록 {s['slot']}번 칸({s['player_name']})에 강화 화살표 {int(hits[best])}프레임"}
-    return {"status": "unverifiable", "note": "어느 아군 칸에도 강화 화살표가 뚜렷하지 않음(대상 사망·화면 가림 등)"}
+    # no arrow: did an ally go down right after (portrait stays darker until the end of the window)?
+    tail = lum[times >= times[-1] - cfg["death_hold_seconds"]]
+    base = np.median(lum[times < use_time - 0.25], axis=0)
+    drop = 1 - np.median(tail, axis=0) / np.maximum(base, 1e-6)
+    dead = [i for i in range(len(slots)) if drop[i] >= cfg["death_min_drop"]]
+    if len(dead) == 1:
+        s = slots[dead[0]]
+        return {"status": "interrupted", "slot": s["slot"], "player_name": s["player_name"], "hero": s.get("hero"),
+                "note": f"강화 화살표 없음, 직후 {s['slot']}번 칸({s['player_name']}) 초상화가 어두워짐"
+                        f"(밝기 {drop[dead[0]] * 100:.0f}% 감소): 대상이 쓰러져 효과가 끊긴 것으로 추정"}
+    if len(dead) > 1:
+        names = ", ".join(slots[i]["player_name"] for i in dead)
+        return {"status": "unverifiable", "note": f"강화 화살표 없음, 아군 여러 명이 쓰러짐({names}): 대상 특정 불가"}
+    return {"status": "unverifiable", "note": "어느 아군 칸에도 강화 화살표가 뚜렷하지 않음(화면 가림 등)"}
+
+
+def scan_uses(video: Path, duration: float, slot: str, cfg: dict) -> list[float]:
+    """All ready -> used transitions of one HUD slot over the whole video (e.g. every ultimate)."""
+    return use_times(sample_hud(video, 0.0, duration, cfg), slot, min_run_for(cfg, slot))

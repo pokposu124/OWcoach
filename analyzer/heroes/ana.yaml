@@ -10,7 +10,7 @@ hero_id: ana
 display_name_ko: 아나
 display_name_en: Ana
 role: support
-profile_version: "0.2.0-draft"
+profile_version: "0.3.0-draft"
 review_status: draft
 # 이 기준이 검증된 게임 패치 버전. 아직 어떤 패치로도 검증되지 않았음.
 patch_version: unverified
@@ -142,11 +142,13 @@ criteria:
       사용 대상과 시점이 화면상 확인되는지 본다.
     good_signs:
       - "교전 시작 직후 화면 안의 아군에게 사용"
+      - "아군이 집중 공격을 받아 쓰러지기 전에 미리 사용해 효과를 끝까지 살림"
     bad_signs:
       - "게이지 100% 상태로 사망(화면에서 확인될 때만)"
+      - "이미 쓰러지기 직전인 아군에게 늦게 사용해 효과가 끊김(대상 판별 interrupted). 더 일찍 주거나, 늦었다면 그 아군은 포기하고 다른 아군에게 주거나 아껴야 함 (사용자 코칭: 4분 10초 솔저 76 나노는 블런더)"
     cannot_judge_when:
       - "궁극기 게이지 수치가 판독되지 않음"
-    source: {type: coach_draft, reference: null, patch_version: unverified}
+    source: {type: coach_draft, reference: "초안 + 사용자 코칭(2026-10-13, 늦은 나노)", patch_version: unverified}
 
 # 확인된 게임 수치. 출처와 패치 버전이 없으면 넣지 않는다. (현재 비어 있음)
 # 예시 형식:

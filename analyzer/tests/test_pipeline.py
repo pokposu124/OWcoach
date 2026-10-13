@@ -516,3 +516,48 @@ def test_report_fragment_has_no_document_wrapper(video, cfg, tmp_path):
     result = AnalysisResult.model_validate_json((run_dir / "result.json").read_text())
     frag = build_report_html(result, "media/web.mp4", fragment=True)
     assert "<html" not in frag and "<body" not in frag and 'src="media/web.mp4"' in frag and "id=save" not in frag
+
+
+def test_buff_interrupted_when_target_goes_down(tmp_path, cfg):
+    """No arrow, but slot 9's portrait turns dark from t=2.5s and stays dark: the buff was cut off."""
+    from owcoach.hud import detect_buff_target
+
+    bcfg = cfg["hud_check"]["buff_arrow"]
+    xs = cfg["team"]["portrait_slots"]["right_x"]
+    boxes = ",".join(f"drawbox=x={x}:y={bcfg['death_y']}:w=34:h={bcfg['death_h']}:color=0xb0b0b0:t=fill" for x in xs)
+    vf = boxes + f",drawbox=x={xs[3]}:y={bcfg['death_y']}:w=34:h={bcfg['death_h']}:color=0x505050:t=fill:enable='gte(t,2.5)'"
+    video = tmp_path / "down.mp4"
+    subprocess.run(["ffmpeg", "-y", "-v", "error", "-f", "lavfi", "-i", "color=c=0x502030:size=1280x720:rate=30",
+                    "-t", "6", "-vf", vf, "-pix_fmt", "yuv420p", str(video)], check=True)
+    allies = [{"slot": 6 + i, "x": x, "player_name": f"P{i}", "hero": None} for i, x in enumerate(xs) if i != 0]
+    res = detect_buff_target(video, 2.0, allies, bcfg)
+    assert res["status"] == "interrupted" and res["slot"] == 9 and res["player_name"] == "P3"
+
+
+def test_hud_ultimate_uses_become_scenes(video, cfg, tmp_path, monkeypatch):
+    """An ultimate the HUD shows becomes a scene candidate (category ultimate_usage) and, inside that
+    scene, a code-added ability event with the target check, even if the model never mentioned it."""
+    import owcoach.pipeline as pl
+
+    monkeypatch.setattr(pl, "scan_uses", lambda *a, **k: [18.5])
+    monkeypatch.setattr(pl, "detect_buff_target", lambda *a, **k: {"status": "interrupted", "slot": 9,
+                                                                     "player_name": "S", "hero": "솔저: 76", "note": "n"})
+    seen = {}
+    real_plan, real_check = pl.plan_scenes, pl.Pipeline._hud_check_scene
+
+    def spy_plan(overview, *a, **k):
+        seen["cands"] = [(c.category, c.reason_observed) for c in overview.candidates]
+        return real_plan(overview, *a, **k)
+
+    def spy_check(self, video, rec, hcfg):
+        real_check(self, video, rec, hcfg)
+        seen.setdefault("events", []).extend(e for e in rec["ability_events"] if e.get("source") == "hud")
+
+    monkeypatch.setattr(pl, "plan_scenes", spy_plan)
+    monkeypatch.setattr(pl.Pipeline, "_hud_check_scene", spy_check)
+    result, _ = make_pipeline(cfg, tmp_path, MockProvider()).run(video, run_id="hudult")
+    assert result.hud_ultimate_uses_seconds == [18.5]
+    assert ("ultimate_usage", "HUD: 18초에 궁극기 사용 감지") in seen["cands"]
+    ev = seen["events"]
+    assert len(ev) == 1 and ev[0]["time_seconds"] == 18.5 and ev[0]["ability_id"] == "nano_boost"
+    assert ev[0]["hud_check"]["target_check"]["status"] == "interrupted"
