@@ -89,15 +89,26 @@ class HeroProfile(BaseModel):
         return out
 
 
+COMMON_FILE = "common.yaml"
+
+
 def available_heroes(heroes_dir: Path = HEROES_DIR) -> list[str]:
-    return sorted(p.stem for p in heroes_dir.glob("*.yaml"))
+    return sorted(p.stem for p in heroes_dir.glob("*.yaml") if p.name != COMMON_FILE)
 
 
 def load_hero(hero_id: str, heroes_dir: Path = HEROES_DIR) -> HeroProfile:
     path = heroes_dir / f"{hero_id}.yaml"
     if not path.exists():
         raise ValueError(f"지원하지 않는 영웅: {hero_id!r} (지원: {', '.join(available_heroes(heroes_dir))})")
-    profile = HeroProfile.model_validate(load_yaml(path))
+    data = load_yaml(path)
+    common_path = heroes_dir / COMMON_FILE
+    if common_path.exists():
+        # knowledge that holds for every hero (e.g. no skills into an enemy Genji's deflect)
+        common = load_yaml(common_path)
+        data["observable_signals"] = [*data.get("observable_signals", []), *common.get("observable_signals", [])]
+        data["criteria"] = [*data.get("criteria", []), *common.get("criteria", [])]
+        data["profile_version"] = f"{data['profile_version']}+common-{common.get('common_version', '?')}"
+    profile = HeroProfile.model_validate(data)
     if profile.hero_id != hero_id:
         raise ValueError(f"{path}: hero_id {profile.hero_id!r} does not match file name")
     ids = [c.id for c in profile.criteria]

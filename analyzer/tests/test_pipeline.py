@@ -658,3 +658,15 @@ def test_death_and_ultimate_feedback_exceed_the_limit(cfg):
     cats = sorted(f.category for f in fb)
     assert cats == ["positioning", "skill_usage", "ultimate_usage"]
     assert [d.reason for d in discarded] == ["피드백 최대 개수 초과"]
+
+
+def test_common_knowledge_applies_to_every_hero():
+    """heroes/common.yaml (e.g. no skills into an enemy Genji's deflect) is merged into each hero and is
+    not itself offered as a hero."""
+    assert "common" not in available_heroes()
+    hero = load_hero("ana")
+    c = hero.criterion("common.skill.no_skills_into_deflect")
+    assert c and c.category == "skill_usage" and c.source.type == "user_coaching"
+    assert any("튕겨내기" in s for s in hero.observable_signals)
+    assert "+common-" in hero.profile_version
+    assert any(x["id"] == c.id for x in hero.criteria_for_prompt() if "id" in x)
