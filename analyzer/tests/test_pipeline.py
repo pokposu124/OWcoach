@@ -858,3 +858,22 @@ def test_reflected_grenade_is_a_blunder(cfg):
     assert fb[0].grade == "blunder"
     assert "common.skill.no_skills_into_deflect" in fb[0].criterion_ids
     assert any("반사됨" in r for r in fb[0].display_reasons)
+
+
+def test_ally_color_from_player_portrait_border(tmp_path, cfg):
+    """A red border around the bottom-left portrait means allies are red; the team context says so and
+    overrides the team stage's guess."""
+    from owcoach.hud import player_team_color
+    from owcoach.pipeline import team_context_text
+
+    pcfg = cfg["team"]["player_portrait"]
+    vf = f"drawbox=x={pcfg['x0'] + 10}:y={pcfg['y0'] + 10}:w=40:h=70:color=0xe02050:t=4"
+    video = tmp_path / "portrait.mp4"
+    subprocess.run(["ffmpeg", "-y", "-v", "error", "-f", "lavfi", "-i", "color=c=0x303030:size=1280x720:rate=30",
+                    "-t", "4", "-vf", vf, "-pix_fmt", "yuv444p", str(video)], check=True)
+    color = player_team_color(video, 4.0, {**pcfg, "frames": 3})
+    assert color["ally_color"] == "빨강"
+    team = {"team_identification": {"player_name": "P", "ally_side": "right", "ally_color": "파랑",
+                                    "enemy_color": "빨강", "evidence": "e"}, "roster": []}
+    text = team_context_text(team, color)
+    assert "아군 색 빨강" in text and "\"빨강=적\" 관례" in text

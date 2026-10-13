@@ -10,7 +10,7 @@ hero_id: ana
 display_name_ko: 아나
 display_name_en: Ana
 role: support
-profile_version: "0.3.0-draft"
+profile_version: "0.4.0-draft"
 review_status: draft
 # 이 기준이 검증된 게임 패치 버전. 아직 어떤 패치로도 검증되지 않았음.
 patch_version: unverified
@@ -55,6 +55,7 @@ observable_signals:
   - "엄폐물(벽, 기둥, 모서리)과 본인 위치 관계"
   - "화면에 보이는 아군/적의 체력바와 위치 (화면 밖은 판단하지 않음)"
   - "킬피드(우상단) 내용"
+  - "생체 수류탄을 맞은 캐릭터: 아군이면 노란 빛과 + 표시(회복), 적이면 보라색 치유 차단 표시. 아군/적은 팀 구성의 색 기준으로"
   - "사망 시 처치 화면(킬캠) 표시 여부"
 
 # 코칭 기준. id 는 결과의 criterion_ids 로 참조된다. 모두 코치 검수 전 초안.
@@ -137,9 +138,10 @@ criteria:
       - "본인이 압박받을 때 발밑에 사용해 생존"
     bad_signs:
       - "아군/적이 화면에 거의 없는 곳에 사용"
+      - "본인 체력이 낮거나 근접한 적에게 압박받는 중(직후 사망 위험)인데 발밑이 아닌 적·전방에 던짐. 이때는 자기 생존이 우선이므로 발밑에 써야 함 (사용자 코칭: 두 번째 아나 영상 1분 7초, 체력 131에서 전방에 던지고 4초 뒤 사망 → 최선 아님)"
     cannot_judge_when:
       - "수류탄 착탄 지점이 화면에서 보이지 않음"
-    source: {type: coach_draft, reference: null, patch_version: unverified}
+    source: {type: coach_draft, reference: "초안 + 사용자 코칭(2026-10-13, 압박 중 자기 생존 우선)", patch_version: unverified}
 
   - id: ana.ultimate.nano_boost_usage
     category: ultimate_usage

@@ -31,6 +31,7 @@ from .hud import (
     check_use_claim,
     detect_buff_target,
     detect_reflect,
+    player_team_color,
     detect_status_icon,
     min_run_for,
     sample_hud,
@@ -124,15 +125,34 @@ def compute_cost(usage: list[StageUsage], pricing: dict, is_mock: bool) -> CostS
     )
 
 
-def team_context_text(team: dict | None) -> str:
-    """Team / roster facts (team stage + portrait matching), handed to the overview and detail prompts."""
+OTHER_COLOR = {"빨강": "파랑/청록", "파랑": "빨강/분홍"}
+
+
+def team_color_text(color: dict | None) -> str:
+    c = (color or {}).get("ally_color")
+    if not c:
+        return ""
+    return (f"- 아군/적 색 (코드 측정, 이 표를 따르세요): 좌하단 내 초상화 테두리 색이 {c}입니다. "
+            f"화면의 윤곽선·체력바·이름표가 {c}(분홍 포함) 계열이면 아군, {OTHER_COLOR[c]} 계열이면 적입니다. "
+            "\"빨강=적\" 관례로 판단하지 마세요.")
+
+
+def team_context_text(team: dict | None, color: dict | None = None) -> str:
+    """Team / roster facts (team stage + portrait matching + code-measured ally color), handed to the
+    overview, detail and moment prompts."""
+    color_line = team_color_text(color)
     if team is None:
-        return "- 팀 판별 안 함: 아군/적 색을 가정하지 말고 화면 상단 팀 목록과 플레이어 이름으로 직접 판단하세요."
+        return color_line or "- 팀 판별 안 함: 아군/적 색을 가정하지 말고 화면 상단 팀 목록과 플레이어 이름으로 직접 판단하세요."
     ti = team["team_identification"]
     side = {"left": "왼쪽", "right": "오른쪽", "unknown": "판별 못 함"}[ti["ally_side"]]
+    ally, enemy = ti["ally_color"], ti["enemy_color"]
+    if (color or {}).get("ally_color"):
+        ally, enemy = color["ally_color"], OTHER_COLOR[color["ally_color"]]
     lines = [f"- 플레이어 이름: {ti['player_name'] or '판독 못 함'}",
-             f"- 아군 팀: 상단 팀 목록 {side}, 아군 색 {ti['ally_color']}, 적 색 {ti['enemy_color']}",
+             f"- 아군 팀: 상단 팀 목록 {side}, 아군 색 {ally}, 적 색 {enemy}",
              f"- 판단 근거: {ti['evidence']}"]
+    if color_line:
+        lines.insert(0, color_line)
     team_ko = {"ally": "아군", "enemy": "적", "unknown": "소속 불명"}
     for r in team["roster"]:
         hero = r.get("hero") or "불명"
@@ -577,7 +597,11 @@ class Pipeline:
         t = time.monotonic()
         team, team_record = self._team_stage(store, video, sha, duration, ai_fp_base, force)
         self._team_record = team_record
-        team_context = team_context_text(team_record)
+        tcfg = cfg.get("team") or {}
+        self._team_color = player_team_color(video, duration, tcfg["player_portrait"]) if "player_portrait" in tcfg else None
+        if self._team_color:
+            self.log(f"  아군 색(내 초상화 테두리): {self._team_color.get('ally_color') or '판별 못 함'} — {self._team_color['note']}")
+        team_context = team_context_text(team_record, self._team_color)
         self.timings["team"] = round(time.monotonic() - t, 3)
 
         # 2b. overview ------------------------------------------------------------------

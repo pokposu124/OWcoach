@@ -86,9 +86,17 @@ def evaluate(run_dir: Path, labels_path: Path) -> dict:
             check("스킬 대상", None, f"{fmt_time(t)} {st['ability']} — 결과에 해당 피드백/순간 확인 없음")
         else:
             said = mc.get("target", "")
-            self_aimed = any(k in said for k in ("발밑", "자신", "자기", "바닥"))
-            check("스킬 대상", self_aimed == (st["target"] == "self"),
-                  f"{fmt_time(t)} 정답 {st['target']} / 순간 확인 '{said}'")
+            if any(k in said for k in ("발밑", "자신", "자기", "바닥")):
+                got = "self"
+            elif "아군" in said and "적" not in said.replace("적중", ""):
+                got = "ally"
+            elif "적" in said.replace("적중", ""):
+                got = "enemy"
+            else:
+                got = "unknown"
+            want = st["target"]
+            ok = got == want if want == "ally" or got == "ally" else (got == "self") == (want == "self")
+            check("스킬 대상", ok, f"{fmt_time(t)} 정답 {want} / 순간 확인 '{said}'")
 
     # hit / miss and target as the code saw it (team-list status icon)
     for so in facts.get("skill_outcomes", []):

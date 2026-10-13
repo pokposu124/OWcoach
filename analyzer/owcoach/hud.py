@@ -336,3 +336,35 @@ def detect_reflect(video: Path, use_time: float, cfg: dict) -> dict:
                     "note": f"반사됨: {fmt_time(float(onset))}부터 자신에게 {cfg['icon_name']} {cfg['min_seconds']:g}초 이상 유지"}
     return {"status": "not_reflected", "note": f"사용 직후 자신에게 {cfg['icon_name']} 없음: 반사되지 않음"}
 
+
+def player_team_color(video: Path, duration: float, cfg: dict) -> dict:
+    """Ally color of this video from the border of the player's own portrait (bottom left).
+
+    Team colors follow the user's settings / the viewer (the player's team was red in both Ana videos),
+    so "red = enemy" cannot be assumed. The portrait border always has the ally color.
+    cfg: team.player_portrait (crop in reference_resolution, frames, min_saturation, min_value, min_gap).
+    """
+    ref_w, ref_h = cfg["reference_resolution"]
+    w, h = cfg["w"], cfg["h"]
+    rgbs = []
+    for i in range(cfg["frames"]):
+        t = duration * (i + 1) / (cfg["frames"] + 1)
+        proc = subprocess.run([
+            _require("ffmpeg"), "-v", "error", "-ss", f"{t:.3f}", "-i", str(video), "-frames:v", "1",
+            "-vf", f"scale={ref_w}:{ref_h},crop={w}:{h}:{cfg['x0']}:{cfg['y0']}",
+            "-f", "rawvideo", "-pix_fmt", "rgb24", "-",
+        ], capture_output=True)
+        if proc.returncode != 0 or len(proc.stdout) != w * h * 3:
+            continue
+        a = np.frombuffer(proc.stdout, np.uint8).reshape(h, w, 3).astype(float) / 255
+        mx, mn = a.max(axis=2), a.min(axis=2)
+        m = ((mx - mn) / (mx + 1e-6) > cfg["min_saturation"]) & (mx > cfg["min_value"])
+        if m.sum() >= 50:
+            rgbs.append([a[..., c][m].mean() for c in range(3)])
+    if not rgbs:
+        return {"ally_color": None, "note": "초상화 테두리 색을 측정하지 못함"}
+    r, g, b = np.median(np.array(rgbs), axis=0)
+    color = "빨강" if r - b >= cfg["min_gap"] else ("파랑" if b - r >= cfg["min_gap"] else None)
+    return {"ally_color": color, "rgb": [round(float(x), 2) for x in (r, g, b)], "frames": len(rgbs),
+            "note": f"좌하단 내 초상화 테두리 평균색 RGB({r:.2f}, {g:.2f}, {b:.2f})"}
+
