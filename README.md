@@ -21,7 +21,7 @@ analyzer/
     postprocess.py        후보 장면 계획, 원본 시간 환산, 검증, 단정 제한, 중복 제거
     providers/            AI 제공자 분리 (base 인터페이스, gemini, mock)
     schemas.py            단계별 모델 응답 스키마 + 최종 결과 스키마
-    report.py             코치 검수용 HTML 리포트
+    report.py             결과 화면(HTML): 왼쪽 3/5 영상, 오른쪽 2/5 번호 매긴 피드백(번호를 누르면 해당 시간으로 이동), 코치 검수 입력
   config/analysis.yaml    샘플링 간격, 앞뒤 분석 범위, 개수 제한 등 모든 조정값
   config/pricing.yaml     확인된 단가만 입력 (비어 있으면 비용 미계산)
   heroes/ana.yaml         영웅별 코칭 기준 (초안, 코치 검수 필요)
@@ -43,13 +43,13 @@ docs/COACH_REVIEW.md      코치 검수 방법
 4. **코칭 기준 적용** — 영상 없이 관찰 기록 + 영웅 기준만 텍스트로 넘겨 observation / assessment / suggestion 을 분리해 작성.
 5. **검증·정리 (AI 없음)** — 스키마 검증, 영상 길이·분석 구간 범위 확인, 근거 프레임을 원본에서 실제로 추출해 존재 확인, 존재하지 않는 기준 제거, 중복 제거, 최대 5개 선택, 근거 없는 과제 제거.
 
-단정적 피드백(`display_mode: assertive`)이 되려면: 유효한 코칭 기준 ≥1, 추출된 근거 프레임 ≥1, `judgement != withheld`, 결과(사망)만을 근거로 하지 않음, 확신도 ≥ `min_confidence_for_assertive`, 불확실성 high 아님, 그리고 기본 설정에서는 **코치 검수된(approved) 기준**(`require_approved_criteria_for_assertive: true`)과 **HUD로 확인된 스킬/궁극기 사용 ≥1, HUD 불일치 0**(`require_hud_verification_for_assertive: true`). 하나라도 어기면 `tentative`(참고·보류)로 표시하고 `display_reasons` 에 이유를 남긴다. 모델이 스스로 매기는 확신도는 첫 실제 실행에서 틀린 항목도 1.0이어서 단독 근거로 쓰지 않는다. HUD 조건은 **스킬 사용 피드백에만** 적용한다. 포지셔닝·생존은 별개 차원으로, HUD 대조를 붙이지도 근거로 쓰지도 않으며 `verification: model_observation`(모델 관찰, 코드 미확인)으로 표시된다. 스킬 사용 피드백의 `hud_checks` 에 대조 결과가 남는다. 사용자에게 보이는 시간은 모두 "n분 n초"(1분 미만은 "n초")로 표기하며, 모델이 쓴 문장의 "132.75초" 같은 표기도 변환한다(JSON의 숫자 필드는 초 단위 유지).
+단정적 피드백(`display_mode: assertive`)이 되려면: 유효한 코칭 기준 ≥1, 추출된 근거 프레임 ≥1, `grade != withheld`, 결과(사망)만을 근거로 하지 않음, 확신도 ≥ `min_confidence_for_assertive`, 불확실성 high 아님, 그리고 기본 설정에서는 **코치 검수된(approved) 기준**(`require_approved_criteria_for_assertive: true`)과 **HUD로 확인된 스킬/궁극기 사용 ≥1, HUD 불일치 0**(`require_hud_verification_for_assertive: true`). 하나라도 어기면 `tentative`(참고·보류)로 표시하고 `display_reasons` 에 이유를 남긴다. 모델이 스스로 매기는 확신도는 첫 실제 실행에서 틀린 항목도 1.0이어서 단독 근거로 쓰지 않는다. 피드백 분류는 **스킬 사용(skill_usage) / 포지셔닝(positioning) / 궁극기 사용(ultimate_usage)** 세 가지이고, 등급은 **탁월(excellent) / 최선(best) / 블런더(blunder)**(근거 부족 시 `withheld`)이다. HUD 조건은 스킬·궁극기 사용 피드백에만, 그 피드백 기준이 다루는 스킬의 기록에만 적용한다. 포지셔닝은 HUD 대조를 붙이지도 근거로 쓰지도 않으며(`verification: model_observation`), 코드로 확인할 수단이 없어 항상 참고·보류로 표시한다(`hold_categories`). 사용자에게 보이는 시간은 모두 "n분 n초"(1분 미만은 "n초")로 표기하며, 모델이 쓴 문장의 "132.75초" 같은 표기도 변환한다(JSON의 숫자 필드는 초 단위 유지).
 
 전체 흐름 분석 전에 **팀 판별** 단계(`team`)가 원본에서 프레임 몇 장(`team.frame_fractions`)을 골라 팀 목록·플레이어 HUD·킬피드 영역만 잘라 확대한 이미지로 아군/적 판별 근거(`team_identification`)와 팀 목록 초상화로 판독한 영웅 목록(`roster`)을 기록한다. 영상 전체(저해상도)로 읽게 했더니 팀 목록 이름을 지어냈기 때문이다(실측). **영웅은 모델이 아니라 코드가 판독한다**: 팀 목록의 초상화 영역을 참고 초상화(`config/hero_portraits/`, 사용자 제공 영웅 선택 화면 초상화 54종)와 여러 배율로 이미지 대조(정규화 상관)해 가장 잘 맞는 영웅을 고르고, 점수·2위와의 차이로 확신도를 매기며 낮으면 `불명`으로 둔다(`owcoach/portraits.py`). 모델은 참고표를 줘도 실행마다 다른 영웅을 high 확신도로 답했다. 결과는 `result.json` 의 `team` 에 남고, 전체 흐름·상세 분석 프롬프트에 전달된다. 팀 색은 사용자 설정으로 바뀔 수 있어 "빨강=적"을 가정하지 않는다.
 
 ### 결과 JSON
 
-`runs/<run_id>/result.json`. 피드백 항목 필수 필드: `start_time_seconds`, `end_time_seconds`, `category`, `observation`, `assessment`, `suggestion`, `evidence_frame_timestamps`, `uncertainty`, `hero`, `patch_version` + `judgement`, `confidence`, `criterion_ids`, `criteria_review_status`, `display_mode`, `display_reasons`, `evidence_frames`. 전체 스키마는 `analyzer/schemas/analysis_result.schema.json`.
+`runs/<run_id>/result.json`. 피드백 항목 필수 필드: `start_time_seconds`, `end_time_seconds`, `category`, `observation`, `assessment`, `suggestion`, `evidence_frame_timestamps`, `uncertainty`, `hero`, `patch_version` + `grade`, `confidence`, `criterion_ids`, `criteria_review_status`, `display_mode`, `display_reasons`, `evidence_frames`. 전체 스키마는 `analyzer/schemas/analysis_result.schema.json`.
 
 결과에는 `analysis_mode`(`real`/`mock`), 모델·프롬프트·영웅 기준·설정 버전, 단계별 처리 시간, 호출별 토큰 사용량(입력/출력/thinking/모달리티별, 캐시 재사용 여부), 비용(확인된 단가가 있을 때만, 항상 추정 표시)이 기록된다.
 

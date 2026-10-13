@@ -9,7 +9,7 @@ from pydantic import BaseModel, Field
 
 from .config import HEROES_DIR, load_yaml
 
-Category = Literal["positioning", "survival", "skill_usage"]
+Category = Literal["skill_usage", "positioning", "ultimate_usage"]
 ReviewStatus = Literal["draft", "approved", "deprecated"]
 
 
@@ -23,7 +23,7 @@ class Criterion(BaseModel):
     id: str
     category: Category
     status: ReviewStatus
-    # skill_usage 기준이 다루는 스킬 id. 지정되면 그 스킬의 사용 기록만 HUD 대조 근거로 쓴다
+    # skill_usage / ultimate_usage 기준이 다루는 스킬 id. 지정되면 그 스킬의 사용 기록만 HUD 대조 근거로 쓴다
     ability: str | None = None
     title: str
     description: str

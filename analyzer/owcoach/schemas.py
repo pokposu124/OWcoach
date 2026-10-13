@@ -11,11 +11,11 @@ from typing import Literal
 
 from pydantic import BaseModel, Field, model_validator
 
-Category = Literal["positioning", "survival", "skill_usage"]
+Category = Literal["skill_usage", "positioning", "ultimate_usage"]
 Visibility = Literal["clear", "partial", "unclear"]
 Level = Literal["low", "medium", "high"]
 
-RESULT_SCHEMA_VERSION = "1.1.0"
+RESULT_SCHEMA_VERSION = "1.2.0"
 
 
 # ---------------------------------------------------------------- stage 2: overview (model output)
@@ -105,7 +105,8 @@ class CoachingItem(BaseModel):
     assessment: str = Field(description="기준을 적용한 판단")
     suggestion: str = Field(description="다음에 할 구체적 행동")
     criterion_ids: list[str]
-    judgement: Literal["good", "needs_improvement", "withheld"]
+    grade: Literal["excellent", "best", "blunder", "withheld"] = Field(
+        description="excellent=탁월, best=최선, blunder=블런더, withheld=근거 부족으로 판단 보류")
     confidence: float = Field(description="0.0~1.0")
     uncertainty: str = Field(description="불확실한 점. 없으면 빈 문자열")
     uncertainty_level: Level
@@ -155,7 +156,8 @@ class FeedbackItem(BaseModel):
     hero: str
     patch_version: str
     # --- additional fields
-    judgement: Literal["good", "needs_improvement", "withheld"]
+    grade: Literal["excellent", "best", "blunder", "withheld"] = Field(
+        description="탁월(excellent) / 최선(best) / 블런더(blunder) / 판단 보류(withheld)")
     confidence: float
     uncertainty_level: Level
     criterion_ids: list[str]
@@ -164,10 +166,10 @@ class FeedbackItem(BaseModel):
     display_reasons: list[str] = Field(description="tentative 로 표시된 이유")
     evidence_frames: list[EvidenceFrame]
     scene_id: str
-    hud_checks: list[HudCheck] = Field(default_factory=list, description="스킬 사용 피드백에만: 구간 안의 스킬/궁극기 사용 주장과 HUD 대조 결과")
+    hud_checks: list[HudCheck] = Field(default_factory=list, description="스킬·궁극기 사용 피드백에만: 이 피드백 기준의 스킬 사용 주장과 HUD 대조 결과")
     verification: Literal["hud", "model_observation"] = Field(
         default="model_observation",
-        description="hud: 스킬 사용이 HUD 대조로 확인됨 / model_observation: 모델 관찰(포지셔닝·생존 등, 코드로 확인하지 않음)")
+        description="hud: 스킬/궁극기 사용이 HUD 대조로 확인됨 / model_observation: 모델 관찰(포지셔닝 등, 코드로 확인하지 않음)")
 
     @model_validator(mode="after")
     def _check_times(self) -> "FeedbackItem":

@@ -133,9 +133,9 @@
         },
         "category": {
           "enum": [
+            "skill_usage",
             "positioning",
-            "survival",
-            "skill_usage"
+            "ultimate_usage"
           ],
           "title": "Category",
           "type": "string"
@@ -171,13 +171,15 @@
           "title": "Patch Version",
           "type": "string"
         },
-        "judgement": {
+        "grade": {
+          "description": "탁월(excellent) / 최선(best) / 블런더(blunder) / 판단 보류(withheld)",
           "enum": [
-            "good",
-            "needs_improvement",
+            "excellent",
+            "best",
+            "blunder",
             "withheld"
           ],
-          "title": "Judgement",
+          "title": "Grade",
           "type": "string"
         },
         "confidence": {
@@ -237,7 +239,7 @@
           "type": "string"
         },
         "hud_checks": {
-          "description": "스킬 사용 피드백에만: 구간 안의 스킬/궁극기 사용 주장과 HUD 대조 결과",
+          "description": "스킬·궁극기 사용 피드백에만: 이 피드백 기준의 스킬 사용 주장과 HUD 대조 결과",
           "items": {
             "$ref": "#/$defs/HudCheck"
           },
@@ -246,7 +248,7 @@
         },
         "verification": {
           "default": "model_observation",
-          "description": "hud: 스킬 사용이 HUD 대조로 확인됨 / model_observation: 모델 관찰(포지셔닝·생존 등, 코드로 확인하지 않음)",
+          "description": "hud: 스킬/궁극기 사용이 HUD 대조로 확인됨 / model_observation: 모델 관찰(포지셔닝 등, 코드로 확인하지 않음)",
           "enum": [
             "hud",
             "model_observation"
@@ -267,7 +269,7 @@
         "uncertainty",
         "hero",
         "patch_version",
-        "judgement",
+        "grade",
         "confidence",
         "uncertainty_level",
         "criterion_ids",
@@ -589,7 +591,7 @@
   },
   "properties": {
     "schema_version": {
-      "default": "1.1.0",
+      "default": "1.2.0",
       "title": "Schema Version",
       "type": "string"
     },

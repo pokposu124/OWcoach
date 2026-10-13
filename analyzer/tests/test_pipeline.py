@@ -42,7 +42,7 @@ def test_hero_profile_loads_and_is_draft():
     hero = load_hero("ana")
     assert hero.review_status == "draft"
     assert all(c.status == "draft" for c in hero.criteria)
-    assert {c.category for c in hero.criteria} == {"positioning", "survival", "skill_usage"}
+    assert {c.category for c in hero.criteria} == {"skill_usage", "positioning", "ultimate_usage"}
     # numeric facts must carry source + patch (enforced by the model)
     assert all(f.source and f.patch_version for f in hero.numeric_facts)
 
@@ -102,7 +102,7 @@ def _overview(cands):
 def test_plan_scenes_expands_clamps_merges_and_discards(cfg):
     dcfg = {**cfg["detail"], "pre_seconds": 5, "post_seconds": 2, "merge_gap_seconds": 1, "max_window_seconds": 30}
     cands = [
-        {"start_time_seconds": 2, "end_time_seconds": 4, "category": "survival", "reason_observed": "a", "priority": 3},
+        {"start_time_seconds": 2, "end_time_seconds": 4, "category": "ultimate_usage", "reason_observed": "a", "priority": 3},
         {"start_time_seconds": 8, "end_time_seconds": 9, "category": "positioning", "reason_observed": "b", "priority": 2},
         {"start_time_seconds": 50, "end_time_seconds": 52, "category": "skill_usage", "reason_observed": "c", "priority": 5},
         {"start_time_seconds": 70, "end_time_seconds": 75, "category": "skill_usage", "reason_observed": "out", "priority": 5},
@@ -110,7 +110,7 @@ def test_plan_scenes_expands_clamps_merges_and_discards(cfg):
     discarded = []
     scenes = plan_scenes(_overview(cands), 60.0, dcfg, 8, discarded)
     assert [(s.window_start, s.window_end) for s in scenes] == [(0.0, 11.0), (45.0, 54.0)]
-    assert scenes[0].categories == ["positioning", "survival"]
+    assert scenes[0].categories == ["positioning", "ultimate_usage"]
     assert len(discarded) == 1 and "범위" in discarded[0].reason
 
 
@@ -144,11 +144,11 @@ def test_mock_end_to_end(video, cfg, tmp_path):
         assert 0 <= f.start_time_seconds <= f.end_time_seconds <= result.video.duration_seconds
         assert all((run_dir / e.path).is_file() for e in f.evidence_frames)
         if f.display_mode == "assertive":
-            assert f.criterion_ids and f.evidence_frames and f.judgement != "withheld"
+            assert f.criterion_ids and f.evidence_frames and f.grade != "withheld"
     unknown = [f for f in result.feedback if "적용할 코칭 기준을 찾을 수 없음" in f.display_reasons]
     assert unknown and all(f.display_mode == "tentative" for f in unknown)
     outcome = [f for f in result.feedback if "결과(사망 등)만을 근거로 한 판단" in f.display_reasons]
-    assert outcome and all(f.judgement == "withheld" for f in outcome)
+    assert outcome and all(f.grade == "withheld" for f in outcome)
     assert all(a.related_feedback_ids for a in result.action_items)
     # draft criteria + no HUD-verified ability use (synthetic video has no HUD) -> nothing assertive
     assert all(f.display_mode == "tentative" for f in result.feedback)
@@ -284,7 +284,11 @@ def test_report_written(video, cfg, tmp_path):
     _, run_dir = make_pipeline(cfg, tmp_path, MockProvider()).run(video, run_id="job7")
     html = write_report(run_dir).read_text()
     assert "실제 AI 분석 결과가 아닙니다" in html and "coach_review.json" in html
-    assert "팀 판별" in html and "HUD 대조" in html
+    # two-pane viewer: numbered buttons seek the video to each feedback's start time
+    result = AnalysisResult.model_validate_json((run_dir / "result.json").read_text())
+    first = sorted(result.feedback, key=lambda f: f.start_time_seconds)[0]
+    assert 'class=num type=button data-seek="%s"' % first.start_time_seconds in html and ">1</button>" in html
+    assert "grid-template-columns:minmax(0,3fr) minmax(0,2fr)" in html and "아군" in html
 
 
 # ---------------------------------------------------------------- cost
@@ -407,9 +411,9 @@ def _scene_rec(status):
 
 
 def _coaching_item(**kw):
-    base = {"scene_id": "scene-01", "start_time_seconds": 9.0, "end_time_seconds": 12.0, "category": "skill_usage",
-            "observation": "o", "assessment": "a", "suggestion": "s", "criterion_ids": ["ana.skill.nano_boost_usage"],
-            "judgement": "good", "confidence": 1.0, "uncertainty": "", "uncertainty_level": "low",
+    base = {"scene_id": "scene-01", "start_time_seconds": 9.0, "end_time_seconds": 12.0, "category": "ultimate_usage",
+            "observation": "o", "assessment": "a", "suggestion": "s", "criterion_ids": ["ana.ultimate.nano_boost_usage"],
+            "grade": "best", "confidence": 1.0, "uncertainty": "", "uncertainty_level": "low",
             "relies_on_outcome_only": False, "evidence_frame_timestamps": [10.0]}
     return {**base, **kw}
 
@@ -479,7 +483,9 @@ def test_hud_evidence_applies_to_skill_usage_only(cfg):
                                   hero, 30.0, cfg["output"], lambda t: f"evidence/{t}.jpg", [])
         f = fb[0]
         assert f.hud_checks == [] and f.verification == "model_observation"
-        assert not any("HUD" in r for r in f.display_reasons) and f.display_mode == "assertive"
+        # positioning is always held (hold_categories), but never because of HUD results
+        assert not any("HUD" in r for r in f.display_reasons) and f.display_mode == "tentative"
+        assert f.display_reasons == ["포지셔닝은(는) 코드로 확인할 수 없어 보류"]
         assert f.observation == "2분 13초에 모서리 엄폐"
     skill, _ = finalize_feedback(CoachingResponse(items=[_coaching_item()], action_items=[]),
                                  {"scene-01": _scene_rec("verified")}, hero, 30.0, cfg["output"],
@@ -501,3 +507,12 @@ def test_skill_item_checks_only_its_own_ability(cfg):
     fb, _ = finalize_feedback(CoachingResponse(items=[_coaching_item()], action_items=[]), {"scene-01": rec},
                               hero, 30.0, cfg["output"], lambda t: f"evidence/{t}.jpg", [])
     assert [c.ability_id for c in fb[0].hud_checks] == ["nano_boost"] and fb[0].display_mode == "assertive"
+
+
+def test_report_fragment_has_no_document_wrapper(video, cfg, tmp_path):
+    from owcoach.report import build_report_html
+
+    _, run_dir = make_pipeline(cfg, tmp_path, MockProvider()).run(video, run_id="frag1")
+    result = AnalysisResult.model_validate_json((run_dir / "result.json").read_text())
+    frag = build_report_html(result, "media/web.mp4", fragment=True)
+    assert "<html" not in frag and "<body" not in frag and 'src="media/web.mp4"' in frag and "id=save" not in frag

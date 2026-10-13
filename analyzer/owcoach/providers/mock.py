@@ -72,7 +72,7 @@ class MockProvider(AnalysisProvider):
             "candidates": [
                 {"start_time_seconds": at(0.2), "end_time_seconds": at(0.2) + 3, "category": "skill_usage",
                  "reason_observed": "[모의] 수면총 아이콘 쿨다운 표시", "priority": 4},
-                {"start_time_seconds": at(0.5), "end_time_seconds": at(0.5) + 4, "category": "survival",
+                {"start_time_seconds": at(0.5), "end_time_seconds": at(0.5) + 4, "category": "positioning",
                  "reason_observed": "[모의] 체력 급감 후 이동", "priority": 5},
                 {"start_time_seconds": at(0.8), "end_time_seconds": at(0.8) + 2, "category": "positioning",
                  "reason_observed": "[모의] 개활지 체류", "priority": 3},
@@ -114,8 +114,8 @@ class MockProvider(AnalysisProvider):
                 "category": "skill_usage" if i == 0 else s["categories"][0],
                 "observation": f"[모의] {s['scene_id']} 관찰 사실",
                 "assessment": "[모의] 기준 적용 판단", "suggestion": "[모의] 다음 행동 제안",
-                "criterion_ids": ["ana.survival.disengage_on_pressure"] if i % 2 else ["ana.skill.sleep_dart_usage"],
-                "judgement": "good" if i == 0 else "needs_improvement",
+                "criterion_ids": ["ana.positioning.disengage_on_pressure"] if i % 2 else ["ana.skill.sleep_dart_usage"],
+                "grade": "best" if i == 0 else "blunder",
                 "confidence": 0.8, "uncertainty": "", "uncertainty_level": "low",
                 "relies_on_outcome_only": False,
                 "evidence_frame_timestamps": [round(mid - 1, 1), mid],
@@ -127,9 +127,11 @@ class MockProvider(AnalysisProvider):
             items.append({**base, "observation": "[모의] 중복 피드백", "confidence": 0.5})  # duplicate
             items.append({**base, "criterion_ids": ["ana.does_not_exist"], "category": "positioning",
                           "observation": "[모의] 없는 기준 참조"})  # unknown criterion
-            items.append({**base, "judgement": "needs_improvement", "relies_on_outcome_only": True,
-                          "category": "survival", "observation": "[모의] 사망 결과만 근거",
-                          "criterion_ids": ["ana.survival.disengage_on_pressure"]})  # outcome only
+            items.append({**base, "grade": "blunder", "relies_on_outcome_only": True,
+                          "start_time_seconds": round(mid - 3, 1), "end_time_seconds": round(mid - 2, 1),
+                          "evidence_frame_timestamps": [round(mid - 3, 1)],
+                          "category": "positioning", "observation": "[모의] 사망 결과만 근거",
+                          "criterion_ids": ["ana.positioning.disengage_on_pressure"]})  # outcome only
             items.append({**base, "start_time_seconds": mid + 500, "end_time_seconds": mid + 505,
                           "observation": "[모의] 범위 밖 시간"})  # out of range
         return {

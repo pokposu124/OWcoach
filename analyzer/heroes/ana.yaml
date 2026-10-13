@@ -10,7 +10,7 @@ hero_id: ana
 display_name_ko: 아나
 display_name_en: Ana
 role: support
-profile_version: "0.1.1-draft"
+profile_version: "0.2.0-draft"
 review_status: draft
 # 이 기준이 검증된 게임 패치 버전. 아직 어떤 패치로도 검증되지 않았음.
 patch_version: unverified
@@ -81,8 +81,8 @@ criteria:
       - "아군 체력바가 화면에 보이지 않음"
     source: {type: coach_draft, reference: null, patch_version: unverified}
 
-  - id: ana.survival.disengage_on_pressure
-    category: survival
+  - id: ana.positioning.disengage_on_pressure
+    category: positioning
     status: draft
     title: "압박 시 이탈 판단"
     description: >
@@ -132,8 +132,8 @@ criteria:
       - "수류탄 착탄 지점이 화면에서 보이지 않음"
     source: {type: coach_draft, reference: null, patch_version: unverified}
 
-  - id: ana.skill.nano_boost_usage
-    category: skill_usage
+  - id: ana.ultimate.nano_boost_usage
+    category: ultimate_usage
     ability: nano_boost                 # 이 기준의 HUD 대조 대상 스킬
     status: draft
     title: "나노 강화제 사용 판단"

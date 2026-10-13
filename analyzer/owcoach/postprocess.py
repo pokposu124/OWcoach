@@ -9,6 +9,9 @@ from typing import Callable
 
 from .heroes import HeroProfile
 from .timefmt import fmt_range, fmt_time, normalize_times
+
+HUD_CATEGORIES = {"skill_usage", "ultimate_usage"}
+CATEGORY_KO = {"skill_usage": "스킬 사용", "positioning": "포지셔닝", "ultimate_usage": "궁극기 사용"}
 from .schemas import (
     ActionItem,
     AnalysisResult,
@@ -171,7 +174,7 @@ def finalize_feedback(
         statuses = {hero.criterion(c).status for c in valid_criteria}
         review_status = "none" if not valid_criteria else ("approved" if statuses == {"approved"} else "draft")
 
-        judgement = item.judgement
+        grade = item.grade
         reasons = []
         if not valid_criteria:
             reasons.append("적용할 코칭 기준을 찾을 수 없음")
@@ -179,9 +182,9 @@ def finalize_feedback(
             reasons.append("확인된 근거 프레임 없음")
         if item.relies_on_outcome_only:
             reasons.append("결과(사망 등)만을 근거로 한 판단")
-            if judgement == "needs_improvement":
-                judgement = "withheld"
-        if judgement == "withheld":
+            if grade == "blunder":
+                grade = "withheld"
+        if grade == "withheld":
             reasons.append("근거 부족으로 판단 보류")
         if item.confidence < out_cfg["min_confidence_for_assertive"]:
             reasons.append(f"확신도 낮음({item.confidence:.2f})")
@@ -190,11 +193,11 @@ def finalize_feedback(
         if out_cfg["require_approved_criteria_for_assertive"] and review_status != "approved":
             reasons.append("코치 검수되지 않은 기준")
 
-        # HUD evidence belongs to skill-usage feedback only. Positioning / survival are judged on the
-        # model's observation alone: a grenade verified in the same window says nothing about where
-        # the player stood, so it must neither raise nor lower those items.
+        # HUD evidence belongs to skill / ultimate feedback only. Positioning is judged on the model's
+        # observation alone: a grenade verified in the same window says nothing about where the player
+        # stood, so it must neither raise nor lower those items.
         checks: list[HudCheck] = []
-        if item.category == "skill_usage":
+        if item.category in HUD_CATEGORIES:
             # only the abilities this item's criteria are about (a nano item is not judged by a grenade claim)
             abilities = {hero.criterion(c).ability for c in valid_criteria if hero.criterion(c).ability}
             checks = [HudCheck(time_seconds=ev["time_seconds"], ability_id=ev["ability_id"],
@@ -209,7 +212,9 @@ def finalize_feedback(
             if (out_cfg.get("require_hud_verification_for_assertive") and hud_enabled
                     and not any(c.status == "verified" for c in checks)):
                 reasons.append("HUD로 확인된 스킬/궁극기 사용 근거 없음")
-        verified = item.category == "skill_usage" and any(c.status == "verified" for c in checks)
+        verified = item.category in HUD_CATEGORIES and any(c.status == "verified" for c in checks)
+        if item.category in out_cfg.get("hold_categories", []):
+            reasons.append(f"{CATEGORY_KO[item.category]}은(는) 코드로 확인할 수 없어 보류")
 
         candidates.append(FeedbackItem(
             id="", scene_id=item.scene_id,
@@ -219,7 +224,7 @@ def finalize_feedback(
             evidence_frame_timestamps=[f.timestamp_seconds for f in frames], evidence_frames=frames,
             uncertainty=normalize_times(item.uncertainty), uncertainty_level=item.uncertainty_level,
             hero=hero.hero_id, patch_version=hero.patch_version,
-            judgement=judgement, confidence=max(0.0, min(1.0, item.confidence)),
+            grade=grade, confidence=max(0.0, min(1.0, item.confidence)),
             criterion_ids=valid_criteria, criteria_review_status=review_status,
             display_mode="tentative" if reasons else "assertive", display_reasons=reasons,
             hud_checks=checks, verification="hud" if verified else "model_observation",
@@ -277,7 +282,7 @@ def validate_result(result: AnalysisResult, run_dir: Path) -> list[str]:
                 errors.append(f"{f.id}: evidence frame missing: {e.path}")
             if not 0 <= e.timestamp_seconds <= d:
                 errors.append(f"{f.id}: evidence frame outside video: {e.timestamp_seconds}")
-        if f.display_mode == "assertive" and (not f.criterion_ids or not f.evidence_frames or f.judgement == "withheld"):
+        if f.display_mode == "assertive" and (not f.criterion_ids or not f.evidence_frames or f.grade == "withheld"):
             errors.append(f"{f.id}: assertive feedback without criterion/evidence")
     for a in result.action_items:
         for r in a.related_feedback_ids:
