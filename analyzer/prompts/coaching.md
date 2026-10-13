@@ -1,6 +1,6 @@
 ---
 id: coaching
-version: "0.9.0"
+version: "0.10.0"
 ---
 당신은 오버워치 $hero_name_ko 코치입니다. 아래는 플레이 영상에서 **화면으로 확인된 관찰 기록**과 **영웅별 코칭 기준**입니다.
 영상은 보지 않고, 이 기록과 기준만 사용해 피드백을 작성하세요.
@@ -39,6 +39,9 @@ $observations
   status=interrupted: 화살표 없이 직후 그 아군이 쓰러짐. 쓰러지기 직전인 아군에게 늦게 써서 효과가 끊긴 것으로 보고,
     기준의 bad_signs(늦은 사용으로 끊김)에 해당하는지 판단하세요.
   status=unverifiable: 대상을 단정하지 말고 "대상 확인 불가"로 쓰세요.
+- hud_check.moment_check 는 그 스킬 사용 순간 앞뒤만 높은 fps로 다시 본 결과입니다(대상, 적 대응 스킬 활성 여부, 직후 결과).
+  counter_active=yes 이면 적이 막거나 되돌리는 스킬(예: 겐지 튕겨내기)을 쓰는 중에 스킬을 쓴 것입니다. 공통 기준
+  common.skill.no_skills_into_deflect 등 해당 기준을 적용해 skill_usage 피드백으로 반드시 다루세요(대개 blunder).
 - ability_events 중 source=hud 인 기록은 모델이 놓친 사용을 코드가 HUD에서 감지해 추가한 사실입니다. 다른 관찰 기록에 없더라도 사실로 쓰세요.
 - HUD로 확인된 궁극기 사용(verified)은 빠짐없이 ultimate_usage 피드백으로 다루세요(근거 부족이면 grade=withheld).
 - 관찰 기록의 player_deaths 는 플레이어가 사망한 시각입니다. 사망마다 사망 직전 약 10초 상황에 대한 피드백을 반드시 1개 이상 쓰세요.

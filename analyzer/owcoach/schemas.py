@@ -85,6 +85,14 @@ class AbilityEvent(BaseModel):
     evidence: str = Field(description="사용을 확인한 화면 근거")
 
 
+class MomentResponse(BaseModel):
+    target: str = Field(description="스킬을 쓴 대상·방향. 모르면 '불명'")
+    counter_active: Literal["yes", "no", "unclear"]
+    counter_name: str = Field(description="켜져 있던 대응 스킬 이름. 없으면 빈 문자열")
+    counter_evidence: str = Field(description="대응 스킬 판단의 화면 근거")
+    result: str = Field(description="사용 직후 결과")
+
+
 class DetailResponse(BaseModel):
     observations: list[DetailObservation]
     hud_readings: list[HudReading]
@@ -136,6 +144,7 @@ class HudCheck(BaseModel):
     note: str
     claimed_by_model: str = Field(description="모델이 기록한 근거/대상")
     target_check: dict | None = Field(default=None, description="대상 판별 결과 (나노 강화제 등: 팀 목록 칸 강화 화살표)")
+    moment_check: dict | None = Field(default=None, description="사용 순간 확인 (대상, 적 대응 스킬 활성 여부, 결과)")
 
 
 class EvidenceFrame(BaseModel):

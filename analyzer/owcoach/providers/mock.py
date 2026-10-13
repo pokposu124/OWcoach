@@ -36,6 +36,9 @@ class MockProvider(AnalysisProvider):
             return self._resp(self._overview(req.context["duration"]))
         if stage == "detail":
             return self._resp(self._detail(req.context["clip_duration"]))
+        if stage == "moment":
+            return self._resp({"target": "[모의] 적", "counter_active": "no", "counter_name": "",
+                               "counter_evidence": "", "result": "[모의] 적중"})
         raise ValueError(stage)
 
     def analyze_images(self, req: ImageRequest) -> ProviderResponse:

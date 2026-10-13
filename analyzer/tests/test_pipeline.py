@@ -670,3 +670,36 @@ def test_common_knowledge_applies_to_every_hero():
     assert any("튕겨내기" in s for s in hero.observable_signals)
     assert "+common-" in hero.profile_version
     assert any(x["id"] == c.id for x in hero.criteria_for_prompt() if "id" in x)
+
+
+def test_moment_check_runs_for_each_hud_verified_skill(video, cfg, tmp_path, monkeypatch):
+    """A HUD-detected grenade gets one short high-fps look (stage 'moment'); its answer is attached to the
+    event's hud_check, cached on re-run, and the counter list comes from heroes/common.yaml."""
+    import owcoach.pipeline as pl
+
+    monkeypatch.setattr(pl.Pipeline, "_hud_uses_in",
+                        lambda self, video, s, e, h: [{"ability_id": "biotic_grenade", "time_seconds": 10.0}] if s <= 10.0 <= e else [])
+    prompts = []
+
+    class Spy(MockProvider):
+        def analyze_video(self, req):
+            if req.context["stage"] == "moment":
+                prompts.append((req.prompt, req.fps))
+            return super().analyze_video(req)
+
+    seen = {}
+    real_check = pl.Pipeline._hud_check_scene
+
+    def spy_check(self, video, rec, hcfg):
+        real_check(self, video, rec, hcfg)
+        seen.setdefault("recs", []).append(rec)
+
+    monkeypatch.setattr(pl.Pipeline, "_hud_check_scene", spy_check)
+    make_pipeline(cfg, tmp_path, Spy()).run(video, run_id="moment1")
+    assert len(prompts) == 1 and prompts[0][1] == cfg["moment_check"]["fps"]
+    assert "생체 수류탄" in prompts[0][0] and "겐지 튕겨내기" in prompts[0][0]
+    ev = [e for r in seen["recs"] for e in r["ability_events"] if e.get("source") == "hud"]
+    assert ev and ev[0]["hud_check"]["moment_check"]["counter_active"] == "no"
+    prompts.clear()
+    make_pipeline(cfg, tmp_path, Spy()).run(video, run_id="moment1")
+    assert prompts == []  # cached

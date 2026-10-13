@@ -65,6 +65,8 @@ class HeroProfile(BaseModel):
     observable_signals: list[str]
     criteria: list[Criterion]
     numeric_facts: list[NumericFact] = Field(default_factory=list)
+    # enemy skills that block or reflect the player's skills (checked at every HUD-detected use)
+    skill_counters: list[str] = Field(default_factory=list)
 
     def criterion(self, criterion_id: str) -> Criterion | None:
         return next((c for c in self.criteria if c.id == criterion_id), None)
@@ -107,6 +109,7 @@ def load_hero(hero_id: str, heroes_dir: Path = HEROES_DIR) -> HeroProfile:
         common = load_yaml(common_path)
         data["observable_signals"] = [*data.get("observable_signals", []), *common.get("observable_signals", [])]
         data["criteria"] = [*data.get("criteria", []), *common.get("criteria", [])]
+        data["skill_counters"] = [*data.get("skill_counters", []), *common.get("skill_counters", [])]
         data["profile_version"] = f"{data['profile_version']}+common-{common.get('common_version', '?')}"
     profile = HeroProfile.model_validate(data)
     if profile.hero_id != hero_id:

@@ -57,6 +57,7 @@ from .schemas import (
     CoachingResponse,
     CostSummary,
     DetailResponse,
+    MomentResponse,
     DiscardedItem,
     OverviewResponse,
     SceneCandidate,
@@ -195,7 +196,7 @@ class Pipeline:
         self.cfg, self.pricing, self.provider, self.hero = cfg, pricing, provider, hero
         self.runs_dir = Path(runs_dir)
         self.log = log
-        self.prompts = {k: load_prompt(k) for k in ("team", "overview", "detail", "coaching")}
+        self.prompts = {k: load_prompt(k) for k in ("team", "overview", "detail", "moment", "coaching")}
         self.usage: list[StageUsage] = []
         self.timings: dict[str, float] = {}
         self.warnings: list[str] = []
@@ -371,6 +372,49 @@ class Pipeline:
                 hc["target_check"] = detect_buff_target(video, x, self._ally_slots(), hcfg[a.target_marker])
             events.append({"time_seconds": x, "ability_id": a.id, "target": "", "source": "hud",
                            "evidence": "HUD에서 감지", "hud_check": hc})
+
+    def _moment_checks(self, store: RunStore, video: Path, sha: str, duration: float, scene_records: dict,
+                       ai_fp_base: dict, team_context: str, pcfg: dict, force: set[str]) -> None:
+        mcfg = self.cfg.get("moment_check") or {}
+        if not mcfg.get("enabled"):
+            return
+        hero, mp = self.hero, self.prompts["moment"]
+        by_id = {a.id: a for a in hero.abilities}
+        counters = "\n".join(f"   - {c}" for c in hero.skill_counters) or "   (확인할 대응 스킬 없음)"
+        done: dict[tuple, dict] = {}
+        for rec in scene_records.values():
+            for e in rec["ability_events"]:
+                hc = e.get("hud_check") or {}
+                a = by_id.get(e["ability_id"])
+                if hc.get("status") != "verified" or a is None or (mcfg.get("skip_ultimate") and a.hud_slot == "ultimate"):
+                    continue
+                x = hc["hud_use_time_seconds"]
+                key = (a.id, x)
+                if key not in done:
+                    start = max(0.0, x - float(mcfg["pre_seconds"]))
+                    end = min(duration, x + float(mcfg["post_seconds"]))
+                    fp = fingerprint(ai_fp_base, sha, a.id, x, mcfg, mp.version, team_context, hero.skill_counters)
+                    name = f"moment-{a.id}-{int(round(x * 100))}"
+
+                    def run_moment(a=a, x=x, start=start, end=end, name=name):
+                        clip = store.dir / "media" / "clips" / f"{name}.mp4"
+                        cut_clip(video, clip, start, end, pcfg["max_height"], pcfg["crf"])
+                        prompt = mp.render(clip_duration_seconds=round(end - start, 2), use_offset_seconds=round(x - start, 2),
+                                           hero_name_ko=hero.display_name_ko, ability_name=a.name_ko,
+                                           team_context=team_context, counters=counters)
+                        parsed, usage = self._call(f"moment:{a.id}@{fmt_time(x)}", "moment", MomentResponse,
+                                                   lambda schema, note: VideoRequest(
+                            video_path=clip, prompt=prompt + note, response_schema=schema, fps=float(mcfg["fps"]),
+                            temperature=self.cfg["provider"].get("temperature"),
+                            context={"stage": "moment", "clip_duration": round(end - start, 2)},
+                        ))
+                        return parsed.model_dump(), usage
+
+                    done[key] = self._cached_or_run(store, name, fp, run_moment, "moment" in force)
+                hc["moment_check"] = done[key]
+        if done:
+            n_yes = sum(m["counter_active"] == "yes" for m in done.values())
+            self.log(f"  스킬 사용 순간 확인 {len(done)}건 (적 대응 스킬 활성: {n_yes}건)")
 
     def _hud_uses_in(self, video: Path, start: float, end: float, hcfg: dict) -> list[dict]:
         """HUD-detected uses inside [start, end]: ability tiles from this window's samples, the ultimate
@@ -592,6 +636,11 @@ class Pipeline:
         if n_checked:
             self.log("  HUD 대조: " + ", ".join(f"{s} {n_checked.count(s)}" for s in sorted(set(n_checked))))
         self.timings["hud_check"] = round(time.monotonic() - t, 3)
+
+        # 3c. moment check: short high-fps look at each HUD-verified skill use (AI) -------
+        t = time.monotonic()
+        self._moment_checks(store, video, sha, duration, scene_records, ai_fp_base, team_context, pcfg, force)
+        self.timings["moment"] = round(time.monotonic() - t, 3)
 
         # 4. coaching -------------------------------------------------------------------
         self.log("[4/5] 코칭 기준 적용")
