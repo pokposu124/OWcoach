@@ -466,6 +466,7 @@ def test_time_format_minutes_seconds():
     assert fmt_range(14.5, 44.0) == "14초 ~ 44초"
     text = "132.75초에 궁극기 100%, 136.00초에 나노. 쿨다운 12초, 2분 16초 그대로"
     assert normalize_times(text) == "2분 13초에 궁극기 100%, 2분 16초에 나노. 쿨다운 12초, 2분 16초 그대로"
+    assert normalize_times("134초(2분 14초)에 수면총, 2분 14초(2분 14초)") == "2분 14초에 수면총, 2분 14초"
 
 
 def test_hud_evidence_applies_to_skill_usage_only(cfg):

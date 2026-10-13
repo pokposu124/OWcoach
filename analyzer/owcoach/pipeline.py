@@ -609,7 +609,8 @@ class Pipeline:
         dpre = float((cfg.get("death_check") or {}).get("pre_seconds", 10.0))
         for d in self._deaths:
             t = d["time_seconds"]
-            if not any(f.start_time_seconds <= t + 1 and f.end_time_seconds >= t - dpre for f in feedback):
+            # the feedback has to run up to the death itself, not merely overlap the 10 s before it
+            if not any(f.start_time_seconds <= t + 1 and f.end_time_seconds >= t - 3 for f in feedback):
                 self.warnings.append(f"사망 {fmt_time(t)} 직전 {dpre:g}초에 대한 피드백이 없음")
         self.timings["finalize"] = round(time.monotonic() - t, 3)
 
