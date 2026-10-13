@@ -1,6 +1,6 @@
 """Command line entry point.
 
-  python -m owcoach analyze VIDEO --hero ana [--provider gemini|mock] [--run-id ID] [--rerun overview,detail,coaching]
+  python -m owcoach analyze VIDEO --hero ana [--provider gemini|mock] [--run-id ID] [--rerun team,overview,detail,coaching]
   python -m owcoach probe VIDEO
   python -m owcoach report RUN_DIR
   python -m owcoach heroes
@@ -106,7 +106,7 @@ def main(argv: list[str] | None = None) -> int:
     a.add_argument("--provider", choices=["gemini", "mock"])
     a.add_argument("--run-id", help="작업 ID. 같은 ID로 재실행하면 완료된 단계를 재사용")
     a.add_argument("--patch", help="영상이 녹화된 게임 패치 버전(기록용)")
-    a.add_argument("--rerun", help="강제로 다시 실행할 단계(쉼표 구분): proxy,overview,detail,coaching")
+    a.add_argument("--rerun", help="강제로 다시 실행할 단계(쉼표 구분): proxy,team,overview,detail,coaching")
     a.add_argument("--runs-dir", default=str(DEFAULT_RUNS_DIR))
     a.set_defaults(fn=cmd_analyze)
 

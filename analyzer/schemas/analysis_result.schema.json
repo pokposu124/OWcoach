@@ -619,6 +619,20 @@
     "video": {
       "$ref": "#/$defs/VideoInfo"
     },
+    "team": {
+      "anyOf": [
+        {
+          "additionalProperties": true,
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "팀 판별 단계 결과 (team_identification, roster, 사용한 프레임 시각)",
+      "title": "Team"
+    },
     "overview": {
       "additionalProperties": true,
       "title": "Overview",

@@ -49,11 +49,14 @@ class RosterEntry(BaseModel):
     hero_confidence: Level
 
 
+class TeamResponse(BaseModel):
+    team_identification: TeamIdentification
+    roster: list[RosterEntry] = Field(description="상단 팀 목록의 플레이어별 팀·영웅 (최대 10명)")
+
+
 class OverviewResponse(BaseModel):
     hero_confirmed: bool
     hero_evidence: str
-    team_identification: TeamIdentification
-    roster: list[RosterEntry] = Field(description="상단 팀 목록의 플레이어별 팀·영웅 (최대 10명)")
     hud_readable: Literal["yes", "partial", "no"]
     video_quality_notes: str
     timeline: list[TimelineEvent]
@@ -238,6 +241,7 @@ class AnalysisResult(BaseModel):
     game_patch_version: str | None
     criteria_patch_version: str
     video: VideoInfo
+    team: dict | None = Field(default=None, description="팀 판별 단계 결과 (team_identification, roster, 사용한 프레임 시각)")
     overview: dict
     feedback: list[FeedbackItem]
     action_items: list[ActionItem]

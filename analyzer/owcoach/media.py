@@ -139,6 +139,20 @@ def cut_clip(src: Path, dst: Path, start: float, end: float, max_height: int, cr
     return dst
 
 
+def extract_crop_png(src: Path, timestamp: float, ref_size: tuple[int, int], region: dict, upscale: int) -> bytes:
+    """One frame at `timestamp`, scaled to ref_size, cropped to region {x,y,w,h} and upscaled. PNG bytes."""
+    w, h = ref_size
+    proc = subprocess.run([
+        _require("ffmpeg"), "-v", "error", "-ss", f"{timestamp:.3f}", "-i", str(src), "-frames:v", "1",
+        "-vf", f"scale={w}:{h},crop={region['w']}:{region['h']}:{region['x']}:{region['y']},"
+               f"scale=iw*{upscale}:ih*{upscale}:flags=lanczos",
+        "-f", "image2pipe", "-vcodec", "png", "-",
+    ], capture_output=True)
+    if proc.returncode != 0 or not proc.stdout:
+        raise MediaError(f"crop extraction failed at {timestamp}s: {proc.stderr[-500:]!r}")
+    return proc.stdout
+
+
 def extract_frame(src: Path, timestamp: float, dst: Path, max_width: int) -> Path | None:
     """Extract one frame at an original-video timestamp. Returns None if no frame could be decoded."""
     dst.parent.mkdir(parents=True, exist_ok=True)

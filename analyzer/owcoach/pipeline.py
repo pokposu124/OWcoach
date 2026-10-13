@@ -32,6 +32,7 @@ from .heroes import HeroProfile
 from .media import (
     InputRejected,
     cut_clip,
+    extract_crop_png,
     extract_frame,
     make_proxy,
     probe,
@@ -40,7 +41,7 @@ from .media import (
 )
 from .postprocess import Scene, detail_to_original, finalize_feedback, plan_scenes, validate_result
 from .prompts import load_prompt
-from .providers import AnalysisProvider, ProviderError, TextRequest, VideoRequest
+from .providers import AnalysisProvider, ImageRequest, ProviderError, TextRequest, VideoRequest
 from .schemas import (
     AnalysisResult,
     CoachingResponse,
@@ -49,6 +50,7 @@ from .schemas import (
     DiscardedItem,
     OverviewResponse,
     StageUsage,
+    TeamResponse,
     Versions,
     VideoInfo,
 )
@@ -108,15 +110,17 @@ def compute_cost(usage: list[StageUsage], pricing: dict, is_mock: bool) -> CostS
     )
 
 
-def team_context_text(overview: OverviewResponse) -> str:
-    """Team / roster facts from the overview, handed to the detail stage as plain text."""
-    ti = overview.team_identification
+def team_context_text(team: TeamResponse | None) -> str:
+    """Team / roster facts from the team stage, handed to the overview and detail prompts as plain text."""
+    if team is None:
+        return "- 팀 판별 안 함: 아군/적 색을 가정하지 말고 화면 상단 팀 목록과 플레이어 이름으로 직접 판단하세요."
+    ti = team.team_identification
     side = {"left": "왼쪽", "right": "오른쪽", "unknown": "판별 못 함"}[ti.ally_side]
     lines = [f"- 플레이어 이름: {ti.player_name or '판독 못 함'}",
              f"- 아군 팀: 상단 팀 목록 {side}, 아군 색 {ti.ally_color}, 적 색 {ti.enemy_color}",
              f"- 판단 근거: {ti.evidence}"]
     team_ko = {"ally": "아군", "enemy": "적", "unknown": "소속 불명"}
-    for r in overview.roster:
+    for r in team.roster:
         lines.append(f"- {r.player_name}: {team_ko[r.team]}, 영웅 {r.hero} (초상화 판독 확신도 {r.hero_confidence})")
     return "\n".join(lines)
 
@@ -178,7 +182,7 @@ class Pipeline:
         self.cfg, self.pricing, self.provider, self.hero = cfg, pricing, provider, hero
         self.runs_dir = Path(runs_dir)
         self.log = log
-        self.prompts = {k: load_prompt(k) for k in ("overview", "detail", "coaching")}
+        self.prompts = {k: load_prompt(k) for k in ("team", "overview", "detail", "coaching")}
         self.usage: list[StageUsage] = []
         self.timings: dict[str, float] = {}
         self.warnings: list[str] = []
@@ -194,8 +198,12 @@ class Pipeline:
         for attempt in range(repairs + 1):
             req = make_request(schema, note)
             try:
-                resp = (self.provider.analyze_video(req) if isinstance(req, VideoRequest)
-                        else self.provider.generate_json(req))
+                if isinstance(req, VideoRequest):
+                    resp = self.provider.analyze_video(req)
+                elif isinstance(req, ImageRequest):
+                    resp = self.provider.analyze_images(req)
+                else:
+                    resp = self.provider.generate_json(req)
             except ProviderError as e:
                 raise StageFailed(stage, str(e)) from e
             usage_records.append(StageUsage(
@@ -241,6 +249,36 @@ class Pipeline:
                                 "created_at": now_iso()})
         store.set_stage(name, status="done", finished_at=now_iso(), elapsed_seconds=elapsed)
         return output
+
+    def _team_stage(self, store: RunStore, video: Path, sha: str, duration: float, ai_fp_base: dict,
+                    force: set[str]) -> tuple[TeamResponse | None, dict | None]:
+        tcfg = self.cfg.get("team") or {"enabled": False}
+        if not tcfg.get("enabled"):
+            return None, None
+        tp = self.prompts["team"]
+        times = [round(duration * f, 2) for f in tcfg["frame_fractions"]]
+        fp = fingerprint(ai_fp_base, sha, tcfg, tp.version)
+        labels = {"team_lists": "팀 목록(화면 상단)", "player_hud": "플레이어 HUD(화면 좌하단)", "kill_feed": "킬피드(화면 우상단)"}
+        image_list = "\n".join(f"{i}. {labels.get(k, k)}" for i, k in enumerate(tcfg["regions"], 1))
+        prompt = tp.render(frame_count=len(times), image_list=image_list)
+
+        def run_team():
+            images = [(extract_crop_png(video, ts, tuple(tcfg["reference_resolution"]), region, int(tcfg["upscale"])),
+                       "image/png") for ts in times for region in tcfg["regions"].values()]
+            parsed, usage = self._call("team", "team", TeamResponse, lambda schema, note: ImageRequest(
+                images=images, prompt=prompt + note, response_schema=schema,
+                media_resolution=tcfg.get("media_resolution"), temperature=self.cfg["provider"].get("temperature"),
+                context={"stage": "team"},
+            ))
+            return parsed.model_dump(), usage
+
+        team = TeamResponse.model_validate(self._cached_or_run(store, "team", fp, run_team, "team" in force))
+        ti = team.team_identification
+        if ti.ally_side == "unknown":
+            self.warnings.append(f"아군 팀을 판별하지 못함: {ti.evidence}")
+        if ti.player_name and ti.player_name not in {r.player_name for r in team.roster}:
+            self.warnings.append(f"플레이어 이름 '{ti.player_name}'이(가) 팀 목록 판독 결과에 없음")
+        return team, {**team.model_dump(), "frame_times_seconds": times}
 
     def _hud_check_scene(self, video: Path, rec: dict, hcfg: dict) -> None:
         slots = {a.id: a.hud_slot for a in self.hero.abilities}
@@ -339,16 +377,23 @@ class Pipeline:
         store.set_stage("proxy", status="done")
         self.timings["preprocess"] = round(time.monotonic() - t, 3)
 
-        # 2. overview -------------------------------------------------------------------
-        self.log("[2/5] 전체 흐름 분석")
+        # 2a. team identification (cropped, upscaled HUD stills) ------------------------
+        self.log("[2/5] 팀 판별 · 전체 흐름 분석")
+        t = time.monotonic()
+        team, team_record = self._team_stage(store, video, sha, duration, ai_fp_base, force)
+        team_context = team_context_text(team)
+        self.timings["team"] = round(time.monotonic() - t, 3)
+
+        # 2b. overview ------------------------------------------------------------------
         t = time.monotonic()
         ocfg = cfg["overview"]
         op = self.prompts["overview"]
-        overview_fp = fingerprint(ai_fp_base, proxy_fp, ocfg, op.version, hero.observable_signals)
+        overview_fp = fingerprint(ai_fp_base, proxy_fp, ocfg, op.version, hero.observable_signals, team_context)
         prompt = op.render(
             hero_name_ko=hero.display_name_ko, hero_name_en=hero.display_name_en,
             duration_seconds=duration, max_candidates=ocfg["max_candidates"],
             observable_signals="\n".join(f"- {s}" for s in hero.observable_signals),
+            team_context=team_context,
         )
 
         def run_overview():
@@ -368,9 +413,6 @@ class Pipeline:
             raise StageFailed("overview", f"HUD를 판독할 수 없습니다: {overview.video_quality_notes}")
         if overview.hud_readable == "partial":
             self.warnings.append(f"HUD 일부만 판독 가능: {overview.video_quality_notes}")
-        if overview.team_identification.ally_side == "unknown":
-            self.warnings.append(f"아군 팀을 판별하지 못함: {overview.team_identification.evidence}")
-        team_context = team_context_text(overview)
 
         scenes = plan_scenes(overview, duration, cfg["detail"], ocfg["max_candidates"], self.discarded)
         self.log(f"  후보 장면 {len(scenes)}개: " + ", ".join(f"{s.window_start:.1f}-{s.window_end:.1f}s" for s in scenes))
@@ -474,7 +516,7 @@ class Pipeline:
             analysis_mode="mock" if prov.is_mock else "real",
             notice=MOCK_NOTICE if prov.is_mock else None,
             hero=hero.hero_id, hero_display_name=hero.display_name_ko,
-            game_patch_version=game_patch, criteria_patch_version=hero.patch_version,
+            game_patch_version=game_patch, criteria_patch_version=hero.patch_version, team=team_record,
             video=VideoInfo(file_name=video.name, sha256=sha, duration_seconds=duration, width=info.width,
                             height=info.height, fps=info.fps, codec=info.codec),
             overview=overview.model_dump(),

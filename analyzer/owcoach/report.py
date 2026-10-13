@@ -80,7 +80,7 @@ def write_report(run_dir: Path) -> Path:
         f"<td>{u.output_tokens}</td><td>{u.thinking_tokens}</td><td>{u.latency_seconds}</td><td>{u.attempts}</td><td>{'예' if u.from_cache else ''}</td></tr>"
         for u in result.usage)
     mock_banner = f'<div class="banner">{_e(result.notice)}</div>' if result.analysis_mode == "mock" else ""
-    ov = result.overview
+    ov = result.team or {}
     ti = ov.get("team_identification") or {}
     roster = "".join(f"<tr><td>{_e(r['player_name'])}</td><td>{_e(r['team'])}</td><td>{_e(r['hero'])}</td><td>{_e(r['hero_confidence'])}</td></tr>"
                      for r in ov.get("roster") or [])

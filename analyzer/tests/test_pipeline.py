@@ -54,7 +54,8 @@ def test_unknown_hero_rejected():
 
 def test_prompts_render_all_placeholders():
     p = load_prompt("overview")
-    text = p.render(hero_name_ko="아나", hero_name_en="Ana", duration_seconds=10, max_candidates=3, observable_signals="-")
+    text = p.render(hero_name_ko="아나", hero_name_en="Ana", duration_seconds=10, max_candidates=3, observable_signals="-",
+                    team_context="-")
     assert "$" not in text and p.version
     with pytest.raises(KeyError):
         p.render(hero_name_ko="아나")
@@ -95,9 +96,7 @@ def test_validate_input(video, cfg):
 
 def _overview(cands):
     return OverviewResponse(hero_confirmed=True, hero_evidence="", hud_readable="yes", video_quality_notes="",
-                            team_identification={"player_name": "P", "ally_side": "left", "ally_color": "파랑",
-                                                 "enemy_color": "빨강", "evidence": ""},
-                            roster=[], timeline=[], candidates=cands)
+                            timeline=[], candidates=cands)
 
 
 def test_plan_scenes_expands_clamps_merges_and_discards(cfg):
@@ -156,7 +155,7 @@ def test_mock_end_to_end(video, cfg, tmp_path):
     assert any(f.hud_checks for f in result.feedback)
     statuses = {c.status for f in result.feedback for c in f.hud_checks}
     assert "not_checked" in statuses  # unknown ability id
-    assert result.overview["team_identification"]["ally_side"] == "left"
+    assert result.team["team_identification"]["ally_side"] == "left" and len(result.team["frame_times_seconds"]) == 2
     assert result.cost.total is None
     AnalysisResult.model_validate_json((run_dir / "result.json").read_text())
     meta = json.loads((run_dir / "run.json").read_text())
@@ -173,6 +172,20 @@ def test_rerun_reuses_cached_stages(video, cfg, tmp_path):
     prov3 = MockProvider()
     make_pipeline(cfg, tmp_path, prov3).run(video, run_id="job1", force_stages={"coaching"})
     assert prov3.calls == ["coaching"]
+
+
+def test_team_stage_sends_cropped_stills(video, cfg, tmp_path):
+    class Spy(MockProvider):
+        def analyze_images(self, req):
+            self.images = req.images
+            return super().analyze_images(req)
+
+    prov = Spy()
+    make_pipeline(cfg, tmp_path, prov).run(video, run_id="team1")
+    tcfg = cfg["team"]
+    assert prov.calls[:2] == ["team", "overview"]
+    assert len(prov.images) == len(tcfg["frame_fractions"]) * len(tcfg["regions"])
+    assert all(d[:8] == b"\x89PNG\r\n\x1a\n" and m == "image/png" for d, m in prov.images)
 
 
 def test_config_change_invalidates_only_affected_stages(video, cfg, tmp_path):
@@ -213,7 +226,7 @@ def test_schema_mismatch_fails_after_repair(video, cfg, tmp_path):
     prov = BadSchemaProvider()
     with pytest.raises(StageFailed, match="스키마"):
         make_pipeline(cfg, tmp_path, prov).run(video, run_id="job4")
-    assert prov.calls == ["overview"] * (cfg["provider"]["json_repair_retries"] + 1)
+    assert prov.calls == ["team"] + ["overview"] * (cfg["provider"]["json_repair_retries"] + 1)
 
 
 class WrongHeroProvider(MockProvider):

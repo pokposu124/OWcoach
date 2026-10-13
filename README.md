@@ -45,7 +45,7 @@ docs/COACH_REVIEW.md      코치 검수 방법
 
 단정적 피드백(`display_mode: assertive`)이 되려면: 유효한 코칭 기준 ≥1, 추출된 근거 프레임 ≥1, `judgement != withheld`, 결과(사망)만을 근거로 하지 않음, 확신도 ≥ `min_confidence_for_assertive`, 불확실성 high 아님, 그리고 기본 설정에서는 **코치 검수된(approved) 기준**(`require_approved_criteria_for_assertive: true`)과 **HUD로 확인된 스킬/궁극기 사용 ≥1, HUD 불일치 0**(`require_hud_verification_for_assertive: true`). 하나라도 어기면 `tentative`(참고·보류)로 표시하고 `display_reasons` 에 이유를 남긴다. 모델이 스스로 매기는 확신도는 첫 실제 실행에서 틀린 항목도 1.0이어서 단독 근거로 쓰지 않는다. 각 피드백의 `hud_checks` 에 대조 결과가 남는다.
 
-전체 흐름 분석은 아군/적 판별 근거(`team_identification`: 플레이어 이름, 아군 팀 목록 위치·색)와 팀 목록 초상화로 판독한 영웅 목록(`roster`)을 기록하고, 이 내용이 상세 분석 프롬프트에 전달된다. 팀 색은 사용자 설정으로 바뀔 수 있어 "빨강=적"을 가정하지 않는다.
+전체 흐름 분석 전에 **팀 판별** 단계(`team`)가 원본에서 프레임 몇 장(`team.frame_fractions`)을 골라 팀 목록·플레이어 HUD·킬피드 영역만 잘라 확대한 이미지로 아군/적 판별 근거(`team_identification`)와 팀 목록 초상화로 판독한 영웅 목록(`roster`)을 기록한다. 영상 전체(저해상도)로 읽게 했더니 팀 목록 이름을 지어냈기 때문이다(실측). 결과는 `result.json` 의 `team` 에 남고, 전체 흐름·상세 분석 프롬프트에 전달된다. 팀 색은 사용자 설정으로 바뀔 수 있어 "빨강=적"을 가정하지 않는다.
 
 ### 결과 JSON
 

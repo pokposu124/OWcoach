@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import json
 
-from .base import AnalysisProvider, ProviderResponse, TextRequest, Usage, VideoRequest
+from .base import AnalysisProvider, ImageRequest, ProviderResponse, TextRequest, Usage, VideoRequest
 
 
 class MockProvider(AnalysisProvider):
@@ -38,6 +38,17 @@ class MockProvider(AnalysisProvider):
             return self._resp(self._detail(req.context["clip_duration"]))
         raise ValueError(stage)
 
+    def analyze_images(self, req: ImageRequest) -> ProviderResponse:
+        self.calls.append(req.context["stage"])
+        return self._resp({
+            "team_identification": {"player_name": "MOCK", "ally_side": "left", "ally_color": "파랑",
+                                    "enemy_color": "빨강", "evidence": "[모의] 왼쪽 팀 목록에 플레이어 이름"},
+            "roster": [
+                {"player_name": "MOCK", "team": "ally", "hero": "아나", "hero_confidence": "high"},
+                {"player_name": "ENEMY1", "team": "enemy", "hero": "불명", "hero_confidence": "low"},
+            ],
+        })
+
     def generate_json(self, req: TextRequest) -> ProviderResponse:
         self.calls.append(req.context["stage"])
         return self._resp(self._coaching(req.context["scenes"]))
@@ -52,12 +63,6 @@ class MockProvider(AnalysisProvider):
         return {
             "hero_confirmed": True,
             "hero_evidence": "[모의] 무기와 스킬 아이콘으로 확인",
-            "team_identification": {"player_name": "MOCK", "ally_side": "left", "ally_color": "파랑",
-                                    "enemy_color": "빨강", "evidence": "[모의] 왼쪽 팀 목록에 플레이어 이름"},
-            "roster": [
-                {"player_name": "MOCK", "team": "ally", "hero": "아나", "hero_confidence": "high"},
-                {"player_name": "ENEMY1", "team": "enemy", "hero": "불명", "hero_confidence": "low"},
-            ],
             "hud_readable": "yes",
             "video_quality_notes": "[모의] 화질 양호",
             "timeline": [

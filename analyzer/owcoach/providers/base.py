@@ -45,6 +45,16 @@ class VideoRequest:
 
 
 @dataclass
+class ImageRequest:
+    images: list[tuple[bytes, str]]  # (data, mime type), in the order the prompt describes them
+    prompt: str
+    response_schema: dict
+    media_resolution: str | None = None
+    temperature: float | None = None
+    context: dict = field(default_factory=dict)
+
+
+@dataclass
 class TextRequest:
     prompt: str
     response_schema: dict
@@ -66,6 +76,9 @@ class AnalysisProvider(ABC):
 
     @abstractmethod
     def analyze_video(self, req: VideoRequest) -> ProviderResponse: ...
+
+    @abstractmethod
+    def analyze_images(self, req: ImageRequest) -> ProviderResponse: ...
 
     @abstractmethod
     def generate_json(self, req: TextRequest) -> ProviderResponse: ...

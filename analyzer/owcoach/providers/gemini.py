@@ -15,6 +15,7 @@ import time
 
 from .base import (
     AnalysisProvider,
+    ImageRequest,
     ProviderError,
     ProviderResponse,
     TextRequest,
@@ -156,6 +157,17 @@ class GeminiProvider(AnalysisProvider):
             return self._parse(resp, started, attempts, retry_errors)
         finally:
             self._safe_delete(f)
+
+    def analyze_images(self, req: ImageRequest) -> ProviderResponse:
+        types = self._types
+        started = time.monotonic()
+        parts = [types.Part.from_bytes(data=data, mime_type=mime) for data, mime in req.images]
+        contents = [types.Content(role="user", parts=[*parts, types.Part(text=req.prompt)])]
+        config = self._config(req.response_schema, req.temperature, req.media_resolution)
+        resp, attempts, retry_errors = self._with_retries(
+            lambda: self._client.models.generate_content(model=self._model, contents=contents, config=config)
+        )
+        return self._parse(resp, started, attempts, retry_errors)
 
     def generate_json(self, req: TextRequest) -> ProviderResponse:
         started = time.monotonic()

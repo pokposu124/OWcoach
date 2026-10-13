@@ -19,6 +19,19 @@ preprocess:
     fps: 30
   evidence_frame_max_width: 1280   # 근거 프레임 JPEG 최대 폭
 
+# 팀 판별: 영상 전체(저해상도)로는 상단 팀 목록의 작은 글씨를 읽지 못해 이름을 지어내는 문제가 있어(실측),
+# 원본에서 몇 장의 프레임을 골라 팀 목록·플레이어 HUD·킬피드 영역만 잘라 확대한 이미지로 따로 판독한다.
+team:
+  enabled: true
+  frame_fractions: [0.35, 0.65]    # 영상 길이의 이 비율 시각 프레임 사용 (대기실·처치 화면을 피하려고 중간 구간)
+  upscale: 2
+  media_resolution: MEDIA_RESOLUTION_HIGH
+  reference_resolution: [1280, 720]
+  regions:                         # 1280x720 기준 x, y, w, h
+    team_lists: {x: 0, y: 0, w: 1280, h: 110}
+    player_hud: {x: 0, y: 570, w: 340, h: 150}
+    kill_feed: {x: 900, y: 90, w: 380, h: 130}
+
 overview:
   # 전체 영상에서 모델이 받는 초당 프레임 수(샘플링 간격 = 1/fps 초). Gemini 허용 범위 (0, 24]
   fps: 1.0

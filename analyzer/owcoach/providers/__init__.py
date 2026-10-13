@@ -1,4 +1,4 @@
-from .base import AnalysisProvider, ProviderError, ProviderResponse, TextRequest, Usage, VideoRequest
+from .base import AnalysisProvider, ImageRequest, ProviderError, ProviderResponse, TextRequest, Usage, VideoRequest
 
 
 def create_provider(name: str, settings: dict) -> AnalysisProvider:
@@ -14,6 +14,6 @@ def create_provider(name: str, settings: dict) -> AnalysisProvider:
 
 
 __all__ = [
-    "AnalysisProvider", "ProviderError", "ProviderResponse", "TextRequest", "Usage", "VideoRequest",
+    "AnalysisProvider", "ImageRequest", "ProviderError", "ProviderResponse", "TextRequest", "Usage", "VideoRequest",
     "create_provider",
 ]
