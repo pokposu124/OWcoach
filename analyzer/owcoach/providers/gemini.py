@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import json
 import os
+import sys
 import time
 
 from .base import (
@@ -58,13 +59,17 @@ class GeminiProvider(AnalysisProvider):
 
     def _with_retries(self, fn):
         retries = int(self._settings.get("max_retries", 3))
+        errors: list[str] = []
         for attempt in range(retries + 1):
             try:
-                return fn(), attempt + 1
+                return fn(), attempt + 1, errors
             except self._errors.APIError as e:
                 if e.code not in RETRYABLE_CODES or attempt == retries:
-                    raise ProviderError(f"Gemini API 오류 {e.code}: {e.message}") from e
-                time.sleep(min(2 ** (attempt + 1), 30))
+                    raise ProviderError(f"Gemini API 오류 {e.code}: {e.message} (시도 {attempt + 1}회)") from e
+                errors.append(f"{e.code} {e.message}"[:300])
+                wait = min(2 ** (attempt + 1), 30)
+                print(f"  Gemini API 오류 {e.code}, {wait}초 후 재시도 ({attempt + 1}/{retries})", file=sys.stderr, flush=True)
+                time.sleep(wait)
         raise AssertionError("unreachable")
 
     def _upload_and_wait(self, path):
@@ -101,7 +106,7 @@ class GeminiProvider(AnalysisProvider):
             kwargs["media_resolution"] = media_resolution
         return self._types.GenerateContentConfig(**kwargs)
 
-    def _parse(self, resp, started: float, attempts: int) -> ProviderResponse:
+    def _parse(self, resp, started: float, attempts: int, retry_errors: list[str]) -> ProviderResponse:
         text = resp.text
         if not text:
             reason = None
@@ -128,6 +133,7 @@ class GeminiProvider(AnalysisProvider):
         return ProviderResponse(
             data=data, raw_text=text, usage=usage, model=resp.model_version or self._model,
             latency_seconds=round(time.monotonic() - started, 3), attempts=attempts,
+            retry_errors=retry_errors,
         )
 
     # ------------------------------------------------------------------ API
@@ -143,17 +149,17 @@ class GeminiProvider(AnalysisProvider):
             )
             contents = [types.Content(role="user", parts=[video_part, types.Part(text=req.prompt)])]
             config = self._config(req.response_schema, req.temperature, req.media_resolution)
-            resp, attempts = self._with_retries(
+            resp, attempts, retry_errors = self._with_retries(
                 lambda: self._client.models.generate_content(model=self._model, contents=contents, config=config)
             )
-            return self._parse(resp, started, attempts)
+            return self._parse(resp, started, attempts, retry_errors)
         finally:
             self._safe_delete(f)
 
     def generate_json(self, req: TextRequest) -> ProviderResponse:
         started = time.monotonic()
         config = self._config(req.response_schema, req.temperature, None)
-        resp, attempts = self._with_retries(
+        resp, attempts, retry_errors = self._with_retries(
             lambda: self._client.models.generate_content(model=self._model, contents=req.prompt, config=config)
         )
-        return self._parse(resp, started, attempts)
+        return self._parse(resp, started, attempts, retry_errors)

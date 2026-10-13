@@ -158,6 +158,8 @@ class StageUsage(BaseModel):
     total_tokens: int | None = None
     input_tokens_by_modality: dict[str, int] = Field(default_factory=dict)
     latency_seconds: float
+    attempts: int = 1                # API 호출 시도 횟수 (1 = 재시도 없음)
+    retry_errors: list[str] = Field(default_factory=list)  # 재시도를 일으킨 오류 (예: "503 ...")
     from_cache: bool = False
 
 

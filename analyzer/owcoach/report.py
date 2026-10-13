@@ -70,7 +70,7 @@ def write_report(run_dir: Path) -> Path:
     warnings = "".join(f"<li>{_e(w)}</li>" for w in result.warnings) or "<li>없음</li>"
     usage_rows = "".join(
         f"<tr><td>{_e(u.stage)}</td><td>{_e(u.model)}</td><td>{_e(u.prompt_version)}</td><td>{u.input_tokens}</td>"
-        f"<td>{u.output_tokens}</td><td>{u.thinking_tokens}</td><td>{u.latency_seconds}</td><td>{'예' if u.from_cache else ''}</td></tr>"
+        f"<td>{u.output_tokens}</td><td>{u.thinking_tokens}</td><td>{u.latency_seconds}</td><td>{u.attempts}</td><td>{'예' if u.from_cache else ''}</td></tr>"
         for u in result.usage)
     mock_banner = f'<div class="banner">{_e(result.notice)}</div>' if result.analysis_mode == "mock" else ""
     timings = ", ".join(f"{k} {v}s" for k, v in result.timings_seconds.items())
@@ -107,7 +107,7 @@ textarea{{width:100%;min-height:48px}} table{{border-collapse:collapse;font-size
 <details><summary>경고</summary><ul>{warnings}</ul></details>
 <details><summary>전체 흐름 분석 (overview)</summary><pre style="white-space:pre-wrap">{_e(json.dumps(result.overview, ensure_ascii=False, indent=1))}</pre></details>
 <details><summary>사용량 · 처리 시간 · 비용</summary><p>처리 시간: {_e(timings)}</p><p>비용: {_e(cost)} — {_e(result.cost.note)}</p>
-<table><tr><th>단계</th><th>모델</th><th>프롬프트</th><th>입력</th><th>출력</th><th>thinking</th><th>지연(s)</th><th>캐시</th></tr>{usage_rows}</table></details>
+<table><tr><th>단계</th><th>모델</th><th>프롬프트</th><th>입력</th><th>출력</th><th>thinking</th><th>지연(s)</th><th>시도</th><th>캐시</th></tr>{usage_rows}</table></details>
 <script>
 const v=document.getElementById('v');
 document.querySelectorAll('[data-t]').forEach(el=>el.addEventListener('click',()=>{{v.currentTime=parseFloat(el.dataset.t);v.play();}}));

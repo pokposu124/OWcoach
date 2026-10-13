@@ -29,6 +29,7 @@ class ProviderResponse:
     model: str
     latency_seconds: float
     attempts: int = 1
+    retry_errors: list[str] = field(default_factory=list)
 
 
 @dataclass

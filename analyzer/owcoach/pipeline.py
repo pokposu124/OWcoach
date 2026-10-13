@@ -189,7 +189,7 @@ class Pipeline:
                 input_tokens=resp.usage.input_tokens, output_tokens=resp.usage.output_tokens,
                 thinking_tokens=resp.usage.thinking_tokens, total_tokens=resp.usage.total_tokens,
                 input_tokens_by_modality=resp.usage.input_tokens_by_modality,
-                latency_seconds=resp.latency_seconds,
+                latency_seconds=resp.latency_seconds, attempts=resp.attempts, retry_errors=resp.retry_errors,
             ).model_dump())
             try:
                 return model_cls.model_validate(resp.data), usage_records

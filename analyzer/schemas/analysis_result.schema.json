@@ -342,6 +342,18 @@
           "title": "Latency Seconds",
           "type": "number"
         },
+        "attempts": {
+          "default": 1,
+          "title": "Attempts",
+          "type": "integer"
+        },
+        "retry_errors": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Retry Errors",
+          "type": "array"
+        },
         "from_cache": {
           "default": false,
           "title": "From Cache",
