@@ -27,7 +27,7 @@ from pydantic import BaseModel, ValidationError
 
 from . import __version__
 from .config import ANALYZER_ROOT, fingerprint
-from .hud import check_use_claim, detect_buff_target, sample_hud, scan_player_deaths, scan_uses
+from .hud import check_use_claim, detect_buff_target, sample_hud, scan_dead_periods, scan_uses
 from .timefmt import fmt_time
 from .heroes import HeroProfile
 from .portraits import identify, load_portraits
@@ -262,20 +262,22 @@ class Pipeline:
         dcfg = self.cfg.get("death_check") or {}
         if not dcfg.get("enabled"):
             return []
-        found: list[dict] = []
-        if dcfg.get("health_bar"):
-            found += [{"time_seconds": t, "source": "체력 0"} for t in scan_player_deaths(video, duration, dcfg)]
+        merge = float(dcfg["merge_seconds"])
+        periods = scan_dead_periods(video, duration, dcfg) if dcfg.get("health_bar") else []
+        deaths = [{"time_seconds": s, "source": "체력 0", "respawn_seconds": e} for s, e in periods]
         for ev in overview.timeline:
-            if any(k in ev.event for k in dcfg.get("model_keywords", [])) and 0 <= ev.time_seconds <= duration:
-                found.append({"time_seconds": ev.time_seconds, "source": "모델 기록"})
-        merged: list[dict] = []
-        for d in sorted(found, key=lambda d: d["time_seconds"]):
-            if merged and d["time_seconds"] - merged[-1]["time_seconds"] <= float(dcfg["merge_seconds"]):
-                if d["source"] not in merged[-1]["source"]:
-                    merged[-1]["source"] += " + " + d["source"]
+            t = ev.time_seconds
+            if not (any(k in ev.event for k in dcfg.get("model_keywords", [])) and 0 <= t <= duration):
                 continue
-            merged.append(dict(d))
-        return merged
+            # a model-recorded death inside a health-0 stretch (or just before it) is that same death;
+            # models often log it late, while the player is still waiting to respawn
+            same = next((d for d in deaths if d["time_seconds"] - merge <= t <= d.get("respawn_seconds", d["time_seconds"]) + merge), None)
+            if same:
+                if "모델 기록" not in same["source"]:
+                    same["source"] += " + 모델 기록"
+            else:
+                deaths.append({"time_seconds": t, "source": "모델 기록"})
+        return sorted(deaths, key=lambda d: d["time_seconds"])
 
     def _team_stage(self, store: RunStore, video: Path, sha: str, duration: float, ai_fp_base: dict,
                     force: set[str]) -> tuple[TeamResponse | None, dict | None]:

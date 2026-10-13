@@ -217,7 +217,12 @@ def scan_uses(video: Path, duration: float, slot: str, cfg: dict) -> list[float]
 
 
 def scan_player_deaths(video: Path, duration: float, cfg: dict) -> list[float]:
-    """Start times of stretches where the player's health bar is empty (health 0) for >= min_seconds.
+    """Start times of the player's deaths (see scan_dead_periods)."""
+    return [start for start, _ in scan_dead_periods(video, duration, cfg)]
+
+
+def scan_dead_periods(video: Path, duration: float, cfg: dict) -> list[tuple[float, float]]:
+    """(start, end) of stretches where the player's health bar is empty (health 0) for >= min_seconds.
 
     While dead, the HUD stays on screen (spectating from the death spot) but the ten health blocks
     under the health number go dark and a red skull covers the portrait, until respawn (~10 s).
@@ -243,6 +248,6 @@ def scan_player_deaths(video: Path, duration: float, cfg: dict) -> list[float]:
             start = i
         if not e and start is not None:
             if (i - start) / fps >= hb["min_seconds"]:
-                out.append(round(start / fps, 2))
+                out.append((round(start / fps, 2), round(i / fps, 2)))
             start = None
     return out

@@ -583,7 +583,7 @@ def test_deaths_force_scenes_and_coverage_warning(video, cfg, tmp_path, monkeypa
     carries it, and a missing feedback for that window is reported as a warning."""
     import owcoach.pipeline as pl
 
-    monkeypatch.setattr(pl, "scan_player_deaths", lambda *a, **k: [17.0])
+    monkeypatch.setattr(pl, "scan_dead_periods", lambda *a, **k: [(17.0, 19.5)])
     seen = {}
     real_plan = pl.plan_scenes
 
@@ -595,8 +595,24 @@ def test_deaths_force_scenes_and_coverage_warning(video, cfg, tmp_path, monkeypa
 
     monkeypatch.setattr(pl, "plan_scenes", spy_plan)
     result, _ = make_pipeline(cfg, tmp_path, MockProvider()).run(video, run_id="death1")
-    assert result.player_deaths == [{"time_seconds": 17.0, "source": "체력 0"}]
+    assert result.player_deaths == [{"time_seconds": 17.0, "source": "체력 0", "respawn_seconds": 19.5}]
     assert any(c[0] == 7.0 and c[1] == 17.0 and "사망" in c[2] for c in seen["cands"])
     assert any(a <= 7.0 and b >= 17.0 for a, b in seen["windows"])
     covered = any(f.start_time_seconds <= 18 and f.end_time_seconds >= 7 for f in result.feedback)
     assert covered or any("사망 17초" in w for w in result.warnings)
+
+
+def test_model_death_inside_dead_period_is_same_death(cfg, monkeypatch):
+    """The overview logs a death 9 s after health hit 0 (still waiting to respawn): one death, not two.
+    A model-only death far from any health-0 stretch is kept on its own."""
+    import owcoach.pipeline as pl
+    from owcoach.schemas import OverviewResponse
+
+    monkeypatch.setattr(pl, "scan_dead_periods", lambda *a, **k: [(138.5, 152.0)])
+    ov = OverviewResponse(hero_confirmed=True, hero_evidence="", hud_readable="yes", video_quality_notes="",
+                          candidates=[], timeline=[
+                              {"time_seconds": 147.0, "event": "플레이어 사망", "visible_evidence": ""},
+                              {"time_seconds": 250.0, "event": "처치당함", "visible_evidence": ""}])
+    pipe = make_pipeline(cfg, Path("/tmp"))
+    deaths = pipe._find_deaths(Path("x.mp4"), 290.0, ov, cfg["hud_check"])
+    assert [(d["time_seconds"], d["source"]) for d in deaths] == [(138.5, "체력 0 + 모델 기록"), (250.0, "모델 기록")]

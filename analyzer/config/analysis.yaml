@@ -86,7 +86,8 @@ death_check:
     empty_ratio: 0.03               # 흰 체력 칸 비율이 이 미만이면 체력 0 (실측: 살아 있을 때 최소 0.10)
     fps: 2.0
     min_seconds: 3.0
-  merge_seconds: 5.0               # 두 신호의 시각이 이 안이면 같은 사망
+  # 모델이 기록한 사망이 체력 0 구간(사망~부활) 안이거나 그 앞뒤 이 시간 안이면 같은 사망으로 합친다
+  merge_seconds: 5.0
   model_keywords: ["사망", "처치당", "죽음", "부활 대기", "리스폰 대기"]
 
 # 모델이 말한 스킬/궁극기 사용을 HUD 픽셀로 대조 (AI 없음). owcoach/hud.py 참고.
