@@ -67,8 +67,9 @@ class GeminiProvider(AnalysisProvider):
                 if e.code not in RETRYABLE_CODES or attempt == retries:
                     raise ProviderError(f"Gemini API 오류 {e.code}: {e.message} (시도 {attempt + 1}회)") from e
                 errors.append(f"{e.code} {e.message}"[:300])
-                wait = min(2 ** (attempt + 1), 30)
-                print(f"  Gemini API 오류 {e.code}, {wait}초 후 재시도 ({attempt + 1}/{retries})", file=sys.stderr, flush=True)
+                wait = min(float(self._settings.get("retry_base_seconds", 1)) * 2 ** (attempt + 1),
+                           float(self._settings.get("retry_max_wait_seconds", 60)))
+                print(f"  Gemini API 오류 {e.code}, {wait:g}초 후 재시도 ({attempt + 1}/{retries})", file=sys.stderr, flush=True)
                 time.sleep(wait)
         raise AssertionError("unreachable")
 

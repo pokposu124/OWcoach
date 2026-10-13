@@ -54,5 +54,9 @@ provider:
   file_poll_interval_seconds: 3
   file_poll_timeout_seconds: 600
   delete_uploaded_files: true      # 분석 후 Gemini Files API에서 업로드 파일 즉시 삭제
-  max_retries: 3                   # 429/5xx 재시도 횟수
+  max_retries: 6                   # 429/5xx 재시도 횟수
+  # 재시도 대기: retry_base_seconds × 2^(시도 번호), 최대 retry_max_wait_seconds.
+  # 기본값이면 2·4·8·16·32·60초(총 약 2분) — 503 "high demand" 같은 일시적 과부하가 지나갈 시간을 준다.
+  retry_base_seconds: 1
+  retry_max_wait_seconds: 60
   json_repair_retries: 1           # 스키마 불일치 응답 재요청 횟수
