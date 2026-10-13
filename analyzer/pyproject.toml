@@ -1,0 +1,18 @@
+[project]
+name = "owcoach-analyzer"
+version = "0.1.0"
+description = "Overwatch gameplay video analysis prototype (local)"
+requires-python = ">=3.11"
+dependencies = ["google-genai>=2.30.0", "pydantic>=2.7", "PyYAML>=6.0"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0"]
+
+[project.scripts]
+owcoach = "owcoach.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["owcoach*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

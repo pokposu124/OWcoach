@@ -1,0 +1,14 @@
+# 모델별 단가. 공식 가격 페이지(https://ai.google.dev/gemini-api/docs/pricing)에서
+# 직접 확인한 값만 입력하라. 항목이 없는 모델은 비용을 계산하지 않고 "단가 미확인"으로 기록한다.
+# 계산된 비용은 항상 추정치(estimated)로 표시된다(토큰 집계·과금 규칙 차이 가능).
+#
+# 형식 예시 (값은 비워둠 - 확인 후 채울 것):
+# models:
+#   <정확한 모델 ID>:
+#     currency: USD
+#     input_per_million_tokens: <영상/이미지/텍스트 입력 단가>
+#     output_per_million_tokens: <출력 단가, thinking 토큰 포함 여부 확인>
+#     source_url: https://ai.google.dev/gemini-api/docs/pricing
+#     verified_on: "YYYY-MM-DD"
+#     notes: "컨텍스트 길이별 단가 구분이 있으면 기재"
+models: {}

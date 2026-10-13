@@ -1,0 +1,14 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+.env
+# 분석 산출물(영상 사본, 클립, 프레임)은 커밋하지 않음
+analyzer/runs/
+runs/
+samples/
+*.mp4
+*.mov
+*.mkv
+*.webm
+node_modules/

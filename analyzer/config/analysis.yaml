@@ -1,0 +1,58 @@
+# 분석 파이프라인 설정. 모든 값은 코드 기본값 없이 여기서 관리한다.
+# 이 파일의 내용(및 프롬프트/영웅 기준 버전)은 단계별 캐시 지문(fingerprint)에 포함되므로,
+# 값을 바꾸면 영향을 받는 단계만 다시 실행된다.
+pipeline_version: "0.1.0"
+
+input:
+  max_duration_seconds: 300        # 초기 범위: 최대 5분
+  min_width: 1280                  # HUD 판독을 위한 최소 해상도
+  min_height: 720
+  max_file_size_mb: 2000
+  allowed_extensions: [".mp4", ".mov", ".mkv", ".webm"]
+
+preprocess:
+  # 전체 흐름 분석용 업로드 사본(proxy). 원본과 타임라인이 동일하도록 자르지 않고 재인코딩만 한다.
+  proxy:
+    enabled: true
+    max_height: 720
+    crf: 28
+    fps: 30
+  evidence_frame_max_width: 1280   # 근거 프레임 JPEG 최대 폭
+
+overview:
+  # 전체 영상에서 모델이 받는 초당 프레임 수(샘플링 간격 = 1/fps 초). Gemini 허용 범위 (0, 24]
+  fps: 1.0
+  media_resolution: null           # null이면 API 기본값. 예: MEDIA_RESOLUTION_LOW / MEDIUM / HIGH
+  max_candidates: 8                # 상세 분석으로 넘길 후보 장면 최대 개수
+
+detail:
+  pre_seconds: 8.0                 # 후보 장면 시작 전 추가 분석 범위
+  post_seconds: 4.0                # 후보 장면 종료 후 추가 분석 범위
+  fps: 4.0                         # 후보 구간 재분석 샘플링
+  media_resolution: null
+  merge_gap_seconds: 2.0           # 확장된 구간끼리 이 간격 이하로 붙어 있으면 하나로 합침
+  max_window_seconds: 40.0         # 합친 구간의 최대 길이
+
+coaching:
+  temperature: 0.2
+
+output:
+  max_feedback_items: 5
+  max_action_items: 3
+  # 단정적 피드백(assertive)으로 표시하기 위한 최소 확신도
+  min_confidence_for_assertive: 0.6
+  # true면 코치 검수(approved)된 기준이 적용된 피드백만 단정적으로 표시
+  require_approved_criteria_for_assertive: false
+  # 같은 카테고리에서 시간 구간이 이 비율 이상 겹치면 중복으로 간주
+  dedup_overlap_ratio: 0.5
+  # 모델이 제시한 시간이 분석한 구간 밖으로 벗어나도 허용하는 오차(초)
+  window_tolerance_seconds: 1.0
+
+provider:
+  name: gemini                     # gemini | mock
+  temperature: 0.2
+  file_poll_interval_seconds: 3
+  file_poll_timeout_seconds: 600
+  delete_uploaded_files: true      # 분석 후 Gemini Files API에서 업로드 파일 즉시 삭제
+  max_retries: 3                   # 429/5xx 재시도 횟수
+  json_repair_retries: 1           # 스키마 불일치 응답 재요청 횟수

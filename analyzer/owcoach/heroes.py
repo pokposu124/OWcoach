@@ -1,0 +1,100 @@
+"""Hero coaching profiles, kept as data files separate from the common pipeline."""
+
+from __future__ import annotations
+
+from pathlib import Path
+from typing import Any, Literal
+
+from pydantic import BaseModel, Field
+
+from .config import HEROES_DIR, load_yaml
+
+Category = Literal["positioning", "survival", "skill_usage"]
+ReviewStatus = Literal["draft", "approved", "deprecated"]
+
+
+class Source(BaseModel):
+    type: str
+    reference: str | None = None
+    patch_version: str | None = None
+
+
+class Criterion(BaseModel):
+    id: str
+    category: Category
+    status: ReviewStatus
+    title: str
+    description: str
+    good_signs: list[str] = Field(default_factory=list)
+    bad_signs: list[str] = Field(default_factory=list)
+    cannot_judge_when: list[str] = Field(default_factory=list)
+    source: Source
+
+
+class Ability(BaseModel):
+    id: str
+    name_ko: str
+    name_en: str
+    hud_hint: str | None = None
+
+
+class NumericFact(BaseModel):
+    id: str
+    value: float | str
+    unit: str | None = None
+    source: str  # required: no number without a source
+    patch_version: str  # required
+
+
+class HeroProfile(BaseModel):
+    hero_id: str
+    display_name_ko: str
+    display_name_en: str
+    role: str
+    profile_version: str
+    review_status: ReviewStatus
+    patch_version: str
+    patch_note: str | None = None
+    abilities: list[Ability]
+    observable_signals: list[str]
+    criteria: list[Criterion]
+    numeric_facts: list[NumericFact] = Field(default_factory=list)
+
+    def criterion(self, criterion_id: str) -> Criterion | None:
+        return next((c for c in self.criteria if c.id == criterion_id), None)
+
+    def active_criteria(self) -> list[Criterion]:
+        return [c for c in self.criteria if c.status != "deprecated"]
+
+    def criteria_for_prompt(self) -> list[dict[str, Any]]:
+        out = []
+        for c in self.active_criteria():
+            out.append({
+                "id": c.id,
+                "category": c.category,
+                "title": c.title,
+                "description": c.description.strip(),
+                "good_signs": c.good_signs,
+                "bad_signs": c.bad_signs,
+                "cannot_judge_when": c.cannot_judge_when,
+            })
+        if self.numeric_facts:
+            out.append({"verified_numeric_facts": [f.model_dump() for f in self.numeric_facts]})
+        return out
+
+
+def available_heroes(heroes_dir: Path = HEROES_DIR) -> list[str]:
+    return sorted(p.stem for p in heroes_dir.glob("*.yaml"))
+
+
+def load_hero(hero_id: str, heroes_dir: Path = HEROES_DIR) -> HeroProfile:
+    path = heroes_dir / f"{hero_id}.yaml"
+    if not path.exists():
+        raise ValueError(f"지원하지 않는 영웅: {hero_id!r} (지원: {', '.join(available_heroes(heroes_dir))})")
+    profile = HeroProfile.model_validate(load_yaml(path))
+    if profile.hero_id != hero_id:
+        raise ValueError(f"{path}: hero_id {profile.hero_id!r} does not match file name")
+    ids = [c.id for c in profile.criteria]
+    if len(ids) != len(set(ids)):
+        raise ValueError(f"{path}: duplicate criterion ids")
+    return profile

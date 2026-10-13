@@ -1,0 +1,150 @@
+# 영웅별 코칭 기준 (공통 분석 코드와 분리). 새 영웅은 이 파일 형식대로 heroes/<hero_id>.yaml 을 추가한다.
+#
+# 상태 값
+#   review_status / criteria[].status : draft(코치 미검수 초안) | approved(코치 검수 완료) | deprecated
+# 출처 규칙
+#   - 구체적 게임 수치(쿨다운, 피해량, 사거리 등)는 numeric_facts 에만 기록하고, 반드시
+#     source(공식 패치노트 등 URL)와 patch_version 을 함께 적는다. 확인되지 않은 수치는 넣지 않는다.
+#   - 코칭 기준(criteria)은 출처(source)를 기록한다. 코치 초안이면 type: coach_draft.
+hero_id: ana
+display_name_ko: 아나
+display_name_en: Ana
+role: support
+profile_version: "0.1.0-draft"
+review_status: draft
+# 이 기준이 검증된 게임 패치 버전. 아직 어떤 패치로도 검증되지 않았음.
+patch_version: unverified
+patch_note: "초안. 수치 기준 없음. 코치 검수 및 최신 패치노트 대조 필요."
+
+abilities:
+  - id: biotic_rifle
+    name_ko: 생체 소총
+    name_en: Biotic Rifle
+    hud_hint: "탄약 수치가 화면 우하단에 표시됨"
+  - id: sleep_dart
+    name_ko: 수면총
+    name_en: Sleep Dart
+    hud_hint: "HUD 하단 스킬 아이콘. 사용 후 쿨다운 숫자가 표시됨"
+  - id: biotic_grenade
+    name_ko: 생체 수류탄
+    name_en: Biotic Grenade
+    hud_hint: "HUD 하단 스킬 아이콘. 사용 후 쿨다운 숫자가 표시됨"
+  - id: nano_boost
+    name_ko: 나노 강화제
+    name_en: Nano Boost
+    hud_hint: "궁극기 게이지(%)가 화면 하단 중앙에 표시됨"
+
+# 화면에서 확인 가능한 관찰 신호 (모델에게 무엇을 보라고 안내하는 용도)
+observable_signals:
+  - "본인 체력 바 수치와 피격 표시(화면 가장자리 붉은 표시, 피격 방향 표시기)"
+  - "스킬 아이콘의 쿨다운 숫자/어두워짐 여부"
+  - "궁극기 게이지 % 및 사용 시 화면 효과"
+  - "조준경 사용 여부(스코프 화면)"
+  - "엄폐물(벽, 기둥, 모서리)과 본인 위치 관계"
+  - "화면에 보이는 아군/적의 체력바와 위치 (화면 밖은 판단하지 않음)"
+  - "킬피드(우상단) 내용"
+  - "사망 시 처치 화면(킬캠) 표시 여부"
+
+# 코칭 기준. id 는 결과의 criterion_ids 로 참조된다. 모두 코치 검수 전 초안.
+criteria:
+  - id: ana.positioning.cover_access
+    category: positioning
+    status: draft
+    title: "엄폐물 접근성 유지"
+    description: >
+      아군을 지원하는 동안 짧은 이동으로 시야를 끊을 수 있는 엄폐물 가까이에 위치하는지 본다.
+    good_signs:
+      - "피격 직후 1~2걸음 내 엄폐물 뒤로 이동해 시야를 끊음"
+      - "엄폐물 모서리에서 사격 후 다시 몸을 숨김"
+    bad_signs:
+      - "주변에 엄폐물이 화면상 보이지 않는 개활지에 오래 머무름"
+    cannot_judge_when:
+      - "화면 밖에서 피격되어 적 위치를 알 수 없음"
+    source: {type: coach_draft, reference: null, patch_version: unverified}
+
+  - id: ana.positioning.sightline_to_team
+    category: positioning
+    status: draft
+    title: "아군 시야 확보"
+    description: >
+      치유가 필요한 아군에게 사격선(시야)이 열려 있는 위치를 잡는지 본다.
+    good_signs:
+      - "아군 다수가 화면 안에 보이는 각도에서 지원"
+    bad_signs:
+      - "체력이 낮은 아군이 보이는데 시야가 막힌 위치에 머물러 지원이 끊김"
+    cannot_judge_when:
+      - "아군 체력바가 화면에 보이지 않음"
+    source: {type: coach_draft, reference: null, patch_version: unverified}
+
+  - id: ana.survival.disengage_on_pressure
+    category: survival
+    status: draft
+    title: "압박 시 이탈 판단"
+    description: >
+      본인 체력이 크게 떨어지거나 근접한 적이 화면에 보일 때 이탈·엄폐·스킬 대응 중 하나를 하는지 본다.
+      사망했다는 결과만으로 직전 행동이 잘못됐다고 판단하지 않는다.
+    good_signs:
+      - "체력이 급감한 직후 엄폐물 뒤나 아군 쪽으로 이동"
+      - "근접한 적에게 수면총으로 대응한 뒤 이탈"
+    bad_signs:
+      - "근접한 적이 화면에 보이고 체력이 낮은 상태에서 같은 위치에서 계속 사격"
+    cannot_judge_when:
+      - "적이 화면 밖에 있어 위협을 인지할 수 있었는지 알 수 없음"
+      - "순간 폭딜(한 프레임 내 사망)처럼 대응할 시간이 화면상 없었음"
+    source: {type: coach_draft, reference: null, patch_version: unverified}
+
+  - id: ana.skill.sleep_dart_usage
+    category: skill_usage
+    status: draft
+    title: "수면총 사용 판단"
+    description: >
+      수면총을 위협(본인에게 근접한 적, 돌진하는 적, 궁극기 사용 중인 적)에 대응해 쓰는지,
+      위협이 없는 상황에서 낭비했는지 본다. 명중 여부는 화면에서 확인될 때만 판단한다.
+    good_signs:
+      - "본인에게 달려드는 적을 재우고 이탈하거나 처치로 연결"
+    bad_signs:
+      - "위협이 없는 상황에서 사용 후, 직후 근접 위협이 왔을 때 쿨다운이 표시됨"
+    cannot_judge_when:
+      - "스킬 아이콘/쿨다운이 화면에서 판독되지 않음"
+      - "명중 여부가 화면에서 확인되지 않음"
+    source: {type: coach_draft, reference: null, patch_version: unverified}
+
+  - id: ana.skill.biotic_grenade_usage
+    category: skill_usage
+    status: draft
+    title: "생체 수류탄 사용 판단"
+    description: >
+      생체 수류탄을 아군 다수 치유 또는 적 치유 차단 목적에 맞게 쓰는지,
+      혹은 자기 보호(본인 위치에 던져 회복)에 활용하는지 본다.
+    good_signs:
+      - "여러 아군이 체력이 낮을 때 아군 밀집 지점에 사용"
+      - "본인이 압박받을 때 발밑에 사용해 생존"
+    bad_signs:
+      - "아군/적이 화면에 거의 없는 곳에 사용"
+    cannot_judge_when:
+      - "수류탄 착탄 지점이 화면에서 보이지 않음"
+    source: {type: coach_draft, reference: null, patch_version: unverified}
+
+  - id: ana.skill.nano_boost_usage
+    category: skill_usage
+    status: draft
+    title: "나노 강화제 사용 판단"
+    description: >
+      궁극기 게이지가 100%로 표시된 상태에서 교전 중 아군에게 사용했는지,
+      사용 대상과 시점이 화면상 확인되는지 본다.
+    good_signs:
+      - "교전 시작 직후 화면 안의 아군에게 사용"
+    bad_signs:
+      - "게이지 100% 상태로 사망(화면에서 확인될 때만)"
+    cannot_judge_when:
+      - "궁극기 게이지 수치가 판독되지 않음"
+    source: {type: coach_draft, reference: null, patch_version: unverified}
+
+# 확인된 게임 수치. 출처와 패치 버전이 없으면 넣지 않는다. (현재 비어 있음)
+# 예시 형식:
+#   - id: ana.sleep_dart.cooldown
+#     value: <숫자>
+#     unit: seconds
+#     source: <공식 패치노트 URL>
+#     patch_version: <패치 버전/날짜>
+numeric_facts: []
