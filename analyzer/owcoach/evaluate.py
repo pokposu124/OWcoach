@@ -72,6 +72,11 @@ def evaluate(run_dir: Path, labels_path: Path) -> dict:
         t = st["time_seconds"]
         mc = next((c.moment_check for c in fb_checks if c.ability_id == st["ability"] and c.hud_use_time_seconds is not None
                    and _near(c.hud_use_time_seconds, t, 1.5) and c.moment_check), None)
+        if mc is None:  # the use may not be in any feedback; its moment check is still stored as a stage
+            for path in sorted((Path(run_dir) / "stages").glob(f"moment-{st['ability']}-*.json")):
+                if _near(int(path.stem.rsplit("-", 1)[1]) / 100, t, 1.5):
+                    mc = json.loads(path.read_text("utf-8"))["output"]
+                    break
         if mc is None:
             check("스킬 대상", None, f"{fmt_time(t)} {st['ability']} — 결과에 해당 피드백/순간 확인 없음")
         else:
