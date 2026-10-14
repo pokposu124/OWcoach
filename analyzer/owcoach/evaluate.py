@@ -76,7 +76,7 @@ def evaluate(run_dir: Path, labels_path: Path) -> dict:
         check("영웅 교체", bool(got) and _near(got["time_seconds"], w["time_seconds"], 10.0),
               f"{w['slot']}번 칸 {w['from_hero']}→{w['to_hero']} 정답 약 {fmt_time(w['time_seconds'])} / 결과 "
               + (fmt_time(got["time_seconds"]) if got else "감지 없음"))
-    for x in swaps:
+    for x in swaps if "hero_swaps" in facts else []:  # no hero_swaps key: swaps not labelled for this video
         if not any(x["slot"] == w["slot"] and x["to_hero"] == w["to_hero"] for w in facts.get("hero_swaps", [])):
             check("영웅 교체 오탐", False, f"{x['slot']}번 칸 {x['from_hero']}→{x['to_hero']} {fmt_time(x['time_seconds'])} (정답에 없음)")
 
@@ -144,7 +144,8 @@ def evaluate(run_dir: Path, labels_path: Path) -> dict:
     # the player's own grades for specific plays
     for j in labels.get("judgements", []):
         t = j["time_seconds"]
-        hits = [f for f in result.feedback if f.category == j["category"] and f.start_time_seconds - 1 <= t <= f.end_time_seconds + 1]
+        tol = j.get("tolerance_seconds", 1.0)  # a coach's comment time is approximate (when they spoke)
+        hits = [f for f in result.feedback if f.category == j["category"] and f.start_time_seconds - tol <= t <= f.end_time_seconds + tol]
         grades = [f.grade for f in hits]
         if "not_grade" in j:
             # the coach said it could have been better: no feedback there may call it best / excellent

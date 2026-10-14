@@ -24,16 +24,16 @@ judgements:                        # 사용자·코치가 매긴 등급. not_gra
   - {time_seconds: 249.5, category: ultimate_usage, grade: blunder,
      note: "쓰러지기 직전 솔저에게 늦게 준 나노. 일찍 주거나 포기했어야 함"}
   # 외부 코치 피드백 2026-10-14
-  - {time_seconds: 88.0, category: positioning, not_grade: [best, excellent],
+  - {time_seconds: 88.0, category: positioning, not_grade: [best, excellent], tolerance_seconds: 3,
      note: "시그마가 앞으로 갔는데 같이 가주지 않음. 시그마가 죽으면 화물을 못 밂 (코치 1:28)"}
-  - {time_seconds: 95.0, category: skill_usage, not_grade: [best, excellent],
+  - {time_seconds: 95.0, category: skill_usage, not_grade: [best, excellent], tolerance_seconds: 3,
      note: "힐밴을 그냥 던짐. 벽 뒤에 숨어 있다가 디바가 오면 수면+힐밴으로 터뜨리는 노림수가 좋음 (코치 1:35)"}
-  - {time_seconds: 124.0, category: skill_usage, not_grade: [best, excellent],
+  - {time_seconds: 124.0, category: skill_usage, not_grade: [best, excellent], tolerance_seconds: 3,
      note: "송하나를 못 잡을 때 방 안으로 들어가 돌아오는 힐밴으로 약간 무리해서라도 잡았어야 (코치 2:04)"}
-  - {time_seconds: 150.0, category: positioning, not_grade: [best, excellent],
+  - {time_seconds: 150.0, category: positioning, not_grade: [best, excellent], tolerance_seconds: 3,
      note: "방 안에서 벽 등지면 자폭에 안 죽으니 송하나를 잡을 생각을 했어야 (코치 2:30)"}
-  - {time_seconds: 171.0, category: skill_usage, not_grade: [best, excellent], note: "힐밴 아쉽 (코치 2:51)"}
-  - {time_seconds: 187.0, category: positioning, not_grade: [best, excellent],
+  - {time_seconds: 171.0, category: skill_usage, not_grade: [best, excellent], tolerance_seconds: 3, note: "힐밴 아쉽 (코치 2:51)"}
+  - {time_seconds: 187.0, category: positioning, not_grade: [best, excellent], tolerance_seconds: 3,
      note: "본대를 바라보면서 화물 쪽으로 가야 힐 로스가 줄어듦 (코치 3:07)"}
 coach_notes:                       # 등급으로 평가하지 않는 코치 메모 (현재 분류에 없는 항목)
   - {time_seconds: 50.0, topic: aim, note: "에임 이슈 (코치 0:50)"}

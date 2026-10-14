@@ -119,6 +119,8 @@ def test_detail_times_converted_to_original():
     detail = DetailResponse(
         observations=[{"time_seconds": 5, "end_time_seconds": 7, "fact": "x", "visibility": "clear"},
                       {"time_seconds": 45, "fact": "out of clip", "visibility": "clear"}],
+        situation_track=[{"time_seconds": 6, "tank": "앞 멀리", "tank_name": "시그마", "player_moving": "no",
+                          "facing_allies": "yes", "payload": "멈춤", "enemy_dva": "메카", "note": ""}],
         hud_readings=[], not_determinable=[], outcome="", key_moment_times=[3, 99],
         ability_events=[{"time_seconds": 4, "ability_id": "nano_boost", "target": "", "evidence": ""},
                         {"time_seconds": 60, "ability_id": "nano_boost", "target": "", "evidence": "out"}])
@@ -127,6 +129,7 @@ def test_detail_times_converted_to_original():
     assert [(o["time_seconds"], o["end_time_seconds"]) for o in rec["observations"]] == [(105.0, 107.0)]
     assert rec["key_moment_times"] == [103.0]
     assert [e["time_seconds"] for e in rec["ability_events"]] == [104.0]
+    assert [(x["time_seconds"], x["tank"]) for x in rec["situation_track"]] == [(106.0, "앞 멀리")]
     assert warnings
 
 
@@ -415,7 +418,28 @@ def _coaching_item(**kw):
             "observation": "o", "assessment": "a", "suggestion": "s", "criterion_ids": ["ana.ultimate.nano_boost_usage"],
             "grade": "best", "confidence": 1.0, "uncertainty": "", "uncertainty_level": "low",
             "relies_on_outcome_only": False, "evidence_frame_timestamps": [10.0]}
-    return {**base, **kw}
+    item = {**base, **kw}
+    if "matched_sign" not in item:
+        # quote a real sign of the first cited criterion, as the coaching prompt asks
+        c = load_hero("ana").criterion(item["criterion_ids"][0]) if item["criterion_ids"] else None
+        signs = (c.bad_signs if item["grade"] == "blunder" else c.good_signs) if c else []
+        item["matched_sign"] = signs[0] if signs and item["grade"] != "withheld" else ""
+    return item
+
+
+def test_grade_needs_a_matched_sign(cfg):
+    """'best' with no good sign of the cited criterion quoted (a grenade that merely hit something) is withheld."""
+    from owcoach.postprocess import finalize_feedback
+
+    hero = load_hero("ana")
+    ok = _coaching_item()
+    vague = _coaching_item(matched_sign="적에게 수류탄이 맞음")
+    fb, _ = finalize_feedback(CoachingResponse(items=[ok], action_items=[]), {"scene-01": _scene_rec("verified")},
+                              hero, 30.0, cfg["output"], lambda t: f"evidence/{t}.jpg", [])
+    assert fb[0].grade == "best"
+    fb, _ = finalize_feedback(CoachingResponse(items=[vague], action_items=[]), {"scene-01": _scene_rec("verified")},
+                              hero, 30.0, cfg["output"], lambda t: f"evidence/{t}.jpg", [])
+    assert fb[0].grade == "withheld" and any("신호를 특정하지 못해" in r for r in fb[0].display_reasons)
 
 
 @pytest.mark.parametrize("status,approved,expect", [
@@ -933,3 +957,27 @@ def test_roster_timeline_finds_a_swap(tmp_path, cfg):
     tl = roster_timeline(video, 40.0, tcfg, refs)
     assert [(w["from_hero"], w["to_hero"]) for w in tl["swaps"]] == [(refs[0][0], refs[1][0])]
     assert abs(tl["swaps"][0]["time_seconds"] - 20.0) <= 1.5
+
+
+def test_positioning_good_grade_needs_a_specific_clean_moment(cfg):
+    """Best positioning over a whole 30 s scene is withheld; so is a short one during which the situation
+    track shows the player moving with the back to the team twice in a row."""
+    from owcoach.postprocess import finalize_feedback
+
+    hero = load_hero("ana")
+    rec = _scene_rec("verified")
+    rec["window_end"] = 40.0
+    rec["situation_track"] = [{"time_seconds": t, "tank": "앞 가까이", "player_moving": "yes",
+                               "facing_allies": "no" if 20 <= t <= 26 else "yes"} for t in range(0, 40, 3)]
+    pos = dict(category="positioning", criterion_ids=["ana.positioning.cover_access"])
+    items = [_coaching_item(**pos, start_time_seconds=2.0, end_time_seconds=34.0, evidence_frame_timestamps=[10.0]),
+             _coaching_item(**pos, start_time_seconds=19.0, end_time_seconds=27.0, evidence_frame_timestamps=[22.0]),
+             _coaching_item(**pos, start_time_seconds=3.0, end_time_seconds=9.0, evidence_frame_timestamps=[5.0])]
+    by_start = {}
+    for it in items:  # one at a time: overlapping items of one category would be merged as duplicates
+        fb, _ = finalize_feedback(CoachingResponse(items=[it], action_items=[]), {"scene-01": rec}, hero, 60.0,
+                                  cfg["output"], lambda t: f"evidence/{t}.jpg", [])
+        by_start[fb[0].start_time_seconds] = fb[0]
+    assert by_start[2.0].grade == "withheld" and any("특정 순간" in r for r in by_start[2.0].display_reasons)
+    assert by_start[19.0].grade == "withheld" and any("본대를 등짐" in r for r in by_start[19.0].display_reasons)
+    assert by_start[3.0].grade == "best"

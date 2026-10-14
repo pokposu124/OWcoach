@@ -93,8 +93,22 @@ class MomentResponse(BaseModel):
     result: str = Field(description="사용 직후 결과")
 
 
+class SituationSample(BaseModel):
+    """What a coach checks every few seconds (first Ana video coach feedback: follow the tank, face the
+    team while moving, payload, enemy D.Va / Hana)."""
+    time_seconds: float
+    tank: str = Field(description="아군 탱커의 위치: '앞 멀리'(시야·치유가 닿기 어려움) / '앞 가까이' / '옆' / '뒤' / '안 보임'")
+    tank_name: str = Field(description="그 탱커의 플레이어 이름 또는 영웅. 모르면 빈 문자열")
+    player_moving: Literal["yes", "no", "unclear"] = Field(description="플레이어가 자리를 옮기는 중인지")
+    facing_allies: Literal["yes", "no", "unclear"] = Field(description="화면에 아군이 보이는 방향을 보고 있는지 (이동 중 본대를 등지면 no)")
+    payload: str = Field(description="화물: '전진' / '멈춤' / '후진' / '안 보임' / '해당 없음'")
+    enemy_dva: str = Field(description="적 D.Va: '메카' / '송하나(본체)' / '없음·안 보임' (적에 D.Va가 없으면 '해당 없음')")
+    note: str = Field(description="코칭에 쓸 만한 그 순간의 상황 한 줄 (예: 시그마가 혼자 앞으로 나감). 없으면 빈 문자열")
+
+
 class DetailResponse(BaseModel):
     observations: list[DetailObservation]
+    situation_track: list[SituationSample] = Field(description="약 3초마다 기록한 상황 (탱커 위치, 시선, 화물, 적 D.Va)")
     hud_readings: list[HudReading]
     ability_events: list[AbilityEvent] = Field(description="플레이어 본인의 스킬/궁극기 사용 (기본 사격 제외)")
     not_determinable: list[str]
@@ -115,6 +129,7 @@ class CoachingItem(BaseModel):
     criterion_ids: list[str]
     grade: Literal["excellent", "best", "blunder", "withheld"] = Field(
         description="excellent=탁월, best=최선, blunder=블런더, withheld=근거 부족으로 판단 보류")
+    matched_sign: str = Field(description="등급의 근거가 된 기준의 good_signs(탁월·최선) 또는 bad_signs(블런더) 문구를 그대로 옮김. withheld 면 빈 문자열")
     confidence: float = Field(description="0.0~1.0")
     uncertainty: str = Field(description="불확실한 점. 없으면 빈 문자열")
     uncertainty_level: Level

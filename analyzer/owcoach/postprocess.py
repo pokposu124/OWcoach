@@ -3,6 +3,8 @@ removal of unsupported assertions and duplicates. No AI calls here."""
 
 from __future__ import annotations
 
+import difflib
+
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Callable
@@ -110,6 +112,11 @@ def detail_to_original(scene: Scene, detail: DetailResponse, tolerance: float,
         t = conv(h.time_seconds)
         if t is not None:
             hud.append({**h.model_dump(), "time_seconds": t})
+    track = []
+    for x in detail.situation_track:
+        t = conv(x.time_seconds)
+        if t is not None:
+            track.append({**x.model_dump(), "time_seconds": t})
     keys = [t for t in (conv(k) for k in detail.key_moment_times) if t is not None]
     events = []
     for a in detail.ability_events:
@@ -121,6 +128,7 @@ def detail_to_original(scene: Scene, detail: DetailResponse, tolerance: float,
     return {
         **scene.to_dict(),
         "observations": obs,
+        "situation_track": track,
         "hud_readings": hud,
         "ability_events": events,
         "not_determinable": detail.not_determinable,
@@ -137,6 +145,41 @@ def _overlap_ratio(a: FeedbackItem, b: FeedbackItem) -> float:
     if shortest <= 0:  # point-like item: duplicate if it lies inside the other
         return 1.0 if inter >= 0 else 0.0
     return max(0.0, inter) / shortest
+
+
+GRADE_KO = {"excellent": "탁월", "best": "최선", "blunder": "블런더", "withheld": "보류"}
+
+
+def _norm_sign(x: str) -> str:
+    return "".join(ch for ch in x if ch.isalnum())
+
+
+def _sign_matches(said: str, signs: list[str]) -> bool:
+    """The model's quoted sign is one of `signs` (spacing / punctuation aside, or a clear part of one)."""
+    a = _norm_sign(said)
+    if len(a) < 6:
+        return False
+    for sgn in signs:
+        b = _norm_sign(sgn)
+        if a == b or (len(a) >= 12 and (a in b or b in a)):
+            return True
+        if difflib.SequenceMatcher(None, a, b).ratio() >= 0.8:
+            return True
+    return False
+
+
+def _situation_flags(track: list[dict], s: float, e: float) -> list[str]:
+    """Moments in [s, e] the coach called out (first Ana video): moving with the back to the team, tank far
+    ahead. Two samples in a row (about 6 s) are needed, so one doubtful read does not count."""
+    inside = sorted((x for x in track if s - 1 <= x["time_seconds"] <= e + 1), key=lambda x: x["time_seconds"])
+    flags = []
+    checks = [("이동 중 본대를 등짐", lambda x: x.get("player_moving") == "yes" and x.get("facing_allies") == "no"),
+              ("아군 탱커가 앞 멀리 나감", lambda x: x.get("tank") == "앞 멀리")]
+    for label, pred in checks:
+        hit = next((a for a, b in zip(inside, inside[1:]) if pred(a) and pred(b)), None)
+        if hit:
+            flags.append(f"{fmt_time(hit['time_seconds'])}경 {label}")
+    return flags
 
 
 def finalize_feedback(
@@ -240,6 +283,16 @@ def finalize_feedback(
             grade = "withheld"
             reasons.append("; ".join(f"{c.ability_id} {fmt_time(c.hud_use_time_seconds or c.time_seconds)} 사용 {c.death_after_seconds:g}초 뒤 사망: "
                                      "명중했다면 대상이 행동하지 못했어야 하므로 명중 여부 미확인, 판단 보류" for c in doubtful))
+        # a grade must rest on a sign the cited criteria actually list (good sign for best / excellent,
+        # bad sign for blunder). Without one the model graded on its own: a grenade that merely hit
+        # something came out "best" (coach, first Ana video: 1:35 / 2:51 were just thrown)
+        if out_cfg.get("require_matched_sign") and grade != "withheld":
+            kind = "bad_signs" if grade == "blunder" else "good_signs"
+            signs = [x for c in valid_criteria for x in getattr(hero.criterion(c), kind)]
+            if not _sign_matches(item.matched_sign, signs):
+                reasons.append(f"등급({GRADE_KO.get(grade, grade)})의 근거가 되는 기준 {'나쁜' if grade == 'blunder' else '좋은'} 신호를 "
+                               f"특정하지 못해 판단 보류" + (f" (모델: '{item.matched_sign[:40]}')" if item.matched_sign else ""))
+                grade = "withheld"
         # code saw the skill come back at the player (e.g. a grenade into an enemy Genji's deflect): blunder
         reflected = [c for c in checks if (c.reflect_check or {}).get("status") == "reflected"]
         if reflected:
@@ -250,6 +303,18 @@ def finalize_feedback(
             deflect = out_cfg.get("reflected_criterion")
             if deflect and hero.criterion(deflect) and deflect not in valid_criteria:
                 valid_criteria.append(deflect)
+        if item.category == "positioning" and grade in ("best", "excellent"):
+            # a good positioning grade is for a specific moment, not a whole 30 s scene summed up as
+            # "stayed behind cover and survived" (first Ana video: every scene came out best that way)
+            span_max = out_cfg.get("positioning_max_graded_seconds")
+            if span_max and e - s > span_max:
+                grade = "withheld"
+                reasons.append(f"포지셔닝 좋은 판정은 {span_max:g}초 이내의 특정 순간에만 줌 (이 피드백은 {fmt_range(s, e)} 전체)")
+            else:
+                bad = _situation_flags(scene.get("situation_track", []), s, e)
+                if bad:
+                    grade = "withheld"
+                    reasons.append("관찰 기록에 " + "; ".join(bad) + " → 좋은 판정 보류")
         if item.category in out_cfg.get("hold_categories", []):
             reasons.append(f"{CATEGORY_KO[item.category]}은(는) 코드로 확인할 수 없어 보류")
 

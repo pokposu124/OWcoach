@@ -210,6 +210,12 @@ output:
   unverifiable_criteria: [common.skill.no_skills_into_deflect]
   # 코드가 반사(자신에게 치유 차단)를 확인한 스킬 피드백은 블런더로 하고 이 기준을 근거로 붙인다
   reflected_criterion: common.skill.no_skills_into_deflect
+  # 탁월·최선·블런더는 인용한 기준의 좋은/나쁜 신호 문구(matched_sign)가 있어야 인정. 없으면 판단 보류
+  # (실측: 첫 아나 영상에서 그냥 던진 수류탄까지 '최선'. 코치는 1분 35초·2분 51초를 '그냥 던짐'·'아쉽'이라고 함)
+  require_matched_sign: true
+  # 포지셔닝 최선·탁월은 이 길이(초) 이내의 특정 순간에만. 장면 전체를 '엄폐하며 생존'으로 묶은 판정은 보류
+  # (실측: 첫 아나 영상에서 30초 장면마다 최선. 코치는 1분 28초·2분 30초·3분 7초에 각각 문제를 짚음)
+  positioning_max_graded_seconds: 15
   # 무력화 스킬(수면총 등)을 쓴 뒤 이 시간 안에 플레이어가 죽으면, 그 사용을 근거로 한 최선·탁월 판정은 보류한다
   # (명중했다면 대상이 행동하지 못함). 실측: 2분 17초 수면총을 '명중'으로 판단했으나 빗나갔고 1.5초 뒤 사망.
   disable_then_death_seconds: 3.0

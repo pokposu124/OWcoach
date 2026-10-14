@@ -89,6 +89,10 @@ class MockProvider(AnalysisProvider):
     def _detail(clip_d: float) -> dict:
         mid = round(clip_d / 2, 1)
         return {
+            "situation_track": [
+                {"time_seconds": round(mid - 1, 1), "tank": "앞 가까이", "tank_name": "", "player_moving": "no",
+                 "facing_allies": "yes", "payload": "멈춤", "enemy_dva": "해당 없음", "note": ""},
+            ],
             "observations": [
                 {"time_seconds": round(mid - 1, 1), "end_time_seconds": mid, "fact": "[모의] 적이 화면 중앙에서 접근", "visibility": "clear"},
                 {"time_seconds": mid, "end_time_seconds": None, "fact": "[모의] 엄폐물 뒤로 이동", "visibility": "partial"},
@@ -119,6 +123,10 @@ class MockProvider(AnalysisProvider):
                 "assessment": "[모의] 기준 적용 판단", "suggestion": "[모의] 다음 행동 제안",
                 "criterion_ids": ["ana.positioning.disengage_on_pressure"] if i % 2 else ["ana.skill.sleep_dart_usage"],
                 "grade": "best" if i == 0 else "blunder",
+                # quotes a sign of the cited criterion (heroes/ana.yaml), as the coaching prompt asks
+                "matched_sign": ("본인에게 달려드는 적을 재우고 이탈하거나 처치로 연결" if i == 0 else
+                                 "근접한 적이 화면에 보이고 체력이 낮은 상태에서 같은 위치에서 계속 사격" if i % 2 else
+                                 "위협이 없는 상황에서 사용 후, 직후 근접 위협이 왔을 때 쿨다운이 표시됨"),
                 "confidence": 0.8, "uncertainty": "", "uncertainty_level": "low",
                 "relies_on_outcome_only": False,
                 "evidence_frame_timestamps": [round(mid - 1, 1), mid],
