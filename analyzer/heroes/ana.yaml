@@ -58,7 +58,7 @@ observable_signals:
   - "생체 수류탄을 맞은 캐릭터: 아군이면 노란 빛과 + 표시(회복), 적이면 보라색 치유 차단 표시. 아군/적은 팀 구성의 색 기준으로"
   - "사망 시 처치 화면(킬캠) 표시 여부"
 
-# 코칭 기준. id 는 결과의 criterion_ids 로 참조된다. 모두 코치 검수 전 초안.
+# 코칭 기준. id 는 결과의 criterion_ids 로 참조된다. status: approved = 외부 코치가 직접 준 기준(사용자 승인 2026-10-14), draft = 검수 전 초안.
 criteria:
   - id: ana.positioning.cover_access
     category: positioning
@@ -108,7 +108,7 @@ criteria:
 
   - id: ana.positioning.follow_tank
     category: positioning
-    status: draft
+    status: approved
     title: "앞으로 간 탱커와 같이 이동"
     description: >
       탱커가 죽으면 돌아올 때까지 화물을 밀 수 없으므로 탱커를 계속 살려 둬야 한다. 탱커가 앞으로 나가면
@@ -126,7 +126,7 @@ criteria:
 
   - id: ana.positioning.face_team_while_moving
     category: positioning
-    status: draft
+    status: approved
     title: "이동 중에도 본대를 바라보기"
     description: >
       화물 쪽 등으로 자리를 옮길 때 본대에 등을 돌리면 그동안 치유가 끊긴다(힐 로스).

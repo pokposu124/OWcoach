@@ -50,7 +50,7 @@ criteria:
 
   - id: common.positioning.standoff_survival
     category: positioning
-    status: draft
+    status: approved
     title: "대치 우위 조합에서 죽지 않는 선 유지"
     description: >
       조합상 대치(서로 거리를 두고 싸우는) 힘싸움이 아군 쪽이 유리하면, 죽지 않는 선에서 대치만 유지해도
@@ -69,7 +69,7 @@ criteria:
 
   - id: common.positioning.punish_hana
     category: positioning
-    status: draft
+    status: approved
     title: "송하나(D.Va 본체) 처치 시도"
     description: >
       적 D.Va 메카가 터져 본체(송하나)만 남았을 때 아군이 잡지 못하고 있으면, 그 자체가 큰 기회다(상대가 탱커 없이 싸움).
@@ -88,7 +88,7 @@ criteria:
 
   - id: common.ultimate.use_when_needed
     category: ultimate_usage
-    status: draft
+    status: approved
     title: "필요할 때만 궁극기 사용"
     description: >
       궁극기는 목표(화물·거점) 상황이 요구할 때 쓴다. 화물이 아직 밀리지 않는 등 급하지 않은 상황에서,

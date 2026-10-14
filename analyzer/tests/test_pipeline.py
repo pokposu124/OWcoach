@@ -41,7 +41,8 @@ def test_hero_profile_loads_and_is_draft():
     assert "ana" in available_heroes()
     hero = load_hero("ana")
     assert hero.review_status == "draft"
-    assert all(c.status == "draft" for c in hero.criteria)
+    # only criteria a human coach gave are approved (user decision 2026-10-14); the rest stay drafts
+    assert all((c.status == "approved") == (c.source.type == "human_coach") for c in hero.criteria)
     assert {c.category for c in hero.criteria} == {"skill_usage", "positioning", "ultimate_usage"}
     # numeric facts must carry source + patch (enforced by the model)
     assert all(f.source and f.patch_version for f in hero.numeric_facts)
