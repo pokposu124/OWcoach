@@ -17,3 +17,6 @@ review/
 
 # 웹 호스팅용 결과 화면(GitHub Pages)의 축소 영상은 커밋한다
 !docs/*/media/*.mp4
+
+# ffmpeg 2-pass logs written during owcoach export
+docs/*/media/pass-*.log*
