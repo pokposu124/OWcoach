@@ -69,6 +69,17 @@ def evaluate(run_dir: Path, labels_path: Path) -> dict:
         got = (roster.get(r["slot"]) or {}).get("hero")
         check("영웅 판독", got == r["hero"], f"{r['slot']}번 칸 정답 {r['hero']} / 결과 {got or '없음'}")
 
+    # hero swaps (code: team-list portraits over time)
+    swaps = (result.team or {}).get("hero_swaps", [])
+    for w in facts.get("hero_swaps", []):
+        got = next((x for x in swaps if x["slot"] == w["slot"] and x["to_hero"] == w["to_hero"]), None)
+        check("영웅 교체", bool(got) and _near(got["time_seconds"], w["time_seconds"], 10.0),
+              f"{w['slot']}번 칸 {w['from_hero']}→{w['to_hero']} 정답 약 {fmt_time(w['time_seconds'])} / 결과 "
+              + (fmt_time(got["time_seconds"]) if got else "감지 없음"))
+    for x in swaps:
+        if not any(x["slot"] == w["slot"] and x["to_hero"] == w["to_hero"] for w in facts.get("hero_swaps", [])):
+            check("영웅 교체 오탐", False, f"{x['slot']}번 칸 {x['from_hero']}→{x['to_hero']} {fmt_time(x['time_seconds'])} (정답에 없음)")
+
     # events the model invented before: no feedback near them should state them as fact
     # (a withheld grade with the claim only in the uncertainty does not count)
     for n in facts.get("not_happened", []):
@@ -135,8 +146,14 @@ def evaluate(run_dir: Path, labels_path: Path) -> dict:
         t = j["time_seconds"]
         hits = [f for f in result.feedback if f.category == j["category"] and f.start_time_seconds - 1 <= t <= f.end_time_seconds + 1]
         grades = [f.grade for f in hits]
-        check("사용자 판정 일치", j["grade"] in grades,
-              f"{fmt_time(t)} {j['category']} 정답 {j['grade']} / 결과 {', '.join(grades) or '피드백 없음'} — {j.get('note', '')}")
+        if "not_grade" in j:
+            # the coach said it could have been better: no feedback there may call it best / excellent
+            # (no feedback at all is a miss as well: the play the coach pointed at was not reviewed)
+            check("사용자 판정 일치", bool(grades) and not set(grades) & set(j["not_grade"]),
+                  f"{fmt_time(t)} {j['category']} 정답 {'/'.join(j['not_grade'])} 아님 / 결과 {', '.join(grades) or '피드백 없음'} — {j.get('note', '')}")
+        else:
+            check("사용자 판정 일치", j["grade"] in grades,
+                  f"{fmt_time(t)} {j['category']} 정답 {j['grade']} / 결과 {', '.join(grades) or '피드백 없음'} — {j.get('note', '')}")
 
     judged = [c for c in out["checks"] if c["ok"] is not None]
     n_ok = sum(c["ok"] is True for c in judged)

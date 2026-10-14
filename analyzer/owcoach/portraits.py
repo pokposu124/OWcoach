@@ -99,3 +99,63 @@ def identify(video: Path, times: list[float], cfg: dict, refs: list[tuple[str, I
             "runner_up": refs[order[1]][0], "margin": round(margin, 3), "confidence": conf,
         })
     return out
+
+
+def _labels(frame: np.ndarray, slots: dict, refs: list[tuple[str, Image.Image]], scales: list[float]) -> list[str | None]:
+    """Hero per slot in one frame, None where the match is not clear (dead / greyed portrait, effects)."""
+    th = slots["thresholds"]
+    out: list[str | None] = []
+    for row in slot_scores(frame, slots, refs, scales):
+        order = np.argsort(row)[::-1]
+        best, margin = float(row[order[0]]), float(row[order[0]] - row[order[1]])
+        out.append(refs[order[0]][0] if best >= th["min_score"] and margin >= th["min_margin"] else None)
+    return out
+
+
+def roster_timeline(video: Path, duration: float, cfg: dict, refs: list[tuple[str, Image.Image]]) -> dict:
+    """Hero changes per team-list slot over the whole video.
+
+    Frames every `timeline.step_seconds`; a hero counts for a slot only when `timeline.min_run`
+    consecutive frames agree (single-frame misreads were seen: a dead player's greyed portrait, effects).
+    Each swap time is then narrowed down between the two reads with frames every `timeline.refine_seconds`.
+    Returns {"segments": {slot: [{hero, start_seconds, end_seconds}]}, "swaps": [{slot, from_hero, to_hero, time_seconds}]}.
+    """
+    slots, tl = cfg["portrait_slots"], cfg["portrait_slots"]["timeline"]
+    scales = list(np.round(np.arange(slots["scale_min"], slots["scale_max"] + 1e-9, slots["scale_step"]), 3))
+    size = tuple(cfg["reference_resolution"])
+    xs = slots["left_x"] + slots["right_x"]
+    step = float(tl["step_seconds"])
+    times = list(np.round(np.arange(step / 2, duration, step), 2))
+    reads = [_labels(read_frame(video, t, size), slots, refs, scales) for t in times]
+    segments: dict[int, list[dict]] = {}
+    swaps: list[dict] = []
+    for i in range(len(xs)):
+        seq = [(t, r[i]) for t, r in zip(times, reads)]
+        runs: list[dict] = []
+        j = 0
+        while j < len(seq):
+            k = j
+            while k + 1 < len(seq) and seq[k + 1][1] == seq[j][1]:
+                k += 1
+            if seq[j][1] and k - j + 1 >= tl["min_run"]:
+                if runs and runs[-1]["hero"] == seq[j][1]:
+                    runs[-1]["end_seconds"] = float(seq[k][0])
+                else:
+                    runs.append({"hero": seq[j][1], "start_seconds": float(seq[j][0]), "end_seconds": float(seq[k][0])})
+            j = k + 1
+        one = {"left_x": [xs[i]], "right_x": [], **{k: v for k, v in slots.items() if k not in ("left_x", "right_x")}}
+        for a, b in zip(runs, runs[1:]):
+            # first frame between the two reads that already shows the new hero
+            t_swap = b["start_seconds"]
+            for t in np.arange(a["end_seconds"] + tl["refine_seconds"], b["start_seconds"], tl["refine_seconds"]):
+                if _labels(read_frame(video, float(t), size), one, refs, scales)[0] == b["hero"]:
+                    t_swap = float(t)
+                    break
+            b["start_seconds"] = round(t_swap, 2)
+            swaps.append({"slot": i + 1, "from_hero": a["hero"], "to_hero": b["hero"], "time_seconds": round(t_swap, 2)})
+        if runs:
+            runs[0]["start_seconds"] = 0.0
+            runs[-1]["end_seconds"] = round(duration, 2)
+        segments[i + 1] = runs
+    return {"segments": segments, "swaps": sorted(swaps, key=lambda w: w["time_seconds"])}
+

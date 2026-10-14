@@ -106,6 +106,12 @@ def available_heroes(heroes_dir: Path = HEROES_DIR) -> list[str]:
     return sorted(p.stem for p in heroes_dir.glob("*.yaml") if p.name != COMMON_FILE)
 
 
+def load_comp_notes(heroes_dir: Path = HEROES_DIR) -> list[dict]:
+    """Coach notes on team compositions (heroes/common.yaml comp_notes): which comp wins how."""
+    path = heroes_dir / COMMON_FILE
+    return list(load_yaml(path).get("comp_notes") or []) if path.exists() else []
+
+
 def load_hero(hero_id: str, heroes_dir: Path = HEROES_DIR) -> HeroProfile:
     path = heroes_dir / f"{hero_id}.yaml"
     if not path.exists():

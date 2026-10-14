@@ -40,8 +40,8 @@ from .hud import (
     use_times,
 )
 from .timefmt import fmt_time
-from .heroes import HeroProfile
-from .portraits import identify, load_portraits
+from .heroes import HeroProfile, load_comp_notes
+from .portraits import roster_timeline, identify, load_portraits
 from .media import (
     InputRejected,
     cut_clip,
@@ -137,7 +137,7 @@ def team_color_text(color: dict | None) -> str:
             "\"빨강=적\" 관례로 판단하지 마세요.")
 
 
-def team_context_text(team: dict | None, color: dict | None = None) -> str:
+def team_context_text(team: dict | None, color: dict | None = None, comp_notes: list[dict] | None = None) -> str:
     """Team / roster facts (team stage + portrait matching + code-measured ally color), handed to the
     overview, detail and moment prompts."""
     color_line = team_color_text(color)
@@ -157,8 +157,40 @@ def team_context_text(team: dict | None, color: dict | None = None) -> str:
     for r in team["roster"]:
         hero = r.get("hero") or "불명"
         note = f"초상화 대조 {r['hero_confidence']}" if r.get("hero_confidence") else "영웅 판독 안 함"
+        hist = r.get("hero_history") or []
+        if len(hist) > 1:
+            note += "; " + " → ".join(f"{h['hero']}({fmt_time(h['start_seconds'])}~)" for h in hist)
         lines.append(f"- {r['player_name']}: {team_ko[r['team']]}, 영웅 {hero} ({note})")
+    for w in team.get("hero_swaps", []):
+        side = team_ko[next((r["team"] for r in team["roster"] if r["slot"] == w["slot"]), "unknown")]
+        lines.append(f"- 영웅 교체 (코드 확인): {fmt_time(w['time_seconds'])}경 {side} {w['player_name']} {w['from_hero']} → {w['to_hero']}. "
+                     "조합이 바뀌면 그 뒤 장면은 바뀐 조합 기준으로 판단하세요.")
+    lines += comp_note_lines(team, comp_notes or [])
     return "\n".join(lines)
+
+
+def _comp_at(team: dict, side: str, t: float) -> list[str]:
+    out = []
+    for r in team["roster"]:
+        if r["team"] != side:
+            continue
+        seg = next((h for h in r.get("hero_history") or [] if h["start_seconds"] <= t <= h["end_seconds"]), None)
+        out.append(seg["hero"] if seg else (r.get("hero") or "불명"))
+    return out
+
+
+def comp_note_lines(team: dict, notes: list[dict]) -> list[str]:
+    """Coach notes on team compositions (heroes/common.yaml comp_notes) that apply to this video: our team
+    shares at least `min_match` heroes with the note's team (and the enemy with its versus, if given)."""
+    times = sorted({0.0, *(w["time_seconds"] for w in team.get("hero_swaps", []))})
+    lines = []
+    for n in notes:
+        k = n.get("min_match", 4)
+        hit = [t for t in times if len(set(_comp_at(team, "ally", t)) & set(n["team"])) >= k
+               and (not n.get("versus") or len(set(_comp_at(team, "enemy", t)) & set(n["versus"])) >= k)]
+        if hit:
+            lines.append(f"- 코치 조합 메모 ({fmt_time(hit[0])}부터 해당하는 조합): {n['note'].strip()}")
+    return lines
 
 
 class RunStore:
@@ -348,6 +380,21 @@ class Pipeline:
                 if m:
                     r.update(hero=m["hero"], hero_confidence=m["confidence"], hero_match=m)
             record["portraits"] = {"source": refs["source"], "sheet": refs["sheet"]}
+            if "timeline" in tcfg["portrait_slots"]:
+                tl = roster_timeline(video, duration, tcfg, refs["heroes"])
+                names = {r["slot"]: r["player_name"] for r in record["roster"]}
+                for r in record["roster"]:
+                    segs = tl["segments"].get(r["slot"]) or []
+                    if segs:
+                        r["hero_history"] = segs
+                        if r.get("hero") != segs[-1]["hero"]:
+                            # the hero playing at the end of the video (a swapped slot, or a portrait the
+                            # 6-frame match left unknown but consecutive reads agree on)
+                            r.update(hero=segs[-1]["hero"], hero_confidence="timeline")
+                record["hero_swaps"] = [{**w, "player_name": names.get(w["slot"], "")} for w in tl["swaps"]]
+                if record["hero_swaps"]:
+                    self.log("  영웅 교체: " + ", ".join(f"{fmt_time(w['time_seconds'])} {w['player_name']} {w['from_hero']}→{w['to_hero']}"
+                                                       for w in record["hero_swaps"]))
             low = [f"{r['player_name']}" for r in record["roster"] if r.get("hero_confidence") == "low"]
             if low:
                 self.warnings.append("초상화 대조로 영웅을 확정하지 못함(불명 처리): " + ", ".join(low))
@@ -601,7 +648,7 @@ class Pipeline:
         self._team_color = player_team_color(video, duration, tcfg["player_portrait"]) if "player_portrait" in tcfg else None
         if self._team_color:
             self.log(f"  아군 색(내 초상화 테두리): {self._team_color.get('ally_color') or '판별 못 함'} — {self._team_color['note']}")
-        team_context = team_context_text(team_record, self._team_color)
+        team_context = team_context_text(team_record, self._team_color, load_comp_notes())
         self.timings["team"] = round(time.monotonic() - t, 3)
 
         # 2b. overview ------------------------------------------------------------------
@@ -735,13 +782,14 @@ class Pipeline:
         t = time.monotonic()
         cp = self.prompts["coaching"]
         out = cfg["output"]
-        coaching_fp = fingerprint(ai_fp_base, detail_fps, scene_records, cfg["coaching"], out["max_feedback_items"],
+        coaching_fp = fingerprint(ai_fp_base, detail_fps, scene_records, team_context, cfg["coaching"], out["max_feedback_items"],
                                   out["max_action_items"], cp.version, hero.criteria_for_prompt())
         if scene_records:
             prompt = cp.render(
                 hero_name_ko=hero.display_name_ko,
                 criteria=json.dumps(hero.criteria_for_prompt(), ensure_ascii=False, indent=1),
                 observations=json.dumps(list(scene_records.values()), ensure_ascii=False, indent=1),
+                team_context=team_context,
                 max_feedback_items=out["max_feedback_items"], max_action_items=out["max_action_items"],
             )
 

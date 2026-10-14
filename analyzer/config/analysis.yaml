@@ -52,6 +52,12 @@ team:
     scale_min: 0.30                # 참고 초상화 축소 배율 탐색 범위 (실측 최적 0.34~0.36)
     scale_max: 0.40
     scale_step: 0.02
+    # 영웅 교체 추적: step 간격 프레임마다 판독, min_run 장 연속 같을 때만 인정(사망·이펙트로 한 장씩 오판독 실측).
+    # 교체 시각은 두 판독 사이를 refine 간격으로 다시 봐서 좁힌다. (첫 아나 영상: 1분 21초경 위도우→파라, 2분 31초경 위버→모이라)
+    timeline:
+      step_seconds: 8.0
+      min_run: 2
+      refine_seconds: 2.0
     thresholds:                    # 실측: 정답 0.77~0.93, 2위 0.46~0.68
       high_score: 0.75
       high_margin: 0.15

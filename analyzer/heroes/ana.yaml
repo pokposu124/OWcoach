@@ -10,7 +10,7 @@ hero_id: ana
 display_name_ko: 아나
 display_name_en: Ana
 role: support
-profile_version: "0.4.0-draft"
+profile_version: "0.5.0-draft"
 review_status: draft
 # 이 기준이 검증된 게임 패치 버전. 아직 어떤 패치로도 검증되지 않았음.
 patch_version: unverified
@@ -106,6 +106,42 @@ criteria:
       - "순간 폭딜(한 프레임 내 사망)처럼 대응할 시간이 화면상 없었음"
     source: {type: coach_draft, reference: null, patch_version: unverified}
 
+  - id: ana.positioning.follow_tank
+    category: positioning
+    status: draft
+    title: "앞으로 간 탱커와 같이 이동"
+    description: >
+      탱커가 죽으면 돌아올 때까지 화물을 밀 수 없으므로 탱커를 계속 살려 둬야 한다. 탱커가 앞으로 나가면
+      아나도 같이 앞으로 가서 시야·치유 사거리 안에 둬야 살릴 수 있다.
+    good_signs:
+      - "탱커가 전진하자 엄폐를 끼고 함께 전진해 계속 치유"
+    bad_signs:
+      - "탱커가 앞으로 나갔는데 뒤에 남아 시야가 끊기고, 탱커가 치유를 못 받음"
+    cannot_judge_when:
+      - "아군 탱커의 위치가 화면에서 확인되지 않음"
+    source:
+      type: human_coach
+      reference: "외부 코치 피드백 2026-10-14, 첫 번째 아나 영상 1:28 (시그마)"
+      patch_version: unverified
+
+  - id: ana.positioning.face_team_while_moving
+    category: positioning
+    status: draft
+    title: "이동 중에도 본대를 바라보기"
+    description: >
+      화물 쪽 등으로 자리를 옮길 때 본대에 등을 돌리면 그동안 치유가 끊긴다(힐 로스).
+      본대를 바라본 채로(뒷걸음·옆걸음) 이동해 치유를 이어간다.
+    good_signs:
+      - "이동하면서도 화면에 아군이 보이고 계속 치유 사격"
+    bad_signs:
+      - "이동하는 동안 화면에 아군이 없고 사격이 끊김(본대를 등짐)"
+    cannot_judge_when:
+      - "이동 중 화면이 크게 흔들리거나 아군 위치를 알 수 없음"
+    source:
+      type: human_coach
+      reference: "외부 코치 피드백 2026-10-14, 첫 번째 아나 영상 3:07"
+      patch_version: unverified
+
   - id: ana.skill.sleep_dart_usage
     category: skill_usage
     ability: sleep_dart                 # 이 기준의 HUD 대조 대상 스킬
@@ -118,6 +154,7 @@ criteria:
       빗나간 것으로 본다 (사용자 확인: 두 번째 아나 영상 2분 17초, 용검 겐지에게 빗나간 뒤 사망).
     good_signs:
       - "본인에게 달려드는 적을 재우고 이탈하거나 처치로 연결"
+      - "진입한 적 탱커(D.Va 등)를 재우고 생체 수류탄과 연계해 터뜨림 (코치: 첫 영상 1분 35초)"
     bad_signs:
       - "위협이 없는 상황에서 사용 후, 직후 근접 위협이 왔을 때 쿨다운이 표시됨"
     cannot_judge_when:
@@ -136,8 +173,11 @@ criteria:
     good_signs:
       - "여러 아군이 체력이 낮을 때 아군 밀집 지점에 사용"
       - "본인이 압박받을 때 발밑에 사용해 생존"
+      - "노림수: 벽 뒤에 숨어 있다가 적 탱커(D.Va 등)가 들어오면 수면총 + 생체 수류탄으로 탱커를 터뜨림. 상대도 탱커 없이 싸우게 되어 화물을 더 밀 수 있음 (코치: 첫 영상 1분 35초)"
+      - "아군이 송하나(D.Va 본체)를 못 잡을 때 쿨다운이 돌아온 수류탄을 들고 들어가 약간 무리해서라도 처치 (코치: 첫 영상 2분 4초)"
     bad_signs:
       - "아군/적이 화면에 거의 없는 곳에 사용"
+      - "노림수 없이 대치 중에 그냥 던져, 정작 적 탱커가 진입할 때 쿨다운 (코치: 첫 영상 1분 35초 '그냥 던지기보다', 2분 51초 '아쉽')"
       - "본인 체력이 낮거나 근접한 적에게 압박받는 중(직후 사망 위험)인데 발밑이 아닌 적·전방에 던짐. 이때는 자기 생존이 우선이므로 발밑에 써야 함 (사용자 코칭: 두 번째 아나 영상 1분 7초, 체력 131에서 전방에 던지고 4초 뒤 사망 → 최선 아님)"
     cannot_judge_when:
       - "수류탄 착탄 지점이 화면에서 보이지 않음"
@@ -157,6 +197,7 @@ criteria:
     bad_signs:
       - "게이지 100% 상태로 사망(화면에서 확인될 때만)"
       - "이미 쓰러지기 직전인 아군에게 늦게 사용해 효과가 끊김(대상 판별 interrupted). 더 일찍 주거나, 늦었다면 그 아군은 포기하고 다른 아군에게 주거나 아껴야 함 (사용자 코칭: 4분 10초 솔저 76 나노는 블런더)"
+      - "화물이 아직 밀리지 않는 등 급하지 않은데, 혼자 무리하게 들어간 아군에게 사용 (코치: 첫 영상 4분 8초, '굳이 궁 쓸 필요 없음. 솔저가 무리한 것')"
     cannot_judge_when:
       - "궁극기 게이지 수치가 판독되지 않음"
     source: {type: coach_draft, reference: "초안 + 사용자 코칭(2026-10-13, 늦은 나노)", patch_version: unverified}

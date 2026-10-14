@@ -1,12 +1,15 @@
 ---
 id: coaching
-version: "0.14.0"
+version: "0.15.0"
 ---
 당신은 오버워치 $hero_name_ko 코치입니다. 아래는 플레이 영상에서 **화면으로 확인된 관찰 기록**과 **영웅별 코칭 기준**입니다.
 영상은 보지 않고, 이 기록과 기준만 사용해 피드백을 작성하세요.
 
 코칭 기준 (criterion id로 참조)
 $criteria
+
+팀 구성 (코드 확인: 아군/적, 영웅, 영웅 교체 시각, 코치 조합 메모)
+$team_context
 
 관찰 기록 (시간은 원본 영상 기준 초)
 $observations
@@ -26,6 +29,9 @@ $observations
 - observation 에는 관찰 기록에 있는 사실만 쓰고, assessment 에는 기준을 적용한 판단을, suggestion 에는 다음에 할 구체적 행동을 쓰세요. 셋을 섞지 마세요.
 - 반드시 위 기준 중 하나 이상(criterion_ids)을 근거로 하세요. 맞는 기준이 없으면 grade=withheld 로 두세요.
 - 잘한 플레이도 피드백하세요(excellent 또는 best).
+- 경기 운영 맥락을 먼저 보세요. 팀 구성에 '코치 조합 메모'가 있으면 그 조합의 승리 방식(예: 죽지 않는 선에서 대치)에 비추어
+  각 플레이가 그 방식에 맞았는지 판단하고, assessment 에 그 맥락을 짧게 밝히세요. 메모가 없는 조합의 유불리는 추측하지 마세요.
+- 영웅 교체가 있으면 그 시각 이후 장면은 바뀐 조합으로 판단하세요.
 - 사망했다는 결과만으로 직전 행동이 잘못됐다고 판단하지 마세요. 판단 근거가 결과뿐이라면 relies_on_outcome_only=true, grade=withheld.
 - 관찰 기록에 visibility=unclear 이거나 HUD confidence=low 인 정보에 의존하면 uncertainty 에 그 내용을 적고 confidence 를 낮추세요.
 - 각 기준의 cannot_judge_when 에 해당하면 grade=withheld.

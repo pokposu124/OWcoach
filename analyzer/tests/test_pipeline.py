@@ -877,3 +877,59 @@ def test_ally_color_from_player_portrait_border(tmp_path, cfg):
                                     "enemy_color": "빨강", "evidence": "e"}, "roster": []}
     text = team_context_text(team, color)
     assert "아군 색 빨강" in text and "\"빨강=적\" 관례" in text
+
+
+def test_comp_notes_and_hero_swaps_in_team_context():
+    """A coach comp note applies once our team (and the enemy, for a versus note) matches 4 of 5 heroes,
+    using the heroes in play after swaps; swaps are listed with their time."""
+    from owcoach.pipeline import team_context_text
+
+    def r(slot, team, name, hist):
+        return {"slot": slot, "team": team, "player_name": name, "hero": hist[-1][0], "hero_confidence": "high",
+                "hero_history": [{"hero": h, "start_seconds": a, "end_seconds": b} for h, a, b in hist]}
+
+    allies = [r(6, "ally", "A", [("아나", 0, 300)]), r(7, "ally", "B", [("시그마", 0, 300)]),
+              r(8, "ally", "C", [("위도우메이커", 0, 80), ("파라", 81, 300)]), r(9, "ally", "D", [("솔저: 76", 0, 300)]),
+              r(10, "ally", "E", [("독트린", 0, 300)])]
+    enemies = [r(1, "enemy", "F", [("D.Va", 0, 300)]), r(2, "enemy", "G", [("주노", 0, 300)]),
+               r(3, "enemy", "H", [("라이프위버", 0, 300)]), r(4, "enemy", "I", [("소전", 0, 300)]),
+               r(5, "enemy", "J", [("시에라", 0, 300)])]
+    team = {"team_identification": {"player_name": "A", "ally_side": "right", "ally_color": "빨강",
+                                    "enemy_color": "파랑", "evidence": "e"},
+            "roster": enemies + allies,
+            "hero_swaps": [{"slot": 8, "from_hero": "위도우메이커", "to_hero": "파라", "time_seconds": 81.0, "player_name": "C"}]}
+    notes = [{"team": ["시그마", "위도우메이커", "솔저: 76", "독트린", "아나"], "note": "대치 조합"},
+             {"team": ["시그마", "위도우메이커", "솔저: 76", "독트린", "아나"], "versus": ["겐지", "트레이서", "a", "b", "c"],
+              "note": "다른 상대"}]
+    text = team_context_text(team, None, notes)
+    assert "영웅 교체 (코드 확인): 1분 21초경 아군 C 위도우메이커 → 파라" in text
+    assert "코치 조합 메모 (0초부터 해당하는 조합): 대치 조합" in text and "다른 상대" not in text
+    assert "위도우메이커(0초~) → 파라(1분 21초~)" in text
+
+
+def test_roster_timeline_finds_a_swap(tmp_path, cfg):
+    """Slot 1 shows one reference portrait for 0-20 s and another from 20 s: one swap near 20 s;
+    a single odd frame does not count."""
+    from PIL import Image
+    from owcoach.portraits import load_portraits, roster_timeline
+
+    refs = load_portraits(cfg["team"]["portraits"])["heroes"][:3]
+    ps = cfg["team"]["portrait_slots"]
+    x, y, w, h = ps["left_x"][0], ps["y"], ps["w"], ps["h"]
+    s = 0.35
+    crops = []
+    for name, img in refs[:2]:
+        t = img.resize((int(img.width * s), int(img.height * s)))
+        crops.append(t.crop((0, 0, w, h)))
+    for i, c in enumerate(crops):
+        c.save(tmp_path / f"p{i}.png")
+    video = tmp_path / "swap.mp4"
+    subprocess.run(["ffmpeg", "-y", "-v", "error", "-f", "lavfi", "-i", "color=c=0x202020:size=1280x720:rate=10",
+                    "-i", str(tmp_path / "p0.png"), "-i", str(tmp_path / "p1.png"), "-filter_complex",
+                    f"[0][1]overlay={x}:{y}:enable='lt(t,20)'[a];[a][2]overlay={x}:{y}:enable='gte(t,20)'",
+                    "-t", "40", "-pix_fmt", "yuv444p", str(video)], check=True)
+    tcfg = {**cfg["team"], "portrait_slots": {**ps, "left_x": [x], "right_x": [],
+                                              "timeline": {"step_seconds": 4.0, "min_run": 2, "refine_seconds": 1.0}}}
+    tl = roster_timeline(video, 40.0, tcfg, refs)
+    assert [(w["from_hero"], w["to_hero"]) for w in tl["swaps"]] == [(refs[0][0], refs[1][0])]
+    assert abs(tl["swaps"][0]["time_seconds"] - 20.0) <= 1.5
