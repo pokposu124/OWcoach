@@ -43,6 +43,11 @@ video{width:100%;aspect-ratio:16/9;background:#000;border-radius:10px;display:bl
 .reasons{margin:0;font-size:.8rem;color:var(--warn)}
 dl{display:grid;grid-template-columns:3em minmax(0,1fr);gap:3px 10px;margin:0} dt{color:var(--muted);font-size:.82rem;padding-top:1px} dd{margin:0}
 ul.hud{list-style:none;margin:0;padding:0;display:grid;gap:3px;font-size:.84rem}
+.kf{margin:6px 0 0;font-size:.84rem}.kf b{font-weight:600;color:var(--muted);margin-right:6px}
+.kf ul{list-style:none;margin:2px 0 0;padding:0;display:grid;gap:2px}
+.kf li{display:flex;flex-wrap:wrap;gap:4px;align-items:baseline}
+.kf .t{font-family:var(--mono);font-size:.78rem;background:none;border:0;color:var(--accent);cursor:pointer;padding:0;min-width:3.6em;text-align:left}
+.kf .ally{color:var(--best)}.kf .enemy{color:var(--blunder)}.kf .unknown{color:var(--muted)}.kf .me{font-weight:700}
 .h-verified{color:var(--best)} .h-contradicted{color:var(--blunder)} .h-unverifiable,.h-not_checked{color:var(--hold)}
 .frames{display:flex;gap:6px;overflow-x:auto}
 .thumb{border:none;padding:0;background:none;cursor:pointer;flex:0 0 auto;text-align:left;color:var(--muted);font:.72rem var(--mono)}
@@ -66,19 +71,20 @@ table{border-collapse:collapse;font-size:.8rem} td,th{border:1px solid var(--lin
   <p class=notice>코칭 기준이 코치 검수 전 초안입니다. 등급과 판단은 참고용입니다.</p><div class=teams><section class=ally><h2>아군</h2><ul><li><b>아나 (나)</b><span>BERNAR</span></li><li><b>독트린</b><span>MMG</span></li><li><b>파라</b><span>목포산아이</span></li><li><b>솔저: 76</b><span>결식아동</span></li><li><b>시그마</b><span>인도양쭈꾸미</span></li></ul></section><section class=enemy><h2>적</h2><ul><li><b>주노</b><span>서팔광</span></li><li><b>모이라</b><span>블켄</span></li><li><b>D.Va</b><span>따까리</span></li><li><b>소전</b><span>HWIWHA</span></li><li><b>시에라</b><span>전도리</span></li></ul></section></div>
 </section>
 <section class=feed aria-label="피드백">
-  <p class=summary><span>스킬 사용 <b>17</b></span><span>포지셔닝 <b>9</b></span><span>궁극기 사용 <b>2</b></span><span>최선 <b>8</b></span><span>블런더 <b>1</b></span><span>판단 보류 <b>19</b></span><span>사망 <b>0</b></span></p>
+  <p class=summary><span>스킬 사용 <b>17</b></span><span>포지셔닝 <b>9</b></span><span>궁극기 사용 <b>2</b></span><span>최선 <b>13</b></span><span>블런더 <b>1</b></span><span>판단 보류 <b>14</b></span><span>사망 <b>0</b></span></p>
   
-<article class=card id="fb-1" data-start="30.5" data-end="57.5">
-  <header><button class=num type=button data-seek="30.5" aria-label="1번 피드백 30초로 이동">1</button>
-    <span class=time>30초 ~ 58초</span>
-    <span class="chip cat">포지셔닝</span>
+<article class=card id="fb-1" data-start="38.0" data-end="41.0">
+  <header><button class=num type=button data-seek="38.0" aria-label="1번 피드백 38초로 이동">1</button>
+    <span class=time>38초 ~ 41초</span>
+    <span class="chip cat">스킬 사용</span>
     <span class="chip g-withheld">판단 보류</span><span class="chip mode m-tentative">참고·보류</span></header>
-  <p class=reasons>코치 검수되지 않은 기준 · 포지셔닝 좋은 판정은 15초 이내의 특정 순간에만 줌 (이 피드백은 30초 ~ 58초 전체) · 포지셔닝은(는) 코드로 확인할 수 없어 보류</p>
-  <dl><dt>관찰</dt><dd>30초~57초 대치 동안 아군 시그마 뒤편 및 건물 모서리 엄폐물을 끼고 사거리를 유지하며 교전에 참여했습니다.</dd><dt>판단</dt><dd>아군 조합이 대치 힘싸움에서 월등히 유리한 경기 맥락에 맞추어, 무리하지 않고 엄폐물을 활용하며 생존 위주로 안정적인 사선을 확보했습니다.</dd><dt>제안</dt><dd>대치 우위 조합일 때는 계속해서 엄폐물을 끼고 사거리 이점을 활용해 자리를 지켜주세요.</dd>
-  </dl>
-  <ul class=hud><li class=muted>모델 관찰 · 위치·엄폐는 코드로 확인하지 않음</li></ul>
-  <div class=frames><button class=thumb data-seek="30.5" type=button><img src="evidence/frame_000030500ms.jpg" loading="lazy" alt="30초 화면">30초</button><button class=thumb data-seek="42.5" type=button><img src="evidence/frame_000042500ms.jpg" loading="lazy" alt="42초 화면">42초</button><button class=thumb data-seek="55.0" type=button><img src="evidence/frame_000055000ms.jpg" loading="lazy" alt="55초 화면">55초</button><button class=thumb data-seek="57.5" type=button><img src="evidence/frame_000057500ms.jpg" loading="lazy" alt="58초 화면">58초</button></div>
-  <details><summary>코치 검수 · 적용 기준 common.positioning.standoff_survival, ana.positioning.cover_access (draft)</summary>
+  <p class=reasons>근거 부족으로 판단 보류</p>
+  <dl><dt>관찰</dt><dd>39초에 정면 교전 구역으로 생체 수류탄을 던져 적 D.Va(따까리)에게 치유 차단을 적용했습니다.</dd><dt>판단</dt><dd>단일 적에게 치유 차단을 걸었으나 직후 연계 처치로 이어지지는 않았습니다.</dd><dt>제안</dt><dd>생체 수류탄은 적 여럿이 모여 있거나 아군의 집중 사격이 가능할 때 투척하여 처치 효율을 높이세요.</dd>
+  <dt>불확실</dt><dd>연계 처치가 확인되지 않음</dd></dl>
+  <ul class=hud><li class='h-verified'>HUD 확인 · 생체 수류탄 40초 → 치유 차단 적 1명: 따까리(D.Va)(코드 확인)</li></ul>
+  <div class=kf><b>킬피드</b><span class=unknown>이 시간대 처치 없음</span></div>
+  <div class=frames><button class=thumb data-seek="39.5" type=button><img src="evidence/frame_000039500ms.jpg" loading="lazy" alt="40초 화면">40초</button></div>
+  <details><summary>코치 검수 · 적용 기준 ana.skill.biotic_grenade_usage (approved)</summary>
   <fieldset class=review data-id="fb-01">
     <label>관찰 사실 <select name=fact><option value="">-</option><option>정확</option><option>일부 틀림</option><option>틀림</option><option>확인 불가</option></select></label>
     <label>판단 <select name=assessment><option value="">-</option><option>동의</option><option>부분 동의</option><option>반대</option></select></label>
@@ -88,17 +94,18 @@ table{border-collapse:collapse;font-size:.8rem} td,th{border:1px solid var(--lin
     <textarea name=comment placeholder="코멘트 (오인식, 놓친 맥락, 기준 수정안 등)"></textarea>
   </fieldset></details>
 </article>
-<article class=card id="fb-2" data-start="38.75" data-end="40.0">
-  <header><button class=num type=button data-seek="38.75" aria-label="2번 피드백 39초로 이동">2</button>
-    <span class=time>39초 ~ 40초</span>
+<article class=card id="fb-2" data-start="51.5" data-end="55.0">
+  <header><button class=num type=button data-seek="51.5" aria-label="2번 피드백 52초로 이동">2</button>
+    <span class=time>52초 ~ 55초</span>
     <span class="chip cat">스킬 사용</span>
-    <span class="chip g-withheld">판단 보류</span><span class="chip mode m-tentative">참고·보류</span></header>
-  <p class=reasons>근거 부족으로 판단 보류</p>
-  <dl><dt>관찰</dt><dd>39초경 정면 대치 구역으로 생체 수류탄을 투척하여 적 D.Va(따까리) 1명에게 치유 차단을 적용했습니다.</dd><dt>판단</dt><dd>대치 상황에서 적 D.Va에게 치유 차단을 걸었으나 직후 처치 관여로 이어지지 않은 일반적인 스킬 투척입니다.</dd><dt>제안</dt><dd>생체 수류탄은 단순히 던지기보다 아군과 화력을 집중할 수 있는 타이밍이나 확실한 노림수가 있을 때 연계하여 사용하는 것이 좋습니다.</dd>
+    <span class="chip g-best">최선</span><span class="chip mode m-assertive">단정</span></header>
+  
+  <dl><dt>관찰</dt><dd>52초에 접근하는 적 D.Va(따까리)를 향해 수면총을 발사하여 재웠습니다.</dd><dt>판단</dt><dd>나에게 접근하며 위협을 가하는 적 탱커를 수면총으로 정확히 무력화하여 생존 근거를 마련한 좋은 스킬 사용입니다.</dd><dt>제안</dt><dd>적 돌진 영웅이 파고들 때 지금처럼 수면총으로 대응한 후 안전하게 위치를 이동하세요.</dd>
   </dl>
-  <ul class=hud><li class='h-verified'>HUD 확인 · 생체 수류탄 40초 → 치유 차단 적 1명: 따까리(D.Va)(코드 확인)</li></ul>
-  <div class=frames><button class=thumb data-seek="38.75" type=button><img src="evidence/frame_000038750ms.jpg" loading="lazy" alt="39초 화면">39초</button><button class=thumb data-seek="39.5" type=button><img src="evidence/frame_000039500ms.jpg" loading="lazy" alt="40초 화면">40초</button></div>
-  <details><summary>코치 검수 · 적용 기준 ana.skill.biotic_grenade_usage (approved)</summary>
+  <ul class=hud><li class='h-verified'>HUD 확인 · 수면총 52초 → 대상 따까리(D.Va)</li></ul>
+  <div class=kf><b>킬피드</b><ul><li><button class=t type=button data-seek='54.5'>54초</button><span class='ally' title='아군'>결식아동(솔저: 76)</span> &gt; <span class='enemy' title='적'>따까리(D.Va)</span></li><li><button class=t type=button data-seek='54.5'>54초</button><span class='ally' title='아군'>인도양쭈꾸미(시그마)</span> &gt; <span class='enemy' title='적'>따까리(D.Va)</span></li><li><button class=t type=button data-seek='58.0'>58초</button><span class='ally' title='아군'>결식아동(솔저: 76)</span> &gt; <span class='enemy' title='적'>따까리(D.Va)</span></li><li><button class=t type=button data-seek='58.0'>58초</button><span class='ally' title='아군'>인도양쭈꾸미(시그마)</span> &gt; <span class='enemy' title='적'>따까리(D.Va)</span></li></ul></div>
+  <div class=frames><button class=thumb data-seek="52.5" type=button><img src="evidence/frame_000052500ms.jpg" loading="lazy" alt="52초 화면">52초</button></div>
+  <details><summary>코치 검수 · 적용 기준 ana.skill.sleep_dart_usage (approved)</summary>
   <fieldset class=review data-id="fb-02">
     <label>관찰 사실 <select name=fact><option value="">-</option><option>정확</option><option>일부 틀림</option><option>틀림</option><option>확인 불가</option></select></label>
     <label>판단 <select name=assessment><option value="">-</option><option>동의</option><option>부분 동의</option><option>반대</option></select></label>
@@ -108,17 +115,18 @@ table{border-collapse:collapse;font-size:.8rem} td,th{border:1px solid var(--lin
     <textarea name=comment placeholder="코멘트 (오인식, 놓친 맥락, 기준 수정안 등)"></textarea>
   </fieldset></details>
 </article>
-<article class=card id="fb-3" data-start="51.5" data-end="55.5">
-  <header><button class=num type=button data-seek="51.5" aria-label="3번 피드백 52초로 이동">3</button>
-    <span class=time>52초 ~ 56초</span>
-    <span class="chip cat">스킬 사용</span>
-    <span class="chip g-best">최선</span><span class="chip mode m-assertive">단정</span></header>
-  
-  <dl><dt>관찰</dt><dd>52초경 자신에게 접근하며 파고드는 적 D.Va(따까리)를 향해 수면총을 발사해 재운 뒤 우측 벽 엄폐물 뒤로 이동했습니다.</dd><dt>판단</dt><dd>자신을 위협하며 근접 진입하는 적 탱커를 정확히 수면총으로 무력화하고 안전하게 엄폐물로 이탈한 최선의 판단입니다.</dd><dt>제안</dt><dd>근접 위협에 대해 수면총으로 대응하고 엄폐를 끼며 거리를 벌리는 습관을 계속 유지하세요.</dd>
+<article class=card id="fb-3" data-start="52.0" data-end="57.5">
+  <header><button class=num type=button data-seek="52.0" aria-label="3번 피드백 52초로 이동">3</button>
+    <span class=time>52초 ~ 58초</span>
+    <span class="chip cat">포지셔닝</span>
+    <span class="chip g-best">최선</span><span class="chip mode m-tentative">참고·보류</span></header>
+  <p class=reasons>코치 검수되지 않은 기준 · 포지셔닝은(는) 코드로 확인할 수 없어 보류</p>
+  <dl><dt>관찰</dt><dd>52초에 적 D.Va를 재운 뒤 55초에 우측 벽 뒤 엄폐물로 이동하여 조준경 사격각을 확보했습니다.</dd><dt>판단</dt><dd>적의 압박을 스킬로 대응한 직후 신속하게 벽 엄폐물 뒤로 이동하여 생존을 도모했습니다.</dd><dt>제안</dt><dd>위협을 피한 후에는 지속적으로 엄폐물 모서리를 활용해 시야를 조절하세요.</dd>
   </dl>
-  <ul class=hud><li class='h-verified'>HUD 확인 · 수면총 52초 → 대상 따까리(D.Va)</li></ul>
-  <div class=frames><button class=thumb data-seek="52.0" type=button><img src="evidence/frame_000052000ms.jpg" loading="lazy" alt="52초 화면">52초</button><button class=thumb data-seek="52.5" type=button><img src="evidence/frame_000052500ms.jpg" loading="lazy" alt="52초 화면">52초</button><button class=thumb data-seek="55.0" type=button><img src="evidence/frame_000055000ms.jpg" loading="lazy" alt="55초 화면">55초</button></div>
-  <details><summary>코치 검수 · 적용 기준 ana.skill.sleep_dart_usage (approved)</summary>
+  <ul class=hud><li class=muted>모델 관찰 · 위치·엄폐는 코드로 확인하지 않음</li></ul>
+  <div class=kf><b>킬피드</b><ul><li><button class=t type=button data-seek='54.5'>54초</button><span class='ally' title='아군'>결식아동(솔저: 76)</span> &gt; <span class='enemy' title='적'>따까리(D.Va)</span></li><li><button class=t type=button data-seek='54.5'>54초</button><span class='ally' title='아군'>인도양쭈꾸미(시그마)</span> &gt; <span class='enemy' title='적'>따까리(D.Va)</span></li><li><button class=t type=button data-seek='58.0'>58초</button><span class='ally' title='아군'>결식아동(솔저: 76)</span> &gt; <span class='enemy' title='적'>따까리(D.Va)</span></li><li><button class=t type=button data-seek='58.0'>58초</button><span class='ally' title='아군'>인도양쭈꾸미(시그마)</span> &gt; <span class='enemy' title='적'>따까리(D.Va)</span></li><li><button class=t type=button data-seek='60.0'>1분 0초</button><span class='enemy' title='적'>전도리(시에라)</span> &gt; <span class='ally' title='아군'>목포산아이(위도우메이커)</span></li></ul></div>
+  <div class=frames><button class=thumb data-seek="55.0" type=button><img src="evidence/frame_000055000ms.jpg" loading="lazy" alt="55초 화면">55초</button></div>
+  <details><summary>코치 검수 · 적용 기준 ana.positioning.disengage_on_pressure (draft)</summary>
   <fieldset class=review data-id="fb-03">
     <label>관찰 사실 <select name=fact><option value="">-</option><option>정확</option><option>일부 틀림</option><option>틀림</option><option>확인 불가</option></select></label>
     <label>판단 <select name=assessment><option value="">-</option><option>동의</option><option>부분 동의</option><option>반대</option></select></label>
@@ -128,16 +136,17 @@ table{border-collapse:collapse;font-size:.8rem} td,th{border:1px solid var(--lin
     <textarea name=comment placeholder="코멘트 (오인식, 놓친 맥락, 기준 수정안 등)"></textarea>
   </fieldset></details>
 </article>
-<article class=card id="fb-4" data-start="58.0" data-end="74.0">
-  <header><button class=num type=button data-seek="58.0" aria-label="4번 피드백 58초로 이동">4</button>
-    <span class=time>58초 ~ 1분 14초</span>
+<article class=card id="fb-4" data-start="61.0" data-end="65.0">
+  <header><button class=num type=button data-seek="61.0" aria-label="4번 피드백 1분 1초로 이동">4</button>
+    <span class=time>1분 1초 ~ 1분 5초</span>
     <span class="chip cat">포지셔닝</span>
-    <span class="chip g-withheld">판단 보류</span><span class="chip mode m-tentative">참고·보류</span></header>
-  <p class=reasons>코치 검수되지 않은 기준 · 포지셔닝 좋은 판정은 15초 이내의 특정 순간에만 줌 (이 피드백은 58초 ~ 1분 14초 전체) · 포지셔닝은(는) 코드로 확인할 수 없어 보류</p>
-  <dl><dt>관찰</dt><dd>1분 1초경 공중에서 낙하 진입하는 적 D.Va를 확인하자 우측 모서리 벽 뒤로 엄폐하여 시야를 끊었습니다.</dd><dt>판단</dt><dd>적의 순간적인 진입 위협에 반응하여 1~2걸음 내 엄폐물 뒤로 이동해 안정적으로 위치를 지켰습니다.</dd><dt>제안</dt><dd>상대 고위협 영웅이 진입할 때 즉각 엄폐 모서리를 활용하는 포지셔닝을 계속 유지하세요.</dd>
+    <span class="chip g-best">최선</span><span class="chip mode m-tentative">참고·보류</span></header>
+  <p class=reasons>코치 검수되지 않은 기준 · 포지셔닝은(는) 코드로 확인할 수 없어 보류</p>
+  <dl><dt>관찰</dt><dd>1분 1초에 적 D.Va가 공중에서 낙하 진입하자 1분 3초에 우측 벽 뒤 코너로 이동하여 엄폐했습니다.</dd><dt>판단</dt><dd>적 탱커의 진입 시도를 확인하자마자 즉시 주변 엄폐물 뒤로 몸을 숨겨 시야를 차단했습니다.</dd><dt>제안</dt><dd>상대 탱커의 진입 각도를 항상 경계하며 엄폐물과의 거리를 가깝게 유지하세요.</dd>
   </dl>
   <ul class=hud><li class=muted>모델 관찰 · 위치·엄폐는 코드로 확인하지 않음</li></ul>
-  <div class=frames><button class=thumb data-seek="61.5" type=button><img src="evidence/frame_000061500ms.jpg" loading="lazy" alt="1분 2초 화면">1분 2초</button><button class=thumb data-seek="64.0" type=button><img src="evidence/frame_000064000ms.jpg" loading="lazy" alt="1분 4초 화면">1분 4초</button></div>
+  <div class=kf><b>킬피드</b><ul><li><button class=t type=button data-seek='58.0'>58초</button><span class='ally' title='아군'>결식아동(솔저: 76)</span> &gt; <span class='enemy' title='적'>따까리(D.Va)</span></li><li><button class=t type=button data-seek='58.0'>58초</button><span class='ally' title='아군'>인도양쭈꾸미(시그마)</span> &gt; <span class='enemy' title='적'>따까리(D.Va)</span></li><li><button class=t type=button data-seek='60.0'>1분 0초</button><span class='enemy' title='적'>전도리(시에라)</span> &gt; <span class='ally' title='아군'>목포산아이(위도우메이커)</span></li><li><button class=t type=button data-seek='68.0'>1분 8초</button><span class='ally me' title='아군'>BERNAR(아나)</span> &gt; <span class='enemy' title='적'>전도리(시에라)</span></li></ul></div>
+  <div class=frames><button class=thumb data-seek="63.5" type=button><img src="evidence/frame_000063500ms.jpg" loading="lazy" alt="1분 4초 화면">1분 4초</button></div>
   <details><summary>코치 검수 · 적용 기준 ana.positioning.cover_access (draft)</summary>
   <fieldset class=review data-id="fb-04">
     <label>관찰 사실 <select name=fact><option value="">-</option><option>정확</option><option>일부 틀림</option><option>틀림</option><option>확인 불가</option></select></label>
@@ -148,16 +157,17 @@ table{border-collapse:collapse;font-size:.8rem} td,th{border:1px solid var(--lin
     <textarea name=comment placeholder="코멘트 (오인식, 놓친 맥락, 기준 수정안 등)"></textarea>
   </fieldset></details>
 </article>
-<article class=card id="fb-5" data-start="66.5" data-end="68.0">
-  <header><button class=num type=button data-seek="66.5" aria-label="5번 피드백 1분 6초로 이동">5</button>
-    <span class=time>1분 6초 ~ 1분 8초</span>
+<article class=card id="fb-5" data-start="66.0" data-end="69.0">
+  <header><button class=num type=button data-seek="66.0" aria-label="5번 피드백 1분 6초로 이동">5</button>
+    <span class=time>1분 6초 ~ 1분 9초</span>
     <span class="chip cat">스킬 사용</span>
     <span class="chip g-withheld">판단 보류</span><span class="chip mode m-tentative">참고·보류</span></header>
   <p class=reasons>근거 부족으로 판단 보류</p>
-  <dl><dt>관찰</dt><dd>1분 7초경 적 D.Va 및 전방 교전 지역을 향해 생체 수류탄을 투척했습니다. 직후 적 처치 관여가 확인되었습니다.</dd><dt>판단</dt><dd>대치 및 진입 상황에서 전방으로 생체 수류탄을 사용했습니다.</dd><dt>제안</dt><dd>수류탄 사용 시 적 탱커 치유 차단이나 아군 다수 케어 등 명확한 목적성을 가지고 투척하면 더 큰 이득을 볼 수 있습니다.</dd>
-  </dl>
+  <dl><dt>관찰</dt><dd>1분 7초에 전방 적군을 향해 생체 수류탄을 던졌으며, 직후 적 시에라(전도리) 처치에 관여했습니다.</dd><dt>판단</dt><dd>수류탄 투척 후 처치 관여가 기록되었으나 적 팀 목록상 치유 차단 판정은 명확히 드러나지 않아 확실한 최선 판정에는 근거가 부족합니다.</dd><dt>제안</dt><dd>적 탱커나 딜러진의 위치를 명확히 파악한 뒤 생체 수류탄을 던져 확실한 치유 차단을 노리세요.</dd>
+  <dt>불확실</dt><dd>치유 차단 판정이 적 팀 목록에서 확인되지 않음</dd></dl>
   <ul class=hud><li class='h-verified'>HUD 확인 · 생체 수류탄 1분 7초 → 0.25초 뒤 전도리(시에라) 처치 관여(코드 확인)</li></ul>
-  <div class=frames><button class=thumb data-seek="66.5" type=button><img src="evidence/frame_000066500ms.jpg" loading="lazy" alt="1분 6초 화면">1분 6초</button><button class=thumb data-seek="67.0" type=button><img src="evidence/frame_000067000ms.jpg" loading="lazy" alt="1분 7초 화면">1분 7초</button></div>
+  <div class=kf><b>킬피드</b><ul><li><button class=t type=button data-seek='68.0'>1분 8초</button><span class='ally me' title='아군'>BERNAR(아나)</span> &gt; <span class='enemy' title='적'>전도리(시에라)</span></li></ul></div>
+  <div class=frames><button class=thumb data-seek="67.0" type=button><img src="evidence/frame_000067000ms.jpg" loading="lazy" alt="1분 7초 화면">1분 7초</button></div>
   <details><summary>코치 검수 · 적용 기준 ana.skill.biotic_grenade_usage (approved)</summary>
   <fieldset class=review data-id="fb-05">
     <label>관찰 사실 <select name=fact><option value="">-</option><option>정확</option><option>일부 틀림</option><option>틀림</option><option>확인 불가</option></select></label>
@@ -168,17 +178,18 @@ table{border-collapse:collapse;font-size:.8rem} td,th{border:1px solid var(--lin
     <textarea name=comment placeholder="코멘트 (오인식, 놓친 맥락, 기준 수정안 등)"></textarea>
   </fieldset></details>
 </article>
-<article class=card id="fb-6" data-start="86.0" data-end="124.75">
-  <header><button class=num type=button data-seek="86.0" aria-label="6번 피드백 1분 26초로 이동">6</button>
-    <span class=time>1분 26초 ~ 2분 5초</span>
-    <span class="chip cat">포지셔닝</span>
+<article class=card id="fb-6" data-start="94.0" data-end="97.0">
+  <header><button class=num type=button data-seek="94.0" aria-label="6번 피드백 1분 34초로 이동">6</button>
+    <span class=time>1분 34초 ~ 1분 37초</span>
+    <span class="chip cat">스킬 사용</span>
     <span class="chip g-withheld">판단 보류</span><span class="chip mode m-tentative">참고·보류</span></header>
-  <p class=reasons>코치 검수되지 않은 기준 · 포지셔닝 좋은 판정은 15초 이내의 특정 순간에만 줌 (이 피드백은 1분 26초 ~ 2분 5초 전체) · 포지셔닝은(는) 코드로 확인할 수 없어 보류</p>
-  <dl><dt>관찰</dt><dd>1분 26초~2분 4초 동안 화물 후방 건물 모서리 엄폐물을 적극적으로 끼고 사선을 확보하며 지원 사격을 이어갔습니다.</dd><dt>판단</dt><dd>화물 전진 경로에서 엄폐 모서리를 끼고 안전 사거리를 유지하며 지속 지원을 펼친 양호한 포지셔닝입니다.</dd><dt>제안</dt><dd>건물 모서리와 화물 지형을 이용한 엄폐 포지셔닝을 유지하세요.</dd>
-  </dl>
-  <ul class=hud><li class=muted>모델 관찰 · 위치·엄폐는 코드로 확인하지 않음</li></ul>
-  <div class=frames><button class=thumb data-seek="104.0" type=button><img src="evidence/frame_000104000ms.jpg" loading="lazy" alt="1분 44초 화면">1분 44초</button><button class=thumb data-seek="110.0" type=button><img src="evidence/frame_000110000ms.jpg" loading="lazy" alt="1분 50초 화면">1분 50초</button><button class=thumb data-seek="116.0" type=button><img src="evidence/frame_000116000ms.jpg" loading="lazy" alt="1분 56초 화면">1분 56초</button></div>
-  <details><summary>코치 검수 · 적용 기준 ana.positioning.cover_access (draft)</summary>
+  <p class=reasons>근거 부족으로 판단 보류</p>
+  <dl><dt>관찰</dt><dd>1분 35초에 통로 전방 교전 지역으로 생체 수류탄을 투척했습니다.</dd><dt>판단</dt><dd>대치 상황에서 던졌으나 아군 회복이나 적 치유 차단 효과가 크게 나타나지 않아 판단을 보류합니다.</dd><dt>제안</dt><dd>수류탄은 명확한 노림수(적 탱커 압박 또는 아군 세이브)가 있을 때 아껴서 사용하세요.</dd>
+  <dt>불확실</dt><dd>치유 차단 및 회복 효과 미적용</dd></dl>
+  <ul class=hud><li class='h-verified'>HUD 확인 · 생체 수류탄 1분 35초</li></ul>
+  <div class=kf><b>킬피드</b><ul><li><button class=t type=button data-seek='94.0'>1분 34초</button><span class='enemy' title='적'>전도리(시에라)</span> &gt; <span class='ally' title='아군'>인도양쭈꾸미(시그마)</span></li></ul></div>
+  <div class=frames><button class=thumb data-seek="95.0" type=button><img src="evidence/frame_000095000ms.jpg" loading="lazy" alt="1분 35초 화면">1분 35초</button></div>
+  <details><summary>코치 검수 · 적용 기준 ana.skill.biotic_grenade_usage (approved)</summary>
   <fieldset class=review data-id="fb-06">
     <label>관찰 사실 <select name=fact><option value="">-</option><option>정확</option><option>일부 틀림</option><option>틀림</option><option>확인 불가</option></select></label>
     <label>판단 <select name=assessment><option value="">-</option><option>동의</option><option>부분 동의</option><option>반대</option></select></label>
@@ -188,17 +199,18 @@ table{border-collapse:collapse;font-size:.8rem} td,th{border:1px solid var(--lin
     <textarea name=comment placeholder="코멘트 (오인식, 놓친 맥락, 기준 수정안 등)"></textarea>
   </fieldset></details>
 </article>
-<article class=card id="fb-7" data-start="95.0" data-end="96.5">
-  <header><button class=num type=button data-seek="95.0" aria-label="7번 피드백 1분 35초로 이동">7</button>
-    <span class=time>1분 35초 ~ 1분 36초</span>
+<article class=card id="fb-7" data-start="101.0" data-end="104.0">
+  <header><button class=num type=button data-seek="101.0" aria-label="7번 피드백 1분 41초로 이동">7</button>
+    <span class=time>1분 41초 ~ 1분 44초</span>
     <span class="chip cat">스킬 사용</span>
-    <span class="chip g-withheld">판단 보류</span><span class="chip mode m-tentative">참고·보류</span></header>
-  <p class=reasons>근거 부족으로 판단 보류</p>
-  <dl><dt>관찰</dt><dd>1분 35초경 통로 전방 교전 구역으로 생체 수류탄을 투척했습니다.</dd><dt>판단</dt><dd>대치 상황에서 던진 생체 수류탄으로 적 치유 차단 대상이 확인되지 않은 일반적인 스킬 소모입니다.</dd><dt>제안</dt><dd>상대 쿨다운이나 꺾이는 길목 등 노림수를 가지고 수류탄을 던지면 치유 차단 성공률을 높일 수 있습니다.</dd>
+    <span class="chip g-best">최선</span><span class="chip mode m-assertive">단정</span></header>
+  
+  <dl><dt>관찰</dt><dd>1분 42초에 공중에 떠서 진입하는 적 D.Va(따까리)에게 수면총을 적중시켜 재웠습니다.</dd><dt>판단</dt><dd>상대 탱커의 공중 진입 위협에 수면총으로 적절히 대응하여 적의 공세를 차단했습니다.</dd><dt>제안</dt><dd>진입하는 적 탱커를 계속해서 수면총으로 견제해 아군 진영을 보호하세요.</dd>
   </dl>
-  <ul class=hud><li class='h-verified'>HUD 확인 · 생체 수류탄 1분 35초</li></ul>
-  <div class=frames><button class=thumb data-seek="95.0" type=button><img src="evidence/frame_000095000ms.jpg" loading="lazy" alt="1분 35초 화면">1분 35초</button></div>
-  <details><summary>코치 검수 · 적용 기준 ana.skill.biotic_grenade_usage (approved)</summary>
+  <ul class=hud><li class='h-verified'>HUD 확인 · 수면총 1분 42초 → 대상 따까리(D.Va)</li></ul>
+  <div class=kf><b>킬피드</b><ul><li><button class=t type=button data-seek='106.0'>1분 46초</button><span class='ally' title='아군'>결식아동(솔저: 76)</span> &gt; <span class='enemy' title='적'>따까리(D.Va)</span></li></ul></div>
+  <div class=frames><button class=thumb data-seek="101.8" type=button><img src="evidence/frame_000101800ms.jpg" loading="lazy" alt="1분 42초 화면">1분 42초</button></div>
+  <details><summary>코치 검수 · 적용 기준 ana.skill.sleep_dart_usage (approved)</summary>
   <fieldset class=review data-id="fb-07">
     <label>관찰 사실 <select name=fact><option value="">-</option><option>정확</option><option>일부 틀림</option><option>틀림</option><option>확인 불가</option></select></label>
     <label>판단 <select name=assessment><option value="">-</option><option>동의</option><option>부분 동의</option><option>반대</option></select></label>
@@ -208,17 +220,18 @@ table{border-collapse:collapse;font-size:.8rem} td,th{border:1px solid var(--lin
     <textarea name=comment placeholder="코멘트 (오인식, 놓친 맥락, 기준 수정안 등)"></textarea>
   </fieldset></details>
 </article>
-<article class=card id="fb-8" data-start="101.5" data-end="103.0">
-  <header><button class=num type=button data-seek="101.5" aria-label="8번 피드백 1분 42초로 이동">8</button>
-    <span class=time>1분 42초 ~ 1분 43초</span>
-    <span class="chip cat">스킬 사용</span>
-    <span class="chip g-best">최선</span><span class="chip mode m-assertive">단정</span></header>
-  
-  <dl><dt>관찰</dt><dd>1분 42초경 공중에 뜬 적 D.Va(따까리)를 향해 수면총을 발사하여 적중시켰습니다.</dd><dt>판단</dt><dd>진입하는 적 D.Va에게 수면총을 적중시켜 순간 무력화했습니다.</dd><dt>제안</dt><dd>적 탱커를 재운 뒤 아군에게 브리핑하거나 생체 수류탄을 연계하여 처치로 이어가는 연계를 노려보세요.</dd>
+<article class=card id="fb-8" data-start="104.0" data-end="116.0">
+  <header><button class=num type=button data-seek="104.0" aria-label="8번 피드백 1분 44초로 이동">8</button>
+    <span class=time>1분 44초 ~ 1분 56초</span>
+    <span class="chip cat">포지셔닝</span>
+    <span class="chip g-withheld">판단 보류</span><span class="chip mode m-tentative">참고·보류</span></header>
+  <p class=reasons>코치 검수되지 않은 기준 · 관찰 기록에 1분 44초경 이동 중 본대를 등짐 → 좋은 판정 보류 · 포지셔닝은(는) 코드로 확인할 수 없어 보류</p>
+  <dl><dt>관찰</dt><dd>1분 44초부터 건물 모서리 엄폐물을 끼고 시야각을 유지하며 화물 뒤 아군을 케어했습니다.</dd><dt>판단</dt><dd>대치 우위 조합 특성에 맞춰 안전하게 엄폐물 모서리를 활용하여 시야를 차단하고 안전을 확보했습니다.</dd><dt>제안</dt><dd>항상 코너와 엄폐물 모서리를 활용하는 습관을 유지하세요.</dd>
   </dl>
-  <ul class=hud><li class='h-verified'>HUD 확인 · 수면총 1분 42초 → 대상 따까리(D.Va)</li></ul>
-  <div class=frames><button class=thumb data-seek="101.8" type=button><img src="evidence/frame_000101800ms.jpg" loading="lazy" alt="1분 42초 화면">1분 42초</button></div>
-  <details><summary>코치 검수 · 적용 기준 ana.skill.sleep_dart_usage (approved)</summary>
+  <ul class=hud><li class=muted>모델 관찰 · 위치·엄폐는 코드로 확인하지 않음</li></ul>
+  <div class=kf><b>킬피드</b><ul><li><button class=t type=button data-seek='106.0'>1분 46초</button><span class='ally' title='아군'>결식아동(솔저: 76)</span> &gt; <span class='enemy' title='적'>따까리(D.Va)</span></li></ul></div>
+  <div class=frames><button class=thumb data-seek="104.0" type=button><img src="evidence/frame_000104000ms.jpg" loading="lazy" alt="1분 44초 화면">1분 44초</button></div>
+  <details><summary>코치 검수 · 적용 기준 ana.positioning.cover_access, common.positioning.standoff_survival (draft)</summary>
   <fieldset class=review data-id="fb-08">
     <label>관찰 사실 <select name=fact><option value="">-</option><option>정확</option><option>일부 틀림</option><option>틀림</option><option>확인 불가</option></select></label>
     <label>판단 <select name=assessment><option value="">-</option><option>동의</option><option>부분 동의</option><option>반대</option></select></label>
@@ -228,15 +241,16 @@ table{border-collapse:collapse;font-size:.8rem} td,th{border:1px solid var(--lin
     <textarea name=comment placeholder="코멘트 (오인식, 놓친 맥락, 기준 수정안 등)"></textarea>
   </fieldset></details>
 </article>
-<article class=card id="fb-9" data-start="112.0" data-end="113.5">
-  <header><button class=num type=button data-seek="112.0" aria-label="9번 피드백 1분 52초로 이동">9</button>
-    <span class=time>1분 52초 ~ 1분 54초</span>
+<article class=card id="fb-9" data-start="111.0" data-end="114.0">
+  <header><button class=num type=button data-seek="111.0" aria-label="9번 피드백 1분 51초로 이동">9</button>
+    <span class=time>1분 51초 ~ 1분 54초</span>
     <span class="chip cat">스킬 사용</span>
     <span class="chip g-withheld">판단 보류</span><span class="chip mode m-tentative">참고·보류</span></header>
   <p class=reasons>근거 부족으로 판단 보류</p>
-  <dl><dt>관찰</dt><dd>1분 52초경 화물 측면 대치 위치로 생체 수류탄을 투척하여 적 소전(HWIWHA)에게 치유 차단을 적용했습니다.</dd><dt>판단</dt><dd>적 딜러에게 치유 차단을 걸었으나 직후 처치 연결 확인은 없었던 상황입니다.</dd><dt>제안</dt><dd>치유 차단이 걸린 대상을 아군 딜러가 집중 사격할 수 있도록 판을 만들어주세요.</dd>
-  </dl>
+  <dl><dt>관찰</dt><dd>1분 52초에 화물 측면으로 생체 수류탄을 던져 적 소전(HWIWHA)에게 치유 차단을 적용했습니다.</dd><dt>판단</dt><dd>딜러 1명에게 치유 차단이 들어갔으나 직후 처치나 판세를 뒤집는 연계로 이어지지는 않았습니다.</dd><dt>제안</dt><dd>적 탱커나 밀집 지역을 향해 수류탄을 던져 한타 파급력을 높이세요.</dd>
+  <dt>불확실</dt><dd>단일 딜러 치유 차단 후 추가 연계 부족</dd></dl>
   <ul class=hud><li class='h-verified'>HUD 확인 · 생체 수류탄 1분 52초 → 치유 차단 적 1명: HWIWHA(소전)(코드 확인)</li></ul>
+  <div class=kf><b>킬피드</b><span class=unknown>이 시간대 처치 없음</span></div>
   <div class=frames><button class=thumb data-seek="112.2" type=button><img src="evidence/frame_000112200ms.jpg" loading="lazy" alt="1분 52초 화면">1분 52초</button></div>
   <details><summary>코치 검수 · 적용 기준 ana.skill.biotic_grenade_usage (approved)</summary>
   <fieldset class=review data-id="fb-09">
@@ -248,17 +262,18 @@ table{border-collapse:collapse;font-size:.8rem} td,th{border:1px solid var(--lin
     <textarea name=comment placeholder="코멘트 (오인식, 놓친 맥락, 기준 수정안 등)"></textarea>
   </fieldset></details>
 </article>
-<article class=card id="fb-10" data-start="117.0" data-end="149.5">
-  <header><button class=num type=button data-seek="117.0" aria-label="10번 피드백 1분 57초로 이동">10</button>
-    <span class=time>1분 57초 ~ 2분 30초</span>
-    <span class="chip cat">포지셔닝</span>
+<article class=card id="fb-10" data-start="119.0" data-end="122.0">
+  <header><button class=num type=button data-seek="119.0" aria-label="10번 피드백 1분 59초로 이동">10</button>
+    <span class=time>1분 59초 ~ 2분 2초</span>
+    <span class="chip cat">스킬 사용</span>
     <span class="chip g-withheld">판단 보류</span><span class="chip mode m-tentative">참고·보류</span></header>
-  <p class=reasons>코치 검수되지 않은 기준 · 포지셔닝 좋은 판정은 15초 이내의 특정 순간에만 줌 (이 피드백은 1분 57초 ~ 2분 30초 전체) · 포지셔닝은(는) 코드로 확인할 수 없어 보류</p>
-  <dl><dt>관찰</dt><dd>2분 0초~2분 29초 동안 아군 시그마 뒤쪽 및 건물 구조물 근처에서 아군 본대 전체를 시야에 두고 지원했습니다.</dd><dt>판단</dt><dd>아군 다수가 한눈에 들어오는 각도에서 위치를 잡고 안정적으로 힐케어와 궁극기 지원을 제공했습니다.</dd><dt>제안</dt><dd>아군 본대 전체가 시야에 들어오는 후방 각도를 유지하면서 엄폐물을 계속 활용하세요.</dd>
+  <p class=reasons>근거 부족으로 판단 보류</p>
+  <dl><dt>관찰</dt><dd>2분 0초에 건물 입구 방향으로 수면총을 발사했으나 적에게 맞지 않고 빗나갔습니다.</dd><dt>판단</dt><dd>수면총이 빗나갔으나 직후 위험한 근접 압박 상황으로 이어지지 않아 판단을 보류합니다.</dd><dt>제안</dt><dd>좁은 길목에 수면총을 쏠 때는 적의 정확한 위치를 파악하고 발사하세요.</dd>
   </dl>
-  <ul class=hud><li class=muted>모델 관찰 · 위치·엄폐는 코드로 확인하지 않음</li></ul>
-  <div class=frames><button class=thumb data-seek="117.0" type=button><img src="evidence/frame_000117000ms.jpg" loading="lazy" alt="1분 57초 화면">1분 57초</button><button class=thumb data-seek="135.0" type=button><img src="evidence/frame_000135000ms.jpg" loading="lazy" alt="2분 15초 화면">2분 15초</button><button class=thumb data-seek="147.0" type=button><img src="evidence/frame_000147000ms.jpg" loading="lazy" alt="2분 27초 화면">2분 27초</button></div>
-  <details><summary>코치 검수 · 적용 기준 ana.positioning.sightline_to_team (draft)</summary>
+  <ul class=hud><li class='h-verified'>HUD 확인 · 수면총 2분 0초 → 빗나감(코드 확인)</li></ul>
+  <div class=kf><b>킬피드</b><span class=unknown>이 시간대 처치 없음</span></div>
+  <div class=frames><button class=thumb data-seek="119.8" type=button><img src="evidence/frame_000119800ms.jpg" loading="lazy" alt="2분 0초 화면">2분 0초</button></div>
+  <details><summary>코치 검수 · 적용 기준 ana.skill.sleep_dart_usage (approved)</summary>
   <fieldset class=review data-id="fb-10">
     <label>관찰 사실 <select name=fact><option value="">-</option><option>정확</option><option>일부 틀림</option><option>틀림</option><option>확인 불가</option></select></label>
     <label>판단 <select name=assessment><option value="">-</option><option>동의</option><option>부분 동의</option><option>반대</option></select></label>
@@ -268,17 +283,18 @@ table{border-collapse:collapse;font-size:.8rem} td,th{border:1px solid var(--lin
     <textarea name=comment placeholder="코멘트 (오인식, 놓친 맥락, 기준 수정안 등)"></textarea>
   </fieldset></details>
 </article>
-<article class=card id="fb-11" data-start="119.5" data-end="121.0">
-  <header><button class=num type=button data-seek="119.5" aria-label="11번 피드백 2분 0초로 이동">11</button>
-    <span class=time>2분 0초 ~ 2분 1초</span>
+<article class=card id="fb-11" data-start="125.0" data-end="128.0">
+  <header><button class=num type=button data-seek="125.0" aria-label="11번 피드백 2분 5초로 이동">11</button>
+    <span class=time>2분 5초 ~ 2분 8초</span>
     <span class="chip cat">스킬 사용</span>
     <span class="chip g-withheld">판단 보류</span><span class="chip mode m-tentative">참고·보류</span></header>
   <p class=reasons>근거 부족으로 판단 보류</p>
-  <dl><dt>관찰</dt><dd>2분 0초경 건물 입구 방향으로 수면총을 발사했으나 적에게 적중하지 않고 빗나갔습니다.</dd><dt>판단</dt><dd>위협이 직접 오지 않는 장거리 사선에 예측으로 발사하여 빗나간 수면총입니다.</dd><dt>제안</dt><dd>상대의 확실한 진입 모션이나 위협 스킬을 확인한 후 신중하게 수면총을 투구하세요.</dd>
-  </dl>
-  <ul class=hud><li class='h-verified'>HUD 확인 · 수면총 2분 0초 → 빗나감(코드 확인)</li></ul>
-  <div class=frames><button class=thumb data-seek="119.8" type=button><img src="evidence/frame_000119800ms.jpg" loading="lazy" alt="2분 0초 화면">2분 0초</button></div>
-  <details><summary>코치 검수 · 적용 기준 ana.skill.sleep_dart_usage (approved)</summary>
+  <dl><dt>관찰</dt><dd>2분 6초에 건물 입구 방면으로 생체 수류탄을 던졌으나 유효 효과가 발생하지 않았습니다.</dd><dt>판단</dt><dd>대치 상황에서 특별한 노림수 없이 사용되어 판단을 보류합니다.</dd><dt>제안</dt><dd>확실한 치유 차단이나 아군 세이브 타이밍을 노려 투척하세요.</dd>
+  <dt>불확실</dt><dd>적중 대상 및 효과 미확인</dd></dl>
+  <ul class=hud><li class='h-verified'>HUD 확인 · 생체 수류탄 2분 6초</li></ul>
+  <div class=kf><b>킬피드</b><span class=unknown>이 시간대 처치 없음</span></div>
+  <div class=frames><button class=thumb data-seek="126.0" type=button><img src="evidence/frame_000126000ms.jpg" loading="lazy" alt="2분 6초 화면">2분 6초</button></div>
+  <details><summary>코치 검수 · 적용 기준 ana.skill.biotic_grenade_usage (approved)</summary>
   <fieldset class=review data-id="fb-11">
     <label>관찰 사실 <select name=fact><option value="">-</option><option>정확</option><option>일부 틀림</option><option>틀림</option><option>확인 불가</option></select></label>
     <label>판단 <select name=assessment><option value="">-</option><option>동의</option><option>부분 동의</option><option>반대</option></select></label>
@@ -288,17 +304,18 @@ table{border-collapse:collapse;font-size:.8rem} td,th{border:1px solid var(--lin
     <textarea name=comment placeholder="코멘트 (오인식, 놓친 맥락, 기준 수정안 등)"></textarea>
   </fieldset></details>
 </article>
-<article class=card id="fb-12" data-start="125.5" data-end="127.0">
-  <header><button class=num type=button data-seek="125.5" aria-label="12번 피드백 2분 6초로 이동">12</button>
-    <span class=time>2분 6초 ~ 2분 7초</span>
-    <span class="chip cat">스킬 사용</span>
-    <span class="chip g-withheld">판단 보류</span><span class="chip mode m-tentative">참고·보류</span></header>
-  <p class=reasons>근거 부족으로 판단 보류</p>
-  <dl><dt>관찰</dt><dd>2분 6초경 건물 입구 전방 지역으로 생체 수류탄을 투척했습니다.</dd><dt>판단</dt><dd>교전 지역 입구로 수류탄을 던졌으나 적 치유 차단이 확인되지 않았습니다.</dd><dt>제안</dt><dd>적 밀집 구역이나 아군 힐케어 지점에 명확히 맞출 수 있도록 투척 각도를 조절해보세요.</dd>
+<article class=card id="fb-12" data-start="135.0" data-end="138.0">
+  <header><button class=num type=button data-seek="135.0" aria-label="12번 피드백 2분 15초로 이동">12</button>
+    <span class=time>2분 15초 ~ 2분 18초</span>
+    <span class="chip cat">궁극기 사용</span>
+    <span class="chip g-best">최선</span><span class="chip mode m-assertive">단정</span></header>
+  
+  <dl><dt>관찰</dt><dd>2분 16초에 궁극기 게이지 100% 상태에서 화면 내 교전 중인 아군 파라(목포산아이)에게 나노 강화제를 시전했습니다.</dd><dt>판단</dt><dd>교전 시작 시점에 화물 전진을 위해 아군 딜러에게 올바르게 나노 강화제를 부여했습니다.</dd><dt>제안</dt><dd>나노 강화제를 받은 아군이 공격을 이어갈 수 있도록 계속해서 힐 지원을 해주세요.</dd>
   </dl>
-  <ul class=hud><li class='h-verified'>HUD 확인 · 생체 수류탄 2분 6초</li></ul>
-  <div class=frames><button class=thumb data-seek="126.0" type=button><img src="evidence/frame_000126000ms.jpg" loading="lazy" alt="2분 6초 화면">2분 6초</button></div>
-  <details><summary>코치 검수 · 적용 기준 ana.skill.biotic_grenade_usage (approved)</summary>
+  <ul class=hud><li class='h-verified'>HUD 확인 · 나노 강화제 2분 16초 → 대상 목포산아이(파라)</li></ul>
+  <div class=kf><b>킬피드</b><ul><li><button class=t type=button data-seek='141.0'>2분 21초</button><span class='ally' title='아군'>목포산아이(파라)</span> &gt; <span class='enemy' title='적'>블켄(라이프위버)</span></li></ul></div>
+  <div class=frames><button class=thumb data-seek="136.0" type=button><img src="evidence/frame_000136000ms.jpg" loading="lazy" alt="2분 16초 화면">2분 16초</button></div>
+  <details><summary>코치 검수 · 적용 기준 ana.ultimate.nano_boost_usage (approved)</summary>
   <fieldset class=review data-id="fb-12">
     <label>관찰 사실 <select name=fact><option value="">-</option><option>정확</option><option>일부 틀림</option><option>틀림</option><option>확인 불가</option></select></label>
     <label>판단 <select name=assessment><option value="">-</option><option>동의</option><option>부분 동의</option><option>반대</option></select></label>
@@ -308,17 +325,18 @@ table{border-collapse:collapse;font-size:.8rem} td,th{border:1px solid var(--lin
     <textarea name=comment placeholder="코멘트 (오인식, 놓친 맥락, 기준 수정안 등)"></textarea>
   </fieldset></details>
 </article>
-<article class=card id="fb-13" data-start="135.0" data-end="138.0">
-  <header><button class=num type=button data-seek="135.0" aria-label="13번 피드백 2분 15초로 이동">13</button>
-    <span class=time>2분 15초 ~ 2분 18초</span>
-    <span class="chip cat">궁극기 사용</span>
+<article class=card id="fb-13" data-start="140.0" data-end="143.0">
+  <header><button class=num type=button data-seek="140.0" aria-label="13번 피드백 2분 20초로 이동">13</button>
+    <span class=time>2분 20초 ~ 2분 23초</span>
+    <span class="chip cat">스킬 사용</span>
     <span class="chip g-best">최선</span><span class="chip mode m-assertive">단정</span></header>
   
-  <dl><dt>관찰</dt><dd>2분 16초경 궁극기 게이지 100% 상태에서 화면 내 아군 파라(목포산아이)에게 나노 강화제를 시전했습니다.</dd><dt>판단</dt><dd>교전이 전개되는 시점에 맞춰 아군 딜러 파라에게 나노 강화제를 부여하여 한타 진격을 지원한 최선의 판단입니다.</dd><dt>제안</dt><dd>파라, 솔저 등 과감하게 진입하는 아군 딜러/탱커의 교전 타이밍에 맞춰 궁극기를 부여하는 타이밍을 잘 유지하세요.</dd>
+  <dl><dt>관찰</dt><dd>2분 20초에 접근하는 적 D.Va(따까리)에게 수면총을 발사하여 재웠습니다.</dd><dt>판단</dt><dd>아나에게 위협이 되는 적 탱커를 수면총으로 재워 대응한 최선의 판단입니다.</dd><dt>제안</dt><dd>적 탱커 진입 시 계속해서 수면총 대응 후 이탈 포지션을 잡으세요.</dd>
   </dl>
-  <ul class=hud><li class='h-verified'>HUD 확인 · 나노 강화제 2분 16초 → 대상 목포산아이(파라)</li></ul>
-  <div class=frames><button class=thumb data-seek="135.0" type=button><img src="evidence/frame_000135000ms.jpg" loading="lazy" alt="2분 15초 화면">2분 15초</button><button class=thumb data-seek="136.0" type=button><img src="evidence/frame_000136000ms.jpg" loading="lazy" alt="2분 16초 화면">2분 16초</button></div>
-  <details><summary>코치 검수 · 적용 기준 ana.ultimate.nano_boost_usage (approved)</summary>
+  <ul class=hud><li class='h-verified'>HUD 확인 · 수면총 2분 20초 → 대상 따까리(D.Va)</li></ul>
+  <div class=kf><b>킬피드</b><ul><li><button class=t type=button data-seek='141.0'>2분 21초</button><span class='ally' title='아군'>목포산아이(파라)</span> &gt; <span class='enemy' title='적'>블켄(라이프위버)</span></li></ul></div>
+  <div class=frames><button class=thumb data-seek="140.5" type=button><img src="evidence/frame_000140500ms.jpg" loading="lazy" alt="2분 20초 화면">2분 20초</button></div>
+  <details><summary>코치 검수 · 적용 기준 ana.skill.sleep_dart_usage (approved)</summary>
   <fieldset class=review data-id="fb-13">
     <label>관찰 사실 <select name=fact><option value="">-</option><option>정확</option><option>일부 틀림</option><option>틀림</option><option>확인 불가</option></select></label>
     <label>판단 <select name=assessment><option value="">-</option><option>동의</option><option>부분 동의</option><option>반대</option></select></label>
@@ -328,17 +346,18 @@ table{border-collapse:collapse;font-size:.8rem} td,th{border:1px solid var(--lin
     <textarea name=comment placeholder="코멘트 (오인식, 놓친 맥락, 기준 수정안 등)"></textarea>
   </fieldset></details>
 </article>
-<article class=card id="fb-14" data-start="140.0" data-end="141.5">
-  <header><button class=num type=button data-seek="140.0" aria-label="14번 피드백 2분 20초로 이동">14</button>
-    <span class=time>2분 20초 ~ 2분 22초</span>
-    <span class="chip cat">스킬 사용</span>
-    <span class="chip g-best">최선</span><span class="chip mode m-assertive">단정</span></header>
-  
-  <dl><dt>관찰</dt><dd>2분 20초경 전방의 적 D.Va(따까리)를 향해 수면총을 적중시켰습니다.</dd><dt>판단</dt><dd>교전 중 적 D.Va를 수면총으로 재워 상대 탱커의 무력화를 유도했습니다.</dd><dt>제안</dt><dd>적 재움 직후 생체 수류탄 차단 연계나 아군 포커싱 브리핑을 활용하세요.</dd>
+<article class=card id="fb-14" data-start="141.0" data-end="149.0">
+  <header><button class=num type=button data-seek="141.0" aria-label="14번 피드백 2분 21초로 이동">14</button>
+    <span class=time>2분 21초 ~ 2분 29초</span>
+    <span class="chip cat">포지셔닝</span>
+    <span class="chip g-best">최선</span><span class="chip mode m-tentative">참고·보류</span></header>
+  <p class=reasons>코치 검수되지 않은 기준 · 포지셔닝은(는) 코드로 확인할 수 없어 보류</p>
+  <dl><dt>관찰</dt><dd>2분 21초에 건물 내부로 들어가 코너 엄폐물을 확보한 후 전방 아군을 지원했습니다.</dd><dt>판단</dt><dd>엄폐물을 끼고 안전하게 후방에서 사격을 진행하여 대치 우위 구도를 살렸습니다.</dd><dt>제안</dt><dd>건물 내부나 구조물을 이용해 지속적으로 엄폐 끼고 사격하는 자세를 유지하세요.</dd>
   </dl>
-  <ul class=hud><li class='h-verified'>HUD 확인 · 수면총 2분 20초 → 대상 따까리(D.Va)</li></ul>
-  <div class=frames><button class=thumb data-seek="140.5" type=button><img src="evidence/frame_000140500ms.jpg" loading="lazy" alt="2분 20초 화면">2분 20초</button></div>
-  <details><summary>코치 검수 · 적용 기준 ana.skill.sleep_dart_usage (approved)</summary>
+  <ul class=hud><li class=muted>모델 관찰 · 위치·엄폐는 코드로 확인하지 않음</li></ul>
+  <div class=kf><b>킬피드</b><ul><li><button class=t type=button data-seek='141.0'>2분 21초</button><span class='ally' title='아군'>목포산아이(파라)</span> &gt; <span class='enemy' title='적'>블켄(라이프위버)</span></li><li><button class=t type=button data-seek='149.5'>2분 30초</button><span class='unknown' title='명단 밖'>목포사나이</span> &gt; <span class='enemy' title='적'>블켄(모이라)</span></li></ul></div>
+  <div class=frames><button class=thumb data-seek="144.0" type=button><img src="evidence/frame_000144000ms.jpg" loading="lazy" alt="2분 24초 화면">2분 24초</button></div>
+  <details><summary>코치 검수 · 적용 기준 ana.positioning.cover_access (draft)</summary>
   <fieldset class=review data-id="fb-14">
     <label>관찰 사실 <select name=fact><option value="">-</option><option>정확</option><option>일부 틀림</option><option>틀림</option><option>확인 불가</option></select></label>
     <label>판단 <select name=assessment><option value="">-</option><option>동의</option><option>부분 동의</option><option>반대</option></select></label>
@@ -348,15 +367,16 @@ table{border-collapse:collapse;font-size:.8rem} td,th{border:1px solid var(--lin
     <textarea name=comment placeholder="코멘트 (오인식, 놓친 맥락, 기준 수정안 등)"></textarea>
   </fieldset></details>
 </article>
-<article class=card id="fb-15" data-start="144.0" data-end="145.5">
+<article class=card id="fb-15" data-start="144.0" data-end="147.0">
   <header><button class=num type=button data-seek="144.0" aria-label="15번 피드백 2분 24초로 이동">15</button>
-    <span class=time>2분 24초 ~ 2분 26초</span>
+    <span class=time>2분 24초 ~ 2분 27초</span>
     <span class="chip cat">스킬 사용</span>
-    <span class="chip g-withheld">판단 보류</span><span class="chip mode m-tentative">참고·보류</span></header>
-  <p class=reasons>근거 부족으로 판단 보류</p>
-  <dl><dt>관찰</dt><dd>2분 24초경 화물 및 중앙 교전 지역을 향해 생체 수류탄을 투척했습니다.</dd><dt>판단</dt><dd>중앙 교전 구역으로 생체 수류탄을 던졌으나 명확한 치유 차단은 적용되지 않았습니다.</dd><dt>제안</dt><dd>수류탄 사용 시 적 팀의 힐러 사선이나 탱커 발밑을 정확히 노려 효율을 높이세요.</dd>
+    <span class="chip g-best">최선</span><span class="chip mode m-assertive">단정</span></header>
+  
+  <dl><dt>관찰</dt><dd>2분 24초에 교전 중 생체 수류탄을 발밑에 투척하여 본인 체력을 회복했습니다.</dd><dt>판단</dt><dd>교전 중 압박받는 상황에서 발밑 수류탄으로 자신의 생존을 확보한 올바른 행동입니다.</dd><dt>제안</dt><dd>체력이 낮거나 압박을 받는 상황에서는 우선 발밑 수류탄으로 자생하세요.</dd>
   </dl>
-  <ul class=hud><li class='h-verified'>HUD 확인 · 생체 수류탄 2분 24초</li></ul>
+  <ul class=hud><li class='h-verified'>HUD 확인 · 생체 수류탄 2분 24초 → 맞은 아군: 자신(코드 확인)</li></ul>
+  <div class=kf><b>킬피드</b><ul><li><button class=t type=button data-seek='141.0'>2분 21초</button><span class='ally' title='아군'>목포산아이(파라)</span> &gt; <span class='enemy' title='적'>블켄(라이프위버)</span></li><li><button class=t type=button data-seek='149.5'>2분 30초</button><span class='unknown' title='명단 밖'>목포사나이</span> &gt; <span class='enemy' title='적'>블켄(모이라)</span></li></ul></div>
   <div class=frames><button class=thumb data-seek="144.5" type=button><img src="evidence/frame_000144500ms.jpg" loading="lazy" alt="2분 24초 화면">2분 24초</button></div>
   <details><summary>코치 검수 · 적용 기준 ana.skill.biotic_grenade_usage (approved)</summary>
   <fieldset class=review data-id="fb-15">
@@ -368,15 +388,16 @@ table{border-collapse:collapse;font-size:.8rem} td,th{border:1px solid var(--lin
     <textarea name=comment placeholder="코멘트 (오인식, 놓친 맥락, 기준 수정안 등)"></textarea>
   </fieldset></details>
 </article>
-<article class=card id="fb-16" data-start="158.0" data-end="160.0">
+<article class=card id="fb-16" data-start="158.0" data-end="162.0">
   <header><button class=num type=button data-seek="158.0" aria-label="16번 피드백 2분 38초로 이동">16</button>
-    <span class=time>2분 38초 ~ 2분 40초</span>
+    <span class=time>2분 38초 ~ 2분 42초</span>
     <span class="chip cat">스킬 사용</span>
     <span class="chip g-best">최선</span><span class="chip mode m-assertive">단정</span></header>
   
-  <dl><dt>관찰</dt><dd>2분 38초경 대치 중인 아군 시그마 및 적 D.Va(따까리) 부근으로 생체 수류탄을 투척하여 적 D.Va에게 치유 차단을 적용하였고 3초 뒤 처치에 관여했습니다.</dd><dt>판단</dt><dd>적 탱커 D.Va에게 치유 차단을 걸어 상대 탱커를 압박하고 처치 관여로 연결한 우수한 수류탄 활용입니다.</dd><dt>제안</dt><dd>적 탱커에게 치유 차단을 걸어 압박하는 타이밍을 앞으로도 지속적으로 노려보세요.</dd>
+  <dl><dt>관찰</dt><dd>2분 38초에 적 D.Va(따까리)에게 생체 수류탄을 적중시켜 치유 차단을 걸었고, 3초 뒤 적 시에라(전도리) 처치에 관여했습니다.</dd><dt>판단</dt><dd>적 탱커를 포함한 적에게 치유 차단을 걸어 상대 라인을 압박하고 처치 관여로 이끌어낸 우수한 노림수입니다.</dd><dt>제안</dt><dd>적 탱커 진입 시 치유 차단 수류탄 연계를 계속 활용하세요.</dd>
   </dl>
-  <ul class=hud><li class='h-verified'>HUD 확인 · 생체 수류탄 2분 38초 → 치유 차단 적 1명: 따까리(D.Va)(코드 확인) → 3초 뒤 전도리(시에라) 처치 관여(코드 확인)</li></ul>
+  <ul class=hud><li class='h-verified'>HUD 확인 · 생체 수류탄 2분 38초 → 맞은 아군: 자신(코드 확인) → 치유 차단 적 1명: 따까리(D.Va)(코드 확인) → 3초 뒤 전도리(시에라) 처치 관여(코드 확인)</li></ul>
+  <div class=kf><b>킬피드</b><ul><li><button class=t type=button data-seek='161.5'>2분 42초</button><span class='ally' title='아군'>결식아동(솔저: 76)</span> &gt; <span class='enemy' title='적'>따까리(D.Va)</span></li><li><button class=t type=button data-seek='163.5'>2분 44초</button><span class='ally' title='아군'>인도양쭈꾸미(시그마)</span> &gt; <span class='enemy' title='적'>전도리(시에라)</span></li></ul></div>
   <div class=frames><button class=thumb data-seek="158.5" type=button><img src="evidence/frame_000158500ms.jpg" loading="lazy" alt="2분 38초 화면">2분 38초</button></div>
   <details><summary>코치 검수 · 적용 기준 ana.skill.biotic_grenade_usage (approved)</summary>
   <fieldset class=review data-id="fb-16">
@@ -388,16 +409,17 @@ table{border-collapse:collapse;font-size:.8rem} td,th{border:1px solid var(--lin
     <textarea name=comment placeholder="코멘트 (오인식, 놓친 맥락, 기준 수정안 등)"></textarea>
   </fieldset></details>
 </article>
-<article class=card id="fb-17" data-start="161.5" data-end="170.5">
-  <header><button class=num type=button data-seek="161.5" aria-label="17번 피드백 2분 42초로 이동">17</button>
-    <span class=time>2분 42초 ~ 2분 50초</span>
+<article class=card id="fb-17" data-start="164.5" data-end="170.5">
+  <header><button class=num type=button data-seek="164.5" aria-label="17번 피드백 2분 44초로 이동">17</button>
+    <span class=time>2분 44초 ~ 2분 50초</span>
     <span class="chip cat">포지셔닝</span>
     <span class="chip g-best">최선</span><span class="chip mode m-tentative">참고·보류</span></header>
   <p class=reasons>포지셔닝은(는) 코드로 확인할 수 없어 보류</p>
-  <dl><dt>관찰</dt><dd>2분 41초~2분 50초 동안 아군 탱커 시그마가 라인을 밀며 전진하자 엄폐물 및 코너를 끼고 시그마 뒤를 따라 함께 전진했습니다.</dd><dt>판단</dt><dd>전진하는 아군 탱커가 치유 사거리 및 시야에서 벗어나지 않도록 엄폐를 끼고 같이 움직이며 힐케어를 유지했습니다.</dd><dt>제안</dt><dd>탱커가 라인을 밀 때 뒤에 남겨두지 않고 엄폐를 끼며 함께 전진하는 동선을 계속 유지하세요.</dd>
+  <dl><dt>관찰</dt><dd>2분 44초부터 앞으로 나아가는 아군 시그마(인도양쭈꾸미)의 뒤를 따라 엄폐물을 끼고 함께 전진했습니다.</dd><dt>판단</dt><dd>전진하는 탱커가 치유 범위를 벗어나지 않도록 함께 이동하여 케어를 유지했습니다.</dd><dt>제안</dt><dd>탱커 전진 시 항상 시야와 거리를 확보하며 따라가세요.</dd>
   </dl>
   <ul class=hud><li class=muted>모델 관찰 · 위치·엄폐는 코드로 확인하지 않음</li></ul>
-  <div class=frames><button class=thumb data-seek="164.5" type=button><img src="evidence/frame_000164500ms.jpg" loading="lazy" alt="2분 44초 화면">2분 44초</button><button class=thumb data-seek="167.5" type=button><img src="evidence/frame_000167500ms.jpg" loading="lazy" alt="2분 48초 화면">2분 48초</button><button class=thumb data-seek="170.5" type=button><img src="evidence/frame_000170500ms.jpg" loading="lazy" alt="2분 50초 화면">2분 50초</button></div>
+  <div class=kf><b>킬피드</b><ul><li><button class=t type=button data-seek='161.5'>2분 42초</button><span class='ally' title='아군'>결식아동(솔저: 76)</span> &gt; <span class='enemy' title='적'>따까리(D.Va)</span></li><li><button class=t type=button data-seek='163.5'>2분 44초</button><span class='ally' title='아군'>인도양쭈꾸미(시그마)</span> &gt; <span class='enemy' title='적'>전도리(시에라)</span></li><li><button class=t type=button data-seek='169.5'>2분 50초</button><span class='unknown' title='명단 밖'>목포사나이</span> &gt; <span class='enemy' title='적'>따까리(D.Va)</span></li></ul></div>
+  <div class=frames><button class=thumb data-seek="167.5" type=button><img src="evidence/frame_000167500ms.jpg" loading="lazy" alt="2분 48초 화면">2분 48초</button></div>
   <details><summary>코치 검수 · 적용 기준 ana.positioning.follow_tank (approved)</summary>
   <fieldset class=review data-id="fb-17">
     <label>관찰 사실 <select name=fact><option value="">-</option><option>정확</option><option>일부 틀림</option><option>틀림</option><option>확인 불가</option></select></label>
@@ -408,15 +430,16 @@ table{border-collapse:collapse;font-size:.8rem} td,th{border:1px solid var(--lin
     <textarea name=comment placeholder="코멘트 (오인식, 놓친 맥락, 기준 수정안 등)"></textarea>
   </fieldset></details>
 </article>
-<article class=card id="fb-18" data-start="172.5" data-end="174.0">
-  <header><button class=num type=button data-seek="172.5" aria-label="18번 피드백 2분 52초로 이동">18</button>
-    <span class=time>2분 52초 ~ 2분 54초</span>
+<article class=card id="fb-18" data-start="172.0" data-end="175.0">
+  <header><button class=num type=button data-seek="172.0" aria-label="18번 피드백 2분 52초로 이동">18</button>
+    <span class=time>2분 52초 ~ 2분 55초</span>
     <span class="chip cat">스킬 사용</span>
     <span class="chip g-withheld">판단 보류</span><span class="chip mode m-tentative">참고·보류</span></header>
   <p class=reasons>근거 부족으로 판단 보류</p>
-  <dl><dt>관찰</dt><dd>2분 53초경 언덕 모퉁이 교전 지역을 향해 생체 수류탄을 던졌습니다.</dd><dt>판단</dt><dd>대치 중 전방 구조물 방향으로 수류탄을 사용했으나 치유 차단 적은 확인되지 않았습니다.</dd><dt>제안</dt><dd>언덕 및 코너 너머로 수류탄을 던질 때는 적의 실제 위치를 스코프나 아군 시야로 확인한 후 던지세요.</dd>
-  </dl>
+  <dl><dt>관찰</dt><dd>2분 53초에 언덕 모퉁이 교전 지역으로 생체 수류탄을 던졌으나 적 치유 차단이나 아군 치유 강화가 발생하지 않았습니다.</dd><dt>판단</dt><dd>유효 타격이 확인되지 않은 대치 수류탄으로 판단 보류 처리합니다.</dd><dt>제안</dt><dd>수류탄은 각이 열리는 순간을 기다려 사용하세요.</dd>
+  <dt>불확실</dt><dd>치유 차단 및 회복 효과 미발생</dd></dl>
   <ul class=hud><li class='h-verified'>HUD 확인 · 생체 수류탄 2분 53초</li></ul>
+  <div class=kf><b>킬피드</b><ul><li><button class=t type=button data-seek='169.5'>2분 50초</button><span class='unknown' title='명단 밖'>목포사나이</span> &gt; <span class='enemy' title='적'>따까리(D.Va)</span></li></ul></div>
   <div class=frames><button class=thumb data-seek="173.0" type=button><img src="evidence/frame_000173000ms.jpg" loading="lazy" alt="2분 53초 화면">2분 53초</button></div>
   <details><summary>코치 검수 · 적용 기준 ana.skill.biotic_grenade_usage (approved)</summary>
   <fieldset class=review data-id="fb-18">
@@ -428,15 +451,16 @@ table{border-collapse:collapse;font-size:.8rem} td,th{border:1px solid var(--lin
     <textarea name=comment placeholder="코멘트 (오인식, 놓친 맥락, 기준 수정안 등)"></textarea>
   </fieldset></details>
 </article>
-<article class=card id="fb-19" data-start="191.5" data-end="193.0">
+<article class=card id="fb-19" data-start="191.5" data-end="194.5">
   <header><button class=num type=button data-seek="191.5" aria-label="19번 피드백 3분 12초로 이동">19</button>
-    <span class=time>3분 12초 ~ 3분 13초</span>
+    <span class=time>3분 12초 ~ 3분 14초</span>
     <span class="chip cat">스킬 사용</span>
     <span class="chip g-withheld">판단 보류</span><span class="chip mode m-tentative">참고·보류</span></header>
   <p class=reasons>근거 부족으로 판단 보류</p>
-  <dl><dt>관찰</dt><dd>3분 12초경 경사로 위 교전 지점을 향해 생체 수류탄을 투척했습니다.</dd><dt>판단</dt><dd>전방 지면 구역으로 던졌으나 치유 차단을 받은 적이 확인되지 않은 사용입니다.</dd><dt>제안</dt><dd>경사로나 언덕 지형에서는 적의 발밑이나 벽면에 맞춰 폭발 반경을 최대화하세요.</dd>
-  </dl>
+  <dl><dt>관찰</dt><dd>3분 12초에 경사로 교전 지점으로 생체 수류탄을 투척했습니다.</dd><dt>판단</dt><dd>효과적인 치유 차단이나 아군 힐이 확인되지 않아 판단을 보류합니다.</dd><dt>제안</dt><dd>스킬 쿨다운을 아끼고 명확한 대상이 보일 때 던지세요.</dd>
+  <dt>불확실</dt><dd>효과 미적용</dd></dl>
   <ul class=hud><li class='h-verified'>HUD 확인 · 생체 수류탄 3분 12초</li></ul>
+  <div class=kf><b>킬피드</b><span class=unknown>이 시간대 처치 없음</span></div>
   <div class=frames><button class=thumb data-seek="192.25" type=button><img src="evidence/frame_000192250ms.jpg" loading="lazy" alt="3분 12초 화면">3분 12초</button></div>
   <details><summary>코치 검수 · 적용 기준 ana.skill.biotic_grenade_usage (approved)</summary>
   <fieldset class=review data-id="fb-19">
@@ -448,16 +472,17 @@ table{border-collapse:collapse;font-size:.8rem} td,th{border:1px solid var(--lin
     <textarea name=comment placeholder="코멘트 (오인식, 놓친 맥락, 기준 수정안 등)"></textarea>
   </fieldset></details>
 </article>
-<article class=card id="fb-20" data-start="193.5" data-end="212.75">
-  <header><button class=num type=button data-seek="193.5" aria-label="20번 피드백 3분 14초로 이동">20</button>
-    <span class=time>3분 14초 ~ 3분 33초</span>
+<article class=card id="fb-20" data-start="193.75" data-end="204.25">
+  <header><button class=num type=button data-seek="193.75" aria-label="20번 피드백 3분 14초로 이동">20</button>
+    <span class=time>3분 14초 ~ 3분 24초</span>
     <span class="chip cat">포지셔닝</span>
-    <span class="chip g-withheld">판단 보류</span><span class="chip mode m-tentative">참고·보류</span></header>
-  <p class=reasons>포지셔닝 좋은 판정은 15초 이내의 특정 순간에만 줌 (이 피드백은 3분 14초 ~ 3분 33초 전체) · 포지셔닝은(는) 코드로 확인할 수 없어 보류</p>
-  <dl><dt>관찰</dt><dd>3분 13초~3분 32초 동안 아군 시그마 및 본대가 경사로를 올라가며 화물을 밀 때, 후방에서 엄폐물과 화물 모서리를 끼며 같이 전진했습니다.</dd><dt>판단</dt><dd>탱커의 전진에 발맞춰 엄폐물을 끼고 함께 이동하여 치유가 끊기지 않도록 관리했습니다.</dd><dt>제안</dt><dd>경사로 및 코너 구간에서 탱커와의 거리를 적절히 유지하며 전진하는 방식을 유지하세요.</dd>
+    <span class="chip g-best">최선</span><span class="chip mode m-tentative">참고·보류</span></header>
+  <p class=reasons>포지셔닝은(는) 코드로 확인할 수 없어 보류</p>
+  <dl><dt>관찰</dt><dd>3분 13초부터 경사로를 올라가는 아군 시그마를 따라 엄폐하며 함께 전진 사격을 이어갔습니다.</dd><dt>판단</dt><dd>탱커가 동선을 넓히며 앞으로 갈 때 뒤처지지 않고 시야각을 살려 같이 전진했습니다.</dd><dt>제안</dt><dd>경사로 지형에서도 탱커 케어 사거리를 계속 확보하세요.</dd>
   </dl>
   <ul class=hud><li class=muted>모델 관찰 · 위치·엄폐는 코드로 확인하지 않음</li></ul>
-  <div class=frames><button class=thumb data-seek="195.25" type=button><img src="evidence/frame_000195250ms.jpg" loading="lazy" alt="3분 15초 화면">3분 15초</button><button class=thumb data-seek="204.25" type=button><img src="evidence/frame_000204250ms.jpg" loading="lazy" alt="3분 24초 화면">3분 24초</button><button class=thumb data-seek="210.25" type=button><img src="evidence/frame_000210250ms.jpg" loading="lazy" alt="3분 30초 화면">3분 30초</button></div>
+  <div class=kf><b>킬피드</b><ul><li><button class=t type=button data-seek='203.25'>3분 23초</button><span class='ally' title='아군'>MMG(독트린)</span> &gt; <span class='enemy' title='적'>HWIWHA(소전)</span></li><li><button class=t type=button data-seek='207.25'>3분 27초</button><span class='ally' title='아군'>목포산아이(파라)</span> &gt; <span class='enemy' title='적'>따까리(D.Va)</span></li></ul></div>
+  <div class=frames><button class=thumb data-seek="198.25" type=button><img src="evidence/frame_000198250ms.jpg" loading="lazy" alt="3분 18초 화면">3분 18초</button></div>
   <details><summary>코치 검수 · 적용 기준 ana.positioning.follow_tank (approved)</summary>
   <fieldset class=review data-id="fb-20">
     <label>관찰 사실 <select name=fact><option value="">-</option><option>정확</option><option>일부 틀림</option><option>틀림</option><option>확인 불가</option></select></label>
@@ -468,15 +493,16 @@ table{border-collapse:collapse;font-size:.8rem} td,th{border:1px solid var(--lin
     <textarea name=comment placeholder="코멘트 (오인식, 놓친 맥락, 기준 수정안 등)"></textarea>
   </fieldset></details>
 </article>
-<article class=card id="fb-21" data-start="207.0" data-end="208.5">
+<article class=card id="fb-21" data-start="207.0" data-end="210.0">
   <header><button class=num type=button data-seek="207.0" aria-label="21번 피드백 3분 27초로 이동">21</button>
-    <span class=time>3분 27초 ~ 3분 28초</span>
+    <span class=time>3분 27초 ~ 3분 30초</span>
     <span class="chip cat">스킬 사용</span>
     <span class="chip g-withheld">판단 보류</span><span class="chip mode m-tentative">참고·보류</span></header>
   <p class=reasons>근거 부족으로 판단 보류</p>
-  <dl><dt>관찰</dt><dd>3분 28초경 적 전방 밀집 구역으로 생체 수류탄을 투척하여 적 주노(서팔광) 1명에게 치유 차단을 걸었습니다.</dd><dt>판단</dt><dd>적 지원가 주노에게 치유 차단을 적용했으나 이후 처치 연계는 확인되지 않은 일반적인 수류탄 투척입니다.</dd><dt>제안</dt><dd>적 지원가에게 치유 차단이 들어갔을 때 아군 파라/솔저가 바로 물 수 있도록 사선을 지원하세요.</dd>
-  </dl>
-  <ul class=hud><li class='h-verified'>HUD 확인 · 생체 수류탄 3분 28초 → 치유 차단 적 1명: 서팔광(주노)(코드 확인)</li></ul>
+  <dl><dt>관찰</dt><dd>3분 28초에 적 주노(서팔광)에게 치유 차단을 걸고 본인 체력을 회복하는 생체 수류탄을 사용했습니다.</dd><dt>판단</dt><dd>단일 서포터 치유 차단 및 자생 목적으로 사용되었으나 주요 교전 결정타로 이어졌는지는 근거가 다소 부족합니다.</dd><dt>제안</dt><dd>상대 딜러/탱커 진형 중점에 던져 치유 차단 파급력을 늘리세요.</dd>
+  <dt>불확실</dt><dd>단일 적 지원가 치유 차단 후 연계 미확인</dd></dl>
+  <ul class=hud><li class='h-verified'>HUD 확인 · 생체 수류탄 3분 28초 → 맞은 아군: 자신(코드 확인) → 치유 차단 적 1명: 서팔광(주노)(코드 확인)</li></ul>
+  <div class=kf><b>킬피드</b><ul><li><button class=t type=button data-seek='207.25'>3분 27초</button><span class='ally' title='아군'>목포산아이(파라)</span> &gt; <span class='enemy' title='적'>따까리(D.Va)</span></li><li><button class=t type=button data-seek='209.25'>3분 29초</button><span class='ally' title='아군'>인도양쭈꾸미(시그마)</span> &gt; <span class='enemy' title='적'>블켄(모이라)</span></li></ul></div>
   <div class=frames><button class=thumb data-seek="207.75" type=button><img src="evidence/frame_000207750ms.jpg" loading="lazy" alt="3분 28초 화면">3분 28초</button></div>
   <details><summary>코치 검수 · 적용 기준 ana.skill.biotic_grenade_usage (approved)</summary>
   <fieldset class=review data-id="fb-21">
@@ -488,17 +514,18 @@ table{border-collapse:collapse;font-size:.8rem} td,th{border:1px solid var(--lin
     <textarea name=comment placeholder="코멘트 (오인식, 놓친 맥락, 기준 수정안 등)"></textarea>
   </fieldset></details>
 </article>
-<article class=card id="fb-22" data-start="220.75" data-end="234.75">
-  <header><button class=num type=button data-seek="220.75" aria-label="22번 피드백 3분 41초로 이동">22</button>
-    <span class=time>3분 41초 ~ 3분 55초</span>
+<article class=card id="fb-22" data-start="224.0" data-end="234.0">
+  <header><button class=num type=button data-seek="224.0" aria-label="22번 피드백 3분 44초로 이동">22</button>
+    <span class=time>3분 44초 ~ 3분 54초</span>
     <span class="chip cat">포지셔닝</span>
     <span class="chip g-best">최선</span><span class="chip mode m-tentative">참고·보류</span></header>
   <p class=reasons>코치 검수되지 않은 기준 · 포지셔닝은(는) 코드로 확인할 수 없어 보류</p>
-  <dl><dt>관찰</dt><dd>3분 40초~3분 54초 동안 체력 250을 유지하며 아군 시그마의 방벽 뒤 및 계단 근처 엄폐물을 활용해 후방 지원 포지션을 지켰습니다.</dd><dt>판단</dt><dd>대치 우위 조합의 맥락에 맞게 방벽과 계단 엄폐물을 끼고 죽지 않는 선에서 안정적으로 교전을 유지했습니다.</dd><dt>제안</dt><dd>방벽 뒤 및 계단 엄폐 포지션을 지속적으로 활용하세요.</dd>
+  <dl><dt>관찰</dt><dd>3분 44초에 시그마의 방벽 뒤 및 계단 엄폐물 모서리에서 스코프 조준으로 아군을 지원했습니다.</dd><dt>판단</dt><dd>아군 대치 우위 조합에 맞춰 몸을 숨기며 안전하게 힐 사거리를 유지했습니다.</dd><dt>제안</dt><dd>계단 지형과 방벽 뒤 포지셔닝을 유지하세요.</dd>
   </dl>
   <ul class=hud><li class=muted>모델 관찰 · 위치·엄폐는 코드로 확인하지 않음</li></ul>
-  <div class=frames><button class=thumb data-seek="223.75" type=button><img src="evidence/frame_000223750ms.jpg" loading="lazy" alt="3분 44초 화면">3분 44초</button><button class=thumb data-seek="226.75" type=button><img src="evidence/frame_000226750ms.jpg" loading="lazy" alt="3분 47초 화면">3분 47초</button><button class=thumb data-seek="232.75" type=button><img src="evidence/frame_000232750ms.jpg" loading="lazy" alt="3분 53초 화면">3분 53초</button></div>
-  <details><summary>코치 검수 · 적용 기준 common.positioning.standoff_survival, ana.positioning.cover_access (draft)</summary>
+  <div class=kf><b>킬피드</b><ul><li><button class=t type=button data-seek='224.75'>3분 45초</button><span class='ally' title='아군'>인도양쭈꾸미(시그마)</span> &gt; <span class='enemy' title='적'>전도리(시에라)</span></li></ul></div>
+  <div class=frames><button class=thumb data-seek="226.75" type=button><img src="evidence/frame_000226750ms.jpg" loading="lazy" alt="3분 47초 화면">3분 47초</button></div>
+  <details><summary>코치 검수 · 적용 기준 ana.positioning.cover_access, common.positioning.standoff_survival (draft)</summary>
   <fieldset class=review data-id="fb-22">
     <label>관찰 사실 <select name=fact><option value="">-</option><option>정확</option><option>일부 틀림</option><option>틀림</option><option>확인 불가</option></select></label>
     <label>판단 <select name=assessment><option value="">-</option><option>동의</option><option>부분 동의</option><option>반대</option></select></label>
@@ -508,15 +535,16 @@ table{border-collapse:collapse;font-size:.8rem} td,th{border:1px solid var(--lin
     <textarea name=comment placeholder="코멘트 (오인식, 놓친 맥락, 기준 수정안 등)"></textarea>
   </fieldset></details>
 </article>
-<article class=card id="fb-23" data-start="229.0" data-end="230.5">
+<article class=card id="fb-23" data-start="229.0" data-end="232.0">
   <header><button class=num type=button data-seek="229.0" aria-label="23번 피드백 3분 49초로 이동">23</button>
-    <span class=time>3분 49초 ~ 3분 50초</span>
+    <span class=time>3분 49초 ~ 3분 52초</span>
     <span class="chip cat">스킬 사용</span>
     <span class="chip g-withheld">판단 보류</span><span class="chip mode m-tentative">참고·보류</span></header>
   <p class=reasons>근거 부족으로 판단 보류</p>
-  <dl><dt>관찰</dt><dd>3분 50초경 전방 적 D.Va(따까리) 방향으로 생체 수류탄을 투척했습니다.</dd><dt>판단</dt><dd>적 D.Va 근처에서 폭발했으나 치유 차단 효과 판정이 발생하지 않았습니다.</dd><dt>제안</dt><dd>D.Va 방어 매트릭스 쿨다운이나 방벽이 비는 순간을 노려 수류탄을 확실히 명중시키세요.</dd>
-  </dl>
+  <dl><dt>관찰</dt><dd>3분 50초에 전방 적 D.Va(따까리) 방면으로 생체 수류탄을 투척했습니다.</dd><dt>판단</dt><dd>적에게 적중했으나 팀 목록상 보라색 치유 차단 상태가 발생하지 않아 효과를 보류합니다.</dd><dt>제안</dt><dd>방벽이나 매트리스를 피해 수류탄을 던지세요.</dd>
+  <dt>불확실</dt><dd>치유 차단 미적용</dd></dl>
   <ul class=hud><li class='h-verified'>HUD 확인 · 생체 수류탄 3분 50초</li></ul>
+  <div class=kf><b>킬피드</b><span class=unknown>이 시간대 처치 없음</span></div>
   <div class=frames><button class=thumb data-seek="229.75" type=button><img src="evidence/frame_000229750ms.jpg" loading="lazy" alt="3분 50초 화면">3분 50초</button></div>
   <details><summary>코치 검수 · 적용 기준 ana.skill.biotic_grenade_usage (approved)</summary>
   <fieldset class=review data-id="fb-23">
@@ -533,12 +561,13 @@ table{border-collapse:collapse;font-size:.8rem} td,th{border:1px solid var(--lin
     <span class=time>4분 0초 ~ 4분 16초</span>
     <span class="chip cat">포지셔닝</span>
     <span class="chip g-withheld">판단 보류</span><span class="chip mode m-tentative">참고·보류</span></header>
-  <p class=reasons>코치 검수되지 않은 기준 · 포지셔닝 좋은 판정은 15초 이내의 특정 순간에만 줌 (이 피드백은 4분 0초 ~ 4분 16초 전체) · 포지셔닝은(는) 코드로 확인할 수 없어 보류</p>
-  <dl><dt>관찰</dt><dd>3분 59초~4분 16초 동안 화물 뒤편 및 정면 문 입구 엄폐물을 끼고 아군 본대 뒤에서 위치를 잡았습니다.</dd><dt>판단</dt><dd>엄폐물 모서리에서 사격각을 확보하며 본대의 교전을 지원했습니다.</dd><dt>제안</dt><dd>화물 뒤 및 문 모서리 엄폐를 끼고 사거리를 확보하는 포지셔닝을 유지하세요.</dd>
+  <p class=reasons>포지셔닝 좋은 판정은 15초 이내의 특정 순간에만 줌 (이 피드백은 4분 0초 ~ 4분 16초 전체) · 포지셔닝은(는) 코드로 확인할 수 없어 보류</p>
+  <dl><dt>관찰</dt><dd>3분 59초부터 4분 16초까지 화물 뒤편 및 시그마 방벽 뒤 공간에서 대치 포지션을 유지했습니다.</dd><dt>판단</dt><dd>대치 우위 조합의 승리 공식에 맞춰 무리하지 않고 엄폐를 끼고 사거리를 유지하며 싸웠습니다.</dd><dt>제안</dt><dd>대치 우위 조합일 때는 계속해서 안전 사거리에서 사격 각을 잡으세요.</dd>
   </dl>
   <ul class=hud><li class=muted>모델 관찰 · 위치·엄폐는 코드로 확인하지 않음</li></ul>
-  <div class=frames><button class=thumb data-seek="239.5" type=button><img src="evidence/frame_000239500ms.jpg" loading="lazy" alt="4분 0초 화면">4분 0초</button><button class=thumb data-seek="242.5" type=button><img src="evidence/frame_000242500ms.jpg" loading="lazy" alt="4분 2초 화면">4분 2초</button><button class=thumb data-seek="254.5" type=button><img src="evidence/frame_000254500ms.jpg" loading="lazy" alt="4분 14초 화면">4분 14초</button></div>
-  <details><summary>코치 검수 · 적용 기준 ana.positioning.cover_access (draft)</summary>
+  <div class=kf><b>킬피드</b><ul><li><button class=t type=button data-seek='249.5'>4분 10초</button><span class='ally' title='아군'>결식아동(솔저: 76)</span> &gt; <span class='enemy' title='적'>서팔광(주노)</span></li><li><button class=t type=button data-seek='251.5'>4분 12초</button><span class='enemy' title='적'>따까리(D.Va)</span> &gt; <span class='ally' title='아군'>결식아동(솔저: 76)</span></li></ul></div>
+  <div class=frames><button class=thumb data-seek="242.5" type=button><img src="evidence/frame_000242500ms.jpg" loading="lazy" alt="4분 2초 화면">4분 2초</button></div>
+  <details><summary>코치 검수 · 적용 기준 common.positioning.standoff_survival (approved)</summary>
   <fieldset class=review data-id="fb-24">
     <label>관찰 사실 <select name=fact><option value="">-</option><option>정확</option><option>일부 틀림</option><option>틀림</option><option>확인 불가</option></select></label>
     <label>판단 <select name=assessment><option value="">-</option><option>동의</option><option>부분 동의</option><option>반대</option></select></label>
@@ -548,15 +577,16 @@ table{border-collapse:collapse;font-size:.8rem} td,th{border:1px solid var(--lin
     <textarea name=comment placeholder="코멘트 (오인식, 놓친 맥락, 기준 수정안 등)"></textarea>
   </fieldset></details>
 </article>
-<article class=card id="fb-25" data-start="248.5" data-end="250.5">
+<article class=card id="fb-25" data-start="248.5" data-end="251.5">
   <header><button class=num type=button data-seek="248.5" aria-label="25번 피드백 4분 8초로 이동">25</button>
-    <span class=time>4분 8초 ~ 4분 10초</span>
+    <span class=time>4분 8초 ~ 4분 12초</span>
     <span class="chip cat">궁극기 사용</span>
     <span class="chip g-blunder">블런더</span><span class="chip mode m-assertive">단정</span></header>
   
-  <dl><dt>관찰</dt><dd>4분 10초경 나노 강화제를 시전했으나 해당 아군(결식아동 솔저: 76)이 이미 집중 공격을 받아 쓰러져 강화 효과가 끊겼습니다.</dd><dt>판단</dt><dd>이미 체력이 급감하여 쓰러지기 직전인 아군에게 나노 강화제를 늦게 부여하여 궁극기 효과가 허무하게 낭비된 명백한 판단 실수(블런더)입니다.</dd><dt>제안</dt><dd>아군이 쓰러지기 전 타이밍을 미리 예측하여 일찍 주거나, 이미 늦었다면 해당 아군을 포기하고 다른 아군에게 주거나 궁극기를 아끼세요.</dd>
+  <dl><dt>관찰</dt><dd>4분 10초에 아군 솔저: 76(결식아동)에게 나노 강화제를 시전했으나, 시전 직후 해당 아군이 사망하여 궁극기 효과가 중단되었습니다.</dd><dt>판단</dt><dd>이미 체력이 깎여 쓰러지기 직전인 아군에게 늦게 나노 강화제를 부여하여 궁극기가 낭비되었습니다.</dd><dt>제안</dt><dd>아군 체력이 위험 수준으로 떨어지기 전에 미리 나노 강화제를 주거나, 이미 늦었다면 다른 아군에게 주거나 아끼세요.</dd>
   </dl>
   <ul class=hud><li class='h-verified'>HUD 확인 · 나노 강화제 4분 10초 → 대상 결식아동(솔저: 76) 쓰러져 끊김(추정)</li></ul>
+  <div class=kf><b>킬피드</b><ul><li><button class=t type=button data-seek='249.5'>4분 10초</button><span class='ally' title='아군'>결식아동(솔저: 76)</span> &gt; <span class='enemy' title='적'>서팔광(주노)</span></li><li><button class=t type=button data-seek='251.5'>4분 12초</button><span class='enemy' title='적'>따까리(D.Va)</span> &gt; <span class='ally' title='아군'>결식아동(솔저: 76)</span></li></ul></div>
   <div class=frames><button class=thumb data-seek="249.5" type=button><img src="evidence/frame_000249500ms.jpg" loading="lazy" alt="4분 10초 화면">4분 10초</button></div>
   <details><summary>코치 검수 · 적용 기준 ana.ultimate.nano_boost_usage (approved)</summary>
   <fieldset class=review data-id="fb-25">
@@ -568,15 +598,16 @@ table{border-collapse:collapse;font-size:.8rem} td,th{border:1px solid var(--lin
     <textarea name=comment placeholder="코멘트 (오인식, 놓친 맥락, 기준 수정안 등)"></textarea>
   </fieldset></details>
 </article>
-<article class=card id="fb-26" data-start="250.0" data-end="251.5">
+<article class=card id="fb-26" data-start="250.0" data-end="253.0">
   <header><button class=num type=button data-seek="250.0" aria-label="26번 피드백 4분 10초로 이동">26</button>
-    <span class=time>4분 10초 ~ 4분 12초</span>
+    <span class=time>4분 10초 ~ 4분 13초</span>
     <span class="chip cat">스킬 사용</span>
     <span class="chip g-withheld">판단 보류</span><span class="chip mode m-tentative">참고·보류</span></header>
   <p class=reasons>근거 부족으로 판단 보류</p>
-  <dl><dt>관찰</dt><dd>4분 10초경 정면 교전 지역으로 생체 수류탄을 투척하여 적 D.Va(따까리) 1명에게 치유 차단을 걸었습니다.</dd><dt>판단</dt><dd>진격하는 적 D.Va에게 치유 차단을 걸었으나 직후 처치 관여로는 이어지지 않았습니다.</dd><dt>제안</dt><dd>아군 탱커가 진입하는 타이밍에 적 진형 발밑에 생체 수류탄을 던져 연계 효과를 높이세요.</dd>
-  </dl>
+  <dl><dt>관찰</dt><dd>4분 10초에 정면 입구의 적 D.Va(따까리)에게 생체 수류탄을 던져 치유 차단을 적용했습니다.</dd><dt>판단</dt><dd>적 1명에게 치유 차단을 걸었으나 직후 아군 솔저가 사망하고 추가 처치로 연결되지 않았습니다.</dd><dt>제안</dt><dd>한타 진행 중에 확실한 연계 타이밍에 투척하세요.</dd>
+  <dt>불확실</dt><dd>치유 차단 후 연계 처치 부재</dd></dl>
   <ul class=hud><li class='h-verified'>HUD 확인 · 생체 수류탄 4분 10초 → 치유 차단 적 1명: 따까리(D.Va)(코드 확인)</li></ul>
+  <div class=kf><b>킬피드</b><ul><li><button class=t type=button data-seek='249.5'>4분 10초</button><span class='ally' title='아군'>결식아동(솔저: 76)</span> &gt; <span class='enemy' title='적'>서팔광(주노)</span></li><li><button class=t type=button data-seek='251.5'>4분 12초</button><span class='enemy' title='적'>따까리(D.Va)</span> &gt; <span class='ally' title='아군'>결식아동(솔저: 76)</span></li></ul></div>
   <div class=frames><button class=thumb data-seek="250.5" type=button><img src="evidence/frame_000250500ms.jpg" loading="lazy" alt="4분 10초 화면">4분 10초</button></div>
   <details><summary>코치 검수 · 적용 기준 ana.skill.biotic_grenade_usage (approved)</summary>
   <fieldset class=review data-id="fb-26">
@@ -588,17 +619,18 @@ table{border-collapse:collapse;font-size:.8rem} td,th{border:1px solid var(--lin
     <textarea name=comment placeholder="코멘트 (오인식, 놓친 맥락, 기준 수정안 등)"></textarea>
   </fieldset></details>
 </article>
-<article class=card id="fb-27" data-start="259.25" data-end="273.25">
-  <header><button class=num type=button data-seek="259.25" aria-label="27번 피드백 4분 19초로 이동">27</button>
-    <span class=time>4분 19초 ~ 4분 33초</span>
+<article class=card id="fb-27" data-start="262.25" data-end="273.25">
+  <header><button class=num type=button data-seek="262.25" aria-label="27번 피드백 4분 22초로 이동">27</button>
+    <span class=time>4분 22초 ~ 4분 33초</span>
     <span class="chip cat">포지셔닝</span>
     <span class="chip g-best">최선</span><span class="chip mode m-tentative">참고·보류</span></header>
-  <p class=reasons>코치 검수되지 않은 기준 · 포지셔닝은(는) 코드로 확인할 수 없어 보류</p>
-  <dl><dt>관찰</dt><dd>4분 19초~4분 33초 동안 실내 통로를 지나 화물 뒤편에서 본대 전체를 시야에 담을 수 있는 각도에 포지셔닝했습니다.</dd><dt>판단</dt><dd>아군 본대와 화물 주변 상황이 한눈에 보이는 위치에서 안전하게 사선을 확보했습니다.</dd><dt>제안</dt><dd>아군 다수가 한 화면에 보이는 넓은 후방 시야각을 지속적으로 확보하세요.</dd>
+  <p class=reasons>포지셔닝은(는) 코드로 확인할 수 없어 보류</p>
+  <dl><dt>관찰</dt><dd>4분 22초부터 화물 주변 중앙 홀에서 엄폐물을 끼고 안전 거리를 확보하며 본대를 백업했습니다.</dd><dt>판단</dt><dd>대치 우위 조합 특성에 맞게 죽지 않는 선을 지키며 포지션을 잘 유지했습니다.</dd><dt>제안</dt><dd>화물 전진 시에도 지금처럼 엄폐물 근처 후방 지원 위치를 고수하세요.</dd>
   </dl>
   <ul class=hud><li class=muted>모델 관찰 · 위치·엄폐는 코드로 확인하지 않음</li></ul>
-  <div class=frames><button class=thumb data-seek="262.25" type=button><img src="evidence/frame_000262250ms.jpg" loading="lazy" alt="4분 22초 화면">4분 22초</button><button class=thumb data-seek="265.25" type=button><img src="evidence/frame_000265250ms.jpg" loading="lazy" alt="4분 25초 화면">4분 25초</button><button class=thumb data-seek="271.25" type=button><img src="evidence/frame_000271250ms.jpg" loading="lazy" alt="4분 31초 화면">4분 31초</button></div>
-  <details><summary>코치 검수 · 적용 기준 ana.positioning.sightline_to_team (draft)</summary>
+  <div class=kf><b>킬피드</b><ul><li><button class=t type=button data-seek='267.25'>4분 27초</button><span class='ally' title='아군'>MMG(독트린)</span> &gt; <span class='enemy' title='적'>따까리(D.Va)</span></li><li><button class=t type=button data-seek='269.25'>4분 29초</button><span class='enemy' title='적'>따까리(D.Va)</span> &gt; <span class='ally' title='아군'>인도양쭈꾸미(시그마)</span></li><li><button class=t type=button data-seek='273.25'>4분 33초</button><span class='ally' title='아군'>결식아동(솔저: 76)</span> &gt; <span class='enemy' title='적'>HWIWHA(소전)</span></li></ul></div>
+  <div class=frames><button class=thumb data-seek="265.25" type=button><img src="evidence/frame_000265250ms.jpg" loading="lazy" alt="4분 25초 화면">4분 25초</button></div>
+  <details><summary>코치 검수 · 적용 기준 common.positioning.standoff_survival (approved)</summary>
   <fieldset class=review data-id="fb-27">
     <label>관찰 사실 <select name=fact><option value="">-</option><option>정확</option><option>일부 틀림</option><option>틀림</option><option>확인 불가</option></select></label>
     <label>판단 <select name=assessment><option value="">-</option><option>동의</option><option>부분 동의</option><option>반대</option></select></label>
@@ -608,15 +640,16 @@ table{border-collapse:collapse;font-size:.8rem} td,th{border:1px solid var(--lin
     <textarea name=comment placeholder="코멘트 (오인식, 놓친 맥락, 기준 수정안 등)"></textarea>
   </fieldset></details>
 </article>
-<article class=card id="fb-28" data-start="267.5" data-end="269.0">
+<article class=card id="fb-28" data-start="267.5" data-end="270.5">
   <header><button class=num type=button data-seek="267.5" aria-label="28번 피드백 4분 28초로 이동">28</button>
-    <span class=time>4분 28초 ~ 4분 29초</span>
+    <span class=time>4분 28초 ~ 4분 30초</span>
     <span class="chip cat">스킬 사용</span>
     <span class="chip g-withheld">판단 보류</span><span class="chip mode m-tentative">참고·보류</span></header>
   <p class=reasons>근거 부족으로 판단 보류</p>
-  <dl><dt>관찰</dt><dd>4분 28초경 정면 적 진형 지 지형 너머로 생체 수류탄을 투척했습니다.</dd><dt>판단</dt><dd>정면 적 위치로 수류탄을 던졌으나 적 치유 차단 판정은 없었습니다.</dd><dt>제안</dt><dd>적의 이동 경로나 대치 라인을 정확히 파악한 후 수류탄을 투척하세요.</dd>
-  </dl>
+  <dl><dt>관찰</dt><dd>4분 28초에 정면 적 진형을 향해 생체 수류탄을 투척했습니다.</dd><dt>판단</dt><dd>치유 차단이나 회복 판정이 발생하지 않아 효과를 보류합니다.</dd><dt>제안</dt><dd>적 탱커나 아군 밀집 지역을 향해 더 정교하게 사용하세요.</dd>
+  <dt>불확실</dt><dd>효과 미적용</dd></dl>
   <ul class=hud><li class='h-verified'>HUD 확인 · 생체 수류탄 4분 28초</li></ul>
+  <div class=kf><b>킬피드</b><ul><li><button class=t type=button data-seek='267.25'>4분 27초</button><span class='ally' title='아군'>MMG(독트린)</span> &gt; <span class='enemy' title='적'>따까리(D.Va)</span></li><li><button class=t type=button data-seek='269.25'>4분 29초</button><span class='enemy' title='적'>따까리(D.Va)</span> &gt; <span class='ally' title='아군'>인도양쭈꾸미(시그마)</span></li><li><button class=t type=button data-seek='273.25'>4분 33초</button><span class='ally' title='아군'>결식아동(솔저: 76)</span> &gt; <span class='enemy' title='적'>HWIWHA(소전)</span></li></ul></div>
   <div class=frames><button class=thumb data-seek="268.25" type=button><img src="evidence/frame_000268250ms.jpg" loading="lazy" alt="4분 28초 화면">4분 28초</button></div>
   <details><summary>코치 검수 · 적용 기준 ana.skill.biotic_grenade_usage (approved)</summary>
   <fieldset class=review data-id="fb-28">
@@ -628,18 +661,18 @@ table{border-collapse:collapse;font-size:.8rem} td,th{border:1px solid var(--lin
     <textarea name=comment placeholder="코멘트 (오인식, 놓친 맥락, 기준 수정안 등)"></textarea>
   </fieldset></details>
 </article>
-  <details><summary>다음 경기 과제</summary><ul><li>나노 강화제 사용 타이밍 개선 (사망 직전 아군에 대한 궁극기 부여 지양) <span class=muted>— 체력이 급감하여 이미 쓰러지기 직전인 아군에게 나노 강화제를 부여하면 강화 효과가 적용되기도 전에 아군이 사망하여 궁극기가 손실됩니다. (25번)</span></li><li>생체 수류탄 노림수 및 연계 강화 <span class=muted>— 대치 중 단순 투척보다 적 탱커(D.Va 등)의 치유 차단을 노리거나 수면총 적중 직후 연계하여 적을 확실히 터뜨리는 노림수가 전투 승리에 결정적입니다. (3번, 8번, 16번)</span></li><li>엄폐물 밀착 및 탱커 동선 추종 포지셔닝 유지 <span class=muted>— 대치 포킹 조합에서는 아나가 죽지 않는 선에서 엄폐물을 끼고 탱커 전진 시 함께 동선을 맞춰 치유가 끊기지 않게 유지하는 것이 핵심입니다. (3번, 16번)</span></li></ul></details>
+  <details><summary>다음 경기 과제</summary><ul><li>나노 강화제 사용 시 아군 체력 상태를 확인하고 타이밍을 앞당기기 <span class=muted>— 4분 10초에 쓰러지기 직전인 아군에게 나노 강화제를 시전하여 궁극기 효과가 끊기는 실수가 발생했습니다. (25번)</span></li><li>진입하는 적 탱커(D.Va)에게 수면총과 생체 수류탄 연계 강화하기 <span class=muted>— 적 D.Va 진입 시 수면총 적중 후 생체 수류탄 치유 차단을 노려 확실하게 적 탱커를 제압할 수 있습니다. (2번, 7번, 16번)</span></li><li>생체 수류탄을 던질 때 명확한 치유 차단/아군 회복 노림수 가지기 <span class=muted>— 대치 중 효과가 적용되지 않는 무분별한 수류탄 투척이 자주 확인되었습니다. (7번, 12번, 13번, 15번)</span></li></ul></details>
   <details class=meta><summary>검수 · 기록</summary>
     <textarea id=missed placeholder="AI가 놓친 중요한 장면: 시간 + 설명"></textarea><p><button id=save type=button>검수 결과 저장 (coach_review.json)</button></p>
-    <details><summary>제외된 항목 (1)</summary><ul><li><b>중복 피드백</b> 2분 0초경 전방 사선 방향으로 수면총을 발사하였으나 빗나갔습니다.</li></ul></details>
+    <details><summary>제외된 항목 (1)</summary><ul><li><b>중복 피드백</b> 2분 0초에 전방 적을 향해 수면총을 시도했으나 빗나갔습니다.</li></ul></details>
     <details><summary>경고</summary><ul><li>없음</li></ul></details>
-    <details><summary>사용량 · 비용</summary><p>비용: 이번 실행 $0.1550 USD · 전체 분석 1회(캐시 없이) $0.7858 USD — 추정치: 토큰 수 × pricing.yaml 단가. thinking 토큰은 출력 단가로 계산. 단가 출처: https://deepmind.google/models/ (Gemini 3.6 Flash 모델 페이지, 사용자 제공 화면) (확인일 2026-10-15)</p>
-      <div class=scroll><table><tr><th>단계</th><th>모델</th><th>입력</th><th>출력</th><th>thinking</th><th>시도</th><th>캐시</th></tr><tr><td>team</td><td>gemini-3.6-flash</td><td>6867</td><td>252</td><td>1273</td><td>1</td><td>예</td></tr><tr><td>overview</td><td>gemini-3.6-flash</td><td>20879</td><td>1140</td><td>1527</td><td>1</td><td>예</td></tr><tr><td>detail:scene-01</td><td>gemini-3.6-flash</td><td>9805</td><td>1387</td><td>3189</td><td>1</td><td>예</td></tr><tr><td>detail:scene-02</td><td>gemini-3.6-flash</td><td>6866</td><td>1446</td><td>2042</td><td>1</td><td>예</td></tr><tr><td>detail:scene-03</td><td>gemini-3.6-flash</td><td>12997</td><td>2490</td><td>2914</td><td>1</td><td>예</td></tr><tr><td>detail:scene-04</td><td>gemini-3.6-flash</td><td>11379</td><td>2576</td><td>1030</td><td>1</td><td>예</td></tr><tr><td>detail:scene-05</td><td>gemini-3.6-flash</td><td>10183</td><td>2126</td><td>1440</td><td>1</td><td>예</td></tr><tr><td>detail:scene-06</td><td>gemini-3.6-flash</td><td>10447</td><td>2202</td><td>2740</td><td>1</td><td>예</td></tr><tr><td>detail:scene-07</td><td>gemini-3.6-flash</td><td>6313</td><td>1364</td><td>1474</td><td>1</td><td>예</td></tr><tr><td>detail:scene-08</td><td>gemini-3.6-flash</td><td>7053</td><td>1565</td><td>1321</td><td>1</td><td>예</td></tr><tr><td>detail:scene-09</td><td>gemini-3.6-flash</td><td>6313</td><td>1374</td><td>1350</td><td>1</td><td>예</td></tr><tr><td>moment:biotic_grenade@40초</td><td>gemini-3.6-flash</td><td>2470</td><td>67</td><td>654</td><td>1</td><td>예</td></tr><tr><td>moment:sleep_dart@52초</td><td>gemini-3.6-flash</td><td>2468</td><td>57</td><td>516</td><td>1</td><td>예</td></tr><tr><td>moment:biotic_grenade@1분 7초</td><td>gemini-3.6-flash</td><td>2470</td><td>42</td><td>689</td><td>1</td><td>예</td></tr><tr><td>moment:biotic_grenade@1분 35초</td><td>gemini-3.6-flash</td><td>2470</td><td>60</td><td>770</td><td>1</td><td>예</td></tr><tr><td>moment:sleep_dart@1분 42초</td><td>gemini-3.6-flash</td><td>2468</td><td>39</td><td>1549</td><td>1</td><td>예</td></tr><tr><td>moment:biotic_grenade@1분 52초</td><td>gemini-3.6-flash</td><td>2470</td><td>65</td><td>599</td><td>1</td><td>예</td></tr><tr><td>moment:sleep_dart@2분 0초</td><td>gemini-3.6-flash</td><td>2468</td><td>58</td><td>1648</td><td>1</td><td>예</td></tr><tr><td>moment:biotic_grenade@2분 6초</td><td>gemini-3.6-flash</td><td>2470</td><td>60</td><td>1290</td><td>1</td><td>예</td></tr><tr><td>moment:sleep_dart@2분 20초</td><td>gemini-3.6-flash</td><td>2468</td><td>50</td><td>1311</td><td>1</td><td>예</td></tr><tr><td>moment:biotic_grenade@2분 24초</td><td>gemini-3.6-flash</td><td>2470</td><td>53</td><td>699</td><td>1</td><td>예</td></tr><tr><td>moment:biotic_grenade@2분 38초</td><td>gemini-3.6-flash</td><td>2470</td><td>64</td><td>854</td><td>1</td><td>예</td></tr><tr><td>moment:biotic_grenade@2분 53초</td><td>gemini-3.6-flash</td><td>2470</td><td>62</td><td>547</td><td>1</td><td>예</td></tr><tr><td>moment:biotic_grenade@3분 12초</td><td>gemini-3.6-flash</td><td>2470</td><td>70</td><td>1037</td><td>1</td><td>예</td></tr><tr><td>moment:biotic_grenade@3분 28초</td><td>gemini-3.6-flash</td><td>2470</td><td>36</td><td>724</td><td>1</td><td>예</td></tr><tr><td>moment:biotic_grenade@3분 50초</td><td>gemini-3.6-flash</td><td>2470</td><td>71</td><td>657</td><td>1</td><td>예</td></tr><tr><td>moment:biotic_grenade@4분 10초</td><td>gemini-3.6-flash</td><td>2470</td><td>63</td><td>670</td><td>1</td><td>예</td></tr><tr><td>moment:biotic_grenade@4분 28초</td><td>gemini-3.6-flash</td><td>2470</td><td>70</td><td>470</td><td>1</td><td>예</td></tr><tr><td>coaching</td><td>gemini-3.6-flash</td><td>32489</td><td>9073</td><td>5095</td><td>1</td><td></td></tr></table></div></details>
-    <p class=muted>run 066030940318-ana · 프롬프트 team 0.3.0, overview 0.5.0, detail 0.7.0, moment 0.3.0, coaching 0.20.0, killer 0.1.0 · 영웅 기준 0.5.0-draft+common-0.4.0 · 게임 패치 최신 (사용자 기준, 버전 번호 미확인)</p>
+    <details><summary>사용량 · 비용</summary><p>비용: 이번 실행 $0.5558 USD · 전체 분석 1회(캐시 없이) $1.1867 USD — 추정치: 토큰 수 × pricing.yaml 단가. thinking 토큰은 출력 단가로 계산. 단가 출처: https://deepmind.google/models/ (Gemini 3.6 Flash 모델 페이지, 사용자 제공 화면) (확인일 2026-10-15)</p>
+      <div class=scroll><table><tr><th>단계</th><th>모델</th><th>입력</th><th>출력</th><th>thinking</th><th>시도</th><th>캐시</th></tr><tr><td>team</td><td>gemini-3.6-flash</td><td>6867</td><td>252</td><td>1273</td><td>1</td><td>예</td></tr><tr><td>overview</td><td>gemini-3.6-flash</td><td>20879</td><td>1140</td><td>1527</td><td>1</td><td>예</td></tr><tr><td>detail:scene-01</td><td>gemini-3.6-flash</td><td>9805</td><td>1387</td><td>3189</td><td>1</td><td>예</td></tr><tr><td>killfeed@scene-01</td><td>gemini-3.6-flash</td><td>16224</td><td>146</td><td>961</td><td>1</td><td></td></tr><tr><td>detail:scene-02</td><td>gemini-3.6-flash</td><td>6866</td><td>1446</td><td>2042</td><td>1</td><td>예</td></tr><tr><td>killfeed@scene-02</td><td>gemini-3.6-flash</td><td>10921</td><td>180</td><td>1823</td><td>1</td><td></td></tr><tr><td>detail:scene-03</td><td>gemini-3.6-flash</td><td>12997</td><td>2490</td><td>2914</td><td>1</td><td>예</td></tr><tr><td>killfeed@scene-03</td><td>gemini-3.6-flash</td><td>22687</td><td>143</td><td>1530</td><td>1</td><td></td></tr><tr><td>detail:scene-04</td><td>gemini-3.6-flash</td><td>11379</td><td>2576</td><td>1030</td><td>1</td><td>예</td></tr><tr><td>killfeed@scene-04</td><td>gemini-3.6-flash</td><td>19486</td><td>56</td><td>782</td><td>1</td><td></td></tr><tr><td>detail:scene-05</td><td>gemini-3.6-flash</td><td>10183</td><td>2126</td><td>1440</td><td>1</td><td>예</td></tr><tr><td>killfeed@scene-05</td><td>gemini-3.6-flash</td><td>17352</td><td>196</td><td>3338</td><td>1</td><td></td></tr><tr><td>detail:scene-06</td><td>gemini-3.6-flash</td><td>10447</td><td>2202</td><td>2740</td><td>1</td><td>예</td></tr><tr><td>killfeed@scene-06</td><td>gemini-3.6-flash</td><td>17365</td><td>88</td><td>868</td><td>1</td><td></td></tr><tr><td>detail:scene-07</td><td>gemini-3.6-flash</td><td>6313</td><td>1364</td><td>1474</td><td>1</td><td>예</td></tr><tr><td>killfeed@scene-07</td><td>gemini-3.6-flash</td><td>9879</td><td>62</td><td>645</td><td>1</td><td></td></tr><tr><td>detail:scene-08</td><td>gemini-3.6-flash</td><td>7053</td><td>1565</td><td>1321</td><td>1</td><td>예</td></tr><tr><td>killfeed@scene-08</td><td>gemini-3.6-flash</td><td>10934</td><td>102</td><td>1079</td><td>1</td><td></td></tr><tr><td>detail:scene-09</td><td>gemini-3.6-flash</td><td>6313</td><td>1374</td><td>1350</td><td>1</td><td>예</td></tr><tr><td>killfeed@scene-09</td><td>gemini-3.6-flash</td><td>9879</td><td>89</td><td>1441</td><td>1</td><td></td></tr><tr><td>moment:biotic_grenade@40초</td><td>gemini-3.6-flash</td><td>2470</td><td>67</td><td>654</td><td>1</td><td>예</td></tr><tr><td>moment:sleep_dart@52초</td><td>gemini-3.6-flash</td><td>2468</td><td>57</td><td>516</td><td>1</td><td>예</td></tr><tr><td>moment:biotic_grenade@1분 7초</td><td>gemini-3.6-flash</td><td>2470</td><td>42</td><td>689</td><td>1</td><td>예</td></tr><tr><td>moment:biotic_grenade@1분 35초</td><td>gemini-3.6-flash</td><td>2470</td><td>60</td><td>770</td><td>1</td><td>예</td></tr><tr><td>moment:sleep_dart@1분 42초</td><td>gemini-3.6-flash</td><td>2468</td><td>39</td><td>1549</td><td>1</td><td>예</td></tr><tr><td>moment:biotic_grenade@1분 52초</td><td>gemini-3.6-flash</td><td>2470</td><td>65</td><td>599</td><td>1</td><td>예</td></tr><tr><td>moment:sleep_dart@2분 0초</td><td>gemini-3.6-flash</td><td>2468</td><td>58</td><td>1648</td><td>1</td><td>예</td></tr><tr><td>moment:biotic_grenade@2분 6초</td><td>gemini-3.6-flash</td><td>2470</td><td>60</td><td>1290</td><td>1</td><td>예</td></tr><tr><td>moment:sleep_dart@2분 20초</td><td>gemini-3.6-flash</td><td>2468</td><td>50</td><td>1311</td><td>1</td><td>예</td></tr><tr><td>moment:biotic_grenade@2분 24초</td><td>gemini-3.6-flash</td><td>2470</td><td>53</td><td>699</td><td>1</td><td>예</td></tr><tr><td>moment:biotic_grenade@2분 38초</td><td>gemini-3.6-flash</td><td>2470</td><td>64</td><td>854</td><td>1</td><td>예</td></tr><tr><td>moment:biotic_grenade@2분 53초</td><td>gemini-3.6-flash</td><td>2470</td><td>62</td><td>547</td><td>1</td><td>예</td></tr><tr><td>moment:biotic_grenade@3분 12초</td><td>gemini-3.6-flash</td><td>2470</td><td>70</td><td>1037</td><td>1</td><td>예</td></tr><tr><td>moment:biotic_grenade@3분 28초</td><td>gemini-3.6-flash</td><td>2470</td><td>36</td><td>724</td><td>1</td><td>예</td></tr><tr><td>moment:biotic_grenade@3분 50초</td><td>gemini-3.6-flash</td><td>2470</td><td>71</td><td>657</td><td>1</td><td>예</td></tr><tr><td>moment:biotic_grenade@4분 10초</td><td>gemini-3.6-flash</td><td>2470</td><td>63</td><td>670</td><td>1</td><td>예</td></tr><tr><td>moment:biotic_grenade@4분 28초</td><td>gemini-3.6-flash</td><td>2470</td><td>70</td><td>470</td><td>1</td><td>예</td></tr><tr><td>coaching</td><td>gemini-3.6-flash</td><td>36188</td><td>8568</td><td>17831</td><td>1</td><td></td></tr></table></div></details>
+    <p class=muted>run 066030940318-ana · 프롬프트 team 0.3.0, overview 0.5.0, detail 0.7.0, moment 0.3.0, coaching 0.21.0, killer 0.1.0, killfeed 0.1.0 · 영웅 기준 0.5.0-draft+common-0.4.0 · 게임 패치 최신 (사용자 기준, 버전 번호 미확인)</p>
   </details>
 </section>
 </div>
-<script type="application/json" id=review-meta>{"run_id": "066030940318-ana", "analysis_mode": "real", "model": "gemini-3.6-flash", "prompts": {"team": "0.3.0", "overview": "0.5.0", "detail": "0.7.0", "moment": "0.3.0", "coaching": "0.20.0", "killer": "0.1.0"}, "hero_profile": "0.5.0-draft+common-0.4.0"}</script>
+<script type="application/json" id=review-meta>{"run_id": "066030940318-ana", "analysis_mode": "real", "model": "gemini-3.6-flash", "prompts": {"team": "0.3.0", "overview": "0.5.0", "detail": "0.7.0", "moment": "0.3.0", "coaching": "0.21.0", "killer": "0.1.0", "killfeed": "0.1.0"}, "hero_profile": "0.5.0-draft+common-0.4.0"}</script>
 <script>
 const v=document.getElementById('v');
 const cards=[...document.querySelectorAll('.card')];
