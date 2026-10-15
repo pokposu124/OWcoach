@@ -60,7 +60,11 @@ def cmd_analyze(args) -> int:
     print(f"분석 모드: {result.analysis_mode} | 피드백 {len(result.feedback)}개 (단정 {assertive}, 보류/참고 {len(result.feedback) - assertive})"
           f" | 과제 {len(result.action_items)}개 | 제외 {len(result.discarded)}개")
     tokens = sum((u.total_tokens or 0) for u in result.usage if not u.from_cache)
-    print(f"이번 실행 API 토큰 합계: {tokens} | 비용: {result.cost.total if result.cost.total is not None else '미계산'} ({result.cost.note})")
+    if result.cost.total is not None:
+        cost = f"이번 실행 ${result.cost.total:.4f}, 전체 분석 1회(캐시 없이) ${result.cost.full_run_total:.4f} {result.cost.currency or ''}"
+    else:
+        cost = "미계산"
+    print(f"이번 실행 API 토큰 합계: {tokens} | 비용: {cost} ({result.cost.note})")
     return 0
 
 

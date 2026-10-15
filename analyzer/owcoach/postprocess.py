@@ -298,8 +298,7 @@ def finalize_feedback(
         if reflected:
             grade = "blunder"
             reasons = [r for r in reasons if r not in (unverifiable_note, "근거 부족으로 판단 보류")]
-            reasons.append("; ".join(f"{c.ability_id} {fmt_time(c.hud_use_time_seconds or c.time_seconds)}: 코드 확인 결과 "
-                                     f"{c.reflect_check.get('note', '반사됨')} → 블런더" for c in reflected))
+            # code-confirmed evidence, not a doubt: it does not hold the item back (the card's HUD line shows it)
             deflect = out_cfg.get("reflected_criterion")
             if deflect and hero.criterion(deflect) and deflect not in valid_criteria:
                 valid_criteria.append(deflect)

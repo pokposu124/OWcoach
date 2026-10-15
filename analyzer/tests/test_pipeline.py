@@ -43,7 +43,8 @@ def test_hero_profile_loads_and_is_draft():
     assert hero.review_status == "draft"
     # approved = reviewed by the user: the human coach's criteria (2026-10-14) and Ana's sleep dart /
     # grenade / nano criteria (2026-10-15); the rest stay drafts
-    reviewed = {"ana.skill.sleep_dart_usage", "ana.skill.biotic_grenade_usage", "ana.ultimate.nano_boost_usage"}
+    reviewed = {"ana.skill.sleep_dart_usage", "ana.skill.biotic_grenade_usage", "ana.ultimate.nano_boost_usage",
+                "common.skill.no_skills_into_deflect"}
     assert all((c.status == "approved") == (c.source.type == "human_coach" or c.id in reviewed) for c in hero.criteria)
     assert {c.category for c in hero.criteria} == {"skill_usage", "positioning", "ultimate_usage"}
     # numeric facts must carry source + patch (enforced by the model)
@@ -311,8 +312,14 @@ def test_cost_only_with_verified_price():
                                  "currency": "USD", "source_url": "x", "verified_on": "2026-01-01"}}}
     c = compute_cost(usage, pricing, False)
     assert c.estimated and c.total == pytest.approx(3.0) and "추정" in c.note
-    assert compute_cost([_u("m1", 1, 1, cached=True)], pricing, False).total is None
-    assert load_pricing()["models"] == {}
+    # a fully cached run costs nothing now; the full-run figure still counts the cached calls' tokens
+    cached = compute_cost([_u("m1", 1_000_000, 0, cached=True), _u("m1", 0, 100_000)], pricing, False)
+    assert cached.total == pytest.approx(1.0) and cached.full_run_total == pytest.approx(2.0)
+    none_new = compute_cost([_u("m1", 1_000_000, 0, cached=True)], pricing, False)
+    assert none_new.total == 0 and none_new.full_run_total == pytest.approx(1.0) and "새 API 호출이 없었" in none_new.note
+    # gemini-3.6-flash price from the model page the user sent (2026-10-15)
+    p = load_pricing()["models"]["gemini-3.6-flash"]
+    assert (p["input_per_million_tokens"], p["output_per_million_tokens"]) == (1.50, 7.50)
 
 
 # ---------------------------------------------------------------- gemini request wiring (offline, fake SDK client)
@@ -882,7 +889,8 @@ def test_reflected_grenade_is_a_blunder(cfg):
                               cfg["output"], lambda t: f"evidence/{t}.jpg", [])
     assert fb[0].grade == "blunder"
     assert "common.skill.no_skills_into_deflect" in fb[0].criterion_ids
-    assert any("반사됨" in r for r in fb[0].display_reasons)
+    assert fb[0].hud_checks[0].reflect_check["status"] == "reflected"
+    assert fb[0].display_mode == "assertive"  # both criteria approved, HUD-verified use, code-confirmed reflection
 
 
 def test_ally_color_from_player_portrait_border(tmp_path, cfg):

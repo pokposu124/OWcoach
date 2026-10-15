@@ -101,28 +101,31 @@ def inline_refs(schema: dict) -> dict:
     return walk(schema)
 
 
+def _price(u: StageUsage, p: dict) -> float:
+    out_tokens = u.output_tokens + (u.thinking_tokens or 0)
+    return u.input_tokens / 1e6 * p["input_per_million_tokens"] + out_tokens / 1e6 * p["output_per_million_tokens"]
+
+
 def compute_cost(usage: list[StageUsage], pricing: dict, is_mock: bool) -> CostSummary:
+    """This run's cost (new API calls only) and, as full_run_total, what the whole analysis costs when no
+    stage is reused from the cache (cached stages keep the token counts of the call that produced them)."""
     if is_mock:
         return CostSummary(note="모의 실행: API를 호출하지 않아 비용이 발생하지 않았습니다.")
-    billable = [u for u in usage if not u.from_cache]
-    if not billable:
-        return CostSummary(note="모든 단계가 캐시에서 재사용되어 이번 실행에서 새 API 호출이 없었습니다.")
     models = pricing.get("models") or {}
-    total, currency, sources = 0.0, None, set()
-    for u in billable:
-        p = models.get(u.model)
-        if not p:
+    for u in usage:
+        if not models.get(u.model):
             return CostSummary(note=f"모델 '{u.model}'의 확인된 단가가 config/pricing.yaml에 없어 비용을 계산하지 않았습니다. 토큰 사용량만 기록합니다.")
         if u.input_tokens is None or u.output_tokens is None:
             return CostSummary(note="일부 호출의 토큰 사용량이 응답에 없어 비용을 계산하지 않았습니다.")
-        out_tokens = u.output_tokens + (u.thinking_tokens or 0)
-        total += u.input_tokens / 1e6 * p["input_per_million_tokens"] + out_tokens / 1e6 * p["output_per_million_tokens"]
-        currency = p.get("currency", "USD")
-        sources.add(f"{p.get('source_url')} (확인일 {p.get('verified_on')})")
-    return CostSummary(
-        total=round(total, 6), currency=currency,
-        note="추정치: 토큰 수 × pricing.yaml 단가. thinking 토큰은 출력 단가로 계산. 단가 출처: " + ", ".join(sorted(sources)),
-    )
+    total = sum(_price(u, models[u.model]) for u in usage if not u.from_cache)
+    full = sum(_price(u, models[u.model]) for u in usage)
+    sources = {f"{models[u.model].get('source_url')} (확인일 {models[u.model].get('verified_on')})" for u in usage}
+    currency = next((models[u.model].get("currency", "USD") for u in usage), None)
+    note = "추정치: 토큰 수 × pricing.yaml 단가. thinking 토큰은 출력 단가로 계산. 단가 출처: " + ", ".join(sorted(sources))
+    if not any(not u.from_cache for u in usage):
+        note = "이번 실행은 모든 단계를 캐시에서 재사용해 새 API 호출이 없었습니다. " + note
+    return CostSummary(total=round(total, 6), full_run_total=round(full, 6) if usage else None,
+                       currency=currency, note=note)
 
 
 OTHER_COLOR = {"빨강": "파랑/청록", "파랑": "빨강/분홍"}

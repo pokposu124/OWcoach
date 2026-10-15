@@ -200,7 +200,9 @@ def build_report_html(result: AnalysisResult, video_src: str, fragment: bool = F
     usage_rows = "".join(
         f"<tr><td>{_e(u.stage)}</td><td>{_e(u.model)}</td><td>{u.input_tokens}</td><td>{u.output_tokens}</td>"
         f"<td>{u.thinking_tokens}</td><td>{u.attempts}</td><td>{'예' if u.from_cache else ''}</td></tr>" for u in result.usage)
-    cost = f"{result.cost.total} {result.cost.currency or ''}" if result.cost.total is not None else "미계산"
+    cur = result.cost.currency or ""
+    cost = (f"이번 실행 ${result.cost.total:.4f} {cur} · 전체 분석 1회(캐시 없이) ${result.cost.full_run_total:.4f} {cur}"
+            if result.cost.total is not None and result.cost.full_run_total is not None else "미계산")
     review_meta = json.dumps({"run_id": result.run_id, "analysis_mode": result.analysis_mode, "model": result.versions.model,
                               "prompts": result.versions.prompts, "hero_profile": result.versions.hero_profile},
                              ensure_ascii=False).replace("</", "<\\/")

@@ -32,7 +32,7 @@ observable_signals:
 criteria:
   - id: common.skill.no_skills_into_deflect
     category: skill_usage
-    status: draft
+    status: approved
     title: "겐지 튕겨내기 중 스킬 사용 금지"
     description: >
       적 겐지가 튕겨내기를 쓰는 동안 그 겐지 쪽으로 스킬을 쓰면 대부분 되돌아오거나 낭비된다.

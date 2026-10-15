@@ -237,6 +237,7 @@ class CostSummary(BaseModel):
     estimated: bool = True
     currency: str | None = None
     total: float | None = None
+    full_run_total: float | None = Field(default=None, description="캐시 없이 처음부터 분석했을 때의 비용 (재사용한 단계 포함)")
     note: str
 
 

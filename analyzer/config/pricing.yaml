@@ -11,4 +11,11 @@
 #     source_url: https://ai.google.dev/gemini-api/docs/pricing
 #     verified_on: "YYYY-MM-DD"
 #     notes: "컨텍스트 길이별 단가 구분이 있으면 기재"
-models: {}
+models:
+  gemini-3.6-flash:
+    currency: USD
+    input_per_million_tokens: 1.50       # "Input price $/1M tokens, no caching" (영상·이미지·텍스트 구분 표기 없음)
+    output_per_million_tokens: 7.50      # thinking 토큰도 출력 단가로 계산(compute_cost)
+    source_url: https://deepmind.google/models/ (Gemini 3.6 Flash 모델 페이지, 사용자 제공 화면)
+    verified_on: "2026-10-15"
+    notes: "페이지 표기 'Results as of July, 2026'. 컨텍스트 길이별·입력 종류별 단가 구분은 표시되지 않음"
