@@ -85,6 +85,8 @@ detail:
 
 coaching:
   temperature: 0.2
+  # 장면별 포지셔닝·필수 스킬 피드백이 빠지면 빠진 것을 알려 이 횟수만큼 다시 요청 (실측: 한 실행에서 포지셔닝 전부 누락)
+  coverage_retries: 1
 
 # HUD로 확인한 스킬 사용마다 앞뒤를 짧게 잘라 높은 fps로 그 순간 상황(대상, 적 대응 스킬 여부, 결과)을 따로 묻는다.
 # 장면 단위 상세 분석(4fps, 20~40초)은 튕겨내기처럼 2초 남짓한 동작을 놓쳤다(실측).
@@ -227,6 +229,8 @@ output:
 provider:
   name: gemini                     # gemini | mock
   temperature: 0.2
+  # 장면별 포지셔닝·필수 스킬 피드백이 빠지면 빠진 것을 알려 이 횟수만큼 다시 요청 (실측: 한 실행에서 포지셔닝 전부 누락)
+  coverage_retries: 1
   file_poll_interval_seconds: 3
   file_poll_timeout_seconds: 600
   delete_uploaded_files: true      # 분석 후 Gemini Files API에서 업로드 파일 즉시 삭제

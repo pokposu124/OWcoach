@@ -41,8 +41,10 @@ def test_hero_profile_loads_and_is_draft():
     assert "ana" in available_heroes()
     hero = load_hero("ana")
     assert hero.review_status == "draft"
-    # only criteria a human coach gave are approved (user decision 2026-10-14); the rest stay drafts
-    assert all((c.status == "approved") == (c.source.type == "human_coach") for c in hero.criteria)
+    # approved = reviewed by the user: the human coach's criteria (2026-10-14) and Ana's sleep dart /
+    # grenade / nano criteria (2026-10-15); the rest stay drafts
+    reviewed = {"ana.skill.sleep_dart_usage", "ana.skill.biotic_grenade_usage", "ana.ultimate.nano_boost_usage"}
+    assert all((c.status == "approved") == (c.source.type == "human_coach" or c.id in reviewed) for c in hero.criteria)
     assert {c.category for c in hero.criteria} == {"skill_usage", "positioning", "ultimate_usage"}
     # numeric facts must carry source + patch (enforced by the model)
     assert all(f.source and f.patch_version for f in hero.numeric_facts)
@@ -452,11 +454,9 @@ def test_grade_needs_a_matched_sign(cfg):
 def test_assertive_requires_hud_verification_and_approved_criteria(cfg, status, approved, expect):
     from owcoach.postprocess import finalize_feedback
 
-    hero = load_hero("ana")
-    if approved:
-        hero = hero.model_copy(deep=True)
-        for c in hero.criteria:
-            c.status = "approved"
+    hero = load_hero("ana").model_copy(deep=True)
+    for c in hero.criteria:
+        c.status = "approved" if approved else "draft"
     coaching = CoachingResponse(items=[_coaching_item()], action_items=[])
     fb, _ = finalize_feedback(coaching, {"scene-01": _scene_rec(status)}, hero, 30.0, cfg["output"],
                               lambda t: f"evidence/{t}.jpg", [])
@@ -982,3 +982,16 @@ def test_positioning_good_grade_needs_a_specific_clean_moment(cfg):
     assert by_start[2.0].grade == "withheld" and any("특정 순간" in r for r in by_start[2.0].display_reasons)
     assert by_start[19.0].grade == "withheld" and any("본대를 등짐" in r for r in by_start[19.0].display_reasons)
     assert by_start[3.0].grade == "best"
+
+
+def test_coaching_gaps_name_missing_positioning_and_required_uses():
+    from owcoach.pipeline import coaching_gaps
+
+    rec = _scene_rec("verified")
+    rec["ability_events"][0]["feedback_required"] = True
+    only_pos = CoachingResponse(items=[_coaching_item(category="positioning", criterion_ids=["ana.positioning.cover_access"])],
+                                action_items=[])
+    gaps = coaching_gaps(only_pos, {"scene-01": rec})
+    assert gaps == ["scene-01의 nano_boost 10초 사용 피드백"]
+    only_ult = CoachingResponse(items=[_coaching_item()], action_items=[])
+    assert coaching_gaps(only_ult, {"scene-01": rec}) == ["scene-01 (0초 ~ 20초)의 positioning 피드백"]

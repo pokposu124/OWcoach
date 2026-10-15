@@ -39,7 +39,7 @@ from .hud import (
     scan_uses,
     use_times,
 )
-from .timefmt import fmt_time
+from .timefmt import fmt_range, fmt_time
 from .heroes import HeroProfile, load_comp_notes
 from .portraits import roster_timeline, identify, load_portraits
 from .media import (
@@ -167,6 +167,22 @@ def team_context_text(team: dict | None, color: dict | None = None, comp_notes: 
                      "조합이 바뀌면 그 뒤 장면은 바뀐 조합 기준으로 판단하세요.")
     lines += comp_note_lines(team, comp_notes or [])
     return "\n".join(lines)
+
+
+def coaching_gaps(coaching: CoachingResponse, scene_records: dict) -> list[str]:
+    """What the coaching prompt requires but the response lacks: a positioning item per scene and an item
+    for every feedback_required skill / ultimate use (matched by its HUD time inside the item)."""
+    gaps = []
+    for sid, rec in scene_records.items():
+        if not any(i.scene_id == sid and i.category == "positioning" for i in coaching.items):
+            gaps.append(f"{sid} ({fmt_range(rec['window_start'], rec['window_end'])})의 positioning 피드백")
+        for e in rec["ability_events"]:
+            x = (e.get("hud_check") or {}).get("hud_use_time_seconds")
+            if e.get("feedback_required") and x is not None and not any(
+                    i.start_time_seconds - 1.5 <= x <= i.end_time_seconds + 1.5 and i.category != "positioning"
+                    for i in coaching.items):
+                gaps.append(f"{sid}의 {e['ability_id']} {fmt_time(x)} 사용 피드백")
+    return gaps
 
 
 def _comp_at(team: dict, side: str, t: float) -> list[str]:
@@ -794,11 +810,24 @@ class Pipeline:
             )
 
             def run_coaching():
-                parsed, usage = self._call("coaching", "coaching", CoachingResponse, lambda schema, note: TextRequest(
-                    prompt=prompt + note, response_schema=schema, temperature=cfg["coaching"].get("temperature"),
-                    context={"stage": "coaching", "scenes": list(scene_records.values())},
-                ))
-                return parsed.model_dump(), usage
+                usage_all, extra = [], ""
+                for attempt in range(1 + int(cfg["coaching"].get("coverage_retries", 1))):
+                    parsed, usage = self._call("coaching", "coaching", CoachingResponse, lambda schema, note: TextRequest(
+                        prompt=prompt + extra + note, response_schema=schema, temperature=cfg["coaching"].get("temperature"),
+                        context={"stage": "coaching", "scenes": list(scene_records.values())},
+                    ))
+                    usage_all += usage
+                    missing = coaching_gaps(parsed, scene_records)
+                    if not missing:
+                        break
+                    # the model sometimes leaves out whole parts of what the prompt requires (seen: every
+                    # positioning item dropped in one run): ask once more, naming what is missing
+                    self.log(f"  coaching: 빠진 피드백 {len(missing)}건, 재요청 ({attempt + 1})")
+                    extra = ("\n\n이전 응답에 다음 피드백이 빠졌습니다. 빠진 것을 포함해 전체 응답을 다시 작성하세요:\n"
+                             + "\n".join(f"- {m}" for m in missing))
+                else:
+                    self.warnings.append("코칭 응답에 빠진 피드백: " + "; ".join(missing))
+                return parsed.model_dump(), usage_all
 
             coaching = CoachingResponse.model_validate(
                 self._cached_or_run(store, "coaching", coaching_fp, run_coaching, "coaching" in force))

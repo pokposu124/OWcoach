@@ -58,7 +58,7 @@ observable_signals:
   - "생체 수류탄을 맞은 캐릭터: 아군이면 노란 빛과 + 표시(회복), 적이면 보라색 치유 차단 표시. 아군/적은 팀 구성의 색 기준으로"
   - "사망 시 처치 화면(킬캠) 표시 여부"
 
-# 코칭 기준. id 는 결과의 criterion_ids 로 참조된다. status: approved = 외부 코치가 직접 준 기준(사용자 승인 2026-10-14), draft = 검수 전 초안.
+# 코칭 기준. id 는 결과의 criterion_ids 로 참조된다. status: approved = 사용자가 검수함(코치 기준 2026-10-14, 수면총·수류탄·나노 2026-10-15), draft = 검수 전 초안.
 criteria:
   - id: ana.positioning.cover_access
     category: positioning
@@ -145,7 +145,7 @@ criteria:
   - id: ana.skill.sleep_dart_usage
     category: skill_usage
     ability: sleep_dart                 # 이 기준의 HUD 대조 대상 스킬
-    status: draft
+    status: approved
     title: "수면총 사용 판단"
     description: >
       수면총을 위협(본인에게 근접한 적, 돌진하는 적, 궁극기 사용 중인 적)에 대응해 쓰는지,
@@ -165,11 +165,13 @@ criteria:
   - id: ana.skill.biotic_grenade_usage
     category: skill_usage
     ability: biotic_grenade                 # 이 기준의 HUD 대조 대상 스킬
-    status: draft
+    status: approved
     title: "생체 수류탄 사용 판단"
     description: >
       생체 수류탄을 아군 다수 치유 또는 적 치유 차단 목적에 맞게 쓰는지,
       혹은 자기 보호(본인 위치에 던져 회복)에 활용하는지 본다.
+      노림수 없이 대치 중에 그냥 던진 수류탄은 최선이 아니다(아쉬움). 다만 블런더도 아니므로 좋은 신호에 해당하지 않으면
+      판단 보류로 둔다 (코치: 첫 영상 1분 35초 '그냥 던지기보다 노림수', 2분 51초 '아쉽').
     good_signs:
       - "여러 아군이 체력이 낮을 때 아군 밀집 지점에 사용"
       - "본인이 압박받을 때 발밑에 사용해 생존"
@@ -177,7 +179,6 @@ criteria:
       - "아군이 송하나(D.Va 본체)를 못 잡을 때 쿨다운이 돌아온 수류탄을 들고 들어가 약간 무리해서라도 처치 (코치: 첫 영상 2분 4초)"
     bad_signs:
       - "아군/적이 화면에 거의 없는 곳에 사용"
-      - "노림수 없이 대치 중에 그냥 던져, 정작 적 탱커가 진입할 때 쿨다운 (코치: 첫 영상 1분 35초 '그냥 던지기보다', 2분 51초 '아쉽')"
       - "본인 체력이 낮거나 근접한 적에게 압박받는 중(직후 사망 위험)인데 발밑이 아닌 적·전방에 던짐. 이때는 자기 생존이 우선이므로 발밑에 써야 함 (사용자 코칭: 두 번째 아나 영상 1분 7초, 체력 131에서 전방에 던지고 4초 뒤 사망 → 최선 아님)"
     cannot_judge_when:
       - "수류탄 착탄 지점이 화면에서 보이지 않음"
@@ -186,7 +187,7 @@ criteria:
   - id: ana.ultimate.nano_boost_usage
     category: ultimate_usage
     ability: nano_boost                 # 이 기준의 HUD 대조 대상 스킬
-    status: draft
+    status: approved
     title: "나노 강화제 사용 판단"
     description: >
       궁극기 게이지가 100%로 표시된 상태에서 교전 중 아군에게 사용했는지,
