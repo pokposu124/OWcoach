@@ -34,6 +34,7 @@ from .hud import (
     detect_buff_target,
     detect_antiheal_targets,
     detect_heal_boost,
+    screen_presence,
     team_health_timeline,
     detect_kill_credit,
     detect_reflect,
@@ -427,6 +428,40 @@ class Pipeline:
             if low:
                 self.warnings.append("초상화 대조로 영웅을 확정하지 못함(불명 처리): " + ", ".join(low))
         return team, record
+
+    def _alone_spans(self, video: Path, start: float, end: float) -> list[dict]:
+        """Spans where enemies are on screen but no ally is (outline colours), while the player is alive:
+        a window of alone_seconds in which at least alone_share of the samples show that. One stray frame
+        (an ally outline flickering into view) does not break a span."""
+        pcfg = (self.cfg.get("hud_check") or {}).get("screen_presence")
+        if not pcfg:
+            return []
+        ally_red = ((getattr(self, "_team_color", None) or {}).get("ally_color") or "빨강") == "빨강"
+        track = screen_presence(video, start, end, pcfg, ally_red=ally_red)
+        if not track:
+            return []
+        dead = [(d["time_seconds"], d.get("respawn_seconds", d["time_seconds"] + 10)) for d in self._deaths]
+        t = np.array([x["time_seconds"] for x in track])
+        alive = np.array([not any(a - 0.5 <= x <= b for a, b in dead) for x in t])
+        lone = np.array([x["allies"] == 0 and x["enemies"] >= 1 for x in track]) & alive
+        k = max(2, int(round(pcfg["alone_seconds"] * pcfg["fps"])))
+        flag = np.zeros(len(t), dtype=bool)
+        for i in range(len(t) - k + 1):
+            if alive[i:i + k].all() and lone[i:i + k].mean() >= pcfg["alone_share"]:
+                flag[i:i + k] = True
+        spans, cur = [], None
+        for i, f in enumerate(flag):
+            if f:
+                cur = cur or {"start_seconds": float(t[i]), "max_enemies": 0}
+                cur["end_seconds"] = float(t[i])
+                cur["max_enemies"] = max(cur["max_enemies"], track[i]["enemies"])
+            elif cur:
+                spans.append(cur)
+                cur = None
+        if cur:
+            spans.append(cur)
+        return [{**sp, "note": f"{fmt_range(sp['start_seconds'], sp['end_seconds'])} 화면에 아군 없이 적 최대 {sp['max_enemies']}명과 대치 (코드 측정: 윤곽선)"}
+                for sp in spans]
 
     def _game_facts(self) -> str:
         """Game numbers for this match only (player hero in detail, every other hero seen in the team list,
@@ -978,6 +1013,7 @@ class Pipeline:
             scene_records[scene.scene_id] = detail_to_original(
                 scene, DetailResponse.model_validate(raw), cfg["output"]["window_tolerance_seconds"], self.warnings)
             scene_records[scene.scene_id]["hud_uses"] = hud_uses
+            scene_records[scene.scene_id]["alone_spans"] = self._alone_spans(video, scene.window_start, scene.window_end)
             scene_records[scene.scene_id]["kill_feed"] = self._kill_feed_scene(store, video, sha, scene, duration, ai_fp_base, force)
             scene_records[scene.scene_id]["player_deaths"] = [
                 d for d in self._deaths if scene.window_start <= d["time_seconds"] <= scene.window_end + 0.5]

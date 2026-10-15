@@ -1185,3 +1185,22 @@ def test_cooldown_check_warns_on_uses_closer_than_cooldown(cfg, tmp_path):
     pipe._cooldown_check()
     assert any("수면총" in w and "14초" in w for w in pipe.warnings)
     assert sum("수면총" in w for w in pipe.warnings) == 1
+
+
+def test_screen_presence_counts_outlined_characters(tmp_path, cfg):
+    """Thin red outlines (allies) and cyan outlines (enemies) in the world view are counted per frame;
+    a filled red patch (a bus, the hit vignette) is not an ally."""
+    from owcoach.hud import screen_presence
+
+    pc = cfg["hud_check"]["screen_presence"]
+    vf = ("drawbox=x=100:y=120:w=30:h=70:color=0xff2050:t=2:enable='lt(t,2)',"      # ally outline 0-2 s
+          "drawbox=x=300:y=110:w=30:h=70:color=0x20e8f0:t=2,"                       # enemy outline always
+          "drawbox=x=450:y=200:w=80:h=60:color=0xff2050:t=fill")                     # filled red patch
+    video = tmp_path / "presence.mp4"
+    subprocess.run(["ffmpeg", "-y", "-v", "error", "-f", "lavfi", "-i", "color=c=0x303030:size=640x360:rate=10",
+                    "-t", "4", "-vf", vf, "-pix_fmt", "yuv444p", str(video)], check=True)
+    track = screen_presence(video, 0.0, 4.0, pc)
+    early = [x for x in track if x["time_seconds"] < 1.6]
+    late = [x for x in track if x["time_seconds"] > 2.4]
+    assert all(x["allies"] == 1 and x["enemies"] == 1 for x in early)
+    assert all(x["allies"] == 0 and x["enemies"] == 1 for x in late)

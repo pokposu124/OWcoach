@@ -579,3 +579,67 @@ def team_health_timeline(video: Path, duration: float, xs: list[int], cfg: dict)
         alive = (bar_white[:, :, x + cfg["dx0"]:x + cfg["dx1"]].mean(axis=1) >= cfg["min_rows"]).sum(axis=1) >= cfg["min_white_cols"]
         out[:, j] = np.where(noise | ~alive, -1.0, (last + 1) / width)
     return np.arange(len(fr)) / fps, out
+
+
+def _box_sum(m: np.ndarray, r: int) -> np.ndarray:
+    c = np.pad(m.astype(np.int32), ((r + 1, r), (r + 1, r))).cumsum(0).cumsum(1)
+    return c[2 * r + 1:, 2 * r + 1:] - c[:-2 * r - 1, 2 * r + 1:] - c[2 * r + 1:, :-2 * r - 1] + c[:-2 * r - 1, :-2 * r - 1]
+
+
+def _cell_clusters(cells: np.ndarray, min_size: int) -> list[int]:
+    """Sizes of 8-connected groups of occupied grid cells (a group ~ one character's outline)."""
+    seen = np.zeros_like(cells, dtype=bool)
+    h, w = cells.shape
+    sizes = []
+    for i in range(h):
+        for j in range(w):
+            if cells[i, j] and not seen[i, j]:
+                stack, n = [(i, j)], 0
+                seen[i, j] = True
+                while stack:
+                    a, b = stack.pop()
+                    n += 1
+                    for da in (-1, 0, 1):
+                        for db in (-1, 0, 1):
+                            x, y = a + da, b + db
+                            if 0 <= x < h and 0 <= y < w and cells[x, y] and not seen[x, y]:
+                                seen[x, y] = True
+                                stack.append((x, y))
+                if n >= min_size:
+                    sizes.append(n)
+    return sizes
+
+
+def screen_presence(video: Path, start: float, end: float, cfg: dict, ally_red: bool = True) -> list[dict]:
+    """Allies and enemies on screen, from their coloured outlines, every 1/fps seconds.
+
+    In these videos allies are outlined in the ally colour (red/pink) and enemies in cyan. Only thin
+    lines count (filled patches such as a red bus or the hit vignette do not), only inside the world view
+    (team list, HUD, screen edges and kill feed excluded), and each 8-connected group of grid cells is
+    one character. Measured: video 2 1:01-1:11 before a death, 0 allies and 1-3 enemies on screen;
+    video 1 3:03-3:08 (coach: back to the team while moving) 0 allies, 1-5 enemies.
+    Returns [{time_seconds, allies, enemies, enemy_largest}] (enemy_largest in cells: big = close).
+    """
+    fps, (rw, rh) = float(cfg["fps"]), cfg["reference_resolution"]
+    x0, y0, x1, y1 = cfg["world"]
+    fr = _frames(video, start, max(0.0, end - start), fps, [rw, rh], (x0, y0, x1 - x0, y1 - y0))
+    kx0, ky1 = cfg["kill_feed"]
+    cell, thin_max = int(cfg["cell"]), int(cfg["thin_max"])
+    out = []
+    for i, f in enumerate(fr):
+        r, g, b = f[..., 0], f[..., 1], f[..., 2]
+        red = (r > 180) & (g < 90) & (b > 40) & (b < 170) & (r - g > 110)
+        cyan = (g > 160) & (b > 160) & (r < 130)
+        ally, enemy = (red, cyan) if ally_red else (cyan, red)
+        counts = []
+        for m in (ally, enemy):
+            m = m.copy()
+            m[:ky1 - y0, kx0 - x0:] = False                      # kill feed
+            thin = m & (_box_sum(m, 2) <= thin_max)              # outlines are thin lines
+            h, w = thin.shape
+            cells = thin[:h // cell * cell, :w // cell * cell].reshape(h // cell, cell, w // cell, cell).sum(axis=(1, 3)) >= 3
+            counts.append(_cell_clusters(cells, int(cfg["min_cluster"])))
+        out.append({"time_seconds": round(start + i / fps, 2), "allies": len(counts[0]), "enemies": len(counts[1]),
+                    "enemy_largest": max(counts[1], default=0)})
+    return out
+

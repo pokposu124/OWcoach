@@ -199,7 +199,7 @@ def _card(n: int, f, me: str = "") -> str:
     <span class="chip cat">{_e(CATEGORY_KO[f.category])}</span>
     <span class="chip g-{f.grade}">{_e(GRADE_KO[f.grade])}</span>{mode}</header>
   {reasons}
-  <dl><dt>관찰</dt><dd>{_e(f.observation)}</dd>{f'<dt>규칙</dt><dd>{_e(f.game_rule)}</dd>' if f.game_rule else ''}<dt>판단</dt><dd>{_e(f.assessment)}</dd><dt>제안</dt><dd>{_e(f.suggestion)}</dd>
+  <dl><dt>관찰</dt><dd>{_e(f.observation)}</dd><dt>판단</dt><dd>{_e(f.assessment)}</dd><dt>제안</dt><dd>{_e(f.suggestion)}</dd>
   {f'<dt>불확실</dt><dd>{_e(f.uncertainty)}</dd>' if f.uncertainty else ''}</dl>
   <ul class=hud>{hud}</ul>
   {_kill_feed(f, me)}
