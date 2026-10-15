@@ -45,6 +45,13 @@ def evaluate(run_dir: Path, labels_path: Path) -> dict:
     found = [d["time_seconds"] for d in result.player_deaths]
     for d in facts.get("deaths", []):
         check("사망 감지", any(_near(t, d["time_seconds"], 2.0) for t in found), f"{fmt_time(d['time_seconds'])}")
+    for d in facts.get("deaths", []):
+        if "killer" not in d:
+            continue
+        got = next((x for x in result.player_deaths if _near(x["time_seconds"], d["time_seconds"], 2.0)), {})
+        k = (got.get("killer") or {})
+        check("처치자(킬피드)", k.get("status") == "verified" and k.get("player_name") == d["killer"],
+              f"{fmt_time(d['time_seconds'])} 정답 {d['killer']} / 결과 {k.get('player_name') or k.get('note') or '없음'}")
     for t in found:
         if not any(_near(t, d["time_seconds"], 2.0) for d in facts.get("deaths", [])):
             check("사망 오탐", False, f"{fmt_time(t)} (정답에 없음)")

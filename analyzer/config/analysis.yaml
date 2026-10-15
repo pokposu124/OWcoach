@@ -102,6 +102,18 @@ moment_check:
 # model_keywords 가 들어간 사건). 사망 중에도 HUD는 그대로 보이고(사망 위치에서 관전), 체력 칸이 비고
 # 초상화에 빨간 해골이 뜬다. 실측(두 번째 영상): 체력 0 구간 5번, 각 11~14초(부활 대기), 첫 영상은 0번.
 # 사망마다 [사망 - pre_seconds, 사망] 구간을 상세 분석 장면에 넣고, 코칭 단계는 그 구간 피드백을 최소 1개 쓴다.
+# 플레이어 사망마다 처치자 확인: 킬피드(우상단)와 '○○에게 죽음' 알림을 확대해 모델이 이름을 읽고, 코드가 적 팀 목록과 대조.
+# (사용자: 두 번째 영상 1분 11초 킬피드 '라마트라 > 아나' = 겐지는 처치에 관여하지 않음)
+killer_check:
+  enabled: true
+  offsets_seconds: [0.5, 1.25]
+  reference_resolution: [1280, 720]
+  upscale: 2
+  media_resolution: MEDIA_RESOLUTION_HIGH
+  regions:
+    kill_feed: {x: 840, y: 95, w: 440, h: 190}
+    death_notice: {x: 440, y: 470, w: 400, h: 100}
+
 death_check:
   enabled: true
   pre_seconds: 10.0

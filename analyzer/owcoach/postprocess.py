@@ -139,6 +139,17 @@ def detail_to_original(scene: Scene, detail: DetailResponse, tolerance: float,
 
 # ------------------------------------------------------------------ feedback finalisation
 
+def _uses(f: FeedbackItem) -> set:
+    return {(c.ability_id, c.hud_use_time_seconds) for c in f.hud_checks if c.status == "verified"}
+
+
+def _same_uses(a: FeedbackItem, b: FeedbackItem) -> bool:
+    """Overlapping items are duplicates only if they are about the same HUD-verified uses (or none):
+    a sleep dart at 1:11 is not a duplicate of a grenade item ending at 1:11 (seen in video 2)."""
+    ua, ub = _uses(a), _uses(b)
+    return ua == ub or bool(ua & ub)
+
+
 def _overlap_ratio(a: FeedbackItem, b: FeedbackItem) -> float:
     inter = min(a.end_time_seconds, b.end_time_seconds) - max(a.start_time_seconds, b.start_time_seconds)
     shortest = min(a.end_time_seconds - a.start_time_seconds, b.end_time_seconds - b.start_time_seconds)
@@ -345,7 +356,7 @@ def finalize_feedback(
     kept: list[FeedbackItem] = []
     ordinary = 0
     for f in candidates:
-        dup = next((k for k in kept if k.category == f.category
+        dup = next((k for k in kept if k.category == f.category and _same_uses(k, f)
                     and _overlap_ratio(k, f) >= out_cfg["dedup_overlap_ratio"]), None)
         if dup:
             discarded.append(DiscardedItem(reason="중복 피드백", scene_id=f.scene_id, summary=f.observation[:80]))

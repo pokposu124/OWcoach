@@ -60,6 +60,7 @@ from .providers import AnalysisProvider, ImageRequest, ProviderError, TextReques
 from .schemas import (
     AnalysisResult,
     CoachingResponse,
+    KillerResponse,
     CostSummary,
     DetailResponse,
     MomentResponse,
@@ -271,7 +272,7 @@ class Pipeline:
         self.cfg, self.pricing, self.provider, self.hero = cfg, pricing, provider, hero
         self.runs_dir = Path(runs_dir)
         self.log = log
-        self.prompts = {k: load_prompt(k) for k in ("team", "overview", "detail", "moment", "coaching")}
+        self.prompts = {k: load_prompt(k) for k in ("team", "overview", "detail", "moment", "coaching", "killer")}
         self.usage: list[StageUsage] = []
         self.timings: dict[str, float] = {}
         self.warnings: list[str] = []
@@ -420,6 +421,40 @@ class Pipeline:
             if low:
                 self.warnings.append("초상화 대조로 영웅을 확정하지 못함(불명 처리): " + ", ".join(low))
         return team, record
+
+    def _killer(self, store: RunStore, video: Path, sha: str, t: float, ai_fp_base: dict, force: set[str]) -> dict:
+        """Who killed the player at t: the model reads the name from enlarged crops of the kill feed and the
+        "killed by" notice; code accepts it only if it is an enemy in the team list (hero at that time)."""
+        kcfg = self.cfg.get("killer_check") or {}
+        team = self._team_record
+        if not kcfg.get("enabled") or not team:
+            return {"status": "not_checked", "note": "처치자 확인 안 함"}
+        me = team["team_identification"]["player_name"] or "플레이어"
+        times = [round(t + dt, 2) for dt in kcfg["offsets_seconds"]]
+        kp = self.prompts["killer"]
+        fp = fingerprint(ai_fp_base, sha, t, kcfg, kp.version, me)
+        prompt = kp.render(player_name=me, frame_count=len(times))
+
+        def run_killer():
+            images = [(extract_crop_png(video, ts, tuple(kcfg["reference_resolution"]), region, int(kcfg["upscale"])), "image/png")
+                      for ts in times for region in kcfg["regions"].values()]
+            parsed, usage = self._call(f"killer@{fmt_time(t)}", "killer", KillerResponse, lambda schema, note: ImageRequest(
+                images=images, prompt=prompt + note, response_schema=schema,
+                media_resolution=kcfg.get("media_resolution"), temperature=self.cfg["provider"].get("temperature"),
+                context={"stage": "killer"},
+            ))
+            return parsed.model_dump(), usage
+
+        read = KillerResponse.model_validate(self._cached_or_run(store, f"killer-{int(round(t * 100))}", fp, run_killer, "killer" in force))
+        name = read.killer_name.strip()
+        enemy = next((r for r in team["roster"] if r["team"] == "enemy" and name and r["player_name"] == name), None)
+        if not enemy:
+            return {"status": "unverifiable", "read": name,
+                    "note": f"킬피드 판독 '{name}'이(가) 적 팀 목록에 없음" if name else "킬피드에서 처치자를 읽지 못함"}
+        seg = next((h for h in enemy.get("hero_history") or [] if h["start_seconds"] <= t <= h["end_seconds"]), None)
+        hero = (seg or {}).get("hero") or enemy.get("hero")
+        return {"status": "verified", "player_name": name, "hero": hero,
+                "note": f"킬피드: {name}({hero or '?'}) > {me} (처치한 적은 이 한 명, 도움은 킬피드에 나오지 않음)"}
 
     def _hud_check_scene(self, video: Path, rec: dict, hcfg: dict) -> None:
         slots = {a.id: a.hud_slot for a in self.hero.abilities}
@@ -742,6 +777,11 @@ class Pipeline:
         self._deaths = self._find_deaths(video, duration, overview, hcfg)
         if self._deaths:
             self.log("  사망 감지: " + ", ".join(f"{fmt_time(d['time_seconds'])}({d['source']})" for d in self._deaths))
+        for d in self._deaths:
+            d["killer"] = self._killer(store, video, sha, d["time_seconds"], ai_fp_base, force)
+        if any(d["killer"].get("status") == "verified" for d in self._deaths):
+            self.log("  처치자(킬피드): " + ", ".join(f"{fmt_time(d['time_seconds'])} {d['killer']['player_name']}({d['killer'].get('hero') or '?'})"
+                                                  for d in self._deaths if d["killer"].get("status") == "verified"))
         dpre = float((cfg.get("death_check") or {}).get("pre_seconds", 10.0))
         death_candidates = [SceneCandidate(
             start_time_seconds=max(0.0, round(d["time_seconds"] - dpre, 2)), end_time_seconds=d["time_seconds"],

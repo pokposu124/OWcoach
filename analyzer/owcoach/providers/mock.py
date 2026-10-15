@@ -43,6 +43,8 @@ class MockProvider(AnalysisProvider):
 
     def analyze_images(self, req: ImageRequest) -> ProviderResponse:
         self.calls.append(req.context["stage"])
+        if req.context["stage"] == "killer":
+            return self._resp({"killer_name": "ENEMY1", "evidence": "[모의] 킬피드 'ENEMY1 > MOCK'"})
         return self._resp({
             "team_identification": {"player_name": "MOCK", "ally_side": "left", "ally_color": "파랑",
                                     "enemy_color": "빨강", "evidence": "[모의] 왼쪽 팀 목록에 플레이어 이름"},

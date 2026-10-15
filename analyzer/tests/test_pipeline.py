@@ -186,7 +186,8 @@ def test_rerun_reuses_cached_stages(video, cfg, tmp_path):
 def test_team_stage_sends_cropped_stills(video, cfg, tmp_path):
     class Spy(MockProvider):
         def analyze_images(self, req):
-            self.images = req.images
+            if req.context["stage"] == "team":  # the killer check sends images later too
+                self.images = req.images
             return super().analyze_images(req)
 
     prov = Spy()
@@ -647,7 +648,10 @@ def test_deaths_force_scenes_and_coverage_warning(video, cfg, tmp_path, monkeypa
 
     monkeypatch.setattr(pl, "plan_scenes", spy_plan)
     result, _ = make_pipeline(cfg, tmp_path, MockProvider()).run(video, run_id="death1")
-    assert result.player_deaths == [{"time_seconds": 17.0, "source": "체력 0", "respawn_seconds": 19.5}]
+    d = result.player_deaths
+    assert [{k: v for k, v in x.items() if k != "killer"} for x in d] == [{"time_seconds": 17.0, "source": "체력 0", "respawn_seconds": 19.5}]
+    # the mock reads "ENEMY1" from the kill feed, an enemy in the mock team list
+    assert d[0]["killer"]["status"] == "verified" and d[0]["killer"]["player_name"] == "ENEMY1"
     assert any(c[0] == 7.0 and c[1] == 17.0 and "사망" in c[2] for c in seen["cands"])
     assert any(a <= 7.0 and b >= 17.0 for a, b in seen["windows"])
     covered = any(f.start_time_seconds <= 18 and f.end_time_seconds >= 7 for f in result.feedback)
@@ -1048,3 +1052,45 @@ def test_antiheal_targets_from_team_list_bars(tmp_path, cfg):
     assert res["status"] == "hit" and [x["player_name"] for x in res["enemies"]] == ["P4"]
     assert [x["player_name"] for x in res["allies"]] == ["P7"]
     assert detect_antiheal_targets(video, 5.0, slots, ac)["status"] == "none"  # outlined already before the throw
+
+
+def test_killer_name_must_be_an_enemy(cfg, tmp_path, video, monkeypatch):
+    """A name read from the kill feed counts only if it is an enemy in the team list."""
+    import owcoach.providers.mock as mock
+
+    real = mock.MockProvider.analyze_images
+
+    def reads_ally(self, req):
+        if req.context["stage"] == "killer":
+            return self._resp({"killer_name": "MOCK", "evidence": "ally name"})
+        return real(self, req)
+
+    monkeypatch.setattr(mock.MockProvider, "analyze_images", reads_ally)
+    pipe = make_pipeline(cfg, tmp_path, MockProvider())
+    pipe._team_record = {"team_identification": {"player_name": "MOCK"},
+                         "roster": [{"slot": 1, "player_name": "MOCK", "team": "ally"},
+                                    {"slot": 6, "player_name": "ENEMY1", "team": "enemy", "hero": "라마트라"}]}
+    store = RunStore(tmp_path / "runs" / "k")
+    res = pipe._killer(store, video, "sha", 10.0, {}, set())
+    assert res["status"] == "unverifiable" and "적 팀 목록에 없음" in res["note"]
+
+
+
+def test_items_about_different_uses_are_not_duplicates(cfg):
+    """A grenade item and a sleep dart item overlapping in time are both kept."""
+    from owcoach.postprocess import finalize_feedback
+
+    hero = load_hero("ana")
+    rec = _scene_rec("verified")
+    rec["ability_events"] = [
+        {"time_seconds": 10.0, "ability_id": "biotic_grenade", "target": "", "evidence": "e",
+         "hud_check": {"status": "verified", "hud_slot": "ability_2", "hud_use_time_seconds": 10.0, "note": "n"}},
+        {"time_seconds": 11.0, "ability_id": "sleep_dart", "target": "", "evidence": "e",
+         "hud_check": {"status": "verified", "hud_slot": "ability_1", "hud_use_time_seconds": 11.0, "note": "n"}}]
+    items = [_coaching_item(category="skill_usage", criterion_ids=["ana.skill.biotic_grenade_usage"],
+                            start_time_seconds=9.5, end_time_seconds=11.0),
+             _coaching_item(category="skill_usage", criterion_ids=["ana.skill.sleep_dart_usage"],
+                            start_time_seconds=10.5, end_time_seconds=11.5)]
+    fb, _ = finalize_feedback(CoachingResponse(items=items, action_items=[]), {"scene-01": rec}, hero, 30.0,
+                              cfg["output"], lambda t: f"evidence/{t}.jpg", [])
+    assert len(fb) == 2

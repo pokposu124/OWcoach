@@ -3,11 +3,11 @@ video_sha12: "bc7deeef7d44"
 hero: ana
 facts:
   deaths:                          # 체력 0 구간 시작 (프레임으로 확인: 체력 0, 초상화 빨간 해골)
-    - {time_seconds: 39.0}
-    - {time_seconds: 71.0}
-    - {time_seconds: 106.5}
-    - {time_seconds: 138.5, cause: "적 겐지 용검"}
-    - {time_seconds: 200.5}
+    - {time_seconds: 39.0, killer: "KIVAZERO"}
+    - {time_seconds: 71.0, killer: "참깨라면"}
+    - {time_seconds: 106.5, killer: "GFRIEND"}
+    - {time_seconds: 138.5, cause: "적 겐지 용검", killer: "KIVAZERO"}
+    - {time_seconds: 200.5, killer: "참깨라면"}
   ultimates:
     - {time_seconds: 190.75, target_player: "LEAF"}
   not_happened:                    # 모델이 지어낸 적이 있는 사건 (근처 피드백에 keywords 가 나오면 재발)

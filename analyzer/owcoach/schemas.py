@@ -48,6 +48,11 @@ class RosterEntry(BaseModel):
     team: Literal["ally", "enemy", "unknown"]
 
 
+class KillerResponse(BaseModel):
+    killer_name: str = Field(description="플레이어를 처치한 사람의 이름(킬피드·'○○에게 죽음' 그대로). 못 읽으면 빈 문자열")
+    evidence: str
+
+
 class TeamResponse(BaseModel):
     team_identification: TeamIdentification
     roster: list[RosterEntry] = Field(description="상단 팀 목록의 플레이어별 팀·영웅 (최대 10명)")
@@ -275,7 +280,7 @@ class AnalysisResult(BaseModel):
     game_patch_version: str | None
     criteria_patch_version: str
     video: VideoInfo
-    player_deaths: list[dict] = Field(default_factory=list, description="감지한 플레이어 사망 (time_seconds, source)")
+    player_deaths: list[dict] = Field(default_factory=list, description="감지한 플레이어 사망 (time_seconds, source, killer: 킬피드로 확인한 처치자)")
     skill_uses: list[dict] = Field(default_factory=list,
                                    description="HUD로 확인한 스킬·궁극기 사용과 코드 판별 결과(대상·명중), 순간 확인(모델) 포함")
     hud_ultimate_uses_seconds: list[float] = Field(default_factory=list, description="HUD로 감지한 궁극기 사용 시각(초)")
