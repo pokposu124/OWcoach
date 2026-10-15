@@ -52,6 +52,8 @@ class Ability(BaseModel):
     reflect_marker: str | None = None
     # 사용 직후 플레이어의 처치 관여를 확인하는 방식 (config hud_check 의 키, 예: kill_banner)
     kill_marker: str | None = None
+    # 사용 효과를 받은 플레이어를 확인하는 방식 (config hud_check 의 키, 예: antiheal_bars)
+    effect_marker: str | None = None
 
 
 class NumericFact(BaseModel):

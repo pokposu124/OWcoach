@@ -30,6 +30,7 @@ from .config import ANALYZER_ROOT, fingerprint
 from .hud import (
     check_use_claim,
     detect_buff_target,
+    detect_antiheal_targets,
     detect_kill_credit,
     detect_reflect,
     player_team_color,
@@ -484,6 +485,12 @@ class Pipeline:
                                        "note": f"적 팀에 {self.hero.display_name_ko}가 있어 반사 여부 판별 불가"}
             else:
                 hc["reflect_check"] = detect_reflect(video, hc["hud_use_time_seconds"], hcfg[a.reflect_marker])
+        # who got the skill's effect (grenade: which enemies are anti-healed), from the team list
+        for e in events:
+            a, hc = by_id.get(e["ability_id"]), e["hud_check"]
+            if a and a.effect_marker and hc.get("status") == "verified" and a.effect_marker in hcfg:
+                every = [{**x, "side": side} for side in ("ally", "enemy") for x in self._ally_slots(side=side)]
+                hc["antiheal_check"] = detect_antiheal_targets(video, hc["hud_use_time_seconds"], every, hcfg[a.effect_marker])
         # did the player take part in a kill right after (e.g. anti-heal grenade -> enemy tank down)?
         for e in events:
             a, hc = by_id.get(e["ability_id"]), e["hud_check"]
@@ -569,7 +576,7 @@ class Pipeline:
                 out.append({"time_seconds": x, "ability_id": e["ability_id"], "source": e.get("source", "model"),
                             "target_check": hc.get("target_check"), "moment_check": hc.get("moment_check"),
                             "death_after_seconds": hc.get("death_after_seconds"), "reflect_check": hc.get("reflect_check"),
-                            "kill_check": hc.get("kill_check")})
+                            "kill_check": hc.get("kill_check"), "antiheal_check": hc.get("antiheal_check")})
         return sorted(out, key=lambda u: u["time_seconds"])
 
     def _target_check(self, video: Path, use_time: float, mcfg: dict) -> dict:

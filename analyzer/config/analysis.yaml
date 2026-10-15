@@ -177,6 +177,19 @@ hud_check:
     window_seconds: 3.0
     min_increase: 0.08
     min_frames: 2
+  # 치유 차단 대상: 상단 팀 목록에서 이름 아래 체력바 테두리가 보라(자홍)색으로 변함 (사용자 확인).
+  # 실측 영상2 22초 수류탄 → 23초부터 기대하지마(모이라)·참깨라면(라마트라) 0.27, 다른 칸 0.
+  antiheal_bars:
+    fps: 4.0
+    reference_resolution: [1280, 720]
+    y: 86
+    h: 16
+    dx0: -33                       # 칸 초상화 x(team.portrait_slots) 기준 체력바 범위
+    dx1: 35
+    min_ratio: 0.12
+    min_seconds: 0.75
+    onset_before_seconds: 1.0      # HUD 사용 시각이 실제 투척보다 늦게 잡히는 경우(최대 ~0.6초)
+    onset_after_seconds: 2.5
   # 처치 관여: 화면 중앙 아래 빨간 '해골 + 이름' 표시(내 처치·도움). 실측 영상2 26.5초 참깨라면(라마트라), 수류탄 22초 뒤 4.5초.
   # 누가 죽었는지는 그 순간 팀 목록에서 % 상자 색이 가장 바랜 적 칸(다른 적 칸 대비). 실측 참깨라면 칸 0.48→0.23.
   kill_banner:

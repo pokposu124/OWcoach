@@ -1026,3 +1026,25 @@ def test_kill_credit_from_banner_and_fading_enemy_slot(tmp_path, cfg):
     hit = detect_kill_credit(video, 1.0, enemies, kc)
     assert hit["status"] == "kill" and hit["player_name"] == "E1" and abs(hit["seconds_after"] - 2.0) <= 0.5
     assert detect_kill_credit(video, 5.5, enemies, kc)["status"] == "none"
+
+
+def test_antiheal_targets_from_team_list_bars(tmp_path, cfg):
+    """Magenta outlines appear around the team-list health bars of enemy slot 4 and ally slot 7 from 2.5 s:
+    one enemy anti-healed by the grenade at 2 s, and an ally too (the grenade may have come back)."""
+    from owcoach.hud import detect_antiheal_targets
+
+    ac = cfg["hud_check"]["antiheal_bars"]
+    ps = cfg["team"]["portrait_slots"]
+    xs = ps["left_x"] + ps["right_x"]
+    outline = lambda x: (f"drawbox=x={x + ac['dx0'] + 2}:y={ac['y'] + 3}:w={ac['dx1'] - ac['dx0'] - 4}:h=9"
+                         f":color=0xd860d0:t=2:enable='gte(t,2.5)'")
+    vf = f"{outline(xs[3])},{outline(xs[6])}"
+    video = tmp_path / "ah.mp4"
+    subprocess.run(["ffmpeg", "-y", "-v", "error", "-f", "lavfi", "-i", "color=c=0x303030:size=1280x720:rate=10",
+                    "-t", "6", "-vf", vf, "-pix_fmt", "yuv444p", str(video)], check=True)
+    slots = [{"slot": i + 1, "x": x, "player_name": f"P{i + 1}", "hero": None, "side": "enemy" if i < 5 else "ally"}
+             for i, x in enumerate(xs)]
+    res = detect_antiheal_targets(video, 2.0, slots, ac)
+    assert res["status"] == "hit" and [x["player_name"] for x in res["enemies"]] == ["P4"]
+    assert [x["player_name"] for x in res["allies"]] == ["P7"]
+    assert detect_antiheal_targets(video, 5.0, slots, ac)["status"] == "none"  # outlined already before the throw

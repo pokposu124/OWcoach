@@ -29,6 +29,8 @@ facts:
   reflected:                       # 반사된 스킬 (36초: 사용자 확인 겐지 튕겨내기 / 이 영상의 나머지 수류탄은 반사 없음)
     ability: biotic_grenade
     times: [37.0]
+  antiheal:                        # 생체 수류탄 치유 차단을 받은 적 (사용자 확인: 22초 적 2명, 팀 목록 체력바 보라 테두리)
+    - {time_seconds: 22.0, enemies: ["기대하지마", "참깨라면"]}
 judgements:
   - {time_seconds: 36.5, category: skill_usage, grade: blunder,
      note: "적 겐지 튕겨내기 중 생체 수류탄 투척 (HUD 사용 감지 37.0초)"}

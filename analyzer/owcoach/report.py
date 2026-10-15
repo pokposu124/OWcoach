@@ -129,6 +129,9 @@ def _hud_line(c) -> str:
             target = " → 빗나감(코드 확인)"
         else:
             target = " · 대상 확인 불가"
+    if (c.antiheal_check or {}).get("status") == "hit":
+        en = c.antiheal_check["enemies"]
+        target += f" → 치유 차단 적 {len(en)}명: " + ", ".join(f"{_e(x['player_name'])}({_e(x.get('hero') or '?')})" for x in en) + "(코드 확인)"
     if (c.kill_check or {}).get("status") == "kill":
         kc = c.kill_check
         target += f" → {kc['seconds_after']:g}초 뒤 {_e(kc['player_name'])}({_e(kc.get('hero') or '?')}) 처치 관여(코드 확인)"

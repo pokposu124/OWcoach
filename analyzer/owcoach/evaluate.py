@@ -132,6 +132,13 @@ def evaluate(run_dir: Path, labels_path: Path) -> dict:
         missed = any(k in said for k in ("빗나", "맞지 않", "실패"))
         check("스킬 명중(모델)", missed == (not so["hit"]), f"{fmt_time(t)} 정답 {'명중' if so['hit'] else '빗나감'} / 순간 확인 '{said}'")
 
+    # anti-healed enemies (code: magenta outline on team-list health bars)
+    for ah in facts.get("antiheal", []):
+        use = next((u for u in result.skill_uses if u["ability_id"] == "biotic_grenade" and _near(u["time_seconds"], ah["time_seconds"], 1.5)), None)
+        got = sorted(x["player_name"] for x in ((use or {}).get("antiheal_check") or {}).get("enemies", []))
+        check("치유 차단 대상(코드)", got == sorted(ah["enemies"]),
+              f"{fmt_time(ah['time_seconds'])} 정답 {', '.join(ah['enemies'])} / 코드 {', '.join(got) or '없음'}")
+
     # reflected skills (code: anti-heal icon on the player right after the grenade)
     rf = facts.get("reflected")
     if rf:

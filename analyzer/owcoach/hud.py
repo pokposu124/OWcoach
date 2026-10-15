@@ -430,3 +430,43 @@ def detect_kill_credit(video: Path, use_time: float, slots: list[dict], cfg: dic
         return {"status": "none", "note": f"사용 {out['seconds_after']:g}초 뒤 화면 알림은 있으나 적 칸 변화 없음(재움·구원 알림 등): 처치 미확인"}
     out["note"] = f"사용 {out['seconds_after']:g}초 뒤 {out['player_name']}({out.get('hero') or '?'}) 처치 관여 (화면 처치 알림 + 팀 목록 칸 변화)"
     return out
+
+
+def detect_antiheal_targets(video: Path, use_time: float, slots: list[dict], cfg: dict) -> dict:
+    """Who got the anti-heal of the player's grenade, read from the team list at the top.
+
+    A player under anti-heal has the health bar under their name in the team list outlined in magenta
+    (measured: 0 before, ~0.27 of the bar area while it lasts). A slot counts when the outline starts
+    within onset_before / onset_after of the HUD use time and stays min_seconds. Enemy slots are the
+    targets; ally slots outlined at the same moment point to a grenade that came back (deflect).
+    cfg: hud_check.antiheal_bars. slots: every team-list slot with x and side ("ally"/"enemy").
+    """
+    fps, ref = float(cfg["fps"]), cfg["reference_resolution"]
+    start = max(0.0, use_time - cfg["onset_before_seconds"])
+    span = cfg["onset_before_seconds"] + cfg["onset_after_seconds"] + cfg["min_seconds"] + 0.5
+    fr = _frames(video, start, span, fps, ref, (0, cfg["y"], ref[0], cfg["h"]))
+    if len(fr) == 0 or not slots:
+        return {"status": "unverifiable", "enemies": [], "allies": [], "note": "판별용 프레임 부족"}
+    r, g, b = fr[..., 0], fr[..., 1], fr[..., 2]
+    mag = (r > 140) & (b > 140) & (g < np.minimum(r, b) - 60) & (np.abs(r - b) < 80)
+    times = start + np.arange(len(fr)) / fps
+    need = max(1, int(round(cfg["min_seconds"] * fps)))
+    hit: dict[str, list[dict]] = {"enemy": [], "ally": []}
+    for s in slots:
+        on = mag[:, :, s["x"] + cfg["dx0"]:s["x"] + cfg["dx1"]].mean(axis=(1, 2)) >= cfg["min_ratio"]
+        if on[times < use_time - cfg["onset_before_seconds"] + 0.01].any():
+            continue  # already outlined before the throw: someone else's anti-heal
+        for i in range(len(on) - need + 1):
+            if times[i] > use_time + cfg["onset_after_seconds"]:
+                break
+            if on[i:i + need].all():
+                hit[s["side"]].append({"slot": s["slot"], "player_name": s["player_name"], "hero": s.get("hero"),
+                                       "onset_seconds": round(float(times[i]), 2)})
+                break
+    names = lambda xs: ", ".join(f"{x['player_name']}({x.get('hero') or '?'})" for x in xs)
+    note = f"치유 차단 적 {len(hit['enemy'])}명" + (f": {names(hit['enemy'])}" if hit["enemy"] else "")
+    if hit["ally"]:
+        note += f"; 아군 {len(hit['ally'])}명도 치유 차단({names(hit['ally'])}): 반사 가능성"
+    return {"status": "hit" if hit["enemy"] else "none", "enemies": hit["enemy"], "allies": hit["ally"],
+            "note": note + " (팀 목록 체력바 보라 테두리)"}
+
