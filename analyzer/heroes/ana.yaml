@@ -215,7 +215,8 @@ criteria:
       - "궁극기 게이지 수치가 판독되지 않음"
     source: {type: coach_draft, reference: "초안 + 사용자 코칭(2026-10-13, 늦은 나노)", patch_version: unverified}
 
-# 확인된 게임 수치. 출처와 패치 버전이 없으면 넣지 않는다. (현재 비어 있음)
+# 게임 수치는 여기 적지 않고 data/overwatch_stats 수집본에서 조회한다(owcoach/gamedata.py, CLAUDE_USAGE.md).
+# 아래 numeric_facts 는 수집본에 없는 값을 다른 확인된 출처로 보완할 때만 쓴다. 출처와 패치 버전이 없으면 넣지 않는다.
 # 예시 형식:
 #   - id: ana.sleep_dart.cooldown
 #     value: <숫자>

@@ -1159,3 +1159,29 @@ def test_team_health_from_team_list_bars(tmp_path, cfg):
     assert fills[times < 2.5, 5].min() > 0.95
     assert abs(float(np.median(fills[times > 3.5, 5])) - 0.5) < 0.08
     assert (fills[:, 6] == -1).all()
+
+def test_game_data_lookup_carries_units_status_and_source():
+    """The bundled stats snapshot: lookups by Korean name, values with status and pinned source, review
+    items surfaced, ultimate cost never shown as a cooldown, unknown modes refused."""
+    from owcoach.gamedata import load_gamedata
+
+    gd = load_gamedata()
+    assert gd.hero_id("아나") == "ana" and gd.hero_id("솔저: 76") == "soldier-76"
+    sleep = gd.get_ability_stats("ana", gd.ability_id("ana", "Sleep Dart"))
+    assert sleep["cooldown"]["seconds"] == 14.0 and sleep["source"]["revision_url"].endswith("oldid=403928")
+    assert all(s["status"] for s in sleep["stats"])
+    assert gd.get_review_items("doctrine")
+    text = gd.facts_text("아나", ["겐지", "독트린"], brief_keys=("duration",))
+    assert "쿨타임 14 seconds" in text and "초 단위 대기시간 아님" in text and "⚠검토" in text
+    assert "확인이 필요한 전제" in text and "특전" in text
+    with pytest.raises(ValueError):
+        gd.get_hero_stats("ana", mode="6v6")
+
+
+def test_cooldown_check_warns_on_uses_closer_than_cooldown(cfg, tmp_path):
+    """Two sleep darts 6 s apart (cooldown 14 s in the snapshot) are flagged as a likely detection error."""
+    pipe = make_pipeline(cfg, tmp_path, MockProvider())
+    pipe._hud_skill_uses = {"sleep_dart": [10.0, 16.0, 40.0]}
+    pipe._cooldown_check()
+    assert any("수면총" in w and "14초" in w for w in pipe.warnings)
+    assert sum("수면총" in w for w in pipe.warnings) == 1

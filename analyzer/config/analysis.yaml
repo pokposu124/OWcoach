@@ -104,6 +104,14 @@ moment_check:
 # 사망마다 [사망 - pre_seconds, 사망] 구간을 상세 분석 장면에 넣고, 코칭 단계는 그 구간 피드백을 최소 1개 쓴다.
 # 플레이어 사망마다 처치자 확인: 킬피드(우상단)와 '○○에게 죽음' 알림을 확대해 모델이 이름을 읽고, 코드가 적 팀 목록과 대조.
 # (사용자: 두 번째 영상 1분 11초 킬피드 '라마트라 > 아나' = 겐지는 처치에 관여하지 않음)
+# 게임 수치: data/overwatch_stats (Overwatch Wiki 수집본 2026-10-15, CC BY-NC-SA 3.0). 이 경기의 영웅·스킬만 조회해
+# 코칭에 넘긴다(플레이어 영웅은 전체, 다른 영웅은 쿨타임 + brief_stats). 규칙은 data/overwatch_stats/CLAUDE_USAGE.md.
+game_data:
+  enabled: true
+  path: null                       # null = data/overwatch_stats/overwatch.sqlite
+  brief_stats: [duration]
+  cooldown_tolerance_seconds: 1.0  # HUD 감지 간격이 기본 쿨타임보다 이만큼 이상 짧으면 경고
+
 # 피드백 칸마다 그 시간대 킬피드: 장면마다 step 간격으로 킬피드를 확대해 모델이 줄을 옮겨 적고, 코드가 같은 줄을 합치고
 # 이름을 팀 목록과 대조(아군/적, 그 시각의 영웅). 피드백 시간 ± item_pad 안의 줄을 그 칸에 붙인다.
 kill_feed:

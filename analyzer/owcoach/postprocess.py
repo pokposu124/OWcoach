@@ -336,7 +336,7 @@ def finalize_feedback(
             id="", scene_id=item.scene_id,
             start_time_seconds=s, end_time_seconds=e, category=item.category,
             observation=normalize_times(item.observation), assessment=normalize_times(item.assessment),
-            suggestion=normalize_times(item.suggestion),
+            suggestion=normalize_times(item.suggestion), game_rule=normalize_times(item.game_rule),
             evidence_frame_timestamps=[f.timestamp_seconds for f in frames], evidence_frames=frames,
             uncertainty=normalize_times(item.uncertainty), uncertainty_level=item.uncertainty_level,
             hero=hero.hero_id, patch_version=hero.patch_version,

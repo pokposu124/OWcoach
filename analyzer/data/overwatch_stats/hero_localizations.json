@@ -1,0 +1,218 @@
+[
+  {
+    "key": "ana",
+    "name": "아나"
+  },
+  {
+    "key": "anran",
+    "name": "안란"
+  },
+  {
+    "key": "ashe",
+    "name": "애쉬"
+  },
+  {
+    "key": "baptiste",
+    "name": "바티스트"
+  },
+  {
+    "key": "bastion",
+    "name": "바스티온"
+  },
+  {
+    "key": "brigitte",
+    "name": "브리기테"
+  },
+  {
+    "key": "cassidy",
+    "name": "캐서디"
+  },
+  {
+    "key": "dmon",
+    "name": "D.Mon"
+  },
+  {
+    "key": "doctrine",
+    "name": "독트린"
+  },
+  {
+    "key": "domina",
+    "name": "도미나"
+  },
+  {
+    "key": "doomfist",
+    "name": "둠피스트"
+  },
+  {
+    "key": "dva",
+    "name": "D.Va"
+  },
+  {
+    "key": "echo",
+    "name": "에코"
+  },
+  {
+    "key": "emre",
+    "name": "엠레"
+  },
+  {
+    "key": "freja",
+    "name": "프레야"
+  },
+  {
+    "key": "genji",
+    "name": "겐지"
+  },
+  {
+    "key": "hanzo",
+    "name": "한조"
+  },
+  {
+    "key": "hazard",
+    "name": "해저드"
+  },
+  {
+    "key": "illari",
+    "name": "일리아리"
+  },
+  {
+    "key": "jetpack-cat",
+    "name": "제트팩 캣"
+  },
+  {
+    "key": "junker-queen",
+    "name": "정커퀸"
+  },
+  {
+    "key": "junkrat",
+    "name": "정크랫"
+  },
+  {
+    "key": "juno",
+    "name": "주노"
+  },
+  {
+    "key": "kiriko",
+    "name": "키리코"
+  },
+  {
+    "key": "lifeweaver",
+    "name": "라이프위버"
+  },
+  {
+    "key": "lucio",
+    "name": "루시우"
+  },
+  {
+    "key": "mauga",
+    "name": "마우가"
+  },
+  {
+    "key": "mei",
+    "name": "메이"
+  },
+  {
+    "key": "mercy",
+    "name": "메르시"
+  },
+  {
+    "key": "mizuki",
+    "name": "미즈키"
+  },
+  {
+    "key": "moira",
+    "name": "모이라"
+  },
+  {
+    "key": "orisa",
+    "name": "오리사"
+  },
+  {
+    "key": "pharah",
+    "name": "파라"
+  },
+  {
+    "key": "ramattra",
+    "name": "라마트라"
+  },
+  {
+    "key": "reaper",
+    "name": "리퍼"
+  },
+  {
+    "key": "reinhardt",
+    "name": "라인하르트"
+  },
+  {
+    "key": "roadhog",
+    "name": "로드호그"
+  },
+  {
+    "key": "shion",
+    "name": "시온"
+  },
+  {
+    "key": "sierra",
+    "name": "시에라"
+  },
+  {
+    "key": "sigma",
+    "name": "시그마"
+  },
+  {
+    "key": "sojourn",
+    "name": "소전"
+  },
+  {
+    "key": "soldier-76",
+    "name": "솔저: 76"
+  },
+  {
+    "key": "sombra",
+    "name": "솜브라"
+  },
+  {
+    "key": "symmetra",
+    "name": "시메트라"
+  },
+  {
+    "key": "torbjorn",
+    "name": "토르비욘"
+  },
+  {
+    "key": "tracer",
+    "name": "트레이서"
+  },
+  {
+    "key": "vendetta",
+    "name": "벤데타"
+  },
+  {
+    "key": "venture",
+    "name": "벤처"
+  },
+  {
+    "key": "widowmaker",
+    "name": "위도우메이커"
+  },
+  {
+    "key": "winston",
+    "name": "윈스턴"
+  },
+  {
+    "key": "wrecking-ball",
+    "name": "레킹볼"
+  },
+  {
+    "key": "wuyang",
+    "name": "우양"
+  },
+  {
+    "key": "zarya",
+    "name": "자리야"
+  },
+  {
+    "key": "zenyatta",
+    "name": "젠야타"
+  }
+]

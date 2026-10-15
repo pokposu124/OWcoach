@@ -46,6 +46,7 @@ from .hud import (
     use_times,
 )
 from .timefmt import fmt_range, fmt_time
+from .gamedata import load_gamedata
 from .heroes import HeroProfile, load_comp_notes
 from .portraits import roster_timeline, identify, load_portraits
 from .media import (
@@ -426,6 +427,57 @@ class Pipeline:
             if low:
                 self.warnings.append("초상화 대조로 영웅을 확정하지 못함(불명 처리): " + ", ".join(low))
         return team, record
+
+    def _game_facts(self) -> str:
+        """Game numbers for this match only (player hero in detail, every other hero seen in the team list,
+        swaps included, briefly), from the bundled stats snapshot. Empty when disabled or missing."""
+        gcfg = self.cfg.get("game_data") or {}
+        if not gcfg.get("enabled"):
+            return "- 게임 수치 자료를 쓰지 않음"
+        try:
+            gd = load_gamedata(gcfg.get("path"))
+        except Exception as e:  # noqa: BLE001 - missing / unreadable bundle: run without numbers
+            self.warnings.append(f"게임 수치 자료를 열지 못함: {e}")
+            return "- 게임 수치 자료를 열지 못함"
+        heroes: list[str] = []
+        for r in (self._team_record or {}).get("roster", []):
+            for h in [x["hero"] for x in r.get("hero_history") or []] + [r.get("hero")]:
+                if h and h != "불명" and h not in heroes:
+                    heroes.append(h)
+        return gd.facts_text(self.hero.display_name_ko, heroes, brief_keys=tuple(gcfg.get("brief_stats", ["duration"])))
+
+    def _game_data_meta(self) -> dict | None:
+        gcfg = self.cfg.get("game_data") or {}
+        if not gcfg.get("enabled"):
+            return None
+        try:
+            return {**load_gamedata(gcfg.get("path")).meta,
+                    "match_patch": "영상으로 확인 불가 — 수집본 수치는 확인이 필요한 전제"}
+        except Exception:  # noqa: BLE001
+            return None
+
+    def _cooldown_check(self) -> None:
+        """Two HUD-detected uses of one ability closer than its base cooldown point to a detection error
+        (or a perk / effect the video shows). Warned, not dropped: perks are not known."""
+        gcfg = self.cfg.get("game_data") or {}
+        if not gcfg.get("enabled"):
+            return
+        try:
+            gd = load_gamedata(gcfg.get("path"))
+        except Exception:  # noqa: BLE001
+            return
+        hid = gd.hero_id(self.hero.display_name_ko)
+        names = {a.id: a for a in self.hero.abilities}
+        for aid, xs in getattr(self, "_hud_skill_uses", {}).items():
+            a = names.get(aid)
+            dbid = gd.ability_id(hid, a.name_en) if hid and a else None
+            cd = ((gd.get_ability_stats(hid, dbid).get("cooldown") or {}).get("seconds")) if dbid else None
+            if not cd:
+                continue
+            for x, y in zip(xs, xs[1:]):
+                if y - x < cd - gcfg.get("cooldown_tolerance_seconds", 1.0):
+                    self.warnings.append(f"{a.name_ko} HUD 사용 {fmt_time(x)}·{fmt_time(y)} 간격 {y - x:.1f}초 < 기본 쿨타임 {cd:g}초 "
+                                         "(위키 수집본): 감지 오류이거나 특전·효과로 쿨타임이 줄었을 수 있음")
 
     def _ally_health(self, video: Path, t: float, cfg: dict) -> dict:
         """Allies' health (0..1 of their bar) just before t, and who was critically low."""
@@ -866,6 +918,7 @@ class Pipeline:
             start_time_seconds=max(0.0, round(x - 1.0, 2)), end_time_seconds=min(duration, round(x + 1.0, 2)),
             category="skill_usage", reason_observed=f"HUD: {fmt_time(x)}에 {names_ko[aid]} 사용 감지", priority=4)
             for aid, xs in self._hud_skill_uses.items() for x in xs]
+        self._cooldown_check()
         self._deaths = self._find_deaths(video, duration, overview, hcfg)
         if self._deaths:
             self.log("  사망 감지: " + ", ".join(f"{fmt_time(d['time_seconds'])}({d['source']})" for d in self._deaths))
@@ -949,14 +1002,15 @@ class Pipeline:
         t = time.monotonic()
         cp = self.prompts["coaching"]
         out = cfg["output"]
-        coaching_fp = fingerprint(ai_fp_base, detail_fps, scene_records, team_context, cfg["coaching"], out["max_feedback_items"],
+        game_facts = self._game_facts()
+        coaching_fp = fingerprint(ai_fp_base, detail_fps, scene_records, team_context, game_facts, cfg["coaching"], out["max_feedback_items"],
                                   out["max_action_items"], cp.version, hero.criteria_for_prompt())
         if scene_records:
             prompt = cp.render(
                 hero_name_ko=hero.display_name_ko,
                 criteria=json.dumps(hero.criteria_for_prompt(), ensure_ascii=False, indent=1),
                 observations=json.dumps(list(scene_records.values()), ensure_ascii=False, indent=1),
-                team_context=team_context,
+                team_context=team_context, game_facts=game_facts,
                 max_feedback_items=out["max_feedback_items"], max_action_items=out["max_action_items"],
             )
 
@@ -1047,6 +1101,7 @@ class Pipeline:
                 prompts={k: p.version for k, p in self.prompts.items()},
                 hero_profile=hero.profile_version, hero_profile_review_status=hero.review_status,
                 config_fingerprint=fingerprint(cfg),
+                game_data=self._game_data_meta(),
             ),
             timings_seconds=self.timings, usage=self.usage,
             cost=compute_cost(self.usage, self.pricing, prov.is_mock),

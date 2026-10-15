@@ -145,6 +145,7 @@ class CoachingItem(BaseModel):
     observation: str = Field(description="관찰 기록에 있는 사실만")
     assessment: str = Field(description="기준을 적용한 판단")
     suggestion: str = Field(description="다음에 할 구체적 행동")
+    game_rule: str = Field(default="", description="판단에 쓴 게임 규칙·수치 (게임 수치 표의 값을 단위·조건과 함께). 없으면 빈 문자열")
     criterion_ids: list[str]
     grade: Literal["excellent", "best", "blunder", "withheld"] = Field(
         description="excellent=탁월, best=최선, blunder=블런더, withheld=근거 부족으로 판단 보류")
@@ -219,6 +220,7 @@ class FeedbackItem(BaseModel):
     verification: Literal["hud", "model_observation"] = Field(
         default="model_observation",
         description="hud: 스킬/궁극기 사용이 HUD 대조로 확인됨 / model_observation: 모델 관찰(포지셔닝 등, 코드로 확인하지 않음)")
+    game_rule: str = Field(default="", description="판단에 쓴 게임 규칙·수치 (Overwatch Wiki 수집본, 단위·조건 포함)")
     kill_feed: list[dict] = Field(default_factory=list, description="이 피드백 시간대의 킬피드 (처치자 > 죽은 사람, 팀·영웅은 팀 목록과 대조)")
 
     @model_validator(mode="after")
@@ -285,6 +287,7 @@ class Versions(BaseModel):
     hero_profile: str
     hero_profile_review_status: str
     config_fingerprint: str
+    game_data: dict | None = Field(default=None, description="게임 수치 자료 (수집일, 공식 패치 대조 범위, 출처·라이선스)")
 
 
 class AnalysisResult(BaseModel):

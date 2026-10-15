@@ -152,6 +152,16 @@ def _hud_line(c) -> str:
             + (f" <span class=muted>— {_e(c.note)}</span>" if c.status != "verified" else "") + "</li>")
 
 
+def _game_data_line(result) -> str:
+    g = result.versions.game_data
+    if not g:
+        return ""
+    att = g.get("attribution") or {}
+    return (f"<p class=muted>게임 수치: <a href='{_e(att.get('url', ''))}'>{_e(att.get('source', ''))}</a> 수집본 {_e(g.get('snapshot_date') or '')} "
+            f"(<a href='{_e(att.get('license_url', ''))}'>{_e(att.get('license', ''))}</a>), 공식 패치 대조 {_e(g.get('latest_official_patch_checked') or '')}까지 일부. "
+            f"경기 패치는 확인하지 못해 수치는 전제로 사용.</p>")
+
+
 def _kf_name(p: dict, me: str) -> str:
     if not p.get("player_name"):
         return "<span class=unknown>(처치자 없음)</span>"
@@ -189,7 +199,7 @@ def _card(n: int, f, me: str = "") -> str:
     <span class="chip cat">{_e(CATEGORY_KO[f.category])}</span>
     <span class="chip g-{f.grade}">{_e(GRADE_KO[f.grade])}</span>{mode}</header>
   {reasons}
-  <dl><dt>관찰</dt><dd>{_e(f.observation)}</dd><dt>판단</dt><dd>{_e(f.assessment)}</dd><dt>제안</dt><dd>{_e(f.suggestion)}</dd>
+  <dl><dt>관찰</dt><dd>{_e(f.observation)}</dd>{f'<dt>규칙</dt><dd>{_e(f.game_rule)}</dd>' if f.game_rule else ''}<dt>판단</dt><dd>{_e(f.assessment)}</dd><dt>제안</dt><dd>{_e(f.suggestion)}</dd>
   {f'<dt>불확실</dt><dd>{_e(f.uncertainty)}</dd>' if f.uncertainty else ''}</dl>
   <ul class=hud>{hud}</ul>
   {_kill_feed(f, me)}
@@ -263,6 +273,7 @@ def build_report_html(result: AnalysisResult, video_src: str, fragment: bool = F
     <details><summary>경고</summary><ul>{warnings}</ul></details>
     <details><summary>사용량 · 비용</summary><p>비용: {_e(cost)} — {_e(result.cost.note)}</p>
       <div class=scroll><table><tr><th>단계</th><th>모델</th><th>입력</th><th>출력</th><th>thinking</th><th>시도</th><th>캐시</th></tr>{usage_rows}</table></div></details>
+    {_game_data_line(result)}
     <p class=muted>run {_e(result.run_id)} · 프롬프트 {_e(', '.join(f'{k} {v}' for k, v in result.versions.prompts.items()))} · 영웅 기준 {_e(result.versions.hero_profile)} · 게임 패치 {_e(result.game_patch_version or '미입력')}</p>
   </details>
 </section>
