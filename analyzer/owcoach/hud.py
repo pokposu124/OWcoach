@@ -368,3 +368,65 @@ def player_team_color(video: Path, duration: float, cfg: dict) -> dict:
     return {"ally_color": color, "rgb": [round(float(x), 2) for x in (r, g, b)], "frames": len(rgbs),
             "note": f"좌하단 내 초상화 테두리 평균색 RGB({r:.2f}, {g:.2f}, {b:.2f})"}
 
+
+def _frames(video: Path, start: float, dur: float, fps: float, ref: list[int], crop: tuple[int, int, int, int]) -> np.ndarray:
+    x, y, w, h = crop
+    proc = subprocess.run([
+        _require("ffmpeg"), "-v", "error", "-ss", f"{max(0.0, start):.3f}", "-i", str(video), "-t", f"{dur:.3f}",
+        "-vf", f"fps={fps},scale={ref[0]}:{ref[1]},crop={w}:{h}:{x}:{y}", "-f", "rawvideo", "-pix_fmt", "rgb24", "-",
+    ], capture_output=True)
+    if proc.returncode != 0:
+        raise MediaError(f"frame extraction failed: {proc.stderr[-300:]!r}")
+    return np.frombuffer(proc.stdout, np.uint8).reshape(-1, h, w, 3).astype(np.int16)
+
+
+def detect_kill_credit(video: Path, use_time: float, slots: list[dict], cfg: dict) -> dict:
+    """Did the player take part in a kill soon after a skill (e.g. anti-heal grenade -> enemy tank dies)?
+
+    The game shows a red "skull + name" banner just below the screen centre for the player's own
+    eliminations and assists. A banner that newly appears within window_seconds after the use (one
+    already on screen at the use belongs to an earlier kill) gives the kill time. The enemy is the team-
+    list slot whose "%" box loses its colour most at that moment, relative to the other enemy slots
+    (a dead player's box turns dull; the other slots cancel out background changes behind the list).
+    cfg: hud_check.kill_banner.
+    """
+    fps, ref = float(cfg["fps"]), cfg["reference_resolution"]
+    b = cfg["banner"]
+    lead = 0.5
+    fr = _frames(video, use_time - lead, cfg["window_seconds"] + lead, fps, ref, (b["x"], b["y"], b["w"], b["h"]))
+    r, g, bl = fr[..., 0], fr[..., 1], fr[..., 2]
+    on = ((r > 150) & (r - g > 90) & (r - bl > 40)).mean(axis=(1, 2)) >= b["min_ratio"]
+    times = use_time - lead + np.arange(len(on)) / fps
+    need = max(1, int(round(b["min_seconds"] * fps)))
+    kill_t = None
+    for i in range(1, len(on)):
+        # a banner that starts here (off just before), after the use, and stays for min_seconds
+        if times[i] > use_time and on[i] and not on[i - 1] and on[i:i + need].all() and len(on[i:i + need]) == need:
+            kill_t = float(times[i])
+            break
+    if kill_t is None:
+        return {"status": "none", "note": f"사용 후 {cfg['window_seconds']:g}초 안에 새 처치 표시 없음"}
+    out = {"status": "kill", "time_seconds": round(kill_t, 2), "seconds_after": round(kill_t - use_time, 2)}
+    if len(slots) >= 2:
+        d = cfg["slot_box"]  # banners also announce sleeps, saves and assists: only a fading enemy slot confirms a kill
+        xs = [s["x"] for s in slots]
+        x_lo, x_hi = min(xs) + d["dx0"], max(xs) + d["dx1"]
+        crop = (x_lo, d["y"], x_hi - x_lo, d["h"])
+
+        def colour(start: float, dur: float) -> np.ndarray:
+            f = _frames(video, start, dur, fps, ref, crop).astype(np.float32) / 255
+            mx, mn = f.max(axis=3), f.min(axis=3)
+            sv = (mx - mn) / (mx + 1e-6) * mx                       # saturation x value
+            per = np.array([[x[:, s["x"] + d["dx0"] - x_lo:s["x"] + d["dx1"] - x_lo].mean() for s in slots] for x in sv])
+            return np.median(per / np.median(per, axis=1, keepdims=True), axis=0)   # relative to the other slots
+
+        drop = 1 - colour(kill_t, d["after_seconds"]) / np.maximum(colour(use_time - 1.0, 1.0), 1e-6)
+        i = int(np.argmax(drop))
+        out["slot_fade"] = round(float(drop[i]), 2)
+        if drop[i] >= d["min_drop"]:
+            s = slots[i]
+            out.update(slot=s["slot"], player_name=s["player_name"], hero=s.get("hero"))
+    if "player_name" not in out:
+        return {"status": "none", "note": f"사용 {out['seconds_after']:g}초 뒤 화면 알림은 있으나 적 칸 변화 없음(재움·구원 알림 등): 처치 미확인"}
+    out["note"] = f"사용 {out['seconds_after']:g}초 뒤 {out['player_name']}({out.get('hero') or '?'}) 처치 관여 (화면 처치 알림 + 팀 목록 칸 변화)"
+    return out

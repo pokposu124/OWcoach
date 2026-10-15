@@ -50,6 +50,8 @@ class Ability(BaseModel):
     # 반사(겐지 튕겨내기 등)되어 돌아왔을 때 플레이어에게 남는 표시 (config hud_check 의 키, 예: self_antiheal).
     # 적 팀에 같은 영웅이 있으면 그 표시가 적의 스킬일 수 있어 판별하지 않음
     reflect_marker: str | None = None
+    # 사용 직후 플레이어의 처치 관여를 확인하는 방식 (config hud_check 의 키, 예: kill_banner)
+    kill_marker: str | None = None
 
 
 class NumericFact(BaseModel):

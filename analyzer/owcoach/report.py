@@ -129,6 +129,9 @@ def _hud_line(c) -> str:
             target = " → 빗나감(코드 확인)"
         else:
             target = " · 대상 확인 불가"
+    if (c.kill_check or {}).get("status") == "kill":
+        kc = c.kill_check
+        target += f" → {kc['seconds_after']:g}초 뒤 {_e(kc['player_name'])}({_e(kc.get('hero') or '?')}) 처치 관여(코드 확인)"
     if (c.reflect_check or {}).get("status") == "reflected":
         target += " → 반사되어 자신이 치유 차단(코드 확인)"
     return (f"<li class='h-{c.status}'>{_e(HUD_KO[c.status])} · {_e(ability)} {when}{target}"

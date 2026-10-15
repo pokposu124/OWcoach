@@ -1003,3 +1003,26 @@ def test_coaching_gaps_name_missing_positioning_and_required_uses():
     assert gaps == ["scene-01의 nano_boost 10초 사용 피드백"]
     only_ult = CoachingResponse(items=[_coaching_item()], action_items=[])
     assert coaching_gaps(only_ult, {"scene-01": rec}) == ["scene-01 (0초 ~ 20초)의 positioning 피드백"]
+
+
+def test_kill_credit_from_banner_and_fading_enemy_slot(tmp_path, cfg):
+    """A red banner appears below the centre at 3 s and enemy slot 2's "%" box turns dull from 3 s:
+    a kill of that enemy 2 s after a grenade at 1 s. A banner at 6 s with no slot change (a sleep or
+    save notice) is not a kill."""
+    from owcoach.hud import detect_kill_credit
+
+    kc = cfg["hud_check"]["kill_banner"]
+    b, d = kc["banner"], kc["slot_box"]
+    xs = cfg["team"]["portrait_slots"]["left_x"]
+    boxes = ",".join(f"drawbox=x={x + d['dx0']}:y={d['y']}:w={d['dx1'] - d['dx0']}:h={d['h']}:color=0x30b0f0:t=fill"
+                     for x in xs)
+    dull = f"drawbox=x={xs[1] + d['dx0']}:y={d['y']}:w={d['dx1'] - d['dx0']}:h={d['h']}:color=0x404858:t=fill:enable='gte(t,3)'"
+    banner = f"x={b['x'] + 50}:y={b['y'] + 15}:w=70:h=20:color=0xe0205a:t=fill"
+    vf = f"{boxes},{dull},drawbox={banner}:enable='between(t,3,5)',drawbox={banner}:enable='between(t,6.5,8.5)'"
+    video = tmp_path / "kill.mp4"
+    subprocess.run(["ffmpeg", "-y", "-v", "error", "-f", "lavfi", "-i", "color=c=0x303030:size=1280x720:rate=10",
+                    "-t", "10", "-vf", vf, "-pix_fmt", "yuv444p", str(video)], check=True)
+    enemies = [{"slot": i + 1, "x": x, "player_name": f"E{i}", "hero": "라마트라" if i == 1 else None} for i, x in enumerate(xs)]
+    hit = detect_kill_credit(video, 1.0, enemies, kc)
+    assert hit["status"] == "kill" and hit["player_name"] == "E1" and abs(hit["seconds_after"] - 2.0) <= 0.5
+    assert detect_kill_credit(video, 5.5, enemies, kc)["status"] == "none"

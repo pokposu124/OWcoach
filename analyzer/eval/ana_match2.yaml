@@ -34,3 +34,6 @@ judgements:
      note: "적 겐지 튕겨내기 중 생체 수류탄 투척 (HUD 사용 감지 37.0초)"}
   - {time_seconds: 67.0, category: skill_usage, grade: blunder,
      note: "체력 131·겐지 압박 중 수류탄을 전방(버스 벽)에 던지고 4초 뒤 사망. 생존이 우선이라 자신에게 써야 함 (사용자: 최선 아님)"}
+  - {time_seconds: 22.0, category: skill_usage, grade: [best, excellent],
+     note: "적 2명 치유 차단 후 라마트라 처치: 상대 탱커 압박이라는 노림수가 있는 수류탄 (사용자 2026-10-15)"}
+

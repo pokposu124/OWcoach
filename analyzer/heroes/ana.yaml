@@ -30,6 +30,7 @@ abilities:
     disables_target: true
     # 명중한 적의 팀 목록 칸에 zz 표시 (config hud_check.sleep_icon)
     target_marker: sleep_icon
+    kill_marker: kill_banner         # 직후 처치 관여 (config hud_check.kill_banner)
   - id: biotic_grenade
     name_ko: 생체 수류탄
     name_en: Biotic Grenade
@@ -38,6 +39,7 @@ abilities:
     force_scene: true
     # 튕겨내기에 반사되면 아나 자신이 치유 차단에 걸림 (config hud_check.self_antiheal)
     reflect_marker: self_antiheal
+    kill_marker: kill_banner
   - id: nano_boost
     name_ko: 나노 강화제
     name_en: Nano Boost
@@ -177,6 +179,7 @@ criteria:
       - "본인이 압박받을 때 발밑에 사용해 생존"
       - "노림수: 벽 뒤에 숨어 있다가 적 탱커(D.Va 등)가 들어오면 수면총 + 생체 수류탄으로 탱커를 터뜨림. 상대도 탱커 없이 싸우게 되어 화물을 더 밀 수 있음 (코치: 첫 영상 1분 35초)"
       - "아군이 송하나(D.Va 본체)를 못 잡을 때 쿨다운이 돌아온 수류탄을 들고 들어가 약간 무리해서라도 처치 (코치: 첫 영상 2분 4초)"
+      - "적 탱커를 포함한 적 여럿에게 치유 차단을 걸어 탱커를 압박하는 노림수. 직후 그 탱커 처치에 관여했다면(kill_check) 노림수가 통한 것 (사용자 코칭: 두 번째 영상 22초, 적 2명 치유 차단 후 라마트라 처치)"
     bad_signs:
       - "아군/적이 화면에 거의 없는 곳에 사용"
       - "본인 체력이 낮거나 근접한 적에게 압박받는 중(직후 사망 위험)인데 발밑이 아닌 적·전방에 던짐. 이때는 자기 생존이 우선이므로 발밑에 써야 함 (사용자 코칭: 두 번째 아나 영상 1분 7초, 체력 131에서 전방에 던지고 4초 뒤 사망 → 최선 아님)"

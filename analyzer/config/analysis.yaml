@@ -177,6 +177,15 @@ hud_check:
     window_seconds: 3.0
     min_increase: 0.08
     min_frames: 2
+  # 처치 관여: 화면 중앙 아래 빨간 '해골 + 이름' 표시(내 처치·도움). 실측 영상2 26.5초 참깨라면(라마트라), 수류탄 22초 뒤 4.5초.
+  # 누가 죽었는지는 그 순간 팀 목록에서 % 상자 색이 가장 바랜 적 칸(다른 적 칸 대비). 실측 참깨라면 칸 0.48→0.23.
+  kill_banner:
+    side: enemy
+    fps: 4.0
+    reference_resolution: [1280, 720]
+    window_seconds: 6.0
+    banner: {x: 560, y: 495, w: 160, h: 70, min_ratio: 0.05, min_seconds: 1.0}
+    slot_box: {y: 48, h: 22, dx0: -40, dx1: -8, after_seconds: 1.5, min_drop: 0.25}   # 칸 초상화 x 기준 % 표시 상자
   # 내 체력 숫자 왼쪽 아이콘: 평소 흰 "+", 치유 차단 중엔 보라색 아이콘 (실측 영상2 36.5~38.9초, 반사된 수류탄)
   self_antiheal:
     icon_name: "치유 차단 아이콘"

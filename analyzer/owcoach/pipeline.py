@@ -30,6 +30,7 @@ from .config import ANALYZER_ROOT, fingerprint
 from .hud import (
     check_use_claim,
     detect_buff_target,
+    detect_kill_credit,
     detect_reflect,
     player_team_color,
     detect_status_icon,
@@ -483,6 +484,12 @@ class Pipeline:
                                        "note": f"적 팀에 {self.hero.display_name_ko}가 있어 반사 여부 판별 불가"}
             else:
                 hc["reflect_check"] = detect_reflect(video, hc["hud_use_time_seconds"], hcfg[a.reflect_marker])
+        # did the player take part in a kill right after (e.g. anti-heal grenade -> enemy tank down)?
+        for e in events:
+            a, hc = by_id.get(e["ability_id"]), e["hud_check"]
+            if a and a.kill_marker and hc.get("status") == "verified" and a.kill_marker in hcfg:
+                kcfg = hcfg[a.kill_marker]
+                hc["kill_check"] = detect_kill_credit(video, hc["hud_use_time_seconds"], self._ally_slots(side=kcfg["side"]), kcfg)
         # every verified use of a force_scene skill (and every ultimate) must get its own feedback item
         for e in events:
             a = by_id.get(e["ability_id"])
@@ -561,7 +568,8 @@ class Pipeline:
                 seen.add((e["ability_id"], x))
                 out.append({"time_seconds": x, "ability_id": e["ability_id"], "source": e.get("source", "model"),
                             "target_check": hc.get("target_check"), "moment_check": hc.get("moment_check"),
-                            "death_after_seconds": hc.get("death_after_seconds"), "reflect_check": hc.get("reflect_check")})
+                            "death_after_seconds": hc.get("death_after_seconds"), "reflect_check": hc.get("reflect_check"),
+                            "kill_check": hc.get("kill_check")})
         return sorted(out, key=lambda u: u["time_seconds"])
 
     def _target_check(self, video: Path, use_time: float, mcfg: dict) -> dict:

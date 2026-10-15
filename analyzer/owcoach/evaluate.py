@@ -153,7 +153,8 @@ def evaluate(run_dir: Path, labels_path: Path) -> dict:
             check("사용자 판정 일치", bool(grades) and not set(grades) & set(j["not_grade"]),
                   f"{fmt_time(t)} {j['category']} 정답 {'/'.join(j['not_grade'])} 아님 / 결과 {', '.join(grades) or '피드백 없음'} — {j.get('note', '')}")
         else:
-            check("사용자 판정 일치", j["grade"] in grades,
+            want = j["grade"] if isinstance(j["grade"], list) else [j["grade"]]
+            check("사용자 판정 일치", bool(set(want) & set(grades)),
                   f"{fmt_time(t)} {j['category']} 정답 {j['grade']} / 결과 {', '.join(grades) or '피드백 없음'} — {j.get('note', '')}")
 
     judged = [c for c in out["checks"] if c["ok"] is not None]
