@@ -48,6 +48,16 @@ class RosterEntry(BaseModel):
     team: Literal["ally", "enemy", "unknown"]
 
 
+class KillFeedEntry(BaseModel):
+    time_seconds: float = Field(description="그 줄이 처음 보인 이미지의 시각(원본 기준 초)")
+    killer_name: str = Field(description="처치한 사람 이름. 없으면 빈 문자열")
+    victim_name: str
+
+
+class KillFeedResponse(BaseModel):
+    entries: list[KillFeedEntry]
+
+
 class KillerResponse(BaseModel):
     killer_name: str = Field(description="플레이어를 처치한 사람의 이름(킬피드·'○○에게 죽음' 그대로). 못 읽으면 빈 문자열")
     evidence: str
@@ -166,6 +176,7 @@ class HudCheck(BaseModel):
     target_check: dict | None = Field(default=None, description="대상 판별 결과 (나노 강화제 등: 팀 목록 칸 강화 화살표)")
     moment_check: dict | None = Field(default=None, description="사용 순간 확인 (대상, 적 대응 스킬 활성 여부, 결과)")
     death_after_seconds: float | None = Field(default=None, description="무력화 스킬 사용 후 플레이어가 죽기까지 걸린 시간(초)")
+    heal_check: dict | None = Field(default=None, description="수류탄을 맞은 아군·자신 (머리 위 체력바 노란 테두리, 내 HUD 아이콘 노랑)")
     antiheal_check: dict | None = Field(default=None, description="치유 차단을 받은 플레이어 (팀 목록 체력바 보라 테두리)")
     kill_check: dict | None = Field(default=None, description="사용 직후 처치 관여 (화면 처치 알림 + 팀 목록 적 칸 변화)")
     reflect_check: dict | None = Field(default=None, description="반사 판별 (생체 수류탄: 직후 자신에게 치유 차단 아이콘 = 튕겨내기 등에 반사됨)")
@@ -203,6 +214,7 @@ class FeedbackItem(BaseModel):
     verification: Literal["hud", "model_observation"] = Field(
         default="model_observation",
         description="hud: 스킬/궁극기 사용이 HUD 대조로 확인됨 / model_observation: 모델 관찰(포지셔닝 등, 코드로 확인하지 않음)")
+    kill_feed: list[dict] = Field(default_factory=list, description="이 피드백 시간대의 킬피드 (처치자 > 죽은 사람, 팀·영웅은 팀 목록과 대조)")
 
     @model_validator(mode="after")
     def _check_times(self) -> "FeedbackItem":

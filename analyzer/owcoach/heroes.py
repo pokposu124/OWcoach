@@ -54,6 +54,8 @@ class Ability(BaseModel):
     kill_marker: str | None = None
     # 사용 효과를 받은 플레이어를 확인하는 방식 (config hud_check 의 키, 예: antiheal_bars)
     effect_marker: str | None = None
+    # 아군·자신이 효과를 받았는지 확인하는 방식 (config hud_check 의 키, 예: heal_boost)
+    ally_marker: str | None = None
 
 
 class NumericFact(BaseModel):

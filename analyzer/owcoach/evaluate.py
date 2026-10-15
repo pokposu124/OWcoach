@@ -116,6 +116,18 @@ def evaluate(run_dir: Path, labels_path: Path) -> dict:
             ok = got == want if want == "ally" or got == "ally" else (got == "self") == (want == "self")
             check("스킬 대상", ok, f"{fmt_time(t)} 정답 {want} / 순간 확인 '{said}'")
 
+    # grenade target as the code saw it: enemies anti-healed / allies or self boosted
+    for st in facts.get("skill_targets", []):
+        if st["ability"] != "biotic_grenade":
+            continue
+        use = next((u for u in result.skill_uses if u["ability_id"] == "biotic_grenade" and _near(u["time_seconds"], st["time_seconds"], 1.5)), None)
+        if not use:
+            continue
+        en = len(((use.get("antiheal_check") or {}).get("enemies")) or [])
+        hc = use.get("heal_check") or {}
+        got = "enemy" if en else ("ally" if hc.get("allies_on_screen") else ("self" if hc.get("self") else "none"))
+        check("스킬 대상(코드)", got == st["target"], f"{fmt_time(st['time_seconds'])} 정답 {st['target']} / 코드 {got}")
+
     # hit / miss and target as the code saw it (team-list status icon)
     for so in facts.get("skill_outcomes", []):
         t = so["time_seconds"]

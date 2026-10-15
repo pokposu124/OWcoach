@@ -43,6 +43,10 @@ class MockProvider(AnalysisProvider):
 
     def analyze_images(self, req: ImageRequest) -> ProviderResponse:
         self.calls.append(req.context["stage"])
+        if req.context["stage"] == "killfeed":
+            t = req.context["times"][len(req.context["times"]) // 2]   # the same row in two crops: merged into one
+            return self._resp({"entries": [{"time_seconds": t, "killer_name": "ENEMY1", "victim_name": "MOCK"},
+                                           {"time_seconds": t + 2, "killer_name": "ENEMY1", "victim_name": "MOCK"}]})
         if req.context["stage"] == "killer":
             return self._resp({"killer_name": "ENEMY1", "evidence": "[모의] 킬피드 'ENEMY1 > MOCK'"})
         return self._resp({

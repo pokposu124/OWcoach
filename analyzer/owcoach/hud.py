@@ -470,3 +470,83 @@ def detect_antiheal_targets(video: Path, use_time: float, slots: list[dict], cfg
     return {"status": "hit" if hit["enemy"] else "none", "enemies": hit["enemy"], "allies": hit["ally"],
             "note": note + " (팀 목록 체력바 보라 테두리)"}
 
+
+def _outlined_bars(mask: np.ndarray, min_len: int, gap: tuple[int, int], max_len: int = 10_000) -> list[tuple[int, int]]:
+    """(y, x) of overhead health bars drawn with a coloured outline: a closed box whose top and bottom
+    are horizontal runs of `mask` (min_len..max_len long, gap rows apart, overlapping) and whose left
+    and right ends are mostly `mask` too. Loose patches of the colour (effects, text) do not close a box."""
+    rows: dict[int, list[tuple[int, int]]] = {}
+    for y in np.nonzero(mask.sum(axis=1) >= min_len)[0]:
+        xs = np.nonzero(mask[y])[0]
+        runs, s0, p = [], xs[0], xs[0]
+        for x in xs[1:]:
+            if x > p + 2:
+                if min_len <= p - s0 + 1 <= max_len:
+                    runs.append((s0, p))
+                s0 = x
+            p = x
+        if min_len <= p - s0 + 1 <= max_len:
+            runs.append((s0, p))
+        if runs:
+            rows[int(y)] = runs
+    bars: list[tuple[int, int]] = []
+    for y, rs in rows.items():
+        for a, b in rs:
+            for dy in range(gap[0], gap[1] + 1):
+                for c, d in rows.get(y + dy, []):
+                    lo, hi = max(a, c), min(b, d)
+                    if hi - lo < 0.8 * max(b - a, d - c):
+                        continue
+                    inner = mask[y + 1:y + dy]
+                    left = inner[:, max(0, lo - 2):lo + 3].any(axis=1).mean()
+                    right = inner[:, max(0, hi - 2):hi + 3].any(axis=1).mean()
+                    fill = inner[:, lo + 3:hi - 2].mean() if hi - lo > 6 else 1.0   # a bar holds health cells, not the colour
+                    if left >= 0.6 and right >= 0.6 and fill <= 0.2 and not any(abs(y - yy) <= gap[1] + 2 and abs(a - aa) < 20 for yy, aa in bars):
+                        bars.append((y, int(a)))
+    return bars
+
+
+def detect_heal_boost(video: Path, use_time: float, cfg: dict) -> dict:
+    """Allies caught by the player's grenade: a healed ally gets a yellow-outlined overhead health bar
+    with a yellow "+" (user tip: yellow light = ally), and the player's own HUD icon left of the health
+    number turns yellow when the player is in the splash. Counts are the most bars seen in one frame."""
+    fps, ref = float(cfg["fps"]), cfg["reference_resolution"]
+    w = cfg["world"]
+    fr = _frames(video, use_time - cfg["onset_before_seconds"], cfg["onset_before_seconds"] + cfg["onset_after_seconds"],
+                 fps, ref, (0, w["y0"], ref[0], w["y1"] - w["y0"]))
+    if len(fr) == 0:
+        return {"status": "unverifiable", "allies_on_screen": 0, "self": False, "note": "판별용 프레임 부족"}
+    r, g, b = fr[..., 0], fr[..., 1], fr[..., 2]
+    yel = (r > 180) & (g > 160) & (b < 130) & (r - b > 80)
+    # baseline from the first base_seconds only: the HUD use time can lag the throw by ~0.6 s
+    nb = max(1, int(cfg["base_seconds"] * fps))
+    per = [_outlined_bars(m, w["min_len"], tuple(w["gap"]), w["max_len"]) for m in yel]
+    # a bar is an overhead health bar only if it stays (about the same place) for persist_frames frames;
+    # the grenade burst itself makes box-like yellow shapes for a frame or two
+    k = int(w["persist_frames"])
+    near = lambda p, q: abs(p[0] - q[0]) <= w["track_px"] and abs(p[1] - q[1]) <= w["track_px"]
+    tracks: list[tuple[int, int, int]] = []          # (y, x, first frame) of persistent bars
+    for i in range(len(per) - k + 1):
+        for p0 in per[i]:
+            chain, cur = True, p0
+            for j in range(1, k):
+                nxt = next((q for q in per[i + j] if near(cur, q)), None)
+                if nxt is None:
+                    chain = False
+                    break
+                cur = nxt
+            if chain and not any(near(p0, (ty, tx)) for ty, tx, _ in tracks):
+                tracks.append((p0[0], p0[1], i))
+    base = sum(1 for _, _, i in tracks if i < nb)
+    allies = sum(1 for _, _, i in tracks if i >= nb) if base == 0 else max(0, sum(1 for _, _, i in tracks if i >= nb) - base)
+    ic = cfg["self_icon"]
+    own = _frames(video, use_time - cfg["onset_before_seconds"], cfg["onset_before_seconds"] + cfg["onset_after_seconds"],
+                  fps, ref, (ic["x0"], ic["y0"], ic["x1"] - ic["x0"], ic["y1"] - ic["y0"]))
+    orr, og, ob = own[..., 0], own[..., 1], own[..., 2]
+    oy = ((orr > 180) & (og > 150) & (ob < 110)).mean(axis=(1, 2)) >= ic["min_ratio"]
+    need = max(1, int(round(ic["min_seconds"] * fps)))
+    me = any(oy[i:i + need].all() for i in range(len(oy) - need + 1))
+    parts = ([f"화면 속 아군 {allies}명"] if allies else []) + (["자신"] if me else [])
+    return {"status": "hit" if parts else "none", "allies_on_screen": allies, "self": me,
+            "note": ("치유 강화(노란 표시): " + ", ".join(parts)) if parts else "노란 치유 강화 표시 없음: 아군에게 맞지 않음"}
+

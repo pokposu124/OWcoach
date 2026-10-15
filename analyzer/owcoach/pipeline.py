@@ -16,6 +16,8 @@ from __future__ import annotations
 import copy
 import fcntl
 import json
+
+import numpy as np
 import shutil
 import time
 from contextlib import contextmanager
@@ -31,6 +33,7 @@ from .hud import (
     check_use_claim,
     detect_buff_target,
     detect_antiheal_targets,
+    detect_heal_boost,
     detect_kill_credit,
     detect_reflect,
     player_team_color,
@@ -61,6 +64,7 @@ from .schemas import (
     AnalysisResult,
     CoachingResponse,
     KillerResponse,
+    KillFeedResponse,
     CostSummary,
     DetailResponse,
     MomentResponse,
@@ -272,7 +276,7 @@ class Pipeline:
         self.cfg, self.pricing, self.provider, self.hero = cfg, pricing, provider, hero
         self.runs_dir = Path(runs_dir)
         self.log = log
-        self.prompts = {k: load_prompt(k) for k in ("team", "overview", "detail", "moment", "coaching", "killer")}
+        self.prompts = {k: load_prompt(k) for k in ("team", "overview", "detail", "moment", "coaching", "killer", "killfeed")}
         self.usage: list[StageUsage] = []
         self.timings: dict[str, float] = {}
         self.warnings: list[str] = []
@@ -422,6 +426,52 @@ class Pipeline:
                 self.warnings.append("초상화 대조로 영웅을 확정하지 못함(불명 처리): " + ", ".join(low))
         return team, record
 
+    def _who(self, name: str, t: float) -> dict:
+        """A kill-feed name resolved against the team list: team (ally/enemy) and the hero played at t."""
+        team = self._team_record or {}
+        r = next((x for x in team.get("roster", []) if name and x["player_name"] == name), None)
+        if not r:
+            return {"player_name": name, "team": "unknown", "hero": None}
+        seg = next((h for h in r.get("hero_history") or [] if h["start_seconds"] <= t <= h["end_seconds"]), None)
+        return {"player_name": name, "team": r["team"], "hero": (seg or {}).get("hero") or r.get("hero")}
+
+    def _kill_feed_scene(self, store: RunStore, video: Path, sha: str, scene, duration: float, ai_fp_base: dict,
+                         force: set[str]) -> list[dict]:
+        """Kill-feed rows seen in a scene: enlarged crops every step_seconds, the model transcribes the rows,
+        code merges a row seen in several crops and resolves both names against the team list."""
+        kcfg = self.cfg.get("kill_feed") or {}
+        if not kcfg.get("enabled"):
+            return []
+        step = float(kcfg["step_seconds"])
+        end = min(scene.window_end + kcfg["tail_seconds"], duration - 0.1)
+        times = [round(x, 2) for x in np.arange(scene.window_start, end + 1e-6, step)]
+        kp = self.prompts["killfeed"]
+        fp = fingerprint(ai_fp_base, sha, scene.window_start, scene.window_end, kcfg, kp.version)
+        prompt = kp.render(image_list="\n".join(f"{i}. {fmt_time(x)} ({x}초)" for i, x in enumerate(times, 1)))
+
+        def run_feed():
+            images = [(extract_crop_png(video, x, tuple(kcfg["reference_resolution"]), kcfg["region"], int(kcfg["upscale"])), "image/png")
+                      for x in times]
+            parsed, usage = self._call(f"killfeed@{scene.scene_id}", "killfeed", KillFeedResponse, lambda schema, note: ImageRequest(
+                images=images, prompt=prompt + note, response_schema=schema,
+                media_resolution=kcfg.get("media_resolution"), temperature=self.cfg["provider"].get("temperature"),
+                context={"stage": "killfeed", "times": times},
+            ))
+            return parsed.model_dump(), usage
+
+        raw = KillFeedResponse.model_validate(self._cached_or_run(store, f"killfeed-{scene.scene_id}", fp, run_feed, "killfeed" in force))
+        out: list[dict] = []
+        for e in sorted(raw.entries, key=lambda e: e.time_seconds):
+            if not (times[0] - 0.5 <= e.time_seconds <= times[-1] + 0.5):
+                continue
+            k, v = e.killer_name.strip(), e.victim_name.strip()
+            if any(o["killer"]["player_name"] == k and o["victim"]["player_name"] == v
+                   and e.time_seconds - o["time_seconds"] <= kcfg["merge_seconds"] for o in out):
+                continue  # the same row read again in a later crop
+            out.append({"time_seconds": round(e.time_seconds, 2), "killer": self._who(k, e.time_seconds),
+                        "victim": self._who(v, e.time_seconds)})
+        return out
+
     def _killer(self, store: RunStore, video: Path, sha: str, t: float, ai_fp_base: dict, force: set[str]) -> dict:
         """Who killed the player at t: the model reads the name from enlarged crops of the kill feed and the
         "killed by" notice; code accepts it only if it is an enemy in the team list (hero at that time)."""
@@ -526,6 +576,11 @@ class Pipeline:
             if a and a.effect_marker and hc.get("status") == "verified" and a.effect_marker in hcfg:
                 every = [{**x, "side": side} for side in ("ally", "enemy") for x in self._ally_slots(side=side)]
                 hc["antiheal_check"] = detect_antiheal_targets(video, hc["hud_use_time_seconds"], every, hcfg[a.effect_marker])
+        # did it reach allies / the player (grenade heal: yellow-outlined overhead bars, own HUD icon)?
+        for e in events:
+            a, hc = by_id.get(e["ability_id"]), e["hud_check"]
+            if a and a.ally_marker and hc.get("status") == "verified" and a.ally_marker in hcfg:
+                hc["heal_check"] = detect_heal_boost(video, hc["hud_use_time_seconds"], hcfg[a.ally_marker])
         # did the player take part in a kill right after (e.g. anti-heal grenade -> enemy tank down)?
         for e in events:
             a, hc = by_id.get(e["ability_id"]), e["hud_check"]
@@ -611,7 +666,8 @@ class Pipeline:
                 out.append({"time_seconds": x, "ability_id": e["ability_id"], "source": e.get("source", "model"),
                             "target_check": hc.get("target_check"), "moment_check": hc.get("moment_check"),
                             "death_after_seconds": hc.get("death_after_seconds"), "reflect_check": hc.get("reflect_check"),
-                            "kill_check": hc.get("kill_check"), "antiheal_check": hc.get("antiheal_check")})
+                            "kill_check": hc.get("kill_check"), "antiheal_check": hc.get("antiheal_check"),
+                            "heal_check": hc.get("heal_check")})
         return sorted(out, key=lambda u: u["time_seconds"])
 
     def _target_check(self, video: Path, use_time: float, mcfg: dict) -> dict:
@@ -833,6 +889,7 @@ class Pipeline:
             scene_records[scene.scene_id] = detail_to_original(
                 scene, DetailResponse.model_validate(raw), cfg["output"]["window_tolerance_seconds"], self.warnings)
             scene_records[scene.scene_id]["hud_uses"] = hud_uses
+            scene_records[scene.scene_id]["kill_feed"] = self._kill_feed_scene(store, video, sha, scene, duration, ai_fp_base, force)
             scene_records[scene.scene_id]["player_deaths"] = [
                 d for d in self._deaths if scene.window_start <= d["time_seconds"] <= scene.window_end + 0.5]
         self.timings["detail"] = round(time.monotonic() - t, 3)
@@ -919,6 +976,12 @@ class Pipeline:
             # the feedback has to run up to the death itself, not merely overlap the 10 s before it
             if not any(f.start_time_seconds <= t + 1 and f.end_time_seconds >= t - 3 for f in feedback):
                 self.warnings.append(f"사망 {fmt_time(t)} 직전 {dpre:g}초에 대한 피드백이 없음")
+        # kill feed of each item's time span (all scenes: an item can sit at a scene's edge)
+        feed = sorted({(e["time_seconds"], e["killer"]["player_name"], e["victim"]["player_name"]): e
+                       for rec in scene_records.values() for e in rec.get("kill_feed", [])}.values(), key=lambda e: e["time_seconds"])
+        pad = float((cfg.get("kill_feed") or {}).get("item_pad_seconds", 3.0))
+        for f in feedback:
+            f.kill_feed = [e for e in feed if f.start_time_seconds - pad <= e["time_seconds"] <= f.end_time_seconds + pad]
         ability_ko = {a.id: a.name_ko for a in hero.abilities}
         covered = {(c.ability_id, c.hud_use_time_seconds) for f in feedback for c in f.hud_checks if c.status == "verified"}
         for rec in scene_records.values():

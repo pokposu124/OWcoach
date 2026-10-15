@@ -41,6 +41,7 @@ abilities:
     reflect_marker: self_antiheal
     kill_marker: kill_banner
     effect_marker: antiheal_bars     # 치유 차단을 받은 적 (팀 목록 체력바 보라 테두리)
+    ally_marker: heal_boost          # 맞은 아군 (머리 위 체력바 노란 테두리) · 자신 (HUD 아이콘 노랑)
   - id: nano_boost
     name_ko: 나노 강화제
     name_en: Nano Boost

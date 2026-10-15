@@ -76,6 +76,11 @@ video{width:100%;aspect-ratio:16/9;background:#000;border-radius:10px;display:bl
 .reasons{margin:0;font-size:.8rem;color:var(--warn)}
 dl{display:grid;grid-template-columns:3em minmax(0,1fr);gap:3px 10px;margin:0} dt{color:var(--muted);font-size:.82rem;padding-top:1px} dd{margin:0}
 ul.hud{list-style:none;margin:0;padding:0;display:grid;gap:3px;font-size:.84rem}
+.kf{margin:6px 0 0;font-size:.84rem}.kf b{font-weight:600;color:var(--muted);margin-right:6px}
+.kf ul{list-style:none;margin:2px 0 0;padding:0;display:grid;gap:2px}
+.kf li{display:flex;flex-wrap:wrap;gap:4px;align-items:baseline}
+.kf .t{font-family:var(--mono);font-size:.78rem;background:none;border:0;color:var(--accent);cursor:pointer;padding:0;min-width:3.6em;text-align:left}
+.kf .ally{color:var(--best)}.kf .enemy{color:var(--blunder)}.kf .unknown{color:var(--muted)}.kf .me{font-weight:700}
 .h-verified{color:var(--best)} .h-contradicted{color:var(--blunder)} .h-unverifiable,.h-not_checked{color:var(--hold)}
 .frames{display:flex;gap:6px;overflow-x:auto}
 .thumb{border:none;padding:0;background:none;cursor:pointer;flex:0 0 auto;text-align:left;color:var(--muted);font:.72rem var(--mono)}
@@ -129,6 +134,10 @@ def _hud_line(c) -> str:
             target = " → 빗나감(코드 확인)"
         else:
             target = " · 대상 확인 불가"
+    if (c.heal_check or {}).get("status") == "hit":
+        hc = c.heal_check
+        who = ([f"아군 {hc['allies_on_screen']}명"] if hc.get("allies_on_screen") else []) + (["자신"] if hc.get("self") else [])
+        target += " → 맞은 아군: " + ", ".join(who) + "(코드 확인)"
     if (c.antiheal_check or {}).get("status") == "hit":
         en = c.antiheal_check["enemies"]
         target += f" → 치유 차단 적 {len(en)}명: " + ", ".join(f"{_e(x['player_name'])}({_e(x.get('hero') or '?')})" for x in en) + "(코드 확인)"
@@ -141,7 +150,25 @@ def _hud_line(c) -> str:
             + (f" <span class=muted>— {_e(c.note)}</span>" if c.status != "verified" else "") + "</li>")
 
 
-def _card(n: int, f) -> str:
+def _kf_name(p: dict, me: str) -> str:
+    if not p.get("player_name"):
+        return "<span class=unknown>(처치자 없음)</span>"
+    hero = f"({_e(p['hero'])})" if p.get("hero") else ""
+    team = {"ally": "아군", "enemy": "적"}.get(p.get("team"), "명단 밖")
+    me_cls = " me" if p["player_name"] == me else ""
+    return f"<span class='{p.get('team', 'unknown')}{me_cls}' title='{team}'>{_e(p['player_name'])}{hero}</span>"
+
+
+def _kill_feed(f, me: str) -> str:
+    if not f.kill_feed:
+        return "<div class=kf><b>킬피드</b><span class=unknown>이 시간대 처치 없음</span></div>"
+    rows = "".join(
+        f"<li><button class=t type=button data-seek='{e['time_seconds']}'>{_t(e['time_seconds'])}</button>"
+        f"{_kf_name(e['killer'], me)} &gt; {_kf_name(e['victim'], me)}</li>" for e in f.kill_feed)
+    return f"<div class=kf><b>킬피드</b><ul>{rows}</ul></div>"
+
+
+def _card(n: int, f, me: str = "") -> str:
     frames = "".join(
         f'<button class=thumb data-seek="{fr.timestamp_seconds}" type=button><img src="{_e(fr.path)}" loading="lazy" '
         f'alt="{_t(fr.timestamp_seconds)} 화면">{_t(fr.timestamp_seconds)}</button>' for fr in f.evidence_frames)
@@ -163,6 +190,7 @@ def _card(n: int, f) -> str:
   <dl><dt>관찰</dt><dd>{_e(f.observation)}</dd><dt>판단</dt><dd>{_e(f.assessment)}</dd><dt>제안</dt><dd>{_e(f.suggestion)}</dd>
   {f'<dt>불확실</dt><dd>{_e(f.uncertainty)}</dd>' if f.uncertainty else ''}</dl>
   <ul class=hud>{hud}</ul>
+  {_kill_feed(f, me)}
   {f'<div class=frames>{frames}</div>' if frames else ''}
   <details><summary>코치 검수 · 적용 기준 {_e(", ".join(f.criterion_ids) or "없음")} ({_e(f.criteria_review_status)})</summary>
   <fieldset class=review data-id="{_e(f.id)}">
@@ -178,7 +206,8 @@ def _card(n: int, f) -> str:
 
 def build_report_html(result: AnalysisResult, video_src: str, fragment: bool = False) -> str:
     feedback = sorted(result.feedback, key=lambda f: f.start_time_seconds)
-    cards = "".join(_card(i, f) for i, f in enumerate(feedback, 1)) or "<p class=muted>근거가 충분한 피드백이 없습니다.</p>"
+    me = ((result.team or {}).get("team_identification") or {}).get("player_name") or ""
+    cards = "".join(_card(i, f, me) for i, f in enumerate(feedback, 1)) or "<p class=muted>근거가 충분한 피드백이 없습니다.</p>"
     counts = {k: sum(f.category == k for f in feedback) for k in CATEGORY_KO}
     grades = {k: sum(f.grade == k for f in feedback) for k in GRADE_KO}
     summary = ("".join(f"<span>{v} <b>{counts[k]}</b></span>" for k, v in CATEGORY_KO.items())

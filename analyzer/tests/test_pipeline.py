@@ -1094,3 +1094,14 @@ def test_items_about_different_uses_are_not_duplicates(cfg):
     fb, _ = finalize_feedback(CoachingResponse(items=items, action_items=[]), {"scene-01": rec}, hero, 30.0,
                               cfg["output"], lambda t: f"evidence/{t}.jpg", [])
     assert len(fb) == 2
+
+
+def test_kill_feed_attached_to_feedback(video, cfg, tmp_path):
+    """The mock kill feed row 'ENEMY1 > MOCK' (read in every scene) is merged per scene, resolved against
+    the team list and attached to feedback items in that time span."""
+    result, _ = make_pipeline(cfg, tmp_path, MockProvider()).run(video, run_id="kf")
+    rows = [e for f in result.feedback for e in f.kill_feed]
+    assert rows, "no kill feed attached"
+    e = rows[0]
+    assert e["killer"]["player_name"] == "ENEMY1" and e["killer"]["team"] == "enemy"
+    assert e["victim"]["player_name"] == "MOCK" and e["victim"]["team"] == "ally"
