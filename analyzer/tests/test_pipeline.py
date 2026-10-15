@@ -1139,18 +1139,23 @@ def test_low_health_alone_is_not_danger(cfg):
 
 
 def test_team_health_from_team_list_bars(tmp_path, cfg):
-    """Slot 6's bar is full for 0-3 s and half full after: health 1.0 then ~0.5 of that slot's own full bar."""
+    """Slot 6's bar is filled across its width for 0-3 s and to the middle after (white then blue
+    shield cells count alike): health 1.0 then ~0.5. Slot 7 has bright pixels above its bar too
+    (a dead player's X): unknown (-1)."""
     from owcoach.hud import team_health_timeline
 
     th = cfg["hud_check"]["team_health"]
     xs = cfg["team"]["portrait_slots"]["left_x"] + cfg["team"]["portrait_slots"]["right_x"]
-    x0 = xs[5] + th["dx0"]
-    w = th["dx1"] - th["dx0"]
-    vf = (f"drawbox=x={x0}:y={th['y']}:w={w}:h={th['h']}:color=white:t=fill:enable='lt(t,3)',"
-          f"drawbox=x={x0}:y={th['y']}:w={w // 2}:h={th['h']}:color=white:t=fill:enable='gte(t,3)'")
+    x0, w = xs[5] + th["dx0"], th["dx1"] - th["dx0"]
+    y = th["y"]
+    vf = (f"drawbox=x={x0}:y={y}:w={w}:h={th['h']}:color=white:t=fill:enable='lt(t,3)',"
+          f"drawbox=x={x0}:y={y}:w={w // 4}:h={th['h']}:color=white:t=fill:enable='gte(t,3)',"
+          f"drawbox=x={x0 + w // 4}:y={y}:w={w // 4}:h={th['h']}:color=0x3070ff:t=fill:enable='gte(t,3)',"
+          f"drawbox=x={xs[6] + th['dx0']}:y={y - th['above_h']}:w={w}:h={th['above_h'] + th['h']}:color=0x3070ff:t=fill")
     video = tmp_path / "hp.mp4"
     subprocess.run(["ffmpeg", "-y", "-v", "error", "-f", "lavfi", "-i", "color=c=0x303030:size=1280x720:rate=10",
                     "-t", "6", "-vf", vf, "-pix_fmt", "yuv444p", str(video)], check=True)
     times, fills = team_health_timeline(video, 6.0, xs, th)
-    assert fills[times < 2.5, 5].min() > 0.9
-    assert abs(float(np.median(fills[times > 3.5, 5])) - 0.5) < 0.1
+    assert fills[times < 2.5, 5].min() > 0.95
+    assert abs(float(np.median(fills[times > 3.5, 5])) - 0.5) < 0.08
+    assert (fills[:, 6] == -1).all()

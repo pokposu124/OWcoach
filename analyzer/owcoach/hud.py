@@ -552,17 +552,30 @@ def detect_heal_boost(video: Path, use_time: float, cfg: dict) -> dict:
 
 
 def team_health_timeline(video: Path, duration: float, xs: list[int], cfg: dict) -> tuple[np.ndarray, np.ndarray]:
-    """Health of every team-list slot over the whole video, from the health bar under each name.
+    """Health of every team-list slot over the whole video, from the segmented bar under each name.
 
-    Fill = white share of the bar, divided by that slot's own 95th percentile over the video (a full bar;
-    tanks' armour segments are not white, so each slot gets its own scale). Measured on video 2:
-    BERNAR 0.52 at 1:06.5 with 131/250 HP, 0.11 at 2:16 with 28/250 (about 1 s behind the HUD number).
-    Returns (times, fills[len(times), len(xs)]) with fills clipped to 0..1.
+    Fill = how far the filled cells reach across the bar (white health, blue shields, orange armour all
+    count; empty cells are grey), as a share of the bar width. Counting white area instead under-read
+    a Sigma with shields as 36% when the bar showed about 70% (user, video 1 1:07). A slot with no white
+    health cell (a dead player's X) or with bright rows just above the bar (effects) is -1 (unknown).
+    Measured: BERNAR 0.56 with 131/250 HP and 0.16 with 28/250 (video 2).
+    Returns (times, fills[len(times), len(xs)]), fills 0..1 or -1.
     """
     fps, ref = float(cfg["fps"]), cfg["reference_resolution"]
-    fr = _frames(video, 0.0, duration, fps, ref, (0, cfg["y"], ref[0], cfg["h"]))
+    top = cfg["y"] - cfg["above_h"]
+    fr = _frames(video, 0.0, duration, fps, ref, (0, top, ref[0], cfg["above_h"] + cfg["h"]))
+    r, g, b = fr[..., 0], fr[..., 1], fr[..., 2]
     white = fr.min(axis=3) > cfg["white_threshold"]
-    fill = np.array([[f[:, x + cfg["dx0"]:x + cfg["dx1"]].mean() for x in xs] for f in white])
-    full = np.maximum(np.percentile(fill, 95, axis=0), 1e-6)
-    return np.arange(len(fill)) / fps, np.clip(fill / full, 0, 1)
-
+    bright = white | ((b > 160) & (b - r > 40)) | ((r > 200) & (g > 120) & (b < 90))
+    above, bar = bright[:, :cfg["above_h"]], bright[:, cfg["above_h"]:]
+    bar_white = white[:, cfg["above_h"]:]
+    width = cfg["dx1"] - cfg["dx0"]
+    out = np.full((len(fr), len(xs)), -1.0)
+    for j, x in enumerate(xs):
+        cols = bar[:, :, x + cfg["dx0"]:x + cfg["dx1"]].mean(axis=1) >= cfg["min_rows"]          # (frames, width)
+        noise = above[:, :, x + cfg["dx0"]:x + cfg["dx1"]].mean(axis=(1, 2)) > cfg["max_above"]
+        last = np.where(cols.any(axis=1), width - 1 - np.argmax(cols[:, ::-1], axis=1), -1)
+        # a living player's bar always has white health cells; none (only a dead player's X, effects) = unknown
+        alive = (bar_white[:, :, x + cfg["dx0"]:x + cfg["dx1"]].mean(axis=1) >= cfg["min_rows"]).sum(axis=1) >= cfg["min_white_cols"]
+        out[:, j] = np.where(noise | ~alive, -1.0, (last + 1) / width)
+    return np.arange(len(fr)) / fps, out

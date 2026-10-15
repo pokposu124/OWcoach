@@ -440,12 +440,13 @@ class Pipeline:
         sel = (times >= t - cfg["before_seconds"] - 0.5) & (times <= t)
         if not sel.any():
             return {"status": "unverifiable", "note": "판별용 프레임 부족"}
-        now = np.median(fills[sel], axis=0)
         allies = []
         for r in team["roster"]:
             if r["team"] != "ally":
                 continue
-            frac = float(now[r["slot"] - 1])
+            vals = fills[sel, r["slot"] - 1]
+            vals = vals[vals >= 0]
+            frac = float(np.median(vals)) if len(vals) else -1.0
             if frac < cfg["dead_below"]:
                 continue  # dead or unreadable
             allies.append({"player_name": r["player_name"], "hero": self._who(r["player_name"], t)["hero"], "health": round(frac, 2)})
