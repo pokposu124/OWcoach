@@ -3,6 +3,7 @@ import shutil
 import subprocess
 from pathlib import Path
 
+import numpy as np
 import pytest
 
 from owcoach.config import load_config, load_pricing
@@ -1135,3 +1136,21 @@ def test_low_health_alone_is_not_danger(cfg):
     shot = [{"time_seconds": t, "danger": "피격 중", "low_health": True, "player_moving": "no"} for t in (4, 7)]
     assert any("위험한데 자리에 머묾" in f for f in _situation_flags(shot, 3, 12))
 
+
+
+def test_team_health_from_team_list_bars(tmp_path, cfg):
+    """Slot 6's bar is full for 0-3 s and half full after: health 1.0 then ~0.5 of that slot's own full bar."""
+    from owcoach.hud import team_health_timeline
+
+    th = cfg["hud_check"]["team_health"]
+    xs = cfg["team"]["portrait_slots"]["left_x"] + cfg["team"]["portrait_slots"]["right_x"]
+    x0 = xs[5] + th["dx0"]
+    w = th["dx1"] - th["dx0"]
+    vf = (f"drawbox=x={x0}:y={th['y']}:w={w}:h={th['h']}:color=white:t=fill:enable='lt(t,3)',"
+          f"drawbox=x={x0}:y={th['y']}:w={w // 2}:h={th['h']}:color=white:t=fill:enable='gte(t,3)'")
+    video = tmp_path / "hp.mp4"
+    subprocess.run(["ffmpeg", "-y", "-v", "error", "-f", "lavfi", "-i", "color=c=0x303030:size=1280x720:rate=10",
+                    "-t", "6", "-vf", vf, "-pix_fmt", "yuv444p", str(video)], check=True)
+    times, fills = team_health_timeline(video, 6.0, xs, th)
+    assert fills[times < 2.5, 5].min() > 0.9
+    assert abs(float(np.median(fills[times > 3.5, 5])) - 0.5) < 0.1

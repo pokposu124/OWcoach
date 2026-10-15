@@ -38,4 +38,6 @@ judgements:                        # 사용자·코치가 매긴 등급. not_gra
 coach_notes:                       # 등급으로 평가하지 않는 코치 메모 (현재 분류에 없는 항목)
   - {time_seconds: 50.0, topic: aim, note: "에임 이슈 (코치 0:50)"}
   - {time_seconds: 70.0, topic: aim, note: "에임 이슈 (코치 1:10)"}
+  - {time_seconds: 67.0, category: skill_usage, grade: best,
+     note: "아군 치명상 없는 상황에서 적에게 명중해 시에라(전도리) 처치 = 최선 (사용자 2026-10-15)"}
 

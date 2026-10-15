@@ -34,6 +34,7 @@ from .hud import (
     detect_buff_target,
     detect_antiheal_targets,
     detect_heal_boost,
+    team_health_timeline,
     detect_kill_credit,
     detect_reflect,
     player_team_color,
@@ -426,6 +427,33 @@ class Pipeline:
                 self.warnings.append("초상화 대조로 영웅을 확정하지 못함(불명 처리): " + ", ".join(low))
         return team, record
 
+    def _ally_health(self, video: Path, t: float, cfg: dict) -> dict:
+        """Allies' health (0..1 of their bar) just before t, and who was critically low."""
+        team = self._team_record
+        tcfg = self.cfg.get("team") or {}
+        if not team or "portrait_slots" not in tcfg:
+            return {"status": "unverifiable", "note": "팀 목록 없음"}
+        if getattr(self, "_team_health", None) is None:
+            ps = tcfg["portrait_slots"]
+            self._team_health = team_health_timeline(video, self._duration, ps["left_x"] + ps["right_x"], cfg)
+        times, fills = self._team_health
+        sel = (times >= t - cfg["before_seconds"] - 0.5) & (times <= t)
+        if not sel.any():
+            return {"status": "unverifiable", "note": "판별용 프레임 부족"}
+        now = np.median(fills[sel], axis=0)
+        allies = []
+        for r in team["roster"]:
+            if r["team"] != "ally":
+                continue
+            frac = float(now[r["slot"] - 1])
+            if frac < cfg["dead_below"]:
+                continue  # dead or unreadable
+            allies.append({"player_name": r["player_name"], "hero": self._who(r["player_name"], t)["hero"], "health": round(frac, 2)})
+        critical = [x for x in allies if x["health"] < cfg["critical"]]
+        note = ("치명상 아군 " + ", ".join(f"{x['player_name']}({x['health'] * 100:.0f}%)" for x in critical)) if critical \
+            else "치명상 아군 없음 (" + ", ".join(f"{x['player_name']} {x['health'] * 100:.0f}%" for x in allies) + ")"
+        return {"status": "ok", "allies": allies, "critical": critical, "note": note + " (팀 목록 체력바)"}
+
     def _who(self, name: str, t: float) -> dict:
         """A kill-feed name resolved against the team list: team (ally/enemy) and the hero played at t."""
         team = self._team_record or {}
@@ -576,6 +604,12 @@ class Pipeline:
             if a and a.effect_marker and hc.get("status") == "verified" and a.effect_marker in hcfg:
                 every = [{**x, "side": side} for side in ("ally", "enemy") for x in self._ally_slots(side=side)]
                 hc["antiheal_check"] = detect_antiheal_targets(video, hc["hud_use_time_seconds"], every, hcfg[a.effect_marker])
+        # how healthy the allies were when it was thrown (team-list health bars)
+        th = hcfg.get("team_health")
+        for e in events:
+            a, hc = by_id.get(e["ability_id"]), e["hud_check"]
+            if a and a.ally_health and th and hc.get("status") == "verified":
+                hc["ally_health"] = self._ally_health(video, hc["hud_use_time_seconds"], th)
         # did it reach allies / the player (grenade heal: yellow-outlined overhead bars, own HUD icon)?
         for e in events:
             a, hc = by_id.get(e["ability_id"]), e["hud_check"]
@@ -667,7 +701,7 @@ class Pipeline:
                             "target_check": hc.get("target_check"), "moment_check": hc.get("moment_check"),
                             "death_after_seconds": hc.get("death_after_seconds"), "reflect_check": hc.get("reflect_check"),
                             "kill_check": hc.get("kill_check"), "antiheal_check": hc.get("antiheal_check"),
-                            "heal_check": hc.get("heal_check")})
+                            "heal_check": hc.get("heal_check"), "ally_health": hc.get("ally_health")})
         return sorted(out, key=lambda u: u["time_seconds"])
 
     def _target_check(self, video: Path, use_time: float, mcfg: dict) -> dict:
@@ -746,6 +780,7 @@ class Pipeline:
         store.save_stage("probe", {"fingerprint": sha, "output": info.to_dict()})
         store.set_stage("probe", status="done", finished_at=now_iso())
         duration = info.duration_seconds
+        self._duration, self._team_health = duration, None
         self.timings["probe"] = round(time.monotonic() - t0, 3)
 
         # proxy (upload copy with same timeline)

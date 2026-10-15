@@ -180,6 +180,7 @@ class HudCheck(BaseModel):
     target_check: dict | None = Field(default=None, description="대상 판별 결과 (나노 강화제 등: 팀 목록 칸 강화 화살표)")
     moment_check: dict | None = Field(default=None, description="사용 순간 확인 (대상, 적 대응 스킬 활성 여부, 결과)")
     death_after_seconds: float | None = Field(default=None, description="무력화 스킬 사용 후 플레이어가 죽기까지 걸린 시간(초)")
+    ally_health: dict | None = Field(default=None, description="사용 순간 아군 체력 (팀 목록 체력바 비율, 치명상 아군)")
     heal_check: dict | None = Field(default=None, description="수류탄을 맞은 아군·자신 (머리 위 체력바 노란 테두리, 내 HUD 아이콘 노랑)")
     antiheal_check: dict | None = Field(default=None, description="치유 차단을 받은 플레이어 (팀 목록 체력바 보라 테두리)")
     kill_check: dict | None = Field(default=None, description="사용 직후 처치 관여 (화면 처치 알림 + 팀 목록 적 칸 변화)")

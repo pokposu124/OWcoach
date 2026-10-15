@@ -550,3 +550,19 @@ def detect_heal_boost(video: Path, use_time: float, cfg: dict) -> dict:
     return {"status": "hit" if parts else "none", "allies_on_screen": allies, "self": me,
             "note": ("치유 강화(노란 표시): " + ", ".join(parts)) if parts else "노란 치유 강화 표시 없음: 아군에게 맞지 않음"}
 
+
+def team_health_timeline(video: Path, duration: float, xs: list[int], cfg: dict) -> tuple[np.ndarray, np.ndarray]:
+    """Health of every team-list slot over the whole video, from the health bar under each name.
+
+    Fill = white share of the bar, divided by that slot's own 95th percentile over the video (a full bar;
+    tanks' armour segments are not white, so each slot gets its own scale). Measured on video 2:
+    BERNAR 0.52 at 1:06.5 with 131/250 HP, 0.11 at 2:16 with 28/250 (about 1 s behind the HUD number).
+    Returns (times, fills[len(times), len(xs)]) with fills clipped to 0..1.
+    """
+    fps, ref = float(cfg["fps"]), cfg["reference_resolution"]
+    fr = _frames(video, 0.0, duration, fps, ref, (0, cfg["y"], ref[0], cfg["h"]))
+    white = fr.min(axis=3) > cfg["white_threshold"]
+    fill = np.array([[f[:, x + cfg["dx0"]:x + cfg["dx1"]].mean() for x in xs] for f in white])
+    full = np.maximum(np.percentile(fill, 95, axis=0), 1e-6)
+    return np.arange(len(fill)) / fps, np.clip(fill / full, 0, 1)
+

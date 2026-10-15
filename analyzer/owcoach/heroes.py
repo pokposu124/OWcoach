@@ -56,6 +56,8 @@ class Ability(BaseModel):
     effect_marker: str | None = None
     # 아군·자신이 효과를 받았는지 확인하는 방식 (config hud_check 의 키, 예: heal_boost)
     ally_marker: str | None = None
+    # 사용 순간 아군 체력 상태를 붙일지 (config hud_check.team_health): 적에게 써도 되는 상황이었는지 판단용
+    ally_health: bool = False
 
 
 class NumericFact(BaseModel):

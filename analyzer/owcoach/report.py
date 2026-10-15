@@ -134,6 +134,8 @@ def _hud_line(c) -> str:
             target = " → 빗나감(코드 확인)"
         else:
             target = " · 대상 확인 불가"
+    if (c.ally_health or {}).get("status") == "ok":
+        target += f" · {_e(c.ally_health['note'])}"
     if (c.heal_check or {}).get("status") == "hit":
         hc = c.heal_check
         who = ([f"아군 {hc['allies_on_screen']}명"] if hc.get("allies_on_screen") else []) + (["자신"] if hc.get("self") else [])

@@ -125,7 +125,9 @@ def evaluate(run_dir: Path, labels_path: Path) -> dict:
             continue
         en = len(((use.get("antiheal_check") or {}).get("enemies")) or [])
         hc = use.get("heal_check") or {}
-        got = "enemy" if en else ("ally" if hc.get("allies_on_screen") else ("self" if hc.get("self") else "none"))
+        kc = use.get("kill_check") or {}
+        killed = kc.get("status") == "kill" and kc.get("seconds_after", 99) <= 1.5  # died at once: no anti-heal mark
+        got = "enemy" if en or killed else ("ally" if hc.get("allies_on_screen") else ("self" if hc.get("self") else "none"))
         check("스킬 대상(코드)", got == st["target"], f"{fmt_time(st['time_seconds'])} 정답 {st['target']} / 코드 {got}")
 
     # hit / miss and target as the code saw it (team-list status icon)
