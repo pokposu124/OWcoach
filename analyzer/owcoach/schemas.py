@@ -118,6 +118,10 @@ class SituationSample(BaseModel):
     facing_allies: Literal["yes", "no", "unclear"] = Field(description="화면에 아군이 보이는 방향을 보고 있는지 (이동 중 본대를 등지면 no)")
     payload: str = Field(description="화물: '전진' / '멈춤' / '후진' / '안 보임' / '해당 없음'")
     enemy_dva: str = Field(description="적 D.Va: '메카' / '송하나(본체)' / '없음·안 보임' (적에 D.Va가 없으면 '해당 없음')")
+    player_vs_team: str = Field(default="불명", description="아군 본대 대비 플레이어 위치: '후방' / '같은 선' / '앞' / '불명'")
+    allies_visible: int = Field(default=-1, description="화면에 보이는 아군 수 (모르면 -1)")
+    danger: str = Field(default="없음", description="위험: '없음' / '피격 중' / '근접한 적' (여럿이면 쉼표로). 체력이 낮아도 앞에 적이 없으면 '없음'")
+    low_health: bool = Field(default=False, description="체력이 절반 이하인지 (위험 판단과 별개)")
     note: str = Field(description="코칭에 쓸 만한 그 순간의 상황 한 줄 (예: 시그마가 혼자 앞으로 나감). 없으면 빈 문자열")
 
 

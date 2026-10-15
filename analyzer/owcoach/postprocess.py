@@ -185,7 +185,11 @@ def _situation_flags(track: list[dict], s: float, e: float) -> list[str]:
     inside = sorted((x for x in track if s - 1 <= x["time_seconds"] <= e + 1), key=lambda x: x["time_seconds"])
     flags = []
     checks = [("이동 중 본대를 등짐", lambda x: x.get("player_moving") == "yes" and x.get("facing_allies") == "no"),
-              ("아군 탱커가 앞 멀리 나감", lambda x: x.get("tank") == "앞 멀리")]
+              ("아군 탱커가 앞 멀리 나감", lambda x: x.get("tank") == "앞 멀리"),
+              # user's positioning rule: behind the team; forward only for a play; leave at once when in danger
+              ("아군보다 앞에 위치", lambda x: x.get("player_vs_team") == "앞"),
+              # danger = an enemy threatening (close enemy / being shot); low health alone is not danger (user)
+              ("위험한데 자리에 머묾", lambda x: any(k in x.get("danger", "") for k in ("피격", "근접")) and x.get("player_moving") == "no")]
     for label, pred in checks:
         hit = next((a for a, b in zip(inside, inside[1:]) if pred(a) and pred(b)), None)
         if hit:

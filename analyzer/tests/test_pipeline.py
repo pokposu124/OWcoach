@@ -44,7 +44,7 @@ def test_hero_profile_loads_and_is_draft():
     # approved = reviewed by the user: the human coach's criteria (2026-10-14) and Ana's sleep dart /
     # grenade / nano criteria (2026-10-15); the rest stay drafts
     reviewed = {"ana.skill.sleep_dart_usage", "ana.skill.biotic_grenade_usage", "ana.ultimate.nano_boost_usage",
-                "common.skill.no_skills_into_deflect"}
+                "common.skill.no_skills_into_deflect", "ana.positioning.backline_angle", "ana.positioning.disengage_on_pressure"}
     assert all((c.status == "approved") == (c.source.type == "human_coach" or c.id in reviewed) for c in hero.criteria)
     assert {c.category for c in hero.criteria} == {"skill_usage", "positioning", "ultimate_usage"}
     # numeric facts must carry source + patch (enforced by the model)
@@ -517,9 +517,10 @@ def test_hud_evidence_applies_to_skill_usage_only(cfg):
                                   hero, 30.0, cfg["output"], lambda t: f"evidence/{t}.jpg", [])
         f = fb[0]
         assert f.hud_checks == [] and f.verification == "model_observation"
-        # positioning is always held (hold_categories), but never because of HUD results
-        assert not any("HUD" in r for r in f.display_reasons) and f.display_mode == "tentative"
-        assert f.display_reasons == ["포지셔닝은(는) 코드로 확인할 수 없어 보류"]
+        # never held back because of HUD results; with approved criteria and no hold it is assertive
+        # (positioning hold lifted with the user's positioning criteria, 2026-10-15)
+        assert not any("HUD" in r for r in f.display_reasons) and f.display_mode == "assertive"
+        assert f.display_reasons == []
         assert f.observation == "2분 13초에 모서리 엄폐"
     skill, _ = finalize_feedback(CoachingResponse(items=[_coaching_item()], action_items=[]),
                                  {"scene-01": _scene_rec("verified")}, hero, 30.0, cfg["output"],
@@ -1105,3 +1106,32 @@ def test_kill_feed_attached_to_feedback(video, cfg, tmp_path):
     e = rows[0]
     assert e["killer"]["player_name"] == "ENEMY1" and e["killer"]["team"] == "enemy"
     assert e["victim"]["player_name"] == "MOCK" and e["victim"]["team"] == "ally"
+
+
+def test_forward_or_staying_in_danger_withholds_good_positioning(cfg):
+    """User rule: behind the team, forward only for a play, leave at once in danger. A 'best' positioning
+    item is withheld when the situation track shows the player ahead of the team, or in danger and not
+    moving, twice in a row."""
+    from owcoach.postprocess import finalize_feedback
+
+    hero = load_hero("ana")
+    pos = dict(category="positioning", criterion_ids=["ana.positioning.backline_angle"],
+               start_time_seconds=3.0, end_time_seconds=12.0, evidence_frame_timestamps=[5.0])
+    for track, flag in [([{"time_seconds": t, "player_vs_team": "앞", "player_moving": "yes"} for t in (4, 7)], "아군보다 앞"),
+                        ([{"time_seconds": t, "danger": "피격 중", "player_moving": "no"} for t in (4, 7)], "위험한데 자리에 머묾")]:
+        rec = _scene_rec("verified")
+        rec["situation_track"] = track
+        fb, _ = finalize_feedback(CoachingResponse(items=[_coaching_item(**pos)], action_items=[]), {"scene-01": rec}, hero,
+                                  30.0, cfg["output"], lambda t: f"evidence/{t}.jpg", [])
+        assert fb[0].grade == "withheld" and any(flag in r for r in fb[0].display_reasons)
+
+
+def test_low_health_alone_is_not_danger(cfg):
+    """User rule: low health with no enemy in front is not danger, so staying put then is not flagged."""
+    from owcoach.postprocess import _situation_flags
+
+    calm = [{"time_seconds": t, "danger": "없음", "low_health": True, "player_moving": "no"} for t in (4, 7)]
+    assert _situation_flags(calm, 3, 12) == []
+    shot = [{"time_seconds": t, "danger": "피격 중", "low_health": True, "player_moving": "no"} for t in (4, 7)]
+    assert any("위험한데 자리에 머묾" in f for f in _situation_flags(shot, 3, 12))
+

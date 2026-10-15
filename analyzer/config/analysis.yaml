@@ -263,7 +263,7 @@ output:
   # (모델이 스스로 매긴 확신도는 첫 실제 실행에서 틀린 항목도 1.0이어서 단정 판정 근거로 부족했음)
   require_hud_verification_for_assertive: true
   # 이 분류의 피드백은 항상 참고·보류로 표시 (코드로 확인할 수단이 없음)
-  hold_categories: [positioning]
+  hold_categories: []          # 포지셔닝 보류 해제 (사용자 포지셔닝 기준 2026-10-15)
   # 이 기준만으로 내린 등급은 '판단 보류'로 바꾼다: 근거(적 대응 스킬 활성)를 코드로 확인할 수 없고, 모델 판단이
   # 실제 영상에서 두 번 다 틀렸다(두 번째 아나 영상: 36초 튕겨내기 놓침, 2분 17초 없는 튕겨내기 반사를 지어냄).
   unverifiable_criteria: [common.skill.no_skills_into_deflect]

@@ -97,7 +97,8 @@ class MockProvider(AnalysisProvider):
         return {
             "situation_track": [
                 {"time_seconds": round(mid - 1, 1), "tank": "앞 가까이", "tank_name": "", "player_moving": "no",
-                 "facing_allies": "yes", "payload": "멈춤", "enemy_dva": "해당 없음", "note": ""},
+                 "facing_allies": "yes", "payload": "멈춤", "enemy_dva": "해당 없음", "note": "",
+                 "player_vs_team": "후방", "allies_visible": 3, "danger": "없음", "low_health": False},
             ],
             "observations": [
                 {"time_seconds": round(mid - 1, 1), "end_time_seconds": mid, "fact": "[모의] 적이 화면 중앙에서 접근", "visibility": "clear"},
