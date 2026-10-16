@@ -298,6 +298,10 @@ def test_report_written(video, cfg, tmp_path):
     first = sorted(result.feedback, key=lambda f: f.start_time_seconds)[0]
     assert 'class=num type=button data-seek="%s"' % first.start_time_seconds in html and ">1</button>" in html
     assert "grid-template-columns:minmax(0,3fr) minmax(0,2fr)" in html and "아군" in html
+    # category counts filter the cards: each card carries its category, each count is a toggle button
+    assert f'data-cat="{first.category}" data-start=' in html
+    assert "class=filter type=button data-cat=all aria-pressed=true" in html
+    assert all(f"data-cat={k}" in html for k in ("skill_usage", "positioning", "ultimate_usage"))
 
 
 # ---------------------------------------------------------------- cost

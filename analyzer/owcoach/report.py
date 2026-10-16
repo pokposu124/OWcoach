@@ -62,7 +62,12 @@ video{width:100%;aspect-ratio:16/9;background:#000;border-radius:10px;display:bl
 .feed{display:grid;gap:12px;align-content:start;min-width:0}
 .summary{display:flex;flex-wrap:wrap;gap:6px 14px;margin:0;color:var(--muted);font-size:.88rem}
 .summary b{color:var(--fg)}
+.filter{font:inherit;color:var(--muted);background:none;border:1px solid var(--line);border-radius:999px;padding:1px 10px;cursor:pointer}
+.filter:hover{border-color:var(--accent)} .filter:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.filter[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--panel)} .filter[aria-pressed="true"] b{color:inherit}
+.filter:disabled{cursor:default;opacity:.55}
 .card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 14px;display:grid;gap:8px;min-width:0;scroll-margin-top:12px}
+.card[hidden]{display:none}
 .card.active{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
 .card header{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px}
 .num{width:2.1em;height:2.1em;border-radius:50%;border:none;background:var(--accent);color:var(--panel);font:700 .95rem var(--mono);cursor:pointer;flex:0 0 auto}
@@ -104,6 +109,10 @@ function seek(t){v.currentTime=t;v.play().catch(()=>{});}
 document.querySelectorAll('[data-seek]').forEach(el=>el.addEventListener('click',()=>seek(parseFloat(el.dataset.seek))));
 v.addEventListener('timeupdate',()=>{const t=v.currentTime;
   cards.forEach(c=>c.classList.toggle('active',t>=parseFloat(c.dataset.start)-0.5&&t<=parseFloat(c.dataset.end)+0.5));});
+const filters=[...document.querySelectorAll('.filter')];
+function only(cat){filters.forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.cat===cat)));
+  cards.forEach(c=>{c.hidden=cat!=='all'&&c.dataset.cat!==cat;});}
+filters.forEach(b=>b.addEventListener('click',()=>only(b.getAttribute('aria-pressed')==='true'&&b.dataset.cat!=='all'?'all':b.dataset.cat)));
 """
 
 SAVE_SCRIPT = """
@@ -193,7 +202,7 @@ def _card(n: int, f, me: str = "") -> str:
     reasons = f'<p class=reasons>{_e(" · ".join(f.display_reasons))}</p>' if f.display_reasons else ""
     grade_opts = "".join(f"<option value={k}>{v}</option>" for k, v in GRADE_KO.items())
     return f"""
-<article class=card id="fb-{n}" data-start="{f.start_time_seconds}" data-end="{f.end_time_seconds}">
+<article class=card id="fb-{n}" data-cat="{f.category}" data-start="{f.start_time_seconds}" data-end="{f.end_time_seconds}">
   <header><button class=num type=button data-seek="{f.start_time_seconds}" aria-label="{n}번 피드백 {_t(f.start_time_seconds)}로 이동">{n}</button>
     <span class=time>{_t(f.start_time_seconds)} ~ {_t(f.end_time_seconds)}</span>
     <span class="chip cat">{_e(CATEGORY_KO[f.category])}</span>
@@ -222,7 +231,10 @@ def build_report_html(result: AnalysisResult, video_src: str, fragment: bool = F
     cards = "".join(_card(i, f, me) for i, f in enumerate(feedback, 1)) or "<p class=muted>근거가 충분한 피드백이 없습니다.</p>"
     counts = {k: sum(f.category == k for f in feedback) for k in CATEGORY_KO}
     grades = {k: sum(f.grade == k for f in feedback) for k in GRADE_KO}
-    summary = ("".join(f"<span>{v} <b>{counts[k]}</b></span>" for k, v in CATEGORY_KO.items())
+    # category counts are toggle buttons: one shows only that category's cards, again (or 전체) shows all
+    summary = (f'<button class=filter type=button data-cat=all aria-pressed=true>전체 <b>{len(feedback)}</b></button>'
+               + "".join(f'<button class=filter type=button data-cat={k} aria-pressed=false{" disabled" if not counts[k] else ""}>'
+                         f'{v} <b>{counts[k]}</b></button>' for k, v in CATEGORY_KO.items())
                + "".join(f"<span>{v} <b>{grades[k]}</b></span>" for k, v in GRADE_KO.items() if grades[k])
                + f"<span>사망 <b>{len(result.player_deaths)}</b></span>")
     num_of = {f.id: i for i, f in enumerate(feedback, 1)}
