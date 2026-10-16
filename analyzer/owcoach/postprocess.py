@@ -326,8 +326,9 @@ def finalize_feedback(
                 reasons.append(f"포지셔닝 좋은 판정은 {span_max:g}초 이내의 특정 순간에만 줌 (이 피드백은 {fmt_range(s, e)} 전체)")
             else:
                 bad = _situation_flags(scene.get("situation_track", []), s, e)
-                # code-measured: enemies on screen with no ally in view (user rule: behind the team by default)
-                bad += [sp["note"] for sp in scene.get("alone_spans", [])
+                # code-measured: enemies on screen with no ally in view, or looking away from where the team
+                # was (user rule: behind the team by default; coach: face the team while moving)
+                bad += [sp["note"] for key in ("alone_spans", "turned_away_spans") for sp in scene.get(key, [])
                         if sp["start_seconds"] <= e + 1 and sp["end_seconds"] >= s - 1]
                 if bad:
                     grade = "withheld"

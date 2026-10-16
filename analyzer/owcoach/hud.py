@@ -586,19 +586,21 @@ def _box_sum(m: np.ndarray, r: int) -> np.ndarray:
     return c[2 * r + 1:, 2 * r + 1:] - c[:-2 * r - 1, 2 * r + 1:] - c[2 * r + 1:, :-2 * r - 1] + c[:-2 * r - 1, :-2 * r - 1]
 
 
-def _cell_clusters(cells: np.ndarray, min_size: int) -> list[int]:
-    """Sizes of 8-connected groups of occupied grid cells (a group ~ one character's outline)."""
+def _cell_clusters(cells: np.ndarray, min_size: int) -> list[tuple[int, float]]:
+    """(size, centre x as a share of the grid width) of 8-connected groups of occupied grid cells
+    (a group ~ one character's outline)."""
     seen = np.zeros_like(cells, dtype=bool)
     h, w = cells.shape
-    sizes = []
+    out = []
     for i in range(h):
         for j in range(w):
             if cells[i, j] and not seen[i, j]:
-                stack, n = [(i, j)], 0
+                stack, n, xs = [(i, j)], 0, 0
                 seen[i, j] = True
                 while stack:
                     a, b = stack.pop()
                     n += 1
+                    xs += b
                     for da in (-1, 0, 1):
                         for db in (-1, 0, 1):
                             x, y = a + da, b + db
@@ -606,8 +608,8 @@ def _cell_clusters(cells: np.ndarray, min_size: int) -> list[int]:
                                 seen[x, y] = True
                                 stack.append((x, y))
                 if n >= min_size:
-                    sizes.append(n)
-    return sizes
+                    out.append((n, (xs / n + 0.5) / w))
+    return out
 
 
 def screen_presence(video: Path, start: float, end: float, cfg: dict, ally_red: bool = True) -> list[dict]:
@@ -618,7 +620,8 @@ def screen_presence(video: Path, start: float, end: float, cfg: dict, ally_red: 
     (team list, HUD, screen edges and kill feed excluded), and each 8-connected group of grid cells is
     one character. Measured: video 2 1:01-1:11 before a death, 0 allies and 1-3 enemies on screen;
     video 1 3:03-3:08 (coach: back to the team while moving) 0 allies, 1-5 enemies.
-    Returns [{time_seconds, allies, enemies, enemy_largest}] (enemy_largest in cells: big = close).
+    Returns [{time_seconds, allies, enemies, enemy_largest, ally_x}] (enemy_largest in cells: big = close;
+    ally_x: centre of each ally group across the world view, 0 = left edge, 1 = right edge).
     """
     fps, (rw, rh) = float(cfg["fps"]), cfg["reference_resolution"]
     x0, y0, x1, y1 = cfg["world"]
@@ -640,6 +643,45 @@ def screen_presence(video: Path, start: float, end: float, cfg: dict, ally_red: 
             cells = thin[:h // cell * cell, :w // cell * cell].reshape(h // cell, cell, w // cell, cell).sum(axis=(1, 3)) >= 3
             counts.append(_cell_clusters(cells, int(cfg["min_cluster"])))
         out.append({"time_seconds": round(start + i / fps, 2), "allies": len(counts[0]), "enemies": len(counts[1]),
-                    "enemy_largest": max(counts[1], default=0)})
+                    "enemy_largest": max((n for n, _ in counts[1]), default=0),
+                    "ally_x": [round(x, 3) for _, x in counts[0]]})
     return out
+
+
+def camera_turn(video: Path, start: float, end: float, cfg: dict) -> tuple[np.ndarray, np.ndarray]:
+    """Horizontal camera turn, accumulated from start, in screen widths (+ = turned right), every 1/fps s.
+
+    Each frame's upper world view (far scenery; the gun, HUD and team list left out) is matched to the
+    previous one by phase correlation: the shift that best lines them up is how far the view panned.
+    A screen width is the field of view, whatever the player's FOV setting is, so no angle is claimed.
+    It needs a high frame rate: a quick 180-degree flick moves more than half a screen between frames at
+    4 fps and the match fails (measured: video 1 3:05 turn lost at 4 fps, ~1.3 widths at 30 fps).
+    Measured: video 1 3:05 the player turns from the team toward the payload (~1.3 widths) and back at
+    3:10. Drifts over long spans (walking adds small shifts), so compare only nearby times.
+    cfg: hud_check.screen_presence.turn. Returns (times, turn).
+    """
+    fps, (rw, rh) = float(cfg["fps"]), cfg["reference_resolution"]
+    x, y, w, h = cfg["region"]
+    dur = max(0.0, end - start)
+    proc = subprocess.run([
+        _require("ffmpeg"), "-v", "error", "-ss", f"{max(0.0, start):.3f}", "-i", str(video), "-t", f"{dur:.3f}",
+        "-vf", f"fps={fps},scale={rw}:{rh},crop={w}:{h}:{x}:{y}", "-f", "rawvideo", "-pix_fmt", "gray", "-",
+    ], capture_output=True)
+    if proc.returncode != 0:
+        raise MediaError(f"frame extraction failed: {proc.stderr[-300:]!r}")
+    fr = np.frombuffer(proc.stdout, np.uint8).reshape(-1, h, w)
+    if not len(fr):
+        return np.zeros(0), np.zeros(0)
+    win = np.outer(np.hanning(h), np.hanning(w)).astype(np.float32)
+    turn, prev = [0.0], None
+    for f in fr:
+        spec = np.fft.rfft2((f - f.mean()) * win)
+        if prev is not None:
+            r = spec * np.conj(prev)
+            corr = np.fft.irfft2(r / (np.abs(r) + 1e-6), s=(h, w))
+            dx = int(np.unravel_index(np.argmax(corr), corr.shape)[1])
+            dx = dx if dx < w // 2 else dx - w
+            turn.append(turn[-1] - dx / rw)      # scenery moving right = the view turned left
+        prev = spec
+    return start + np.arange(len(turn)) / fps, np.array(turn)
 

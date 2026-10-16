@@ -1204,3 +1204,59 @@ def test_screen_presence_counts_outlined_characters(tmp_path, cfg):
     late = [x for x in track if x["time_seconds"] > 2.4]
     assert all(x["allies"] == 1 and x["enemies"] == 1 for x in early)
     assert all(x["allies"] == 0 and x["enemies"] == 1 for x in late)
+
+
+def test_camera_turn_follows_a_pan(tmp_path, cfg):
+    """Scenery sliding left by 200 px/s across a 1280-wide screen = the view turning right ~0.16 widths/s."""
+    from owcoach.hud import camera_turn
+
+    from PIL import Image
+
+    rng = np.random.default_rng(0)
+    blocks = rng.integers(0, 255, (45, 160), dtype=np.uint8)              # static scenery, 16 px blocks
+    Image.fromarray(np.kron(blocks, np.ones((16, 16), dtype=np.uint8))).save(tmp_path / "wide.png")
+    video = tmp_path / "pan.mp4"
+    subprocess.run(["ffmpeg", "-y", "-v", "error", "-loop", "1", "-framerate", "30", "-i", str(tmp_path / "wide.png"),
+                    "-t", "3", "-vf", "crop=1280:720:'t*200':0", "-pix_fmt", "yuv420p", str(video)], check=True)
+    times, turn = camera_turn(video, 0.0, 3.0, cfg["hud_check"]["screen_presence"]["turn"])
+    i = int(np.searchsorted(times, 2.0))
+    assert abs(turn[i] - turn[0] - 2.0 * 200 / 1280) < 0.05
+
+
+def test_turned_away_spans_from_where_the_team_was(monkeypatch, cfg):
+    """Two allies on screen at 0-3 s, then the view turns 1.3 screen widths and allies leave the screen
+    for 4 s (one stray red mark at 5 s does not end it), then the player turns back: one span ~3.5-7 s.
+    Allies leaving the screen without a turn (they walked out of view) is not a span."""
+    import owcoach.pipeline as pl
+
+    pcfg = cfg["hud_check"]["screen_presence"]
+    fps = pcfg["fps"]
+    ts = np.arange(0, 10, 1 / fps)
+
+    def track(allies):
+        return [{"time_seconds": float(t), "allies": allies(t), "enemies": 1, "ally_x": [0.4, 0.6][:allies(t)],
+                 "alive": True} for t in ts]
+
+    turned = track(lambda t: 2 if t < 3 or t >= 8 else (1 if t == 5 else 0))
+    view = lambda t: np.where((t >= 3.5) & (t < 7.5), 1.3, 0.0)
+    pipe = Pipeline.__new__(Pipeline)
+    pipe.cfg = cfg
+    monkeypatch.setattr(pl, "camera_turn", lambda *a: (np.arange(0, 10, 1 / 30), view(np.arange(0, 10, 1 / 30))))
+    spans = pipe._turned_away_spans(Path("x.mp4"), turned, 0.0, 10.0)
+    assert [(s["start_seconds"], s["end_seconds"], s["turned_widths"]) for s in spans] == [(3.5, 7.0, 1.3)]
+    assert "본대(아군 2명 이상)" in spans[0]["note"] and "1.3폭" in spans[0]["note"]
+
+    monkeypatch.setattr(pl, "camera_turn", lambda *a: (np.arange(0, 10, 1 / 30), np.zeros(300)))
+    assert pipe._turned_away_spans(Path("x.mp4"), turned, 0.0, 10.0) == []
+
+
+def test_turned_away_span_withholds_a_good_positioning_grade(cfg):
+    from owcoach.postprocess import finalize_feedback
+
+    rec = _scene_rec("verified")
+    rec["turned_away_spans"] = [{"start_seconds": 4.0, "end_seconds": 7.0, "note": "4초 ~ 7초 본대가 화면 밖 (코드 측정)"}]
+    item = _coaching_item(category="positioning", criterion_ids=["ana.positioning.cover_access"],
+                          start_time_seconds=3.0, end_time_seconds=9.0, evidence_frame_timestamps=[5.0])
+    fb, _ = finalize_feedback(CoachingResponse(items=[item], action_items=[]), {"scene-01": rec}, load_hero("ana"), 60.0,
+                              cfg["output"], lambda t: f"evidence/{t}.jpg", [])
+    assert fb[0].grade == "withheld" and any("본대가 화면 밖" in r for r in fb[0].display_reasons)
