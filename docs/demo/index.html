@@ -76,9 +76,10 @@ table{border-collapse:collapse;font-size:.8rem} td,th{border:1px solid var(--lin
   <p class=notice>코칭 기준이 코치 검수 전 초안입니다. 등급과 판단은 참고용입니다.</p><div class=teams><section class=ally><h2>아군</h2><ul><li><b>아나 (나)</b><span>BERNAR</span></li><li><b>독트린</b><span>MMG</span></li><li><b>파라</b><span>목포산아이</span></li><li><b>솔저: 76</b><span>결식아동</span></li><li><b>시그마</b><span>인도양쭈꾸미</span></li></ul></section><section class=enemy><h2>적</h2><ul><li><b>주노</b><span>서팔광</span></li><li><b>모이라</b><span>불켄</span></li><li><b>D.Va</b><span>따까리</span></li><li><b>소전</b><span>HWIWHA</span></li><li><b>시에라</b><span>전도리</span></li></ul></section></div>
 </section>
 <section class=feed aria-label="피드백">
-  <p class=summary><button class=filter type=button data-cat=all aria-pressed=true>전체 <b>27</b></button><button class=filter type=button data-cat=skill_usage aria-pressed=false>스킬 사용 <b>17</b></button><button class=filter type=button data-cat=positioning aria-pressed=false>포지셔닝 <b>8</b></button><button class=filter type=button data-cat=ultimate_usage aria-pressed=false>궁극기 사용 <b>2</b></button><span>최선 <b>7</b></span><span>블런더 <b>3</b></span><span>판단 보류 <b>17</b></span><span>사망 <b>0</b></span></p>
+  <p class=summary><button class=filter type=button data-kind=all aria-pressed=true>전체 <b>27</b></button><button class=filter type=button data-kind=cat data-val=skill_usage aria-pressed=false>스킬 사용 <b>17</b></button><button class=filter type=button data-kind=cat data-val=positioning aria-pressed=false>포지셔닝 <b>8</b></button><button class=filter type=button data-kind=cat data-val=ultimate_usage aria-pressed=false>궁극기 사용 <b>2</b></button><button class=filter type=button data-kind=grade data-val=best aria-pressed=false>최선 <b>7</b></button><button class=filter type=button data-kind=grade data-val=blunder aria-pressed=false>블런더 <b>3</b></button><button class=filter type=button data-kind=grade data-val=withheld aria-pressed=false>판단 보류 <b>17</b></button><span>사망 <b>0</b></span></p>
+  <p class=muted id=nomatch hidden>고른 분류·등급에 맞는 피드백이 없습니다.</p>
   
-<article class=card id="fb-1" data-cat="positioning" data-start="7.0" data-end="44.5">
+<article class=card id="fb-1" data-cat="positioning" data-grade="withheld" data-start="7.0" data-end="44.5">
   <header><button class=num type=button data-seek="7.0" aria-label="1번 피드백 7초로 이동">1</button>
     <span class=time>7초 ~ 44초</span>
     <span class="chip cat">포지셔닝</span>
@@ -99,7 +100,7 @@ table{border-collapse:collapse;font-size:.8rem} td,th{border:1px solid var(--lin
     <textarea name=comment placeholder="코멘트 (오인식, 놓친 맥락, 기준 수정안 등)"></textarea>
   </fieldset></details>
 </article>
-<article class=card id="fb-2" data-cat="skill_usage" data-start="38.5" data-end="40.5">
+<article class=card id="fb-2" data-cat="skill_usage" data-grade="withheld" data-start="38.5" data-end="40.5">
   <header><button class=num type=button data-seek="38.5" aria-label="2번 피드백 38초로 이동">2</button>
     <span class=time>38초 ~ 40초</span>
     <span class="chip cat">스킬 사용</span>
@@ -120,7 +121,7 @@ table{border-collapse:collapse;font-size:.8rem} td,th{border:1px solid var(--lin
     <textarea name=comment placeholder="코멘트 (오인식, 놓친 맥락, 기준 수정안 등)"></textarea>
   </fieldset></details>
 </article>
-<article class=card id="fb-3" data-cat="positioning" data-start="43.5" data-end="76.0">
+<article class=card id="fb-3" data-cat="positioning" data-grade="withheld" data-start="43.5" data-end="76.0">
   <header><button class=num type=button data-seek="43.5" aria-label="3번 피드백 44초로 이동">3</button>
     <span class=time>44초 ~ 1분 16초</span>
     <span class="chip cat">포지셔닝</span>
@@ -141,7 +142,7 @@ table{border-collapse:collapse;font-size:.8rem} td,th{border:1px solid var(--lin
     <textarea name=comment placeholder="코멘트 (오인식, 놓친 맥락, 기준 수정안 등)"></textarea>
   </fieldset></details>
 </article>
-<article class=card id="fb-4" data-cat="skill_usage" data-start="52.0" data-end="57.5">
+<article class=card id="fb-4" data-cat="skill_usage" data-grade="best" data-start="52.0" data-end="57.5">
   <header><button class=num type=button data-seek="52.0" aria-label="4번 피드백 52초로 이동">4</button>
     <span class=time>52초 ~ 58초</span>
     <span class="chip cat">스킬 사용</span>
@@ -162,7 +163,7 @@ table{border-collapse:collapse;font-size:.8rem} td,th{border:1px solid var(--lin
     <textarea name=comment placeholder="코멘트 (오인식, 놓친 맥락, 기준 수정안 등)"></textarea>
   </fieldset></details>
 </article>
-<article class=card id="fb-5" data-cat="skill_usage" data-start="66.5" data-end="68.0">
+<article class=card id="fb-5" data-cat="skill_usage" data-grade="best" data-start="66.5" data-end="68.0">
   <header><button class=num type=button data-seek="66.5" aria-label="5번 피드백 1분 6초로 이동">5</button>
     <span class=time>1분 6초 ~ 1분 8초</span>
     <span class="chip cat">스킬 사용</span>
@@ -183,7 +184,7 @@ table{border-collapse:collapse;font-size:.8rem} td,th{border:1px solid var(--lin
     <textarea name=comment placeholder="코멘트 (오인식, 놓친 맥락, 기준 수정안 등)"></textarea>
   </fieldset></details>
 </article>
-<article class=card id="fb-6" data-cat="skill_usage" data-start="95.0" data-end="96.0">
+<article class=card id="fb-6" data-cat="skill_usage" data-grade="withheld" data-start="95.0" data-end="96.0">
   <header><button class=num type=button data-seek="95.0" aria-label="6번 피드백 1분 35초로 이동">6</button>
     <span class=time>1분 35초 ~ 1분 36초</span>
     <span class="chip cat">스킬 사용</span>
@@ -204,7 +205,7 @@ table{border-collapse:collapse;font-size:.8rem} td,th{border:1px solid var(--lin
     <textarea name=comment placeholder="코멘트 (오인식, 놓친 맥락, 기준 수정안 등)"></textarea>
   </fieldset></details>
 </article>
-<article class=card id="fb-7" data-cat="skill_usage" data-start="101.5" data-end="106.0">
+<article class=card id="fb-7" data-cat="skill_usage" data-grade="best" data-start="101.5" data-end="106.0">
   <header><button class=num type=button data-seek="101.5" aria-label="7번 피드백 1분 42초로 이동">7</button>
     <span class=time>1분 42초 ~ 1분 46초</span>
     <span class="chip cat">스킬 사용</span>
@@ -225,7 +226,7 @@ table{border-collapse:collapse;font-size:.8rem} td,th{border:1px solid var(--lin
     <textarea name=comment placeholder="코멘트 (오인식, 놓친 맥락, 기준 수정안 등)"></textarea>
   </fieldset></details>
 </article>
-<article class=card id="fb-8" data-cat="positioning" data-start="110.0" data-end="120.5">
+<article class=card id="fb-8" data-cat="positioning" data-grade="blunder" data-start="110.0" data-end="120.5">
   <header><button class=num type=button data-seek="110.0" aria-label="8번 피드백 1분 50초로 이동">8</button>
     <span class=time>1분 50초 ~ 2분 0초</span>
     <span class="chip cat">포지셔닝</span>
@@ -246,7 +247,7 @@ table{border-collapse:collapse;font-size:.8rem} td,th{border:1px solid var(--lin
     <textarea name=comment placeholder="코멘트 (오인식, 놓친 맥락, 기준 수정안 등)"></textarea>
   </fieldset></details>
 </article>
-<article class=card id="fb-9" data-cat="skill_usage" data-start="112.0" data-end="113.5">
+<article class=card id="fb-9" data-cat="skill_usage" data-grade="withheld" data-start="112.0" data-end="113.5">
   <header><button class=num type=button data-seek="112.0" aria-label="9번 피드백 1분 52초로 이동">9</button>
     <span class=time>1분 52초 ~ 1분 54초</span>
     <span class="chip cat">스킬 사용</span>
@@ -267,7 +268,7 @@ table{border-collapse:collapse;font-size:.8rem} td,th{border:1px solid var(--lin
     <textarea name=comment placeholder="코멘트 (오인식, 놓친 맥락, 기준 수정안 등)"></textarea>
   </fieldset></details>
 </article>
-<article class=card id="fb-10" data-cat="positioning" data-start="117.0" data-end="149.5">
+<article class=card id="fb-10" data-cat="positioning" data-grade="withheld" data-start="117.0" data-end="149.5">
   <header><button class=num type=button data-seek="117.0" aria-label="10번 피드백 1분 57초로 이동">10</button>
     <span class=time>1분 57초 ~ 2분 30초</span>
     <span class="chip cat">포지셔닝</span>
@@ -288,7 +289,7 @@ table{border-collapse:collapse;font-size:.8rem} td,th{border:1px solid var(--lin
     <textarea name=comment placeholder="코멘트 (오인식, 놓친 맥락, 기준 수정안 등)"></textarea>
   </fieldset></details>
 </article>
-<article class=card id="fb-11" data-cat="skill_usage" data-start="119.5" data-end="121.0">
+<article class=card id="fb-11" data-cat="skill_usage" data-grade="withheld" data-start="119.5" data-end="121.0">
   <header><button class=num type=button data-seek="119.5" aria-label="11번 피드백 2분 0초로 이동">11</button>
     <span class=time>2분 0초 ~ 2분 1초</span>
     <span class="chip cat">스킬 사용</span>
@@ -309,7 +310,7 @@ table{border-collapse:collapse;font-size:.8rem} td,th{border:1px solid var(--lin
     <textarea name=comment placeholder="코멘트 (오인식, 놓친 맥락, 기준 수정안 등)"></textarea>
   </fieldset></details>
 </article>
-<article class=card id="fb-12" data-cat="skill_usage" data-start="125.5" data-end="127.0">
+<article class=card id="fb-12" data-cat="skill_usage" data-grade="withheld" data-start="125.5" data-end="127.0">
   <header><button class=num type=button data-seek="125.5" aria-label="12번 피드백 2분 6초로 이동">12</button>
     <span class=time>2분 6초 ~ 2분 7초</span>
     <span class="chip cat">스킬 사용</span>
@@ -330,7 +331,7 @@ table{border-collapse:collapse;font-size:.8rem} td,th{border:1px solid var(--lin
     <textarea name=comment placeholder="코멘트 (오인식, 놓친 맥락, 기준 수정안 등)"></textarea>
   </fieldset></details>
 </article>
-<article class=card id="fb-13" data-cat="ultimate_usage" data-start="135.5" data-end="137.5">
+<article class=card id="fb-13" data-cat="ultimate_usage" data-grade="best" data-start="135.5" data-end="137.5">
   <header><button class=num type=button data-seek="135.5" aria-label="13번 피드백 2분 16초로 이동">13</button>
     <span class=time>2분 16초 ~ 2분 18초</span>
     <span class="chip cat">궁극기 사용</span>
@@ -351,7 +352,7 @@ table{border-collapse:collapse;font-size:.8rem} td,th{border:1px solid var(--lin
     <textarea name=comment placeholder="코멘트 (오인식, 놓친 맥락, 기준 수정안 등)"></textarea>
   </fieldset></details>
 </article>
-<article class=card id="fb-14" data-cat="skill_usage" data-start="140.0" data-end="142.0">
+<article class=card id="fb-14" data-cat="skill_usage" data-grade="best" data-start="140.0" data-end="142.0">
   <header><button class=num type=button data-seek="140.0" aria-label="14번 피드백 2분 20초로 이동">14</button>
     <span class=time>2분 20초 ~ 2분 22초</span>
     <span class="chip cat">스킬 사용</span>
@@ -372,7 +373,7 @@ table{border-collapse:collapse;font-size:.8rem} td,th{border:1px solid var(--lin
     <textarea name=comment placeholder="코멘트 (오인식, 놓친 맥락, 기준 수정안 등)"></textarea>
   </fieldset></details>
 </article>
-<article class=card id="fb-15" data-cat="skill_usage" data-start="144.0" data-end="146.0">
+<article class=card id="fb-15" data-cat="skill_usage" data-grade="best" data-start="144.0" data-end="146.0">
   <header><button class=num type=button data-seek="144.0" aria-label="15번 피드백 2분 24초로 이동">15</button>
     <span class=time>2분 24초 ~ 2분 26초</span>
     <span class="chip cat">스킬 사용</span>
@@ -393,7 +394,7 @@ table{border-collapse:collapse;font-size:.8rem} td,th{border:1px solid var(--lin
     <textarea name=comment placeholder="코멘트 (오인식, 놓친 맥락, 기준 수정안 등)"></textarea>
   </fieldset></details>
 </article>
-<article class=card id="fb-16" data-cat="positioning" data-start="149.5" data-end="178.0">
+<article class=card id="fb-16" data-cat="positioning" data-grade="withheld" data-start="149.5" data-end="178.0">
   <header><button class=num type=button data-seek="149.5" aria-label="16번 피드백 2분 30초로 이동">16</button>
     <span class=time>2분 30초 ~ 2분 58초</span>
     <span class="chip cat">포지셔닝</span>
@@ -414,7 +415,7 @@ table{border-collapse:collapse;font-size:.8rem} td,th{border:1px solid var(--lin
     <textarea name=comment placeholder="코멘트 (오인식, 놓친 맥락, 기준 수정안 등)"></textarea>
   </fieldset></details>
 </article>
-<article class=card id="fb-17" data-cat="skill_usage" data-start="158.0" data-end="162.0">
+<article class=card id="fb-17" data-cat="skill_usage" data-grade="best" data-start="158.0" data-end="162.0">
   <header><button class=num type=button data-seek="158.0" aria-label="17번 피드백 2분 38초로 이동">17</button>
     <span class=time>2분 38초 ~ 2분 42초</span>
     <span class="chip cat">스킬 사용</span>
@@ -435,7 +436,7 @@ table{border-collapse:collapse;font-size:.8rem} td,th{border:1px solid var(--lin
     <textarea name=comment placeholder="코멘트 (오인식, 놓친 맥락, 기준 수정안 등)"></textarea>
   </fieldset></details>
 </article>
-<article class=card id="fb-18" data-cat="skill_usage" data-start="172.5" data-end="174.5">
+<article class=card id="fb-18" data-cat="skill_usage" data-grade="withheld" data-start="172.5" data-end="174.5">
   <header><button class=num type=button data-seek="172.5" aria-label="18번 피드백 2분 52초로 이동">18</button>
     <span class=time>2분 52초 ~ 2분 54초</span>
     <span class="chip cat">스킬 사용</span>
@@ -456,7 +457,7 @@ table{border-collapse:collapse;font-size:.8rem} td,th{border:1px solid var(--lin
     <textarea name=comment placeholder="코멘트 (오인식, 놓친 맥락, 기준 수정안 등)"></textarea>
   </fieldset></details>
 </article>
-<article class=card id="fb-19" data-cat="positioning" data-start="185.0" data-end="190.0">
+<article class=card id="fb-19" data-cat="positioning" data-grade="blunder" data-start="185.0" data-end="190.0">
   <header><button class=num type=button data-seek="185.0" aria-label="19번 피드백 3분 5초로 이동">19</button>
     <span class=time>3분 5초 ~ 3분 10초</span>
     <span class="chip cat">포지셔닝</span>
@@ -477,7 +478,7 @@ table{border-collapse:collapse;font-size:.8rem} td,th{border:1px solid var(--lin
     <textarea name=comment placeholder="코멘트 (오인식, 놓친 맥락, 기준 수정안 등)"></textarea>
   </fieldset></details>
 </article>
-<article class=card id="fb-20" data-cat="skill_usage" data-start="191.5" data-end="193.5">
+<article class=card id="fb-20" data-cat="skill_usage" data-grade="withheld" data-start="191.5" data-end="193.5">
   <header><button class=num type=button data-seek="191.5" aria-label="20번 피드백 3분 12초로 이동">20</button>
     <span class=time>3분 12초 ~ 3분 14초</span>
     <span class="chip cat">스킬 사용</span>
@@ -498,7 +499,7 @@ table{border-collapse:collapse;font-size:.8rem} td,th{border:1px solid var(--lin
     <textarea name=comment placeholder="코멘트 (오인식, 놓친 맥락, 기준 수정안 등)"></textarea>
   </fieldset></details>
 </article>
-<article class=card id="fb-21" data-cat="skill_usage" data-start="207.0" data-end="209.5">
+<article class=card id="fb-21" data-cat="skill_usage" data-grade="withheld" data-start="207.0" data-end="209.5">
   <header><button class=num type=button data-seek="207.0" aria-label="21번 피드백 3분 27초로 이동">21</button>
     <span class=time>3분 27초 ~ 3분 30초</span>
     <span class="chip cat">스킬 사용</span>
@@ -519,7 +520,7 @@ table{border-collapse:collapse;font-size:.8rem} td,th{border:1px solid var(--lin
     <textarea name=comment placeholder="코멘트 (오인식, 놓친 맥락, 기준 수정안 등)"></textarea>
   </fieldset></details>
 </article>
-<article class=card id="fb-22" data-cat="positioning" data-start="216.0" data-end="236.0">
+<article class=card id="fb-22" data-cat="positioning" data-grade="withheld" data-start="216.0" data-end="236.0">
   <header><button class=num type=button data-seek="216.0" aria-label="22번 피드백 3분 36초로 이동">22</button>
     <span class=time>3분 36초 ~ 3분 56초</span>
     <span class="chip cat">포지셔닝</span>
@@ -540,7 +541,7 @@ table{border-collapse:collapse;font-size:.8rem} td,th{border:1px solid var(--lin
     <textarea name=comment placeholder="코멘트 (오인식, 놓친 맥락, 기준 수정안 등)"></textarea>
   </fieldset></details>
 </article>
-<article class=card id="fb-23" data-cat="skill_usage" data-start="229.0" data-end="231.0">
+<article class=card id="fb-23" data-cat="skill_usage" data-grade="withheld" data-start="229.0" data-end="231.0">
   <header><button class=num type=button data-seek="229.0" aria-label="23번 피드백 3분 49초로 이동">23</button>
     <span class=time>3분 49초 ~ 3분 51초</span>
     <span class="chip cat">스킬 사용</span>
@@ -561,7 +562,7 @@ table{border-collapse:collapse;font-size:.8rem} td,th{border:1px solid var(--lin
     <textarea name=comment placeholder="코멘트 (오인식, 놓친 맥락, 기준 수정안 등)"></textarea>
   </fieldset></details>
 </article>
-<article class=card id="fb-24" data-cat="positioning" data-start="239.5" data-end="273.25">
+<article class=card id="fb-24" data-cat="positioning" data-grade="withheld" data-start="239.5" data-end="273.25">
   <header><button class=num type=button data-seek="239.5" aria-label="24번 피드백 4분 0초로 이동">24</button>
     <span class=time>4분 0초 ~ 4분 33초</span>
     <span class="chip cat">포지셔닝</span>
@@ -582,7 +583,7 @@ table{border-collapse:collapse;font-size:.8rem} td,th{border:1px solid var(--lin
     <textarea name=comment placeholder="코멘트 (오인식, 놓친 맥락, 기준 수정안 등)"></textarea>
   </fieldset></details>
 </article>
-<article class=card id="fb-25" data-cat="ultimate_usage" data-start="249.0" data-end="250.0">
+<article class=card id="fb-25" data-cat="ultimate_usage" data-grade="blunder" data-start="249.0" data-end="250.0">
   <header><button class=num type=button data-seek="249.0" aria-label="25번 피드백 4분 9초로 이동">25</button>
     <span class=time>4분 9초 ~ 4분 10초</span>
     <span class="chip cat">궁극기 사용</span>
@@ -603,7 +604,7 @@ table{border-collapse:collapse;font-size:.8rem} td,th{border:1px solid var(--lin
     <textarea name=comment placeholder="코멘트 (오인식, 놓친 맥락, 기준 수정안 등)"></textarea>
   </fieldset></details>
 </article>
-<article class=card id="fb-26" data-cat="skill_usage" data-start="250.0" data-end="252.0">
+<article class=card id="fb-26" data-cat="skill_usage" data-grade="withheld" data-start="250.0" data-end="252.0">
   <header><button class=num type=button data-seek="250.0" aria-label="26번 피드백 4분 10초로 이동">26</button>
     <span class=time>4분 10초 ~ 4분 12초</span>
     <span class="chip cat">스킬 사용</span>
@@ -624,7 +625,7 @@ table{border-collapse:collapse;font-size:.8rem} td,th{border:1px solid var(--lin
     <textarea name=comment placeholder="코멘트 (오인식, 놓친 맥락, 기준 수정안 등)"></textarea>
   </fieldset></details>
 </article>
-<article class=card id="fb-27" data-cat="skill_usage" data-start="267.5" data-end="269.5">
+<article class=card id="fb-27" data-cat="skill_usage" data-grade="withheld" data-start="267.5" data-end="269.5">
   <header><button class=num type=button data-seek="267.5" aria-label="27번 피드백 4분 28초로 이동">27</button>
     <span class=time>4분 28초 ~ 4분 30초</span>
     <span class="chip cat">스킬 사용</span>
@@ -666,9 +667,13 @@ document.querySelectorAll('[data-seek]').forEach(el=>el.addEventListener('click'
 v.addEventListener('timeupdate',()=>{const t=v.currentTime;
   cards.forEach(c=>c.classList.toggle('active',t>=parseFloat(c.dataset.start)-0.5&&t<=parseFloat(c.dataset.end)+0.5));});
 const filters=[...document.querySelectorAll('.filter')];
-function only(cat){filters.forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.cat===cat)));
-  cards.forEach(c=>{c.hidden=cat!=='all'&&c.dataset.cat!==cat;});}
-filters.forEach(b=>b.addEventListener('click',()=>only(b.getAttribute('aria-pressed')==='true'&&b.dataset.cat!=='all'?'all':b.dataset.cat)));
+const pick={cat:null,grade:null};   // null = every value; category and grade combine (both must match)
+function show(){
+  filters.forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.kind==='all'?!pick.cat&&!pick.grade:pick[b.dataset.kind]===b.dataset.val)));
+  cards.forEach(c=>{c.hidden=(pick.cat&&c.dataset.cat!==pick.cat)||(pick.grade&&c.dataset.grade!==pick.grade);});
+  const none=document.getElementById('nomatch');if(none)none.hidden=!cards.length||cards.some(c=>!c.hidden);}
+filters.forEach(b=>b.addEventListener('click',()=>{const k=b.dataset.kind;
+  if(k==='all'){pick.cat=pick.grade=null;}else{pick[k]=pick[k]===b.dataset.val?null:b.dataset.val;}show();}));
 
 document.getElementById('save').addEventListener('click',()=>{
   const items=[...document.querySelectorAll('fieldset.review')].map(fs=>({feedback_id:fs.dataset.id,

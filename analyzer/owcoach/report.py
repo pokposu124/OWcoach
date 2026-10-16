@@ -110,9 +110,13 @@ document.querySelectorAll('[data-seek]').forEach(el=>el.addEventListener('click'
 v.addEventListener('timeupdate',()=>{const t=v.currentTime;
   cards.forEach(c=>c.classList.toggle('active',t>=parseFloat(c.dataset.start)-0.5&&t<=parseFloat(c.dataset.end)+0.5));});
 const filters=[...document.querySelectorAll('.filter')];
-function only(cat){filters.forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.cat===cat)));
-  cards.forEach(c=>{c.hidden=cat!=='all'&&c.dataset.cat!==cat;});}
-filters.forEach(b=>b.addEventListener('click',()=>only(b.getAttribute('aria-pressed')==='true'&&b.dataset.cat!=='all'?'all':b.dataset.cat)));
+const pick={cat:null,grade:null};   // null = every value; category and grade combine (both must match)
+function show(){
+  filters.forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.kind==='all'?!pick.cat&&!pick.grade:pick[b.dataset.kind]===b.dataset.val)));
+  cards.forEach(c=>{c.hidden=(pick.cat&&c.dataset.cat!==pick.cat)||(pick.grade&&c.dataset.grade!==pick.grade);});
+  const none=document.getElementById('nomatch');if(none)none.hidden=!cards.length||cards.some(c=>!c.hidden);}
+filters.forEach(b=>b.addEventListener('click',()=>{const k=b.dataset.kind;
+  if(k==='all'){pick.cat=pick.grade=null;}else{pick[k]=pick[k]===b.dataset.val?null:b.dataset.val;}show();}));
 """
 
 SAVE_SCRIPT = """
@@ -202,7 +206,7 @@ def _card(n: int, f, me: str = "") -> str:
     reasons = f'<p class=reasons>{_e(" · ".join(f.display_reasons))}</p>' if f.display_reasons else ""
     grade_opts = "".join(f"<option value={k}>{v}</option>" for k, v in GRADE_KO.items())
     return f"""
-<article class=card id="fb-{n}" data-cat="{f.category}" data-start="{f.start_time_seconds}" data-end="{f.end_time_seconds}">
+<article class=card id="fb-{n}" data-cat="{f.category}" data-grade="{f.grade}" data-start="{f.start_time_seconds}" data-end="{f.end_time_seconds}">
   <header><button class=num type=button data-seek="{f.start_time_seconds}" aria-label="{n}번 피드백 {_t(f.start_time_seconds)}로 이동">{n}</button>
     <span class=time>{_t(f.start_time_seconds)} ~ {_t(f.end_time_seconds)}</span>
     <span class="chip cat">{_e(CATEGORY_KO[f.category])}</span>
@@ -231,11 +235,14 @@ def build_report_html(result: AnalysisResult, video_src: str, fragment: bool = F
     cards = "".join(_card(i, f, me) for i, f in enumerate(feedback, 1)) or "<p class=muted>근거가 충분한 피드백이 없습니다.</p>"
     counts = {k: sum(f.category == k for f in feedback) for k in CATEGORY_KO}
     grades = {k: sum(f.grade == k for f in feedback) for k in GRADE_KO}
-    # category counts are toggle buttons: one shows only that category's cards, again (or 전체) shows all
-    summary = (f'<button class=filter type=button data-cat=all aria-pressed=true>전체 <b>{len(feedback)}</b></button>'
-               + "".join(f'<button class=filter type=button data-cat={k} aria-pressed=false{" disabled" if not counts[k] else ""}>'
-                         f'{v} <b>{counts[k]}</b></button>' for k, v in CATEGORY_KO.items())
-               + "".join(f"<span>{v} <b>{grades[k]}</b></span>" for k, v in GRADE_KO.items() if grades[k])
+    # category and grade counts are toggle buttons: one shows only matching cards (a category and a grade
+    # combine), pressing it again or 전체 clears it
+    def btn(kind, k, label, n):
+        return (f'<button class=filter type=button data-kind={kind} data-val={k} aria-pressed=false{" disabled" if not n else ""}>'
+                f'{label} <b>{n}</b></button>')
+    summary = (f'<button class=filter type=button data-kind=all aria-pressed=true>전체 <b>{len(feedback)}</b></button>'
+               + "".join(btn("cat", k, v, counts[k]) for k, v in CATEGORY_KO.items())
+               + "".join(btn("grade", k, v, grades[k]) for k, v in GRADE_KO.items() if grades[k])
                + f"<span>사망 <b>{len(result.player_deaths)}</b></span>")
     num_of = {f.id: i for i, f in enumerate(feedback, 1)}
     actions = "".join(
@@ -277,6 +284,7 @@ def build_report_html(result: AnalysisResult, video_src: str, fragment: bool = F
 </section>
 <section class=feed aria-label="피드백">
   <p class=summary>{summary}</p>
+  <p class=muted id=nomatch hidden>고른 분류·등급에 맞는 피드백이 없습니다.</p>
   {cards}
   <details><summary>다음 경기 과제</summary><ul>{actions}</ul></details>
   <details class=meta><summary>검수 · 기록</summary>
