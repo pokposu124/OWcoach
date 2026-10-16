@@ -521,8 +521,11 @@ class Pipeline:
             w, med, n = float(away[i:j + 1].max()), int(np.median(en)), max(en)
             out.append({"start_seconds": s, "end_seconds": e, "turned_widths": round(w, 1),
                         "median_enemies": med, "max_enemies": n,
+                        "facing_enemies": med >= tcfg["facing_enemies_min"],
                         "note": f"{fmt_range(s, e)} 본대(아군 {team_n}명 이상)가 보이던 방향에서 시선이 화면 약 {w:.1f}폭 돌아가 "
-                                f"본대가 화면 밖, 화면 속 적 대개 {med}명(최대 {n}명) (코드 측정: 화면 이동량·윤곽선)"})
+                                f"본대가 화면 밖, 화면 속 적 대개 {med}명(최대 {n}명) → "
+                                + ("본대 없이 적을 마주함" if med >= tcfg["facing_enemies_min"] else "본대를 등짐")
+                                + " (코드 측정: 화면 이동량·윤곽선)"})
         return out
 
     def _game_facts(self) -> str:

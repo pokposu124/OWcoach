@@ -1245,6 +1245,7 @@ def test_turned_away_spans_from_where_the_team_was(monkeypatch, cfg):
     spans = pipe._turned_away_spans(Path("x.mp4"), turned, 0.0, 10.0)
     assert [(s["start_seconds"], s["end_seconds"], s["turned_widths"]) for s in spans] == [(3.5, 7.0, 1.3)]
     assert "본대(아군 2명 이상)" in spans[0]["note"] and "1.3폭" in spans[0]["note"]
+    assert spans[0]["note"].endswith("본대를 등짐 (코드 측정: 화면 이동량·윤곽선)")     # 1 enemy on screen
 
     monkeypatch.setattr(pl, "camera_turn", lambda *a: (np.arange(0, 10, 1 / 30), np.zeros(300)))
     assert pipe._turned_away_spans(Path("x.mp4"), turned, 0.0, 10.0) == []
