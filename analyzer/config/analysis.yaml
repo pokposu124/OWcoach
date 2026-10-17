@@ -7,6 +7,12 @@ input:
   max_duration_seconds: 300        # 초기 범위: 최대 5분
   min_width: 1280                  # HUD 판독을 위한 최소 해상도
   min_height: 720
+  # 최대 1920x1080. 판독 좌표는 1280x720 기준이고 판독마다 그 크기로 줄여 읽으므로 16:9면 해상도와 무관하게 같은 위치다.
+  # 16:10·울트라와이드는 HUD 배치가 달라 받지 않는다. (1080p 확인: 두 영상을 1920x1080으로 키워 코드 판독이 720p와 같은지 대조)
+  max_width: 1920
+  max_height: 1080
+  aspect_ratio: [16, 9]
+  aspect_tolerance: 0.01
   max_file_size_mb: 2000
   allowed_extensions: [".mp4", ".mov", ".mkv", ".webm"]
 

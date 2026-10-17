@@ -1,0 +1,8 @@
+analyzer/runs
+service/data
+**/__pycache__
+**/.pytest_cache
+.git
+*.mp4
+!docs/demo/media/*.mp4
+!docs/demo2/media/*.mp4

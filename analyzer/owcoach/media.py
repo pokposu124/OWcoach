@@ -105,6 +105,12 @@ def validate_input(path: Path, info: ProbeInfo, rules: dict) -> list[str]:
         reasons.append(
             f"해상도 {info.width}x{info.height}가 최소 {rules['min_width']}x{rules['min_height']}보다 낮아 HUD 판독이 어렵습니다."
         )
+    if "max_width" in rules and (long_edge > rules["max_width"] or short_edge > rules["max_height"]):
+        reasons.append(f"해상도 {info.width}x{info.height}가 최대 {rules['max_width']}x{rules['max_height']}를 넘습니다.")
+    if "aspect_ratio" in rules and short_edge:
+        aw, ah = rules["aspect_ratio"]
+        if abs(long_edge / short_edge - aw / ah) > rules["aspect_tolerance"] * aw / ah:
+            reasons.append(f"화면 비율 {info.width}:{info.height}는 지원하지 않습니다. {aw}:{ah} 영상만 HUD 위치를 읽을 수 있습니다.")
     if info.size_bytes > rules["max_file_size_mb"] * 1024 * 1024:
         reasons.append(f"파일 크기가 {rules['max_file_size_mb']}MB를 넘습니다.")
     return reasons

@@ -1,0 +1,10 @@
+# OWcoach 지인 베타 서비스 설정 (사용자 결정 2026-10-17: 지인 베타·무료·디스코드 로그인, 최대 3명, 1인 주 2회, 월 $50 상한)
+# 비밀 값(디스코드 앱 비밀, 세션 키, Gemini 키)은 여기 두지 않고 환경 변수로 받는다(service/README.md).
+max_users: 3                       # OWCOACH_ALLOWED_DISCORD_IDS 에 이보다 많은 ID가 있으면 서버가 시작하지 않음
+weekly_limit: 2                    # 1인당 최근 7일 분석 요청 수 (입력 조건 불충족·실패는 세지 않음)
+monthly_budget_usd: 50.0           # 이번 달(한국 시간) Gemini 비용 합계 상한. 넘을 것 같으면 새 요청을 받지 않음
+job_reserve_usd: 1.5               # 대기·진행 중인 분석 1건을 미리 잡아 두는 금액 (실측 처음부터 분석 $1.15~1.40)
+timezone: Asia/Seoul
+provider: gemini                   # gemini | mock (mock = 실제 AI 분석 아님, 시험용)
+analyze_args: ["--hero", "ana", "--max-scenes", "40", "--max-feedback", "100"]
+web_video: {height: 480, kbps: 360}  # 결과 화면용 축소 영상 (owcoach export)

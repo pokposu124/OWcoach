@@ -20,3 +20,6 @@ review/
 
 # ffmpeg 2-pass logs written during owcoach export
 docs/*/media/pass-*.log*
+
+# 베타 서비스 데이터 (DB, 업로드, 분석 캐시, 결과)
+service/data/

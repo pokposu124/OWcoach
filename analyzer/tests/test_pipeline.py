@@ -95,6 +95,13 @@ def test_validate_input(video, cfg):
     assert any("최대" in r for r in validate_input(video, info, long_rules))
     hi_rules = {**cfg["input"], "min_width": 1920, "min_height": 1080}
     assert any("해상도" in r for r in validate_input(video, info, hi_rules))
+    # up to 1920x1080, 16:9 only (HUD positions are read in 1280x720 coordinates)
+    from dataclasses import replace
+    rules = cfg["input"]
+    assert validate_input(video, replace(info, width=1920, height=1080), rules) == []
+    assert any("최대 1920x1080" in r for r in validate_input(video, replace(info, width=2560, height=1440), rules))
+    assert any("화면 비율" in r for r in validate_input(video, replace(info, width=1920, height=1200), rules))
+    assert any("화면 비율" in r for r in validate_input(video, replace(info, width=1920, height=822), rules))
 
 
 # ---------------------------------------------------------------- scene planning / time conversion
