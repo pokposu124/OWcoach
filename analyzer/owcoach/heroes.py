@@ -7,7 +7,7 @@ from typing import Any, Literal
 
 from pydantic import BaseModel, Field
 
-from .config import HEROES_DIR, load_yaml
+from .config import ANALYZER_ROOT, HEROES_DIR, load_yaml
 
 Category = Literal["skill_usage", "positioning", "ultimate_usage"]
 ReviewStatus = Literal["draft", "approved", "deprecated"]
@@ -96,6 +96,8 @@ class HeroProfile(BaseModel):
             out.append({
                 "id": c.id,
                 "category": c.category,
+                # draft criteria are offered as references; a grade resting only on them stays tentative
+                "review_status": "approved" if c.status == "approved" else "draft (검수 전 참고)",
                 "title": c.title,
                 "description": c.description.strip(),
                 "good_signs": c.good_signs,
@@ -120,7 +122,27 @@ def load_comp_notes(heroes_dir: Path = HEROES_DIR) -> list[dict]:
     return list(load_yaml(path).get("comp_notes") or []) if path.exists() else []
 
 
-def load_hero(hero_id: str, heroes_dir: Path = HEROES_DIR) -> HeroProfile:
+def knowledge_criteria(hero_id: str, have: set[str], packs: list[dict] | None) -> list[dict]:
+    """Criteria from review packs under analyzer/ (e.g. knowledge/support_positioning): the hero's file and
+    the pack's common file. A pack criterion listed in covered_by is skipped when the profile already has
+    one of the criteria it maps to (the pack's own table: the same mistake is not graded twice)."""
+    out = []
+    for pack in packs or []:
+        if not pack.get("enabled"):
+            continue
+        root = ANALYZER_ROOT / pack["path"]
+        covered = pack.get("covered_by") or {}
+        for rel in (pack["hero_file"].format(hero=hero_id), pack["common_file"]):
+            path = root / rel
+            if not path.exists():
+                continue
+            for c in load_yaml(path).get("criteria") or []:
+                if not set(covered.get(c["id"], [])) & have:
+                    out.append(c)
+    return out
+
+
+def load_hero(hero_id: str, heroes_dir: Path = HEROES_DIR, knowledge_packs: list[dict] | None = None) -> HeroProfile:
     path = heroes_dir / f"{hero_id}.yaml"
     if not path.exists():
         raise ValueError(f"지원하지 않는 영웅: {hero_id!r} (지원: {', '.join(available_heroes(heroes_dir))})")
@@ -133,6 +155,13 @@ def load_hero(hero_id: str, heroes_dir: Path = HEROES_DIR) -> HeroProfile:
         data["criteria"] = [*data.get("criteria", []), *common.get("criteria", [])]
         data["skill_counters"] = [*data.get("skill_counters", []), *common.get("skill_counters", [])]
         data["profile_version"] = f"{data['profile_version']}+common-{common.get('common_version', '?')}"
+    if knowledge_packs:
+        extra = knowledge_criteria(hero_id, {c["id"] for c in data["criteria"]}, knowledge_packs)
+        if extra:
+            data["criteria"] = [*data["criteria"], *extra]
+            data["profile_version"] += "+knowledge-" + "-".join(
+                str(load_yaml(ANALYZER_ROOT / p["path"] / p["common_file"]).get("pack_version", "?"))
+                for p in knowledge_packs if p.get("enabled"))
     profile = HeroProfile.model_validate(data)
     if profile.hero_id != hero_id:
         raise ValueError(f"{path}: hero_id {profile.hero_id!r} does not match file name")

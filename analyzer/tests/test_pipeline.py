@@ -1273,3 +1273,24 @@ def test_turned_away_span_withholds_a_good_positioning_grade(cfg):
     fb, _ = finalize_feedback(CoachingResponse(items=[item], action_items=[]), {"scene-01": rec}, load_hero("ana"), 60.0,
                               cfg["output"], lambda t: f"evidence/{t}.jpg", [])
     assert fb[0].grade == "withheld" and any("본대가 화면 밖" in r for r in fb[0].display_reasons)
+
+
+def test_knowledge_pack_criteria_join_as_draft_references(cfg):
+    """The support positioning pack adds its criteria for the hero as draft references; one the profile
+    already covers (the pack's own overlap table) is left out, and approved Ana criteria are unchanged."""
+    plain = load_hero("ana")
+    merged = load_hero("ana", knowledge_packs=cfg["knowledge_packs"])
+    ids = {c.id for c in merged.criteria}
+    assert {c.id for c in plain.criteria} <= ids
+    assert "ana.skill_usage.scope_awareness" in ids and "support.positioning.p13" in ids
+    covered = cfg["knowledge_packs"][0]["covered_by"]
+    assert not ids & set(covered)                       # care_angle, rotation_window, ... P01/P02/P08/P09
+    assert all(merged.criterion(c.id).status == c.status for c in plain.criteria)
+    added = [c for c in merged.criteria if c.id not in {x.id for x in plain.criteria}]
+    assert added and all(c.status == "draft" for c in added)
+    rows = {r["id"]: r for r in merged.criteria_for_prompt() if "id" in r}
+    assert rows["ana.positioning.follow_tank"]["review_status"] == "approved"
+    assert rows["support.positioning.p13"]["review_status"] == "draft (검수 전 참고)"
+    assert merged.profile_version.endswith("+knowledge-0.1.0")
+    off = [{**cfg["knowledge_packs"][0], "enabled": False}]
+    assert len(load_hero("ana", knowledge_packs=off).criteria) == len(plain.criteria)

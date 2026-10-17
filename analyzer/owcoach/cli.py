@@ -30,7 +30,7 @@ def cmd_analyze(args) -> int:
         cfg["overview"]["max_candidates"] = args.max_scenes
     if args.max_feedback is not None:
         cfg["output"]["max_feedback_items"] = args.max_feedback
-    hero = load_hero(args.hero)
+    hero = load_hero(args.hero, knowledge_packs=cfg.get("knowledge_packs"))
     provider_name = args.provider or cfg["provider"]["name"]
     try:
         provider = create_provider(provider_name, cfg["provider"])

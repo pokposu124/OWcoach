@@ -103,6 +103,28 @@ moment_check:
   fps: 10.0
   skip_ultimate: true              # 아군 대상 궁극기(나노)는 대상 판별을 코드가 따로 함
 
+# 검수 전 지식베이스 기준도 코칭 프롬프트에 '검수 전 참고'(review_status: draft)로 넣는다 (사용자 결정 2026-10-17).
+# draft 기준만 근거로 한 피드백은 output.require_approved_criteria_for_assertive 에 따라 참고·보류로만 표시된다.
+# covered_by: 이 지식베이스 기준이 다루는 기존 기준. 영웅 프로필에 그중 하나라도 있으면 지식베이스 기준은 넣지 않는다
+# (지식베이스 README의 아나 대응표: 같은 실수를 두 번 감점하지 않음. P01은 cover_access와 같은 내용이라 추가).
+knowledge_packs:
+  - path: knowledge/support_positioning
+    enabled: true
+    hero_file: "criteria/{hero}.yaml"
+    common_file: common_criteria.yaml
+    covered_by:
+      ana.positioning.care_angle: [ana.positioning.backline_angle, ana.positioning.cover_access]
+      ana.positioning.rotation_window: [ana.positioning.follow_tank]
+      ana.positioning.dive_spacing: [ana.positioning.disengage_on_pressure]
+      ana.skill_usage.sleep_priority: [ana.skill.sleep_dart_usage]
+      ana.skill_usage.grenade_pressure: [ana.skill.biotic_grenade_usage]
+      ana.skill_usage.grenade_rescue: [ana.skill.biotic_grenade_usage]
+      ana.ultimate_usage.nano_window: [ana.ultimate.nano_boost_usage]
+      support.positioning.p01: [ana.positioning.cover_access]
+      support.positioning.p02: [ana.positioning.face_team_while_moving]
+      support.positioning.p08: [ana.positioning.face_team_while_moving]
+      support.positioning.p09: [ana.positioning.face_team_while_moving]
+
 # 플레이어 사망 직전 상황은 모델이 후보로 고르지 않아도 반드시 분석한다.
 # 사망 시각 = (좌하단 체력 칸 10개가 min_seconds 이상 모두 비어 있는(체력 0) 구간의 시작) + (overview 타임라인에서
 # model_keywords 가 들어간 사건). 사망 중에도 HUD는 그대로 보이고(사망 위치에서 관전), 체력 칸이 비고
