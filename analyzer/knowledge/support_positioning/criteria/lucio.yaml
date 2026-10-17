@@ -1,0 +1,184 @@
+hero_id: lucio
+display_name_ko: 루시우
+pack_version: 0.1.0
+review_status: draft
+patch_version: null
+profile_type: criterion_fragment_not_HeroProfile
+ability_refs:
+  wall_ride:
+    database_id: lucio:wall-ride
+    name_en: Wall Ride
+    review_required: false
+  crossfade:
+    database_id: lucio:crossfade
+    name_en: Crossfade
+    review_required: false
+  amp_it_up:
+    database_id: lucio:amp-it-up
+    name_en: Amp It Up
+    review_required: false
+  soundwave:
+    database_id: lucio:soundwave
+    name_en: Soundwave
+    review_required: false
+  sonic_amplifier:
+    database_id: lucio:sonic-amplifier
+    name_en: Sonic Amplifier
+    review_required: false
+  sound_barrier:
+    database_id: lucio:sound-barrier
+    name_en: Sound Barrier
+    review_required: false
+criteria:
+- id: lucio.positioning.aura_assignment
+  category: positioning
+  status: draft
+  ability: null
+  title: 오라를 받을 아군과 자신의 역할 결정
+  description: '적용 상황: 팀이 진입·철수·견제 중. 평가: 오라를 받을 아군과 자신의 역할 결정. 예외: 적 저격수 압박·거점 지연·후방 보호가 더 가치 있으면 본대 이탈 가능.
+    필수 근거: 오라 수혜자·팀 이동 의도 근거·이탈 중 기여. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 이동 지원이나 보호가 필요한 아군 근처에서 오라를 연결함
+  bad_signs:
+  - 개인 추격 때문에 이동이 필요한 아군을 반복해서 지원하지 못함
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 오라 수혜자·팀 이동 의도 근거·이탈 중 기여'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.lucio; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/L%C3%BAcio?oldid=401574'
+    patch_version: null
+- id: lucio.positioning.wall_route
+  category: positioning
+  status: draft
+  ability: wall_ride
+  title: 벽타기의 엄폐 연결과 착지
+  description: '적용 상황: 벽을 타며 교전 구역을 이동. 평가: 벽타기의 엄폐 연결과 착지. 예외: 긴급 접촉이나 적 시선 분산으로 실제 이득을 만드는 경우 별도 판단. 필수 근거:
+    이동 경로·피격 방향·도착 위치·목표 기여. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 적 사선을 제한하는 벽 경로로 이동하고 필요한 아군 곁으로 복귀함
+  bad_signs:
+  - 속도만 유지하려고 적 정면을 반복 통과하며 집중 공격받음
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 이동 경로·피격 방향·도착 위치·목표 기여'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.lucio; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/L%C3%BAcio?oldid=401574'
+    patch_version: null
+- id: lucio.positioning.engage_return
+  category: positioning
+  status: draft
+  ability: null
+  title: 후방 압박의 종료와 복귀
+  description: '적용 상황: 적 후방이나 측면을 공격. 평가: 후방 압박의 종료와 복귀. 예외: 아군이 안전하고 적 핵심 역할을 계속 묶는 효과가 있으면 체류 가능. 필수 근거:
+    추격 대상·적 자원 소모·아군 피해·귀환 경로. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 적 자원을 빼거나 공간을 만든 뒤 아군 필요에 맞춰 돌아옴
+  bad_signs:
+  - 마무리하기 어려운 적을 추격해 교전 지원과 복귀 기회를 동시에 잃음
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 추격 대상·적 자원 소모·아군 피해·귀환 경로'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.lucio; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/L%C3%BAcio?oldid=401574'
+    patch_version: null
+- id: lucio.skill_usage.crossfade_need
+  category: skill_usage
+  status: draft
+  ability: crossfade
+  title: 이동과 회복 오라를 상황에 맞게 선택
+  description: '적용 상황: 아군이 이동하거나 피해를 받음. 평가: 이동과 회복 오라를 상황에 맞게 선택. 예외: 이미 싸워야 하는 위치이거나 이동할 수 없는 아군에게는 치유가 더
+    적절할 수 있음. 필수 근거: 오라 상태·아군 이동·엄폐까지 경로·체력 흐름. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 사선 탈출·접근에는 속도를, 자리 유지와 회복이 필요하면 치유를 검토함
+  bad_signs:
+  - 피해가 계속 들어오는 사선에서 빠져나가야 하는데 회복만 고집함
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 오라 상태·아군 이동·엄폐까지 경로·체력 흐름'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.lucio; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/L%C3%BAcio?oldid=401574'
+    patch_version: null
+- id: lucio.skill_usage.amp_window
+  category: skill_usage
+  status: draft
+  ability: amp_it_up
+  title: 볼륨을 높여라의 수혜와 시점
+  description: '적용 상황: 중요한 이동 또는 회복 구간. 평가: 볼륨을 높여라의 수혜와 시점. 예외: 자기 생존이나 한 명의 핵심 아군 지원만으로도 정당할 수 있음. 필수 근거:
+    강화 시점·오라 종류·수혜자 위치·이동 및 피해. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 필요한 아군이 오라 안에 있는 순간 강화해 진입·철수·생존을 도움
+  bad_signs:
+  - 아군이 아직 도달하지 않은 곳에서 소모해 실제 이동 구간에는 효과가 없음
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 강화 시점·오라 종류·수혜자 위치·이동 및 피해'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.lucio; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/L%C3%BAcio?oldid=401574'
+    patch_version: null
+- id: lucio.skill_usage.boop_direction
+  category: skill_usage
+  status: draft
+  ability: soundwave
+  title: 밀쳐내는 방향의 전술 가치
+  description: '적용 상황: 적이 접근하거나 좁은 공간에서 교전. 평가: 밀쳐내는 방향의 전술 가치. 예외: 자기 생존이 우선인 경우 적을 살려 보내더라도 밀쳐내기가 타당함. 필수
+    근거: 피격 대상·전후 위치·아군 사선·원래 위협. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 적을 취약한 아군에게서 떼거나 아군 사선 안으로 이동시킴
+  bad_signs:
+  - 쓰러뜨릴 수 있던 적을 안전한 엄폐 뒤로 밀어 추격 기회를 잃음
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 피격 대상·전후 위치·아군 사선·원래 위협'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.lucio; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/L%C3%BAcio?oldid=401574'
+    patch_version: null
+- id: lucio.skill_usage.fire_duty
+  category: skill_usage
+  status: draft
+  ability: sonic_amplifier
+  title: 기본 공격 중 지원 역할 유지
+  description: '적용 상황: 오라를 유지하며 적을 공격. 평가: 기본 공격 중 지원 역할 유지. 예외: 측면 압박으로 중요한 공간을 확보했다면 단순 오라 이탈로 감점하지 않음. 필수
+    근거: 공격 대상·본인 이동·오라 수혜·획득한 공간. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 필요한 아군과 연결된 채 접근하는 적을 압박함
+  bad_signs:
+  - 멀리 있는 적을 맞히려다 위치를 과도하게 바꿔 오라 수혜자를 잃음
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 공격 대상·본인 이동·오라 수혜·획득한 공간'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.lucio; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/L%C3%BAcio?oldid=401574'
+    patch_version: null
+- id: lucio.ultimate_usage.barrier_delivery
+  category: ultimate_usage
+  status: draft
+  ability: sound_barrier
+  title: 소리 방벽의 발동과 아군 전달
+  description: '적용 상황: 큰 피해 또는 중요한 진입이 임박. 평가: 소리 방벽의 발동과 아군 전달. 예외: 공격적 진입·거점 유지에도 사용 가능하며 적 궁극기 대응만 정답은 아님.
+    필수 근거: 시작과 완료 시점·지형·아군 수혜 표시·적 피해 시점. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 발동 완료 시점에 필요한 아군이 효과를 받고 행동을 이어갈 수 있음
+  bad_signs:
+  - 높은 곳에서 시작해 발동이 늦거나 수혜자가 단절되어 보호하지 못함
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 시작과 완료 시점·지형·아군 수혜 표시·적 피해 시점'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.lucio; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/L%C3%BAcio?oldid=401574'
+    patch_version: null

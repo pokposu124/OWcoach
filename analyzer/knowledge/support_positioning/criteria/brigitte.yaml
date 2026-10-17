@@ -1,0 +1,184 @@
+hero_id: brigitte
+display_name_ko: 브리기테
+pack_version: 0.1.0
+review_status: draft
+patch_version: null
+profile_type: criterion_fragment_not_HeroProfile
+ability_refs:
+  shield_bash:
+    database_id: brigitte:shield-bash
+    name_en: Shield Bash
+    review_required: false
+  whip_shot:
+    database_id: brigitte:whip-shot
+    name_en: Whip Shot
+    review_required: false
+  repair_pack:
+    database_id: brigitte:repair-pack
+    name_en: Repair Pack
+    review_required: false
+  barrier_shield:
+    database_id: brigitte:barrier-shield
+    name_en: Barrier Shield
+    review_required: false
+  rocket_flail:
+    database_id: brigitte:rocket-flail
+    name_en: Rocket Flail
+    review_required: false
+  rally:
+    database_id: brigitte:rally
+    name_en: Rally
+    review_required: false
+criteria:
+- id: brigitte.positioning.peel_anchor
+  category: positioning
+  status: draft
+  ability: null
+  title: 보호할 아군과 적 진입로 사이 연결
+  description: '적용 상황: 다이브 위협이 있는 교전. 평가: 보호할 아군과 적 진입로 사이 연결. 예외: 아군이 안전하고 측면 딜러와 함께 공간을 확보할 수 있으면 전진 가능.
+    필수 근거: 아군 위치·적 접근로·전진 후 지원 공백. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 취약한 아군을 도울 거리에서 적 진입을 방해하면서 엄폐 사용
+  bad_signs:
+  - 적 탱커를 쫓아가 보호 대상과 단절되고 뒤쪽 다이브를 방치함
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 아군 위치·적 접근로·전진 후 지원 공백'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.brigitte; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Brigitte?oldid=403761'
+    patch_version: null
+- id: brigitte.positioning.inspire_risk
+  category: positioning
+  status: draft
+  ability: null
+  title: 격려를 위해 감수한 노출 평가
+  description: '적용 상황: 격려 발동을 위해 적을 공격할 기회. 평가: 격려를 위해 감수한 노출 평가. 예외: 전투가 유리하거나 랠리로 진입을 받아칠 수 있으면 근접 압박 가능.
+    필수 근거: 적 수·엄폐·실제 피격·탈출 경로·격려 발동 근거. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 안전한 거리의 도리깨 투척이나 제한된 근접 교전으로 발동
+  bad_signs:
+  - 격려 유지 자체를 목표로 적 여러 명 사이에 들어가 생존 수단 소진
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 적 수·엄폐·실제 피격·탈출 경로·격려 발동 근거'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.brigitte; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Brigitte?oldid=403761'
+    patch_version: null
+- id: brigitte.positioning.exit_budget
+  category: positioning
+  status: draft
+  ability: shield_bash
+  title: 방패 밀쳐내기의 도착 위치
+  description: '적용 상황: 밀쳐내기로 진입하거나 이탈. 평가: 방패 밀쳐내기의 도착 위치. 예외: 확실한 마무리나 위험 대상 차단의 이득이 있으면 공격적으로 사용 가능. 필수 근거:
+    출발·도착 위치·방패 상태·적 접근·후속 지원. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 도착 지점이 엄폐 또는 도움 가능한 아군과 연결됨
+  bad_signs:
+  - 진입에 사용한 뒤 방패도 잃고 적 근접 사거리 안에 남음
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 출발·도착 위치·방패 상태·적 접근·후속 지원'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.brigitte; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Brigitte?oldid=403761'
+    patch_version: null
+- id: brigitte.skill_usage.whip_intercept
+  category: skill_usage
+  status: draft
+  ability: whip_shot
+  title: 진입을 끊는 도리깨 투척
+  description: '적용 상황: 적이 아군 쪽으로 접근하거나 유리한 근접 거리를 얻으려 함. 평가: 진입을 끊는 도리깨 투척. 예외: 격려 발동이나 유효한 처치 확보도 정당한 사용 목적.
+    필수 근거: 적 이동·투척 명중·밀려난 방향·아군 위치. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 적의 접근을 밀어내고 아군이 거리나 엄폐를 확보함
+  bad_signs:
+  - 즉각적인 진입 위협이 있는데 영향 없는 먼 대상에게 소모함
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 적 이동·투척 명중·밀려난 방향·아군 위치'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.brigitte; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Brigitte?oldid=403761'
+    patch_version: null
+- id: brigitte.skill_usage.pack_priority
+  category: skill_usage
+  status: draft
+  ability: repair_pack
+  title: 수리 팩을 위험도에 맞춰 배분
+  description: '적용 상황: 서로 다른 아군이 치료를 요청하는 교전. 평가: 수리 팩을 위험도에 맞춰 배분. 예외: 탱커가 가장 위급하면 탱커에게 집중하는 것이 타당함. 필수 근거:
+    팩 잔량·아군별 체력·피해원·다른 치료 흐름. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 자가 회복이 어렵고 피해를 받는 아군에게 먼저 연결함
+  bad_signs:
+  - 안전하고 다른 치료를 받는 대상에게 몰아 써 실제 위험 대상에게 남지 않음
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 팩 잔량·아군별 체력·피해원·다른 치료 흐름'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.brigitte; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Brigitte?oldid=403761'
+    patch_version: null
+- id: brigitte.skill_usage.shield_crossing
+  category: skill_usage
+  status: draft
+  ability: barrier_shield
+  title: 방패를 통과와 위협 대응에 사용
+  description: '적용 상황: 사선을 건너거나 위험 공격을 기다림. 평가: 방패를 통과와 위협 대응에 사용. 예외: 아군이나 거점을 지키기 위해 방패를 소모해야 하는 상황은 허용.
+    필수 근거: 방패 체력·막은 공격 방향·엄폐·이후 이동. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 필요한 방향의 피해를 막으며 엄폐로 이동하고 방패 사용 여지를 남김
+  bad_signs:
+  - 엄폐 가능한 곳에서 불필요한 피해를 받아 방패를 잃고 이동 선택지가 줄어듦
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 방패 체력·막은 공격 방향·엄폐·이후 이동'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.brigitte; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Brigitte?oldid=403761'
+    patch_version: null
+- id: brigitte.skill_usage.melee_commit
+  category: skill_usage
+  status: draft
+  ability: rocket_flail
+  title: 근접 교전의 종료 시점
+  description: '적용 상황: 적과 근접 거리를 유지하는 중. 평가: 근접 교전의 종료 시점. 예외: 혼자 남은 적 정리나 거점 접촉이 필요한 상황은 구분. 필수 근거: 추격 경로·적
+    증원·아군 위치·거점 상태. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 지원 가능한 아군과 함께 싸우며 적 증원이 오면 거리 조절
+  bad_signs:
+  - 도주하는 적을 계속 따라가 자신과 보호 대상 모두 위험해짐
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 추격 경로·적 증원·아군 위치·거점 상태'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.brigitte; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Brigitte?oldid=403761'
+    patch_version: null
+- id: brigitte.ultimate_usage.rally_response
+  category: ultimate_usage
+  status: draft
+  ability: rally
+  title: 집결의 시작 시점과 보호 대상
+  description: '적용 상황: 적이 진입하거나 아군이 공간을 확보하려는 순간. 평가: 집결의 시작 시점과 보호 대상. 예외: 자기 생존·거점 유지·적의 핵심 행동 차단도 유효함. 필수
+    근거: 궁 사용 시점·아군 접근·적 진입·실제 보호 및 방해 효과. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 교전이 본격화되기 전에 필요한 보호를 제공하고 아군과 함께 전진
+  bad_signs:
+  - 아군과 떨어져 사용하거나 전투 종료 후 무의미하게 소모함
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 궁 사용 시점·아군 접근·적 진입·실제 보호 및 방해 효과'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.brigitte; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Brigitte?oldid=403761'
+    patch_version: null

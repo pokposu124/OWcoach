@@ -1,0 +1,176 @@
+hero_id: ana
+display_name_ko: 아나
+pack_version: 0.1.0
+review_status: draft
+patch_version: null
+profile_type: criterion_fragment_not_HeroProfile
+ability_refs:
+  biotic_rifle:
+    database_id: ana:biotic-rifle
+    name_en: Biotic Rifle
+    review_required: false
+  sleep_dart:
+    database_id: ana:sleep-dart
+    name_en: Sleep Dart
+    review_required: false
+  biotic_grenade:
+    database_id: ana:biotic-grenade
+    name_en: Biotic Grenade
+    review_required: false
+  nano_boost:
+    database_id: ana:nano-boost
+    name_en: Nano Boost
+    review_required: false
+criteria:
+- id: ana.positioning.care_angle
+  category: positioning
+  status: draft
+  ability: null
+  title: 치료 시야와 엄폐를 함께 유지
+  description: '적용 상황: 아군이 적과 교전하며 치료가 필요한 상황. 평가: 치료 시야와 엄폐를 함께 유지. 예외: 거점 접촉이나 즉각적인 구조를 위한 짧은 노출은 필요할 수 있음.
+    필수 근거: 아군 위치·치료 시야·적 사선·대체 엄폐. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 엄폐 가장자리에서 필요한 아군에게 사격할 수 있고 적 측면 사선은 제한됨
+  bad_signs:
+  - 더 안전한 치료 각도가 보이는데 중앙으로 나와 여러 적에게 노출됨
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 아군 위치·치료 시야·적 사선·대체 엄폐'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.ana; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Ana?oldid=403928'
+    patch_version: null
+- id: ana.positioning.rotation_window
+  category: positioning
+  status: draft
+  ability: null
+  title: 탱커 전진에 맞춘 단계적 이동
+  description: '적용 상황: 탱커가 모서리를 돌아 기존 위치에서 지원이 끊기려는 상황. 평가: 탱커 전진에 맞춘 단계적 이동. 예외: 탱커의 단독 무리한 진입이나 이동 경로의 적
+    사선이 확인되면 따라가지 않는 것이 타당함. 필수 근거: 전진 전후 탱커 위치·경로 위협·본인 이동 가능성. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 다음 엄폐로 이동하여 치료 시야를 다시 확보함
+  bad_signs:
+  - 안전하게 이동할 경로가 있는데 이전 자리에 남아 치료가 필요한 탱커와 단절됨
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 전진 전후 탱커 위치·경로 위협·본인 이동 가능성'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.ana; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Ana?oldid=403928'
+    patch_version: null
+- id: ana.positioning.dive_spacing
+  category: positioning
+  status: draft
+  ability: null
+  title: 다이브 접근로와 도움받을 경로 확보
+  description: '적용 상황: 적 다이버가 접근할 수 있는 위치에서 교전 중. 평가: 다이브 접근로와 도움받을 경로 확보. 예외: 적을 끌어들이는 합의된 유인이나 최후 거점 수비는
+    별도 평가. 필수 근거: 적 진입 전후·아군 지원 가능 위치·탈출 경로. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 진입 방향을 확인하고 엄폐 또는 도움 가능한 아군 쪽으로 거리 조절
+  bad_signs:
+  - 적 접근을 확인하고도 막다른 길로 들어가며 지원 경로를 잃음
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 적 진입 전후·아군 지원 가능 위치·탈출 경로'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.ana; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Ana?oldid=403928'
+    patch_version: null
+- id: ana.skill_usage.scope_awareness
+  category: skill_usage
+  status: draft
+  ability: biotic_rifle
+  title: 치료 중 주변 상황을 다시 확인
+  description: '적용 상황: 조준경 사용 중 측면 위협이나 아군 이동이 발생. 평가: 치료 중 주변 상황을 다시 확인. 예외: 지속 조준 자체는 실수가 아니며 원거리 긴급 치료 중에는
+    유지 가능. 필수 근거: 화면 방향 변화·실제 위협 신호·당시 치료 대상. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 필요할 때 시야를 넓혀 위협을 확인하고 다음 치료 대상을 찾음
+  bad_signs:
+  - 관측된 측면 위협을 계속 놓쳐 같은 각도에서 공격받음
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 화면 방향 변화·실제 위협 신호·당시 치료 대상'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.ana; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Ana?oldid=403928'
+    patch_version: null
+- id: ana.skill_usage.sleep_priority
+  category: skill_usage
+  status: draft
+  ability: sleep_dart
+  title: 수면총의 위협 대응과 공격 기회 비교
+  description: '적용 상황: 가까운 위협 또는 중단 가능한 적 행동이 확인됨. 평가: 수면총의 위협 대응과 공격 기회 비교. 예외: 선제 수면으로 확실한 이득을 만들 수 있으면 보유만
+    하는 것이 정답은 아님. 필수 근거: 사용 HUD·적 행동·명중 표시·근처 위협·아군 후속 가능성. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 임박한 위협을 저지하거나 아군이 활용할 수 있는 대상을 재움
+  bad_signs:
+  - 위협이 곧 도착하는데 낮은 가치의 사격에 소모해 대응 수단을 잃음
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 사용 HUD·적 행동·명중 표시·근처 위협·아군 후속 가능성'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.ana; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Ana?oldid=403928'
+    patch_version: null
+- id: ana.skill_usage.grenade_pressure
+  category: skill_usage
+  status: draft
+  ability: biotic_grenade
+  title: 치유 차단을 후속 압박에 연결
+  description: '적용 상황: 적이 교전 중이며 아군이 해당 대상을 압박 가능. 평가: 치유 차단을 후속 압박에 연결. 예외: 적을 물러나게 하거나 거점 시간을 버는 용도도 유효함.
+    필수 근거: 사용·피격 효과·적 엄폐·아군 사선·자신과 아군 체력. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 적의 퇴로가 제한된 순간 수류탄을 맞히고 아군 압박이 이어짐
+  bad_signs:
+  - 적이 쉽게 숨고 아군도 공격할 수 없는데 유일한 긴급 수단을 소모함
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 사용·피격 효과·적 엄폐·아군 사선·자신과 아군 체력'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.ana; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Ana?oldid=403928'
+    patch_version: null
+- id: ana.skill_usage.grenade_rescue
+  category: skill_usage
+  status: draft
+  ability: biotic_grenade
+  title: 자기 생존과 아군 구조의 비용 비교
+  description: '적용 상황: 본인 또는 아군이 즉각적인 피해를 받고 있음. 평가: 자기 생존과 아군 구조의 비용 비교. 예외: 스스로 살아야 치료가 유지되는 상황에서는 자신에게 쓰는
+    것이 정당함. 필수 근거: 피해 흐름·체력 변화·대체 치료·뒤이은 위협. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 실제 위험을 끊고 다음 치료를 이어갈 수 있도록 사용함
+  bad_signs:
+  - 피해 원인이 끝났고 다른 치료가 가능한데 자동으로 소모해 이어지는 위협에 대응 불가
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 피해 흐름·체력 변화·대체 치료·뒤이은 위협'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.ana; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Ana?oldid=403928'
+    patch_version: null
+- id: ana.ultimate_usage.nano_window
+  category: ultimate_usage
+  status: draft
+  ability: nano_boost
+  title: 나노 대상의 행동 가능성과 전투 시점
+  description: '적용 상황: 궁극기 사용 여부를 결정하는 교전. 평가: 나노 대상의 행동 가능성과 전투 시점. 예외: 구조용·거점 유지용 나노도 유효하며 처치가 없다는 이유로 감점하지
+    않음. 필수 근거: 실제 대상 표시·대상 행동·적 위치·전투 상태·생존 변화. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 대상이 살아 있고 적에게 영향력을 행사하거나 즉시 생존할 수 있는 순간 사용
+  bad_signs:
+  - 대상이 공격할 수 없거나 이미 전투가 끝난 뒤 목적 없이 사용함
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 실제 대상 표시·대상 행동·적 위치·전투 상태·생존 변화'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.ana; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Ana?oldid=403928'
+    patch_version: null

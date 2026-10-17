@@ -1,0 +1,180 @@
+hero_id: illari
+display_name_ko: 일리아리
+pack_version: 0.1.0
+review_status: draft
+patch_version: null
+profile_type: criterion_fragment_not_HeroProfile
+ability_refs:
+  outburst:
+    database_id: illari:outburst
+    name_en: Outburst
+    review_required: false
+  healing_pylon:
+    database_id: illari:healing-pylon
+    name_en: Healing Pylon
+    review_required: false
+  secondary_fire:
+    database_id: illari:secondary-fire
+    name_en: Secondary Fire
+    review_required: false
+  solar_rifle:
+    database_id: illari:solar-rifle
+    name_en: Solar Rifle
+    review_required: false
+  captive_sun:
+    database_id: illari:captive-sun
+    name_en: Captive Sun
+    review_required: false
+criteria:
+- id: illari.positioning.pylon_triangle
+  category: positioning
+  status: draft
+  ability: null
+  title: 본인·아군·태양석의 지원 연결
+  description: '적용 상황: 태양석을 중심으로 교전. 평가: 본인·아군·태양석의 지원 연결. 예외: 다른 지원가가 치료를 맡거나 짧은 마무리 각도를 여는 경우 별도 판단. 필수 근거:
+    본인·태양석·아군 위치·치료 효과·다른 지원. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 본인은 적을 압박할 각도를 가지면서 필요한 아군은 태양석 치료를 받을 수 있음
+  bad_signs:
+  - 본인만 안전한 측면을 잡고 태양석도 아군에게 닿지 않아 치료 공백 발생
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 본인·태양석·아군 위치·치료 효과·다른 지원'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.illari; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Illari?oldid=401817'
+    patch_version: null
+- id: illari.positioning.beam_access
+  category: positioning
+  status: draft
+  ability: null
+  title: 치료 광선이 필요한 순간의 거리
+  description: '적용 상황: 아군이 태양석만으로 버티기 어려운 피해를 받음. 평가: 치료 광선이 필요한 순간의 거리. 예외: 접근이 적 집중 공격을 유발하면 원거리 유지가 합리적일
+    수 있음. 필수 근거: 아군 피해·광선 연결 가능성·접근 경로 위협. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 엄폐를 따라 접근하여 필요한 대상에게 광선을 연결함
+  bad_signs:
+  - 즉시 접근할 안전 경로가 있는데 먼 사격 위치에 남아 치료하지 못함
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 아군 피해·광선 연결 가능성·접근 경로 위협'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.illari; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Illari?oldid=401817'
+    patch_version: null
+- id: illari.positioning.angle_exit
+  category: positioning
+  status: draft
+  ability: outburst
+  title: 측면 압박 후 분출의 도착점
+  description: '적용 상황: 측면에서 공격하거나 적에게 접근당함. 평가: 측면 압박 후 분출의 도착점. 예외: 밀쳐내기로 즉각적 위험을 없애거나 거점을 지키는 목적 허용. 필수 근거:
+    분출 전후 위치·적 사선·밀쳐내기 효과. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 분출로 사선을 끊고 아군 지원권 또는 엄폐로 복귀함
+  bad_signs:
+  - 분출을 쓴 뒤 적의 다른 사선에 떨어져 탈출 수단 없이 남음
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 분출 전후 위치·적 사선·밀쳐내기 효과'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.illari; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Illari?oldid=401817'
+    patch_version: null
+- id: illari.skill_usage.pylon_cover
+  category: skill_usage
+  status: draft
+  ability: healing_pylon
+  title: 태양석의 보호와 치료 시야
+  description: '적용 상황: 태양석 설치 위치 선택. 평가: 태양석의 보호와 치료 시야. 예외: 급박한 구조를 위한 노출 설치는 회복 가치와 생존 시간을 함께 평가. 필수 근거:
+    설치 지점·적 사격 경로·치료 대상·가림. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 적 정면 사격에 쉽게 파괴되지 않으면서 아군 치료가 연결되는 곳에 설치함
+  bad_signs:
+  - 적이 쉽게 쏘는 정면이나 아군 치료가 막힌 위치에 설치함
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 설치 지점·적 사격 경로·치료 대상·가림'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.illari; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Illari?oldid=401817'
+    patch_version: null
+- id: illari.skill_usage.pylon_rotate
+  category: skill_usage
+  status: draft
+  ability: healing_pylon
+  title: 전선 이동에 맞춰 태양석 갱신
+  description: '적용 상황: 아군이 기존 치료 구역을 떠남. 평가: 전선 이동에 맞춰 태양석 갱신. 예외: 재배치가 아직 불가능하거나 기존 위치에 중요한 아군이 남아 있으면 유지
+    가능. 필수 근거: 전선 이동·장치 상태·재설치 가능 여부·남은 수혜자. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 새 교전 위치에서 치료를 제공하도록 재배치를 검토함
+  bad_signs:
+  - 이전 위치에 방치해 교전 중 장기간 치료 기여가 사라짐
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 전선 이동·장치 상태·재설치 가능 여부·남은 수혜자'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.illari; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Illari?oldid=401817'
+    patch_version: null
+- id: illari.skill_usage.beam_budget
+  category: skill_usage
+  status: draft
+  ability: secondary_fire
+  title: 광선 자원과 위급도 관리
+  description: '적용 상황: 지속 치료가 필요한 교전. 평가: 광선 자원과 위급도 관리. 예외: 당장 생존을 위해 전량 소모해야 하는 경우에는 소모 자체로 감점하지 않음. 필수 근거:
+    치료 자원 HUD·대상 체력·태양석 및 다른 치료. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 필요한 피해 구간에 자원을 쓰고 다른 치료가 가능한 동안 회복 여지 확보
+  bad_signs:
+  - 안전한 대상을 계속 치료해 자원이 비어 다음 긴급 피해에 대응 불가
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 치료 자원 HUD·대상 체력·태양석 및 다른 치료'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.illari; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Illari?oldid=401817'
+    patch_version: null
+- id: illari.skill_usage.shot_timing
+  category: skill_usage
+  status: draft
+  ability: solar_rifle
+  title: 충전 사격의 노출 비용
+  description: '적용 상황: 엄폐에서 적을 압박. 평가: 충전 사격의 노출 비용. 예외: 근접 긴급 대응이나 짧은 추가 공격이 필요한 경우 고정 발사 간격을 강요하지 않음. 필수
+    근거: 무기 충전 상태·사격 시점·엄폐·적 사격. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 사격 기회에 맞춰 노출하고 충전 대기에는 다시 엄폐함
+  bad_signs:
+  - 공격 준비 중에도 적 여러 명의 사선에 계속 서 있음
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 무기 충전 상태·사격 시점·엄폐·적 사격'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.illari; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Illari?oldid=401817'
+    patch_version: null
+- id: illari.ultimate_usage.sun_followup
+  category: ultimate_usage
+  status: draft
+  ability: captive_sun
+  title: 태양 작렬의 후속 피해와 비행 위험
+  description: '적용 상황: 궁극기로 적을 묶거나 전진을 막을 기회. 평가: 태양 작렬의 후속 피해와 비행 위험. 예외: 처치 없이 적을 엄폐로 밀어내도 거점이나 이동 이득이 있으면
+    유효함. 필수 근거: 발사·명중·후속 피해·적 방어 효과·비행 경로. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 맞힌 적에게 후속 피해가 가능한 시점에 사용하고 비행 중 사선도 관리함
+  bad_signs:
+  - 후속 공격이 막힌 적에게 사용한 뒤 공개된 공중에 남아 집중 공격받음
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 발사·명중·후속 피해·적 방어 효과·비행 경로'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.illari; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Illari?oldid=401817'
+    patch_version: null

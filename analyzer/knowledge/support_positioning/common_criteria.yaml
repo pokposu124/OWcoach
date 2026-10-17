@@ -1,0 +1,259 @@
+pack_version: 0.1.0
+review_status: draft
+profile_type: criterion_fragment_not_HeroProfile
+criteria:
+- id: support.positioning.p01
+  category: positioning
+  status: draft
+  ability: null
+  title: 엄폐 접근성을 확보한다
+  description: '적용 상황: 적의 공격을 받을 수 있는 상태에서 지원 또는 공격 중이다. 판단 질문: 현재 위협 방향을 차단하는 엄폐로 신속히 이동할 수 있는가? 예외: 목표물 접촉,
+    결정적 교환, 이동 중의 불가피한 노출. 벽이 화면 가까이 있어도 적의 측면 공격을 막지 못하면 유효 엄폐가 아니다.'
+  good_signs: []
+  bad_signs:
+  - 개방 공간에 오래 남아 있고, 기여를 유지하면서 숨을 수 있는 가까운 대안이 확인된다.
+  cannot_judge_when:
+  - 판단 질문에 필요한 아군·적·지형·자원·목표물 정보가 불명확함
+  - 당시 실행 가능한 대안이나 적용 예외를 확인할 수 없음
+  source:
+    type: community_research_and_editorial_synthesis
+    reference: common_principles.md#P01; S02, S15.
+    patch_version: null
+- id: support.positioning.p02
+  category: positioning
+  status: draft
+  ability: null
+  title: 필요한 아군에게 기여할 연결을 유지한다
+  description: '적용 상황: 지원이 필요한 아군 또는 곧 교전할 아군이 있다. 판단 질문: 회복·보호·강화가 실제로 닿는가? 끊겼다면 복원할 수 있는가? 예외: 치명적 위협 회피,
+    재장전·이동, 구조가 불가능한 아군, 다른 지원가의 충분한 담당, 명확한 공격 기회.'
+  good_signs: []
+  bad_signs:
+  - 낮은 위험의 대안이 있는데도 장시간 기여 불능 위치를 고수한다.
+  cannot_judge_when:
+  - 판단 질문에 필요한 아군·적·지형·자원·목표물 정보가 불명확함
+  - 당시 실행 가능한 대안이나 적용 예외를 확인할 수 없음
+  source:
+    type: community_research_and_editorial_synthesis
+    reference: common_principles.md#P02; S02, S05.
+    patch_version: null
+- id: support.positioning.p03
+  category: positioning
+  status: draft
+  ability: null
+  title: 필요한 것보다 많은 적에게 노출하지 않는다
+  description: '적용 상황: 치유나 공격을 위해 코너 밖으로 몸을 내민다. 판단 질문: 필요한 시야만 열고 있는가, 아니면 정면·측면 사선이 동시에 열렸는가? 예외: 팀과 함께 확보한
+    전선, 긴급한 구조 또는 목표물 압박.'
+  good_signs: []
+  bad_signs:
+  - 동일한 기여를 더 적은 노출로 수행할 수 있는데 넓게 나와 있다.
+  cannot_judge_when:
+  - 판단 질문에 필요한 아군·적·지형·자원·목표물 정보가 불명확함
+  - 당시 실행 가능한 대안이나 적용 예외를 확인할 수 없음
+  source:
+    type: community_research_and_editorial_synthesis
+    reference: common_principles.md#P03; S01, S15.
+    patch_version: null
+- id: support.positioning.p04
+  category: positioning
+  status: draft
+  ability: null
+  title: 고지대를 조건부 우선한다
+  description: '적용 상황: 접근 가능한 고지대가 존재한다. 판단 질문: 지원 시야, 적 접근 비용, 엄폐, 내려올 위치, 도착까지 잃는 기여를 비교한다. 예외: 적이 같은 높이에서
+    위협, 즉시 다이브 가능, 이동 경로 위험, 목표물 접촉 필요.'
+  good_signs: []
+  bad_signs:
+  - 유리한 고지대를 이유 없이 버림 / 반대로 시야가 끊기거나 고립된 고지대를 고집함.
+  cannot_judge_when:
+  - 판단 질문에 필요한 아군·적·지형·자원·목표물 정보가 불명확함
+  - 당시 실행 가능한 대안이나 적용 예외를 확인할 수 없음
+  source:
+    type: community_research_and_editorial_synthesis
+    reference: common_principles.md#P04; S02, S03.
+    patch_version: null
+- id: support.positioning.p05
+  category: positioning
+  status: draft
+  ability: null
+  title: 거리보다 위협 도달 시간을 본다
+  description: '적용 상황: 장거리 위치와 아군 근처 위치 사이에서 선택한다. 판단 질문: 적이 나에게 닿기까지 필요한 이동·스킬과 아군이 도울 수 있는 시간을 비교한다. 예외:
+    원거리 화력이 더 위험하고 다이브 접근은 제한되는 상황에서는 거리를 유지할 가치가 있다.'
+  good_signs: []
+  bad_signs:
+  - 멀리 있다는 이유만으로 안전하다고 보고 측면에 고립됨.
+  cannot_judge_when:
+  - 판단 질문에 필요한 아군·적·지형·자원·목표물 정보가 불명확함
+  - 당시 실행 가능한 대안이나 적용 예외를 확인할 수 없음
+  source:
+    type: community_research_and_editorial_synthesis
+    reference: common_principles.md#P05; S03, S04.
+    patch_version: null
+- id: support.positioning.p06
+  category: positioning
+  status: draft
+  ability: null
+  title: 공격하기 전에 복귀 경로를 확보한다
+  description: '적용 상황: 측면으로 나가거나 전진한다. 판단 질문: 지상 후퇴, 고지대 낙하, 이동기, 안전한 아군 중 적어도 실행 가능한 복귀 수단이 있는가? 예외: 교환 가치가
+    명확한 마무리, 종료 직전의 목표물 행동.'
+  good_signs: []
+  bad_signs:
+  - 들어갈 수는 있지만 돌아올 수 없거나, 복귀 대상도 적에게 둘러싸여 있다.
+  cannot_judge_when:
+  - 판단 질문에 필요한 아군·적·지형·자원·목표물 정보가 불명확함
+  - 당시 실행 가능한 대안이나 적용 예외를 확인할 수 없음
+  source:
+    type: community_research_and_editorial_synthesis
+    reference: common_principles.md#P06; S01, S07.
+    patch_version: null
+- id: support.positioning.p07
+  category: positioning
+  status: draft
+  ability: null
+  title: 생존기 사용 후 위치를 다시 평가한다
+  description: '적용 상황: 순간이동·소멸·방패 밀쳐내기 등 탈출에 기여하던 자원을 사용했다. 판단 질문: 같은 위치의 위험도가 증가했는가? 도착지는 실제로 안전한가? 예외: 적
+    위협이 제거되었거나 아군 보호·지형으로 생존 수단을 대체한 경우.'
+  good_signs: []
+  bad_signs:
+  - 탈출 자원이 사라졌는데 동일한 깊이에서 노출을 이어간다.
+  cannot_judge_when:
+  - 판단 질문에 필요한 아군·적·지형·자원·목표물 정보가 불명확함
+  - 당시 실행 가능한 대안이나 적용 예외를 확인할 수 없음
+  source:
+    type: community_research_and_editorial_synthesis
+    reference: common_principles.md#P07; S07, S13, S14.
+    patch_version: null
+- id: support.positioning.p08
+  category: positioning
+  status: draft
+  ability: null
+  title: 팀 이동을 보고 미리 재배치한다
+  description: '적용 상황: 아군이 코너를 돌거나 적이 현재 위치를 압박하려 한다. 판단 질문: 시야 단절·퇴로 봉쇄 전에 다음 지원 위치로 옮겼는가? 예외: 움직이지 않아도 계속
+    기여 가능하거나 이동 자체가 더 위험한 상황.'
+  good_signs: []
+  bad_signs:
+  - 유효했던 자리에 계속 남아 뒤늦게 개방 구간을 횡단한다.
+  cannot_judge_when:
+  - 판단 질문에 필요한 아군·적·지형·자원·목표물 정보가 불명확함
+  - 당시 실행 가능한 대안이나 적용 예외를 확인할 수 없음
+  source:
+    type: community_research_and_editorial_synthesis
+    reference: common_principles.md#P08; S04, S05.
+    patch_version: null
+- id: support.positioning.p09
+  category: positioning
+  status: draft
+  ability: null
+  title: 도착지뿐 아니라 이동 경로와 타이밍을 평가한다
+  description: '적용 상황: 로테이션 중이다. 판단 질문: 어느 적 사선을 건너며, 아군 교전으로 적의 주의가 분산되는 시점인가? 예외: 지체하면 목표물이 끝나거나 뒤가 차단되는
+    상황.'
+  good_signs: []
+  bad_signs:
+  - 안전한 대체 경로가 있는데 위험한 최단 거리로 이동하거나 팀이 준비되기 전에 혼자 횡단한다.
+  cannot_judge_when:
+  - 판단 질문에 필요한 아군·적·지형·자원·목표물 정보가 불명확함
+  - 당시 실행 가능한 대안이나 적용 예외를 확인할 수 없음
+  source:
+    type: community_research_and_editorial_synthesis
+    reference: common_principles.md#P09; S08; 일반화된 판정 방식은 작성자 제안.
+    patch_version: null
+- id: support.positioning.p10
+  category: positioning
+  status: draft
+  ability: null
+  title: 측면각의 기여와 비용을 함께 평가한다
+  description: '적용 상황: 팀 본대와 떨어진 각을 사용한다. 판단 질문: 유효한 피해·스킬 압박·주의 분산·아군 지원이 발생하는가? 잃는 지원과 위험보다 나은가? 예외: 짧은 사전
+    준비·정찰·퇴로 확보.'
+  good_signs: []
+  bad_signs:
+  - 적에게 영향도 없고 아군 지원도 어려운 고립. 킬을 못 냈다는 이유만으로 실패 판정하지 않는다.
+  cannot_judge_when:
+  - 판단 질문에 필요한 아군·적·지형·자원·목표물 정보가 불명확함
+  - 당시 실행 가능한 대안이나 적용 예외를 확인할 수 없음
+  source:
+    type: community_research_and_editorial_synthesis
+    reference: common_principles.md#P10; S01, S06, S10.
+    patch_version: null
+- id: support.positioning.p11
+  category: positioning
+  status: draft
+  ability: null
+  title: 다른 지원가와 상호 지원할 수 있게 배치한다
+  description: '적용 상황: 적의 후방 진입 위협이 확인되었다. 판단 질문: 서로 위협을 확인하고 도움을 줄 수 있는가? 동시에 같은 공격에 노출되는가? 예외: 서로 자립 가능하고
+    분산 배치의 기여가 높은 경우. 무조건 붙어 있으라는 규칙이 아니다.'
+  good_signs: []
+  bad_signs:
+  - 보호가 필요한 동료를 방치하거나, 둘이 같은 위험에 묶여 함께 무력화된다.
+  cannot_judge_when:
+  - 판단 질문에 필요한 아군·적·지형·자원·목표물 정보가 불명확함
+  - 당시 실행 가능한 대안이나 적용 예외를 확인할 수 없음
+  source:
+    type: community_research_and_editorial_synthesis
+    reference: common_principles.md#P11; S08; 동시 노출 검사는 서비스용 확장 제안.
+    patch_version: null
+- id: support.positioning.p12
+  category: positioning
+  status: draft
+  ability: null
+  title: 안전하게 남아 있어도 기여가 없으면 재평가한다
+  description: '적용 상황: 전투가 진행 중인데 지원·공격·유틸리티 기회가 없는 위치에 머문다. 판단 질문: 허용 가능한 위험으로 기여를 늘리는 대안이 있는가? 예외: 재집결, 궁극기
+    회피, 안전한 대안 부재, 측면 감시처럼 즉시 수치로 보이지 않는 역할.'
+  good_signs: []
+  bad_signs:
+  - 생존만을 이유로 팀의 전진과 교전에 참여하지 않는다.
+  cannot_judge_when:
+  - 판단 질문에 필요한 아군·적·지형·자원·목표물 정보가 불명확함
+  - 당시 실행 가능한 대안이나 적용 예외를 확인할 수 없음
+  source:
+    type: community_research_and_editorial_synthesis
+    reference: common_principles.md#P12; S03, S06, S10.
+    patch_version: null
+- id: support.positioning.p13
+  category: positioning
+  status: draft
+  ability: null
+  title: 구조 가능한 아군과 무리한 추종을 구분한다
+  description: '적용 상황: 아군이 현재 지원 범위를 벗어났다. 판단 질문: 지원 위치로 이동하는 동안의 위험, 구조 성공 가능성, 남은 팀의 지원 손실을 비교한다. 예외: 결정적
+    목표물 싸움, 안전한 이동기·방어 자원이 확인된 구조.'
+  good_signs: []
+  bad_signs:
+  - 살릴 수 있는 아군을 편의상 방치 / 구조 가능성이 낮은 아군을 따라가 추가 사망.
+  cannot_judge_when:
+  - 판단 질문에 필요한 아군·적·지형·자원·목표물 정보가 불명확함
+  - 당시 실행 가능한 대안이나 적용 예외를 확인할 수 없음
+  source:
+    type: community_research_and_editorial_synthesis
+    reference: common_principles.md#P13; S05, S07.
+    patch_version: null
+- id: support.positioning.p14
+  category: positioning
+  status: draft
+  ability: null
+  title: 전투 단계와 목표물에 맞춰 위치를 바꾼다
+  description: '적용 상황: 첫 처치, 다수 사망, 적 후퇴, 목표물 접촉 필요가 발생한다. 판단 질문: 준비·교전·추격·이탈·재집결 중 무엇이 필요한지 재평가한다. 예외: 수적
+    열세만으로 패배 확정 금지. 궁극기, 적 체력, 리스폰, 추가시간으로 역전·지연이 가능하다.'
+  good_signs: []
+  bad_signs:
+  - 이미 끝난 전투에서 늦게 고립되거나, 한타 승리 후 계속 뒤에 남아 다음 위치를 확보하지 못한다.
+  cannot_judge_when:
+  - 판단 질문에 필요한 아군·적·지형·자원·목표물 정보가 불명확함
+  - 당시 실행 가능한 대안이나 적용 예외를 확인할 수 없음
+  source:
+    type: community_research_and_editorial_synthesis
+    reference: common_principles.md#P14; S10의 재집결 문제를 확장한 작성자 설계안. 코치 검증 필요.
+    patch_version: null
+- id: support.positioning.p15
+  category: positioning
+  status: draft
+  ability: null
+  title: 결과와 의사결정의 질을 분리한다
+  description: '적용 상황: 사망 또는 성공 장면을 평가한다. 판단 질문: 결정 당시 알 수 있었던 정보로 위험과 대안을 판단하고, 실제 결과는 따로 기록한다. 예외: 없음. 다만
+    실제 손해는 개선 우선순위 결정에 사용할 수 있다.'
+  good_signs: []
+  bad_signs:
+  - 살아남았으므로 좋은 위치 / 죽었으므로 잘못된 위치라고 자동 판정한다.
+  cannot_judge_when:
+  - 판단 질문에 필요한 아군·적·지형·자원·목표물 정보가 불명확함
+  - 당시 실행 가능한 대안이나 적용 예외를 확인할 수 없음
+  source:
+    type: community_research_and_editorial_synthesis
+    reference: common_principles.md#P15; S14 및 작성자 평가 설계.
+    patch_version: null

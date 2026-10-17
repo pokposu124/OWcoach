@@ -1,0 +1,180 @@
+hero_id: baptiste
+display_name_ko: 바티스트
+pack_version: 0.1.0
+review_status: draft
+patch_version: null
+profile_type: criterion_fragment_not_HeroProfile
+ability_refs:
+  exo_boots:
+    database_id: baptiste:exo-boots
+    name_en: Exo Boots
+    review_required: false
+  secondary_fire:
+    database_id: baptiste:secondary-fire
+    name_en: Secondary Fire
+    review_required: false
+  immortality_field:
+    database_id: baptiste:immortality-field
+    name_en: Immortality Field
+    review_required: false
+  regenerative_burst:
+    database_id: baptiste:regenerative-burst
+    name_en: Regenerative Burst
+    review_required: false
+  amplification_matrix:
+    database_id: baptiste:amplification-matrix
+    name_en: Amplification Matrix
+    review_required: false
+criteria:
+- id: baptiste.positioning.dual_lane
+  category: positioning
+  status: draft
+  ability: null
+  title: 치유 탄착점과 공격 사선을 함께 확보
+  description: '적용 상황: 아군이 지상에서 교전하는 상황. 평가: 치유 탄착점과 공격 사선을 함께 확보. 예외: 다른 지원가가 치료를 담당하고 안전한 공격 기회가 있으면 별도 각도
+    가능. 필수 근거: 치유 투사체 경로·아군 체력·다른 지원·적 사선. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 엄폐에서 아군 주변 지면과 공격할 적을 번갈아 볼 수 있음
+  bad_signs:
+  - 치료 탄 경로가 막힌 측면에 오래 남아 위급한 아군을 지원하지 못함
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 치유 투사체 경로·아군 체력·다른 지원·적 사선'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.baptiste; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Baptiste?oldid=404928'
+    patch_version: null
+- id: baptiste.positioning.height_route
+  category: positioning
+  status: draft
+  ability: exo_boots
+  title: 고지대의 탈출 가치 평가
+  description: '적용 상황: 도약으로 이동 가능한 고지대 주변. 평가: 고지대의 탈출 가치 평가. 예외: 도약이 실제 적 공격을 피하거나 긴급 시야를 여는 경우 허용. 필수 근거:
+    이륙·정점·착지·적 조준 방향·고지대 엄폐. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 고지대 가장자리와 후퇴 경로를 이용해 지원 시야를 확보함
+  bad_signs:
+  - 높이만 얻으려고 공개된 공중에 반복 노출되어 집중 공격받음
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 이륙·정점·착지·적 조준 방향·고지대 엄폐'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.baptiste; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Baptiste?oldid=404928'
+    patch_version: null
+- id: baptiste.positioning.cooldown_angle
+  category: positioning
+  status: draft
+  ability: null
+  title: 방어 수단에 맞춰 측면 체류 조절
+  description: '적용 상황: 불사 장치나 회복 수단 소모 후 측면에서 교전. 평가: 방어 수단에 맞춰 측면 체류 조절. 예외: 즉시 마무리 가능한 적 또는 승리한 전투의 추격은 위험
+    대비 이득 평가. 필수 근거: 방어 스킬 HUD·적 접근·복귀 경로·전투 인원. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 방어 수단이 줄면 가까운 엄폐로 돌아와 아군과 연결함
+  bad_signs:
+  - 방어 수단을 소모한 뒤에도 확인된 다수의 적 사선에 고립됨
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 방어 스킬 HUD·적 접근·복귀 경로·전투 인원'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.baptiste; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Baptiste?oldid=404928'
+    patch_version: null
+- id: baptiste.skill_usage.fire_priority
+  category: skill_usage
+  status: draft
+  ability: secondary_fire
+  title: 피해와 치유의 전환 시점
+  description: '적용 상황: 공격과 치유 모두 가능한 순간. 평가: 피해와 치유의 전환 시점. 예외: 공격으로 당장 피해 원인을 제거할 수 있는 상황은 별도 판단. 필수 근거: 발사
+    종류·아군 체력 변화·적 위협·사선. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 위급한 아군에게 치유를 먼저 연결하고 여유 구간에 공격함
+  bad_signs:
+  - 도움 가능한 아군의 급격한 체력 감소를 보고도 무의미한 공격을 지속함
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 발사 종류·아군 체력 변화·적 위협·사선'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.baptiste; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Baptiste?oldid=404928'
+    patch_version: null
+- id: baptiste.skill_usage.lamp_geometry
+  category: skill_usage
+  status: draft
+  ability: immortality_field
+  title: 불사 장치의 보호 연결과 노출
+  description: '적용 상황: 치명적 피해가 예상되거나 진행 중. 평가: 불사 장치의 보호 연결과 노출. 예외: 즉시 던져야 살릴 수 있으면 최적 설치 위치가 아니어도 타당함. 필수
+    근거: 장치 위치·대상 위치·가림·보호 효과 표시·적 사격. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 장치는 적의 파괴 사선에서 보호하면서 대상과 효과 연결이 유지됨
+  bad_signs:
+  - 장치를 숨겼지만 벽 때문에 대상이 보호받지 못하거나 필요 없이 적 앞에 노출됨
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 장치 위치·대상 위치·가림·보호 효과 표시·적 사격'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.baptiste; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Baptiste?oldid=404928'
+    patch_version: null
+- id: baptiste.skill_usage.lamp_timing
+  category: skill_usage
+  status: draft
+  ability: immortality_field
+  title: 불사 장치가 필요한 순간 판별
+  description: '적용 상황: 아군이 큰 피해를 받거나 위험 기술을 맞는 순간. 평가: 불사 장치가 필요한 순간 판별. 예외: 상대 진입을 억제하는 선제 장치도 가능하며 사망 유무만으로
+    평가하지 않음. 필수 근거: 사용 전후 피해·보호 대상·상대 기술·다른 생존 수단. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 일반 치유만으로 버티기 어려운 위험 구간에 보호를 연결함
+  bad_signs:
+  - 피해가 끝난 뒤 던지거나 보호받을 아군이 없는 곳에 사용함
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 사용 전후 피해·보호 대상·상대 기술·다른 생존 수단'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.baptiste; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Baptiste?oldid=404928'
+    patch_version: null
+- id: baptiste.skill_usage.burst_rescue
+  category: skill_usage
+  status: draft
+  ability: regenerative_burst
+  title: 회복 파동의 도달과 긴급도
+  description: '적용 상황: 본인 또는 인접 아군에게 회복이 필요. 평가: 회복 파동의 도달과 긴급도. 예외: 적 피해가 곧 도달할 것이 보이면 선제 회복 판단도 검토. 필수 근거:
+    사용 HUD·수혜자 위치·체력·예상 피해 근거. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 위험한 체력의 수혜자가 범위 안에 있을 때 사용함
+  bad_signs:
+  - 회복 대상과 떨어져 있고 본인도 안전한데 습관적으로 소모함
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 사용 HUD·수혜자 위치·체력·예상 피해 근거'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.baptiste; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Baptiste?oldid=404928'
+    patch_version: null
+- id: baptiste.ultimate_usage.matrix_lane
+  category: ultimate_usage
+  status: draft
+  ability: amplification_matrix
+  title: 증폭 매트릭스를 실제 사격 경로에 배치
+  description: '적용 상황: 아군 또는 자신이 사격을 지속할 교전. 평가: 증폭 매트릭스를 실제 사격 경로에 배치. 예외: 자기 혼자 활용하는 매트릭스나 적을 밀어내는 용도도 타당함.
+    필수 근거: 매트릭스 방향·사격 경로·사용자 위치·전선 이동. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 적 또는 치료 대상까지 이어지는 사선에 두고 활용 가능한 시간 확보
+  bad_signs:
+  - 벽이나 강제 이동 때문에 쓸 수 없는 곳에 두고 즉시 포기함
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 매트릭스 방향·사격 경로·사용자 위치·전선 이동'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.baptiste; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Baptiste?oldid=404928'
+    patch_version: null

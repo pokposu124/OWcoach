@@ -1,0 +1,180 @@
+hero_id: wuyang
+display_name_ko: 우양
+pack_version: 0.1.0
+review_status: draft
+patch_version: null
+profile_type: criterion_fragment_not_HeroProfile
+ability_refs:
+  rushing_torrent:
+    database_id: wuyang:rushing-torrent
+    name_en: Rushing Torrent
+    review_required: false
+  xuanwu_staff:
+    database_id: wuyang:xuanwu-staff
+    name_en: Xuanwu Staff
+    review_required: false
+  restorative_stream:
+    database_id: wuyang:restorative-stream
+    name_en: Restorative Stream
+    review_required: false
+  guardian_wave:
+    database_id: wuyang:guardian-wave
+    name_en: Guardian Wave
+    review_required: false
+  tidal_blast:
+    database_id: wuyang:tidal-blast
+    name_en: Tidal Blast
+    review_required: false
+criteria:
+- id: wuyang.positioning.wave_alignment
+  category: positioning
+  status: draft
+  ability: null
+  title: 아군 지원과 파도 경로를 열어 두기
+  description: '적용 상황: 아군이 정면 또는 측면에서 교전. 평가: 아군 지원과 파도 경로를 열어 두기. 예외: 아군이 안전하면 짧은 공격 각도로 적을 압박하는 것이 가능함. 필수
+    근거: 아군 위치·파도 경로·적 접근·다른 지원. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 치료 대상과 적 진입을 함께 볼 수 있고 필요한 파도를 보낼 각도 확보
+  bad_signs:
+  - 너무 먼 측면에 남아 아군 구조와 진입 방해 모두 연결되지 않음
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 아군 위치·파도 경로·적 접근·다른 지원'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.wuyang; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Wuyang?oldid=401819'
+    patch_version: null
+- id: wuyang.positioning.torrent_exit
+  category: positioning
+  status: draft
+  ability: rushing_torrent
+  title: 이동·도약 이후의 엄폐와 합류
+  description: '적용 상황: 위협 회피 또는 고지대 이동. 평가: 이동·도약 이후의 엄폐와 합류. 예외: 거점 접촉이나 긴급 구조를 위해 위험을 감수한 경우 목적을 함께 평가. 필수
+    근거: 이동 전후 위치·적 사선·아군 위치·종료 후 위험. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 이동 종료 후 아군 치료와 엄폐가 이어지는 위치를 선택함
+  bad_signs:
+  - 이동기로 적 정면을 가로질러 종료 후 고립됨
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 이동 전후 위치·적 사선·아군 위치·종료 후 위험'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.wuyang; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Wuyang?oldid=401819'
+    patch_version: null
+- id: wuyang.positioning.steering_awareness
+  category: positioning
+  status: draft
+  ability: xuanwu_staff
+  title: 유도 공격 중 주변 확인
+  description: '적용 상황: 공격 투사체를 유도하는 동안 교전 변화 발생. 평가: 유도 공격 중 주변 확인. 예외: 아군이 안전하고 공격이 중요한 위협을 제거할 기회면 유도 유지
+    가능. 필수 근거: 유도 구간·아군 체력·적 접근 신호·지원 전환. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 아군 피해와 적 진입을 확인하며 필요하면 공격 집중을 끝내고 지원으로 전환함
+  bad_signs:
+  - 멀리 있는 구슬을 오래 유도하느라 관측된 아군 위험이나 접근 적을 놓침
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 유도 구간·아군 체력·적 접근 신호·지원 전환'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.wuyang; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Wuyang?oldid=401819'
+    patch_version: null
+- id: wuyang.skill_usage.stream_target
+  category: skill_usage
+  status: draft
+  ability: restorative_stream
+  title: 치료 흐름의 대상과 유지 필요
+  description: '적용 상황: 서로 다른 아군이 피해를 받거나 이동. 평가: 치료 흐름의 대상과 유지 필요. 예외: 다이브 중인 아군의 지속 지원도 가치가 있어 체력 낮은 순으로만
+    바꾸지 않음. 필수 근거: 연결 대상·아군별 피해·다른 치료·지원 유지 효과. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 현재 피해와 다른 지원을 고려해 지속 지원이 필요한 대상을 선택함
+  bad_signs:
+  - 처음 선택한 안전한 대상에 고정해 새로 위급해진 아군을 지원하지 못함
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 연결 대상·아군별 피해·다른 치료·지원 유지 효과'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.wuyang; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Wuyang?oldid=401819'
+    patch_version: null
+- id: wuyang.skill_usage.stream_resource
+  category: skill_usage
+  status: draft
+  ability: restorative_stream
+  title: 강화 치료 자원의 긴급도 배분
+  description: '적용 상황: 자원을 소모하는 강한 치료를 사용할 때. 평가: 강화 치료 자원의 긴급도 배분. 예외: 당장 구조가 필요하면 전량 사용이 타당하며 잔량 자체는 성적이
+    아님. 필수 근거: 자원 HUD·치료 강도·대상 체력·다음 피해. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 위급한 피해 구간에 집중하고 안전한 동안 자원 회복 여지를 만듦
+  bad_signs:
+  - 위험하지 않은 대상에게 계속 소모해 다음 구조 순간 자원이 없음
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 자원 HUD·치료 강도·대상 체력·다음 피해'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.wuyang; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Wuyang?oldid=401819'
+    patch_version: null
+- id: wuyang.skill_usage.wave_purpose
+  category: skill_usage
+  status: draft
+  ability: guardian_wave
+  title: 파도의 치료 증폭과 밀쳐내기 목적
+  description: '적용 상황: 아군이 피해받거나 적이 접근. 평가: 파도의 치료 증폭과 밀쳐내기 목적. 예외: 회복 증폭이나 적 밀쳐내기 중 하나만으로도 충분한 가치가 있을 수 있음.
+    필수 근거: 파도 경로·아군 수혜·밀려난 적·후속 치료. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 필요한 아군에게 효과를 연결하거나 적 접근을 밀어내 구조 시간을 확보함
+  bad_signs:
+  - 대상과 경로를 확인하지 않아 아군 지원과 적 견제 모두 실패함
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 파도 경로·아군 수혜·밀려난 적·후속 치료'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.wuyang; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Wuyang?oldid=401819'
+    patch_version: null
+- id: wuyang.skill_usage.torrent_reserve
+  category: skill_usage
+  status: draft
+  ability: rushing_torrent
+  title: 적 진입에 대비한 이동 여지
+  description: '적용 상황: 이동기가 준비되고 적 접근 위협이 남음. 평가: 적 진입에 대비한 이동 여지. 예외: 교전 전 안전한 고지대 확보나 결정적 합류는 선사용 가능. 필수
+    근거: 사용 시점·적 접근·대체 경로·합류 이득. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 위협 도달 전에 엄폐를 바꾸거나 실제 공격을 피하는 데 사용함
+  bad_signs:
+  - 작은 거리 이동에 소모한 뒤 보이던 다이브에 대응할 경로를 잃음
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 사용 시점·적 접근·대체 경로·합류 이득'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.wuyang; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Wuyang?oldid=401819'
+    patch_version: null
+- id: wuyang.ultimate_usage.tidal_host
+  category: ultimate_usage
+  status: draft
+  ability: tidal_blast
+  title: 보호 대상과 지연 폭발의 위치
+  description: '적용 상황: 자신 또는 아군을 보호하며 교전을 바꿀 순간. 평가: 보호 대상과 지연 폭발의 위치. 예외: 즉각적인 구조만으로 충분한 가치가 있으며 적을 맞히려 위험한
+    진입을 강요하지 않음. 필수 근거: 실제 대상·사용부터 폭발까지 이동·보호 및 회복·적 피격. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 위험한 대상을 보호하고 폭발 시점의 위치가 아군 생존이나 적 방해에 기여함
+  bad_signs:
+  - 대상의 이동을 고려하지 않아 보호도 후속 효과도 필요한 곳에 도달하지 않음
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 실제 대상·사용부터 폭발까지 이동·보호 및 회복·적 피격'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.wuyang; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Wuyang?oldid=401819'
+    patch_version: null

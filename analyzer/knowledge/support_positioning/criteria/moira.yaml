@@ -1,0 +1,180 @@
+hero_id: moira
+display_name_ko: 모이라
+pack_version: 0.1.0
+review_status: draft
+patch_version: null
+profile_type: criterion_fragment_not_HeroProfile
+ability_refs:
+  fade:
+    database_id: moira:fade
+    name_en: Fade
+    review_required: false
+  biotic_grasp:
+    database_id: moira:biotic-grasp
+    name_en: Biotic Grasp
+    review_required: false
+  secondary_fire:
+    database_id: moira:secondary-fire
+    name_en: Secondary Fire
+    review_required: false
+  biotic_orb:
+    database_id: moira:biotic-orb
+    name_en: Biotic Orb
+    review_required: false
+  coalescence:
+    database_id: moira:coalescence
+    name_en: Coalescence
+    review_required: false
+criteria:
+- id: moira.positioning.healing_reach
+  category: positioning
+  status: draft
+  ability: null
+  title: 아군을 치료할 위치와 안전한 접근
+  description: '적용 상황: 아군이 근거리 교전을 진행. 평가: 아군을 치료할 위치와 안전한 접근. 예외: 아군의 무리한 진입이나 위험한 통로 때문에 접근 불가하면 추격 의무 없음.
+    필수 근거: 치료 연결·아군 피해·접근 경로·적 사선. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 치료가 닿는 위치를 유지하면서 적 정면 노출을 엄폐로 줄임
+  bad_signs:
+  - 안전하게 접근할 수 있는데 너무 멀리 남아 위급한 아군을 치료하지 못함
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 치료 연결·아군 피해·접근 경로·적 사선'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.moira; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Moira?oldid=404012'
+    patch_version: null
+- id: moira.positioning.fade_destination
+  category: positioning
+  status: draft
+  ability: fade
+  title: 소멸 종료 위치의 안전성
+  description: '적용 상황: 피해를 피하거나 새로운 각도로 이동. 평가: 소멸 종료 위치의 안전성. 예외: 거점 접촉이나 확실한 마무리의 이득이 있으면 위험한 이동도 비교 평가.
+    필수 근거: 시작·종료 위치·적 시야·남은 생존 수단. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 종료 시점에 엄폐와 다음 아군 지원 경로가 확보됨
+  bad_signs:
+  - 소멸로 적을 관통했지만 끝난 뒤 여러 적 앞에 고립됨
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 시작·종료 위치·적 시야·남은 생존 수단'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.moira; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Moira?oldid=404012'
+    patch_version: null
+- id: moira.positioning.pressure_return
+  category: positioning
+  status: draft
+  ability: null
+  title: 측면 압박의 가치와 복귀
+  description: '적용 상황: 적 후방이나 측면에서 공격. 평가: 측면 압박의 가치와 복귀. 예외: 팀이 지원 없이 버티며 적 핵심 역할을 묶는 효과가 명확하면 유지 가능. 필수 근거:
+    아군 피해·적 대응·측면 체류·복귀 수단. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 적의 시선을 끌거나 자원을 소모시키고 아군 치료 필요에 맞춰 복귀함
+  bad_signs:
+  - 죽지 않았다는 이유로 오래 체류하지만 아군 지원도 적 압박도 부족함
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 아군 피해·적 대응·측면 체류·복귀 수단'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.moira; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Moira?oldid=404012'
+    patch_version: null
+- id: moira.skill_usage.grasp_budget
+  category: skill_usage
+  status: draft
+  ability: biotic_grasp
+  title: 치유 자원의 전투 중 배분
+  description: '적용 상황: 치료 자원을 사용하는 지속 교전. 평가: 치유 자원의 전투 중 배분. 예외: 즉시 구조를 위한 전량 사용은 정당하며 잔량만으로 감점하지 않음. 필수 근거:
+    자원 HUD·치료 대상·피해 변화·회복 가능한 공격 기회. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 실제 피해 구간에 치료하고 안전한 기회에 자원을 회복함
+  bad_signs:
+  - 치료 필요가 없는 대상에 계속 소모해 다음 피해 구간에서 자원 부족
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 자원 HUD·치료 대상·피해 변화·회복 가능한 공격 기회'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.moira; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Moira?oldid=404012'
+    patch_version: null
+- id: moira.skill_usage.drain_priority
+  category: skill_usage
+  status: draft
+  ability: secondary_fire
+  title: 흡수 공격과 아군 구조의 균형
+  description: '적용 상황: 치료 자원 회복 또는 적 마무리 기회. 평가: 흡수 공격과 아군 구조의 균형. 예외: 자원이 없거나 공격이 즉시 위협을 제거한다면 공격이 더 나을 수
+    있음. 필수 근거: 자원·아군 체력·공격 대상·위협 제거 가능성. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 위급한 아군을 방치하지 않는 범위에서 공격해 자원을 회복함
+  bad_signs:
+  - 치료할 수 있는 위험한 아군을 보고도 자원 필요와 무관한 공격을 계속함
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 자원·아군 체력·공격 대상·위협 제거 가능성'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.moira; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Moira?oldid=404012'
+    patch_version: null
+- id: moira.skill_usage.orb_path
+  category: skill_usage
+  status: draft
+  ability: biotic_orb
+  title: 구슬의 종류와 체류 경로
+  description: '적용 상황: 치유 또는 공격 구슬 선택. 평가: 구슬의 종류와 체류 경로. 예외: 즉시 한 번의 치유·피해로 충분한 긴급 상황은 반사 최적화보다 우선함. 필수 근거:
+    구슬 종류·출발 방향·벽 반사·대상 이동·실제 효과. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 필요한 대상 곁에 머물거나 다시 지나갈 경로로 발사함
+  bad_signs:
+  - 도움이 필요한 대상에서 빠르게 멀어지는 방향으로 보내 기여 기회를 잃음
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 구슬 종류·출발 방향·벽 반사·대상 이동·실제 효과'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.moira; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Moira?oldid=404012'
+    patch_version: null
+- id: moira.skill_usage.fade_reserve
+  category: skill_usage
+  status: draft
+  ability: fade
+  title: 소멸을 쓰기 전 위협과 대안 확인
+  description: '적용 상황: 이동 또는 교전을 위해 소멸 사용 고려. 평가: 소멸을 쓰기 전 위협과 대안 확인. 예외: 안전한 재배치나 결정적 마무리 진입은 선사용 가능. 필수 근거:
+    사용 시점·관측된 위협·대체 이동·다음 피격. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 적의 핵심 위협을 피하거나 필요한 합류를 만들 때 사용함
+  bad_signs:
+  - 명확한 진입 위협 앞에서 작은 거리 이동에 소모하고 회피 수단을 잃음
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 사용 시점·관측된 위협·대체 이동·다음 피격'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.moira; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Moira?oldid=404012'
+    patch_version: null
+- id: moira.ultimate_usage.coal_line
+  category: ultimate_usage
+  status: draft
+  ability: coalescence
+  title: 융화의 치료·공격선과 시전 위치
+  description: '적용 상황: 아군과 적이 맞붙는 교전. 평가: 융화의 치료·공격선과 시전 위치. 예외: 자기 생존·아군 구조·공간 확보도 유효하며 처치 수만으로 평가하지 않음. 필수
+    근거: 광선 경로·수혜자·적 위협·사용 중 위치·전투 상태. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 필요한 아군과 적을 볼 수 있는 각도에서 사용하고 적 방해에 대응할 공간 확보
+  bad_signs:
+  - 적만 추격해 위급한 아군의 치료선을 잃거나 집중 공격에 노출됨
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 광선 경로·수혜자·적 위협·사용 중 위치·전투 상태'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.moira; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Moira?oldid=404012'
+    patch_version: null

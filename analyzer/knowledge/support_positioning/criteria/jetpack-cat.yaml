@@ -1,0 +1,180 @@
+hero_id: jetpack-cat
+display_name_ko: 제트팩 캣
+pack_version: 0.1.0
+review_status: draft
+patch_version: null
+profile_type: criterion_fragment_not_HeroProfile
+ability_refs:
+  frenetic_flight:
+    database_id: jetpack-cat:frenetic-flight
+    name_en: Frenetic Flight
+    review_required: false
+  biotic_pawjectiles:
+    database_id: jetpack-cat:biotic-pawjectiles
+    name_en: Biotic Pawjectiles
+    review_required: false
+  lifeline:
+    database_id: jetpack-cat:lifeline
+    name_en: Lifeline
+    review_required: false
+  purr:
+    database_id: jetpack-cat:purr
+    name_en: Purr
+    review_required: false
+  catnapper:
+    database_id: jetpack-cat:catnapper
+    name_en: Catnapper
+    review_required: false
+criteria:
+- id: jetpack-cat.positioning.aerial_cover
+  category: positioning
+  status: draft
+  ability: null
+  title: 비행 높이보다 공중 엄폐 경로
+  description: '적용 상황: 공중에서 치료와 공격을 수행. 평가: 비행 높이보다 공중 엄폐 경로. 예외: 짧은 시야 확보나 안전한 운송 경로에 필요한 상승은 허용. 필수 근거: 비행
+    경로·건물 가림·적 사선·지원 대상. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 건물·모서리를 이용해 적 사선을 줄이며 필요한 대상을 볼 수 있음
+  bad_signs:
+  - 아무 장애물 없는 높이에 오래 떠서 여러 적에게 사격받음
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 비행 경로·건물 가림·적 사선·지원 대상'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.jetpack-cat; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Jetpack_Cat?oldid=403999'
+    patch_version: null
+- id: jetpack-cat.positioning.fuel_return
+  category: positioning
+  status: draft
+  ability: frenetic_flight
+  title: 연료를 고려한 왕복 경로
+  description: '적용 상황: 가속 비행으로 측면 또는 운송 경로 진입. 평가: 연료를 고려한 왕복 경로. 예외: 즉시 승리하거나 긴급 구조하는 확실한 이득이 있으면 자원 투자 가능.
+    필수 근거: 연료 HUD·탑승 여부·진입과 귀환 경로. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 남은 연료와 탑승 상태를 고려해 엄폐나 아군에게 돌아올 경로 확보
+  bad_signs:
+  - 도착까지 연료를 써 버려 공개된 위치에서 복귀가 막힘
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 연료 HUD·탑승 여부·진입과 귀환 경로'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.jetpack-cat; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Jetpack_Cat?oldid=403999'
+    patch_version: null
+- id: jetpack-cat.positioning.support_reach
+  category: positioning
+  status: draft
+  ability: null
+  title: 기동성과 실제 지원 공백의 균형
+  description: '적용 상황: 아군 사이를 이동하거나 적 측면을 압박. 평가: 기동성과 실제 지원 공백의 균형. 예외: 거점 접촉·합의된 운송·위협 제거를 위한 짧은 이탈은 허용.
+    필수 근거: 이동 구간·아군 체력·다른 지원·목표 기여. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 다음 지원 대상의 위치와 피해를 보고 이동해 치료 또는 압박을 연결함
+  bad_signs:
+  - 지도 이동에만 시간을 써 도움 가능한 아군의 교전에서 계속 벗어남
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 이동 구간·아군 체력·다른 지원·목표 기여'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.jetpack-cat; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Jetpack_Cat?oldid=403999'
+    patch_version: null
+- id: jetpack-cat.skill_usage.paw_priority
+  category: skill_usage
+  status: draft
+  ability: biotic_pawjectiles
+  title: 기본 사격의 치료 대상 전환
+  description: '적용 상황: 적과 아군 모두 사격 가능한 순간. 평가: 기본 사격의 치료 대상 전환. 예외: 당장 위협을 제거할 공격 기회는 치료와 비교해 평가. 필수 근거: 사격
+    대상·치료 효과·아군 체력·적 위협. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 급한 아군에게 치료를 연결하고 여유가 있을 때 적을 압박함
+  bad_signs:
+  - 명확한 치료 필요를 보고도 멀리 있는 적만 공격함
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 사격 대상·치료 효과·아군 체력·적 위협'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.jetpack-cat; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Jetpack_Cat?oldid=403999'
+    patch_version: null
+- id: jetpack-cat.skill_usage.lifeline_route
+  category: skill_usage
+  status: draft
+  ability: lifeline
+  title: 운송 대상과 하차 지점의 안전
+  description: '적용 상황: 아군을 견인해 이동시키는 상황. 평가: 운송 대상과 하차 지점의 안전. 예외: 합의된 공격 운송이나 긴급 탈출은 위험을 감수할 수 있음. 필수 근거:
+    탑승 수락 여부·경로·하차 위치·탑승자 행동. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 대상이 활용할 공간과 엄폐가 있는 곳으로 운송함
+  bad_signs:
+  - 아군을 적 사선 한가운데 내려놓거나 원래 역할에서 불필요하게 분리함
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 탑승 수락 여부·경로·하차 위치·탑승자 행동'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.jetpack-cat; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Jetpack_Cat?oldid=403999'
+    patch_version: null
+- id: jetpack-cat.skill_usage.purr_contact
+  category: skill_usage
+  status: draft
+  ability: purr
+  title: 광역 치료와 초기 밀쳐내기의 수혜
+  description: '적용 상황: 아군이 모이거나 가까운 적이 위협. 평가: 광역 치료와 초기 밀쳐내기의 수혜. 예외: 자기 생존 목적도 유효하며 지속 효과를 유지하려고 위험 지역에 머물
+    필요는 없음. 필수 근거: 발동 위치·아군 범위·초기 적 위치·치료 및 밀쳐내기 효과. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 치료받을 아군 가까이에서 사용하거나 초기 밀쳐내기로 압박을 끊음
+  bad_signs:
+  - 수혜자가 없는 곳에서 소모한 뒤 필요한 교전에 사용할 수 없음
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 발동 위치·아군 범위·초기 적 위치·치료 및 밀쳐내기 효과'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.jetpack-cat; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Jetpack_Cat?oldid=403999'
+    patch_version: null
+- id: jetpack-cat.skill_usage.flight_escape
+  category: skill_usage
+  status: draft
+  ability: frenetic_flight
+  title: 가속으로 위협 사선을 끊기
+  description: '적용 상황: 공중에서 집중 공격을 받는 순간. 평가: 가속으로 위협 사선을 끊기. 예외: 적 시선을 끌어 명확한 팀 이득을 만드는 경우는 피해와 기여를 함께 평가.
+    필수 근거: 피격 방향·가속 경로·연료·이동 후 가림. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 직접 엄폐로 연결되는 방향으로 이동해 노출을 줄임
+  bad_signs:
+  - 사격받는 같은 열린 공간 안에서만 이동하며 연료를 소모함
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 피격 방향·가속 경로·연료·이동 후 가림'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.jetpack-cat; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Jetpack_Cat?oldid=403999'
+    patch_version: null
+- id: jetpack-cat.ultimate_usage.catnap_target
+  category: ultimate_usage
+  status: draft
+  ability: catnapper
+  title: 실제 납치 대상과 이후 경로
+  description: '적용 상황: 궁극기 급강하와 견인을 시도. 평가: 실제 납치 대상과 이후 경로. 예외: 환경 처치가 아니어도 적을 분리하거나 거점에서 떼어내면 가치가 있음. 필수
+    근거: 급강하 위치·실제 연결 대상·후속 이동·아군 사선. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 최근접 적이 누구인지 고려하고 잡은 뒤 아군이 활용할 안전한 경로로 이동함
+  bad_signs:
+  - 원치 않는 적을 잡거나 착지·견인 중 적 집중 사격에 고립됨
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 급강하 위치·실제 연결 대상·후속 이동·아군 사선'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.jetpack-cat; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Jetpack_Cat?oldid=403999'
+    patch_version: null

@@ -1,0 +1,180 @@
+hero_id: mizuki
+display_name_ko: 미즈키
+pack_version: 0.1.0
+review_status: draft
+patch_version: null
+profile_type: criterion_fragment_not_HeroProfile
+ability_refs:
+  katashiro_return:
+    database_id: mizuki:katashiro-return
+    name_en: Katashiro Return
+    review_required: false
+  remedy_aura:
+    database_id: mizuki:remedy-aura
+    name_en: Remedy Aura
+    review_required: false
+  healing_kasa:
+    database_id: mizuki:healing-kasa
+    name_en: Healing Kasa
+    review_required: false
+  binding_chain:
+    database_id: mizuki:binding-chain
+    name_en: Binding Chain
+    review_required: false
+  kekkai_sanctuary:
+    database_id: mizuki:kekkai-sanctuary
+    name_en: Kekkai Sanctuary
+    review_required: false
+criteria:
+- id: mizuki.positioning.aura_or_lane
+  category: positioning
+  status: draft
+  ability: null
+  title: 오라 수혜와 측면 통제를 함께 평가
+  description: '적용 상황: 본대와 측면 중 위치를 선택. 평가: 오라 수혜와 측면 통제를 함께 평가. 예외: 짧은 공격 후 복귀 계획이 있으면 일시적 오라 이탈도 유효함. 필수
+    근거: 아군 배치·치료 연결·적 진입로·측면 압박 효과. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 아군이 오라·모자 치료를 활용하거나 딜러와 함께 적 진입로를 통제함
+  bad_signs:
+  - 오라 때문에 무조건 뭉치거나 반대로 혼자 멀어져 치료와 측면 통제 모두 잃음
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 아군 배치·치료 연결·적 진입로·측면 압박 효과'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.mizuki; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Mizuki?oldid=402066'
+    patch_version: null
+- id: mizuki.positioning.dive_connection
+  category: positioning
+  status: draft
+  ability: null
+  title: 다이브를 피하며 아군과의 연결 유지
+  description: '적용 상황: 적이 본대와 자신 사이로 진입. 평가: 다이브를 피하며 아군과의 연결 유지. 예외: 앞으로 가는 경로가 더 위험하면 생존을 우선하고 다른 각도로 연결
+    가능. 필수 근거: 진입 전후 적과 아군 위치·가림·이동 경로 위협. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 후퇴·옆 이동·본대 합류 중 지원이 유지되는 경로를 선택함
+  bad_signs:
+  - 무조건 뒤로 도망가 아군과 벽·적 방벽으로 단절된 채 기여하지 못함
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 진입 전후 적과 아군 위치·가림·이동 경로 위협'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.mizuki; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Mizuki?oldid=402066'
+    patch_version: null
+- id: mizuki.positioning.doll_anchor
+  category: positioning
+  status: draft
+  ability: katashiro_return
+  title: 귀환 인형 위치의 안전성
+  description: '적용 상황: 인형을 남기고 공격적 위치로 이동. 평가: 귀환 인형 위치의 안전성. 예외: 거점 유지나 확실한 마무리를 위한 전진은 목적과 복귀 가능성을 함께 평가.
+    필수 근거: 인형 위치·진입·적의 자리 이동·귀환 후 상태. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 되돌아올 지점이 엄폐와 아군 지원에 연결됨
+  bad_signs:
+  - 인형을 적이 점유한 공개된 곳에 남겨 귀환 뒤에도 위험이 지속됨
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 인형 위치·진입·적의 자리 이동·귀환 후 상태'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.mizuki; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Mizuki?oldid=402066'
+    patch_version: null
+- id: mizuki.skill_usage.aura_resource
+  category: skill_usage
+  status: draft
+  ability: remedy_aura
+  title: 오라 자원과 교전 참여
+  description: '적용 상황: 아군에게 오라 치료가 필요한 상황. 평가: 오라 자원과 교전 참여. 예외: 위협 때문에 공격이 불가능한 순간에는 자원을 위해 노출을 강요하지 않음. 필수
+    근거: 오라 자원·아군 수혜·공격 및 치료 기회·적 사선. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 안전하게 가능한 공격·치료로 자원 흐름을 유지하며 아군과 연결함
+  bad_signs:
+  - 피해와 치료 모두 기여할 수 있는데 완전히 수동적으로 머물러 지원 기회를 잃음
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 오라 자원·아군 수혜·공격 및 치료 기회·적 사선'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.mizuki; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Mizuki?oldid=402066'
+    patch_version: null
+- id: mizuki.skill_usage.kasa_route
+  category: skill_usage
+  status: draft
+  ability: healing_kasa
+  title: 치료 모자의 첫 대상과 주변 수혜
+  description: '적용 상황: 모자를 보낼 대상을 선택. 평가: 치료 모자의 첫 대상과 주변 수혜. 예외: 고립된 한 명이 가장 위험하면 연쇄 수혜보다 그 대상 구조가 우선함. 필수
+    근거: 첫 대상·주변 아군·체력·실제 이동 및 치료 효과. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 급한 대상을 우선하면서 인접 아군에게 이어질 치료도 고려함
+  bad_signs:
+  - 안전한 외딴 대상에 보내 실제 피해받는 무리의 치료 기회를 잃음
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 첫 대상·주변 아군·체력·실제 이동 및 치료 효과'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.mizuki; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Mizuki?oldid=402066'
+    patch_version: null
+- id: mizuki.skill_usage.chain_followup
+  category: skill_usage
+  status: draft
+  ability: binding_chain
+  title: 사슬의 적 접근 차단과 후속
+  description: '적용 상황: 적이 진입하거나 아군이 집중 공격 가능. 평가: 사슬의 적 접근 차단과 후속. 예외: 먼 적이라도 핵심 행동 방해나 공간 확보에 기여하면 유효함. 필수
+    근거: 대상·명중 효과·아군 사선·적 진입·후속 행동. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 위험한 적의 행동을 제한하고 아군이 거리 확보나 공격으로 활용함
+  bad_signs:
+  - 후속도 위협도 없는 대상에게 소모해 곧 오는 진입에 대응 불가
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 대상·명중 효과·아군 사선·적 진입·후속 행동'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.mizuki; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Mizuki?oldid=402066'
+    patch_version: null
+- id: mizuki.skill_usage.return_window
+  category: skill_usage
+  status: draft
+  ability: katashiro_return
+  title: 공격 종료와 귀환 시점
+  description: '적용 상황: 인형을 남긴 채 전진한 상황. 평가: 공격 종료와 귀환 시점. 예외: 교전을 끝낼 확실한 기회가 있으면 더 공격적으로 유지 가능. 필수 근거: 귀환 가능
+    상태·적 증원·아군 피해·인형 위치. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 적 대응과 아군 필요가 커지기 전에 귀환해 다음 지원을 이어감
+  bad_signs:
+  - 적 증원이나 위험 신호를 보고도 체류하다 귀환 기회를 잃음
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 귀환 가능 상태·적 증원·아군 피해·인형 위치'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.mizuki; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Mizuki?oldid=402066'
+    patch_version: null
+- id: mizuki.ultimate_usage.sanctuary_geometry
+  category: ultimate_usage
+  status: draft
+  ability: kekkai_sanctuary
+  title: 성역의 회복 공간과 투사체 방향
+  description: '적용 상황: 아군이 지역을 지키거나 통과. 평가: 성역의 회복 공간과 투사체 방향. 예외: 회복만으로도 충분한 가치가 있으며 모든 피해가 차단된다고 가정하지 않음.
+    필수 근거: 영역 위치·아군 수혜·공격 종류와 경로·실제 흡수 효과. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 아군이 회복을 활용하고 들어오는 적 투사체 경로를 제한할 위치에 사용함
+  bad_signs:
+  - 아군이 접근할 수 없거나 주된 위협이 그대로 들어오는 위치에 사용함
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 영역 위치·아군 수혜·공격 종류와 경로·실제 흡수 효과'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.mizuki; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Mizuki?oldid=402066'
+    patch_version: null

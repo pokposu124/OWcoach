@@ -1,0 +1,177 @@
+example_type: synthetic_not_observed_gameplay
+review_status: draft
+purpose: 코치 검수·모델 평가 설계를 위한 경계 사례. 실제 영상 정답이나 학습 완료 데이터가 아니다.
+examples:
+- id: ana_rotation_unknown
+  hero_id: ana
+  criterion_id: ana.positioning.rotation_window
+  observed:
+  - 탱커가 모서리를 돌아 치료 시야에서 사라졌다.
+  - 아나는 이전 엄폐에 남았다.
+  unknowns: [다음 코너로 가는 길의 적 사선, 다른 지원가의 지원 상태, 탱커의 생존 가능성]
+  review_decision: insufficient_evidence
+  reason: 시야 단절은 관측됐지만 따라갈 수 있었는지 모른다. 탱커를 따라가지 않은 블런더로 단정할 수 없다.
+  not_a_production_grade: true
+- id: baptiste_height_good
+  hero_id: baptiste
+  criterion_id: baptiste.positioning.height_route
+  observed:
+  - 적 접근이 보이자 도약으로 옆 고지대에 올라갔다.
+  - 도착 지점에 엄폐가 있고 아군에게 치유 탄이 도달했다.
+  - 적의 접근 경로와 내려갈 아군 쪽 경로가 모두 보인다.
+  unknowns: []
+  review_decision: supported_good
+  reason: 높이 자체가 아니라 적 접근 비용·치료 연결·엄폐·후퇴 경로가 개선된 근거가 있다.
+  not_a_production_grade: true
+- id: brigitte_inspire_error
+  hero_id: brigitte
+  criterion_id: brigitte.positioning.inspire_risk
+  observed:
+  - 안전한 엄폐에서 투척 가능한 적이 보인다.
+  - 브리기테가 그 엄폐를 벗어나 적 여러 명의 정면으로 접근했다.
+  - 근접 공격 후 방패가 소진되고 원래 보호하던 아군과 단절됐다.
+  - 거점 접촉 필요나 아군 합류가 없는 상태다.
+  unknowns: []
+  review_decision: supported_error
+  reason: 격려를 위한 대안이 있었고 불필요한 진입이 지원 단절과 위험을 만들었다. 살아남았더라도 재검토할 결정이다.
+  not_a_production_grade: true
+- id: doctrine_resource_exception
+  hero_id: doctrine
+  criterion_id: doctrine.positioning.infused_exit
+  observed:
+  - 남은 적들이 퇴각 중이며 가까운 진입 위협은 확인되지 않았다.
+  - 독트린이 강화 지원을 사용해 거점에서 싸우는 핵심 아군을 살렸다.
+  - 강화 자원이 비었지만 본인에게 엄폐와 아군 합류 경로가 있다.
+  unknowns: []
+  review_decision: acceptable_exception
+  reason: 강화 자원을 항상 남겨야 한다는 규칙은 없다. 확인된 구조 가치와 대체 생존 경로가 있다.
+  not_a_production_grade: true
+- id: illari_triangle_error
+  hero_id: illari
+  criterion_id: illari.positioning.pylon_triangle
+  observed:
+  - 아군이 다음 구역에서 피해받는 동안 태양석은 이전 구역에 남아 있다.
+  - 본인은 먼 측면에서 적을 공격하고 있으며 치료 광선도 닿지 않는다.
+  - 다른 지원가는 사망했고 다음 엄폐까지 안전한 경로와 태양석 재배치 가능 상태가 확인된다.
+  unknowns: []
+  review_decision: supported_error
+  reason: 측면이라는 이유가 아니라 지원 공백을 복구할 대안이 있는데도 유지한 것이 문제다.
+  not_a_production_grade: true
+- id: cat_fuel_unknown
+  hero_id: jetpack-cat
+  criterion_id: jetpack-cat.positioning.fuel_return
+  observed:
+  - 아군을 견인하며 먼 고지대로 가속 비행했다.
+  - 화면에서 도착 지점의 엄폐 일부가 보인다.
+  unknowns: [연료 HUD, 실제 하차 위치, 귀환 경로, 운송을 요청한 아군의 목적]
+  review_decision: insufficient_evidence
+  reason: 이동 거리만으로 연료 부족이나 무리한 운송을 확정할 수 없다.
+  not_a_production_grade: true
+- id: juno_hover_exception
+  hero_id: juno
+  criterion_id: juno.positioning.hover_exposure
+  observed:
+  - 발밑에 즉각적인 지상 위험이 보인다.
+  - 주노가 잠깐 체공해 위험을 피한 뒤 가까운 엄폐로 이동했다.
+  - 체공 중 필요한 아군에게 치료가 도달했다.
+  unknowns: []
+  review_decision: acceptable_exception
+  reason: 공중 노출 시간이 있다는 사실만으로 실수가 아니다. 지상 위험 회피와 지원의 이득을 확인할 수 있다.
+  not_a_production_grade: true
+- id: kiriko_anchor_error
+  hero_id: kiriko
+  criterion_id: kiriko.positioning.teleport_anchor
+  observed:
+  - 순보를 쓸 수 있는 아군 대상이 없는 상태가 확인된다.
+  - 키리코가 걸어서도 돌아올 수 없는 깊은 위치에 진입했다.
+  - 적 증원이 시야에 들어왔지만 같은 위치에 남았다.
+  - 거점 접촉이나 즉시 처치할 기회가 보이지 않는다.
+  unknowns: []
+  review_decision: supported_error
+  reason: 순보 쿨타임이 준비됐다는 사실은 탈출을 보장하지 않는다. 사용할 대상과 지상 대안이 없다.
+  not_a_production_grade: true
+- id: lifeweaver_destination_error
+  hero_id: lifeweaver
+  criterion_id: lifeweaver.positioning.grip_destination
+  observed:
+  - 자신이 적 여러 명의 사선에 서 있고 가까운 안전한 엄폐가 보인다.
+  - 안전한 엄폐로 이동할 시간이 있었지만 그대로 아군을 당겼다.
+  - 구출된 아군이 같은 사선에 도착해 다시 공격받았다.
+  unknowns: []
+  review_decision: supported_error
+  reason: 구출 전의 위치 선택이 구조 효과를 약화했다. 대상이 원래 더 위험했는지도 함께 검수해야 한다.
+  not_a_production_grade: true
+- id: lucio_assignment_exception
+  hero_id: lucio
+  criterion_id: lucio.positioning.aura_assignment
+  observed:
+  - 팀은 엄폐에서 대기하며 이동이나 긴급 치료가 필요하지 않다.
+  - 루시우가 측면으로 이동해 팀을 조준하던 적 저격수를 물러나게 했다.
+  - 이후 본대에 합류할 수 있는 벽 경로를 유지했다.
+  unknowns: []
+  review_decision: acceptable_exception
+  reason: 오라 밖 아군이 있다는 사실만으로 역할 이탈은 아니다. 위협 제거와 복귀 가능성이 있다.
+  not_a_production_grade: true
+- id: mercy_landing_error
+  hero_id: mercy
+  criterion_id: mercy.positioning.ga_landing
+  observed:
+  - 수호천사 이동 도중 엄폐 뒤에서 멈출 수 있는 상황이 확인된다.
+  - 더 멀리 이동해 적 정면에 착지했다.
+  - 다음 이동 대상도 없고 본인이 집중 공격받아 광선 지원이 끊겼다.
+  unknowns: []
+  review_decision: supported_error
+  reason: 이동 사용 자체보다 도착 지점과 다음 경로 선택이 문제다.
+  not_a_production_grade: true
+- id: mizuki_lane_exception
+  hero_id: mizuki
+  criterion_id: mizuki.positioning.aura_or_lane
+  observed:
+  - 본대 체력이 안정적이며 다른 지원가가 치료 중이다.
+  - 미즈키가 엄폐 있는 측면에서 아군 딜러와 적 진입로를 막았다.
+  - 귀환 위치는 안전하고 치료가 필요한 아군에게 돌아갈 수 있다.
+  unknowns: []
+  review_decision: acceptable_exception
+  reason: 오라 최대 수혜 인원보다 측면 통제 가치가 클 수 있다. 본대에서 떨어졌다는 이유만으로 감점하지 않는다.
+  not_a_production_grade: true
+- id: moira_fade_unknown
+  hero_id: moira
+  criterion_id: moira.positioning.fade_destination
+  observed:
+  - 적의 공격을 받다가 소멸을 사용했다.
+  - 소멸 도중 영상이 끝난다.
+  unknowns: [소멸 종료 지점, 적의 추가 사선, 아군 합류 가능성]
+  review_decision: insufficient_evidence
+  reason: 사용 여부는 확인됐지만 탈출 성공이나 올바른 종료 위치는 판단할 수 없다.
+  not_a_production_grade: true
+- id: sombra_patch_unknown
+  hero_id: sombra
+  criterion_id: sombra.positioning.rework_role
+  observed:
+  - 솜브라가 아군과 떨어진 위치에서 공격하고 있다.
+  unknowns: [경기 촬영 시점과 패치, 지원 역할 개편 전후, Hotfix와 Cyberspace 존재 여부]
+  review_decision: insufficient_evidence
+  reason: 현재 DB의 지원형 솜브라 기준을 과거 공격형 경기에도 적용할 수는 없다.
+  not_a_production_grade: true
+- id: wuyang_steering_error
+  hero_id: wuyang
+  criterion_id: wuyang.positioning.steering_awareness
+  observed:
+  - 치료 가능한 아군의 체력이 급격히 줄고 근처 적 진입도 화면에 보인다.
+  - 우양이 먼 적을 향한 유도 공격에 계속 집중한다.
+  - 치료 자원과 이동 수단이 있으며 바로 엄폐로 옮겨 지원할 수 있다.
+  unknowns: []
+  review_decision: supported_error
+  reason: 투사체 명중 실패가 아니라 관측된 위험에 맞춰 행동과 위치를 전환하지 않은 기회비용을 평가한다.
+  not_a_production_grade: true
+- id: zenyatta_rotation_good
+  hero_id: zenyatta
+  criterion_id: zenyatta.positioning.early_rotation
+  observed:
+  - 적 다이버가 접근 경로에 나타났다.
+  - 젠야타가 접근 전에 아군 쪽 다음 엄폐로 이동했다.
+  - 이동 후 조화 대상 지원과 적 사격을 이어갔다.
+  unknowns: []
+  review_decision: supported_good
+  reason: 늦게 도망친 결과보다 일찍 이동해 기여를 유지하고 적 접근을 어렵게 한 선택을 평가한다.
+  not_a_production_grade: true

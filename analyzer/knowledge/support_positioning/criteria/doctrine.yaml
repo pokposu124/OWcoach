@@ -1,0 +1,181 @@
+hero_id: doctrine
+display_name_ko: 독트린
+pack_version: 0.1.0
+review_status: draft
+patch_version: null
+profile_type: criterion_fragment_not_HeroProfile
+ability_refs:
+  shrouded_momentum:
+    database_id: doctrine:shrouded-momentum
+    name_en: Shrouded Momentum
+    review_required: false
+  eternal_scepter:
+    database_id: doctrine:eternal-scepter
+    name_en: Eternal Scepter
+    review_required: false
+  infuse:
+    database_id: doctrine:infuse
+    name_en: Infuse
+    review_required: false
+  invigorating_drones:
+    database_id: doctrine:invigorating-drones
+    name_en: Invigorating Drones
+    review_required: false
+  deliverance:
+    database_id: doctrine:deliverance
+    name_en: Deliverance
+    review_required: true
+criteria:
+- id: doctrine.positioning.support_distance
+  category: positioning
+  status: draft
+  ability: null
+  title: 중거리 지원과 구조받을 거리
+  description: '적용 상황: 아군이 전진하며 교전. 평가: 중거리 지원과 구조받을 거리. 예외: 고립된 적을 안전하게 압박할 짧은 각도는 허용. 필수 근거: 아군 이동·치료 시야·적
+    접근·복귀 경로. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 치료 시야를 유지하면서 압박받으면 아군 쪽으로 돌아갈 수 있음
+  bad_signs:
+  - 이동이 빠른 아군을 끝까지 따라가 고립되거나 너무 멀어 지원이 끊김
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 아군 이동·치료 시야·적 접근·복귀 경로'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.doctrine; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Doctrine?oldid=404989'
+    patch_version: null
+- id: doctrine.positioning.infused_exit
+  category: positioning
+  status: draft
+  ability: null
+  title: 강화 이동을 포함한 탈출 계획
+  description: '적용 상황: 적 다이버가 접근 가능한 상태. 평가: 강화 이동을 포함한 탈출 계획. 예외: 강화 공격이나 지원이 즉시 교전을 끝낼 수 있으면 자원 투자 가능. 필수
+    근거: 강화 잔량·이동 HUD·적 접근·도착 가능 공간. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 이동 기술과 강화 자원을 고려해 엄폐 또는 아군 쪽 이탈 경로 확보
+  bad_signs:
+  - 확인된 진입 위협 앞에서 자원을 모두 쓰고 막다른 위치에 남음
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 강화 잔량·이동 HUD·적 접근·도착 가능 공간'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.doctrine; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Doctrine?oldid=404989'
+    patch_version: null
+- id: doctrine.positioning.height_cost
+  category: positioning
+  status: draft
+  ability: shrouded_momentum
+  title: 고지대 진입 후 버틸 수 있는가
+  description: '적용 상황: 강화 이동으로 높은 위치를 얻으려는 상황. 평가: 고지대 진입 후 버틸 수 있는가. 예외: 교전 전 안전한 재배치는 전투 중 소모와 다르게 평가. 필수
+    근거: 이동 사용·강화 여부·고지대 적·복귀 가능성. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 도착 후 엄폐와 지원 시야가 확보되고 위협을 피할 경로가 있음
+  bad_signs:
+  - 고지대에 오르는 데 생존 수단을 써 적에게 고립됨
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 이동 사용·강화 여부·고지대 적·복귀 가능성'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.doctrine; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Doctrine?oldid=404989'
+    patch_version: null
+- id: doctrine.skill_usage.scepter_priority
+  category: skill_usage
+  status: draft
+  ability: eternal_scepter
+  title: 치료와 공격의 긴급도 전환
+  description: '적용 상황: 아군과 적이 동시에 사격 가능. 평가: 치료와 공격의 긴급도 전환. 예외: 위협 제거가 즉각적인 구조가 되는 상황은 별도 판단. 필수 근거: 사격 대상·아군
+    체력·적 위협·명중 효과. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 급한 치료를 연결하면서 여유 구간에 적을 압박함
+  bad_signs:
+  - 도움 가능한 아군의 위급 상태가 보이는데 낮은 가치 공격만 유지함
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 사격 대상·아군 체력·적 위협·명중 효과'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.doctrine; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Doctrine?oldid=404989'
+    patch_version: null
+- id: doctrine.skill_usage.infuse_choice
+  category: skill_usage
+  status: draft
+  ability: infuse
+  title: 강화의 다음 사용처 선택
+  description: '적용 상황: 강화를 사용하고 다음 행동을 결정. 평가: 강화의 다음 사용처 선택. 예외: 강화를 드론에만 쓰거나 항상 하나를 남기라는 고정 규칙은 적용하지 않음.
+    필수 근거: 강화 발동·직후 사용 기술·자원·위협과 수혜자. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 응급 치료·공격·자기 생존 중 실제 필요에 맞는 행동에 연결함
+  bad_signs:
+  - 명확한 생존 위협이 있는데 강화가 무관한 다음 행동에 소모됨
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 강화 발동·직후 사용 기술·자원·위협과 수혜자'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.doctrine; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Doctrine?oldid=404989'
+    patch_version: null
+- id: doctrine.skill_usage.drone_window
+  category: skill_usage
+  status: draft
+  ability: invigorating_drones
+  title: 드론을 실제 교전 대상에게 연결
+  description: '적용 상황: 아군이 공격하거나 피해를 받을 시점. 평가: 드론을 실제 교전 대상에게 연결. 예외: 본인 생존이 중요한 경우 강화 드론의 자기 수혜도 유효함. 필수
+    근거: 드론 대상·강화 여부·대상 행동·피해 흐름. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 공격·회복 혜택을 활용할 수 있는 아군에게 진입 시점에 제공함
+  bad_signs:
+  - 안전하게 대기하는 대상에게 사용해 실제 교전 중인 대상의 지원 기회를 잃음
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 드론 대상·강화 여부·대상 행동·피해 흐름'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.doctrine; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Doctrine?oldid=404989'
+    patch_version: null
+- id: doctrine.skill_usage.momentum_destination
+  category: skill_usage
+  status: draft
+  ability: shrouded_momentum
+  title: 이동 방향과 종료 후 위험
+  description: '적용 상황: 압박받거나 사선을 바꿀 필요가 있음. 평가: 이동 방향과 종료 후 위험. 예외: 공격적 이동으로 위협을 제거하거나 거점을 유지하는 경우 별도 판단. 필수
+    근거: 사용 전후 위치·적 사선·이동 종료 후 지원 가능성. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 이동으로 피해 방향을 끊고 치료 가능한 위치에 도달함
+  bad_signs:
+  - 직선으로 적에게 더 가까워지거나 이동 종료 후 공개된 곳에 남음
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 사용 전후 위치·적 사선·이동 종료 후 지원 가능성'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.doctrine; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Doctrine?oldid=404989'
+    patch_version: null
+- id: doctrine.ultimate_usage.deliverance_window
+  category: ultimate_usage
+  status: draft
+  ability: deliverance
+  title: 궁극기를 교전 공간과 연결
+  description: '적용 상황: 아군과 적이 같은 공간을 두고 싸움. 평가: 궁극기를 교전 공간과 연결. 예외: 즉각적인 구조·퇴각 지원도 후보이며 지속시간 기반 확정 평가는 금지.
+    필수 근거: 궁 효과 대상·아군 후속·적 퇴로·해당 경기 패치와 검수된 효과. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 아군이 이득을 활용하고 적은 쉽게 벗어나기 어려운 교전 시점에 사용함
+  bad_signs:
+  - 아군 후속이 없고 적도 쉽게 이탈하는 빈 공간에 사용함
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 궁 효과 대상·아군 후속·적 퇴로·해당 경기 패치와 검수된 효과'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  - DB Deliverance 검토 항목에 해당하는 지속시간·정확한 효과 계산이 결론을 좌우함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.doctrine; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Doctrine?oldid=404989'
+    patch_version: null

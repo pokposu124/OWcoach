@@ -1,0 +1,184 @@
+hero_id: kiriko
+display_name_ko: 키리코
+pack_version: 0.1.0
+review_status: draft
+patch_version: null
+profile_type: criterion_fragment_not_HeroProfile
+ability_refs:
+  swift_step:
+    database_id: kiriko:swift-step
+    name_en: Swift Step
+    review_required: false
+  wall_climb:
+    database_id: kiriko:wall-climb
+    name_en: Wall Climb
+    review_required: false
+  healing_ofuda:
+    database_id: kiriko:healing-ofuda
+    name_en: Healing Ofuda
+    review_required: false
+  kunai:
+    database_id: kiriko:kunai
+    name_en: Kunai
+    review_required: false
+  protection_suzu:
+    database_id: kiriko:protection-suzu
+    name_en: Protection Suzu
+    review_required: false
+  kitsune_rush:
+    database_id: kiriko:kitsune-rush
+    name_en: Kitsune Rush
+    review_required: false
+criteria:
+- id: kiriko.positioning.off_angle_contract
+  category: positioning
+  status: draft
+  ability: null
+  title: 측면 압박과 치료 복귀 조건
+  description: '적용 상황: 측면에서 쿠나이로 압박. 평가: 측면 압박과 치료 복귀 조건. 예외: 다른 지원가가 충분히 담당하거나 결정적 위협을 제거하는 경우 측면 유지 가능. 필수
+    근거: 아군 체력·다른 지원·측면 길이·복귀 경로. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 아군이 버틸 상황에서 짧게 압박하고 치료 필요가 커지면 복귀함
+  bad_signs:
+  - 아군 치료 공백이 확인됐는데 깊은 측면에서 공격만 지속함
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 아군 체력·다른 지원·측면 길이·복귀 경로'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.kiriko; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Kiriko?oldid=404784'
+    patch_version: null
+- id: kiriko.positioning.teleport_anchor
+  category: positioning
+  status: draft
+  ability: swift_step
+  title: 순보 대상이 실제로 안전한가
+  description: '적용 상황: 위험한 위치에서 순간이동 탈출 준비. 평가: 순보 대상이 실제로 안전한가. 예외: 위급한 아군을 구하기 위한 위험한 합류는 생존 자원과 구조 가능성을
+    함께 평가. 필수 근거: 순보 HUD·대상 존재·도착 후 적과 엄폐. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 사용 가능한 아군과 도착 위치의 위협을 확인하고 탈출함
+  bad_signs:
+  - 순보가 있다는 이유로 전진했지만 대상이 없거나 도착지가 더 위험함
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 순보 HUD·대상 존재·도착 후 적과 엄폐'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.kiriko; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Kiriko?oldid=404784'
+    patch_version: null
+- id: kiriko.positioning.climb_reposition
+  category: positioning
+  status: draft
+  ability: wall_climb
+  title: 벽타기로 지원 각도와 퇴로 변경
+  description: '적용 상황: 벽을 이용해 사선을 바꿀 수 있음. 평가: 벽타기로 지원 각도와 퇴로 변경. 예외: 안전한 짧은 공격 각도 확보는 치료가 잠시 끊겨도 허용 가능. 필수
+    근거: 상승 전후 위치·부적 경로·아군 상태·퇴로. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 고지대에서 아군 치료와 적 압박을 연결하고 필요시 이탈 가능
+  bad_signs:
+  - 고지대에 고립되어 부적 경로가 막히고 복귀 수단도 사라짐
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 상승 전후 위치·부적 경로·아군 상태·퇴로'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.kiriko; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Kiriko?oldid=404784'
+    patch_version: null
+- id: kiriko.skill_usage.ofuda_travel
+  category: skill_usage
+  status: draft
+  ability: healing_ofuda
+  title: 부적이 실제 대상에게 도달하는가
+  description: '적용 상황: 아군이 이동하거나 모서리를 돌아감. 평가: 부적이 실제 대상에게 도달하는가. 예외: 적 사선 때문에 즉시 따라갈 수 없으면 위험한 추격을 강요하지 않음.
+    필수 근거: 부적 경로·도착 효과·대상 이동·가림. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 대상의 이동과 가림을 고려해 치료를 이어갈 위치를 선택함
+  bad_signs:
+  - 부적이 막히는 것을 보고도 같은 위치에서 계속 보내 치료 공백 발생
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 부적 경로·도착 효과·대상 이동·가림'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.kiriko; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Kiriko?oldid=404784'
+    patch_version: null
+- id: kiriko.skill_usage.kunai_window
+  category: skill_usage
+  status: draft
+  ability: kunai
+  title: 쿠나이 압박의 치료 비용
+  description: '적용 상황: 치료 사이 공격 기회가 있음. 평가: 쿠나이 압박의 치료 비용. 예외: 짧은 공격으로 당장 위협을 제거할 가능성이 높으면 공격 우선 가능. 필수 근거:
+    공격 시점·아군 체력 변화·적 위협·부적 상태. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 긴급 치료를 끊지 않는 구간에 적을 압박함
+  bad_signs:
+  - 도움 가능한 아군의 위급 상태를 보고도 공격에만 몰두함
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 공격 시점·아군 체력 변화·적 위협·부적 상태'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.kiriko; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Kiriko?oldid=404784'
+    patch_version: null
+- id: kiriko.skill_usage.suzu_need
+  category: skill_usage
+  status: draft
+  ability: protection_suzu
+  title: 정화와 짧은 보호를 위험 순간에 연결
+  description: '적용 상황: 해제 가능한 효과 또는 임박한 피해가 관측됨. 평가: 정화와 짧은 보호를 위험 순간에 연결. 예외: 자기 생존이나 일반 폭발 피해 방어에도 쓸 수 있어
+    정화 대상이 없다는 이유로 감점 금지. 필수 근거: 사용·효과 적용·해제 대상·적 공격 시점·다른 보호. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 실제 위험 효과나 피해 시점에 대상에게 효과를 연결함
+  bad_signs:
+  - 사소한 피해에 소모한 뒤 이미 보이던 핵심 위협을 막지 못함
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 사용·효과 적용·해제 대상·적 공격 시점·다른 보호'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.kiriko; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Kiriko?oldid=404784'
+    patch_version: null
+- id: kiriko.skill_usage.step_commit
+  category: skill_usage
+  status: draft
+  ability: swift_step
+  title: 구조 순보 이후의 생존 계획
+  description: '적용 상황: 피해받는 아군에게 합류. 평가: 구조 순보 이후의 생존 계획. 예외: 거점 유지나 확실한 역전 기회가 있는 경우 위험 합류 허용. 필수 근거: 합류 전
+    아군 상태·도착지 위협·방어 수단·구조 가능성. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 도착 후 엄폐 또는 사용 가능한 방어 수단으로 구조와 생존을 이어감
+  bad_signs:
+  - 생존 수단 없는 상태로 이미 구하기 어려운 아군에게 이동해 함께 고립됨
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 합류 전 아군 상태·도착지 위협·방어 수단·구조 가능성'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.kiriko; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Kiriko?oldid=404784'
+    patch_version: null
+- id: kiriko.ultimate_usage.rush_lane
+  category: ultimate_usage
+  status: draft
+  ability: kitsune_rush
+  title: 여우길을 아군의 유효 교전에 연결
+  description: '적용 상황: 아군이 사격하거나 전진할 시점. 평가: 여우길을 아군의 유효 교전에 연결. 예외: 좁은 방어 공간에서 버티거나 적을 물러나게 하는 사용도 유효함. 필수
+    근거: 여우길 경로·아군 방향·적 사선·전투 종료 여부. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 아군이 활용할 길과 적에게 영향을 줄 사선을 맞춰 사용함
+  bad_signs:
+  - 아군이 후퇴하거나 벽 때문에 공격할 수 없는 길에 사용함
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 여우길 경로·아군 방향·적 사선·전투 종료 여부'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.kiriko; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Kiriko?oldid=404784'
+    patch_version: null

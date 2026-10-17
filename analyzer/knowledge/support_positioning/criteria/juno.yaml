@@ -1,0 +1,184 @@
+hero_id: juno
+display_name_ko: 주노
+pack_version: 0.1.0
+review_status: draft
+patch_version: null
+profile_type: criterion_fragment_not_HeroProfile
+ability_refs:
+  martian_overboots:
+    database_id: juno:martian-overboots
+    name_en: Martian Overboots
+    review_required: false
+  glide_boost:
+    database_id: juno:glide-boost
+    name_en: Glide Boost
+    review_required: false
+  mediblaster:
+    database_id: juno:mediblaster
+    name_en: Mediblaster
+    review_required: false
+  pulsar_torpedoes:
+    database_id: juno:pulsar-torpedoes
+    name_en: Pulsar Torpedoes
+    review_required: false
+  hyper_ring:
+    database_id: juno:hyper-ring
+    name_en: Hyper Ring
+    review_required: false
+  orbital_ray:
+    database_id: juno:orbital-ray
+    name_en: Orbital Ray
+    review_required: false
+criteria:
+- id: juno.positioning.working_range
+  category: positioning
+  status: draft
+  ability: null
+  title: 치료가 실질적으로 연결되는 중거리
+  description: '적용 상황: 아군을 치료하며 원거리 안전을 추구. 평가: 치료가 실질적으로 연결되는 중거리. 예외: 접근 경로가 저격이나 다이브에 노출되면 거리 유지가 타당함. 필수
+    근거: 거리 근거·치료 효과·아군 피해·경기 패치의 거리 관련 규칙. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 엄폐와 치료 효율을 함께 유지할 위치로 따라 이동함
+  bad_signs:
+  - 필요 이상으로 멀어져 치료 기여가 떨어지는데 안전한 접근 경로를 쓰지 않음
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 거리 근거·치료 효과·아군 피해·경기 패치의 거리 관련 규칙'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.juno; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Juno?oldid=402632'
+    patch_version: null
+- id: juno.positioning.hover_exposure
+  category: positioning
+  status: draft
+  ability: martian_overboots
+  title: 공중 체류 중 사선 관리
+  description: '적용 상황: 점프나 호버로 시야를 확보. 평가: 공중 체류 중 사선 관리. 예외: 지상 위험을 피하거나 아군 시야를 확보하는 짧은 체공은 허용. 필수 근거: 체공
+    경로·적 사선·지상 위험·착지 엄폐. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 고도를 바꾸며 엄폐에 연결하고 필요한 순간만 시야를 엶
+  bad_signs:
+  - 일정한 열린 공중에 머물며 적의 집중 공격을 받음
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 체공 경로·적 사선·지상 위험·착지 엄폐'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.juno; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Juno?oldid=402632'
+    patch_version: null
+- id: juno.positioning.glide_route
+  category: positioning
+  status: draft
+  ability: glide_boost
+  title: 활공의 끝에 남는 지원 위치
+  description: '적용 상황: 빠르게 이동해 위협을 피하거나 합류. 평가: 활공의 끝에 남는 지원 위치. 예외: 거점 접촉이나 즉각적 구조를 위한 위험 이동은 목적을 함께 평가. 필수
+    근거: 출발·이동·종료 위치·적 방향·아군 위치. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 활공 종료 지점에서 엄폐와 아군 치료 시야 확보
+  bad_signs:
+  - 빠르다는 이유로 적 사선을 가로질러 종료 후 고립됨
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 출발·이동·종료 위치·적 방향·아군 위치'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.juno; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Juno?oldid=402632'
+    patch_version: null
+- id: juno.skill_usage.blaster_priority
+  category: skill_usage
+  status: draft
+  ability: mediblaster
+  title: 기본 사격의 대상 우선순위
+  description: '적용 상황: 위급한 아군과 공격할 적이 함께 보임. 평가: 기본 사격의 대상 우선순위. 예외: 공격으로 피해 원인을 즉시 제거할 수 있으면 공격 선택 가능. 필수
+    근거: 사격 대상·아군 체력·위협 원인·다른 치료. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 도움이 시급한 아군에게 사격을 연결한 뒤 공격을 이어감
+  bad_signs:
+  - 피해받는 아군을 보고도 낮은 가치 공격을 계속함
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 사격 대상·아군 체력·위협 원인·다른 치료'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.juno; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Juno?oldid=402632'
+    patch_version: null
+- id: juno.skill_usage.torpedo_lock
+  category: skill_usage
+  status: draft
+  ability: pulsar_torpedoes
+  title: 어뢰 조준 시간의 기회비용
+  description: '적용 상황: 여러 대상에게 어뢰를 조준하려는 순간. 평가: 어뢰 조준 시간의 기회비용. 예외: 빠른 단일 대상 어뢰도 유효하며 많은 표적이 필수는 아님. 필수 근거:
+    조준 시작·잠금·발사·그동안 아군 체력과 다른 치료. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 조준 중에도 아군이 버틸 수 있고 발사 시점에 유효한 대상 확보
+  bad_signs:
+  - 위급한 아군에게 즉시 사격해야 하는데 최대 대상 수만 기다리다 치료 공백 발생
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 조준 시작·잠금·발사·그동안 아군 체력과 다른 치료'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.juno; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Juno?oldid=402632'
+    patch_version: null
+- id: juno.skill_usage.ring_path
+  category: skill_usage
+  status: draft
+  ability: hyper_ring
+  title: 하이퍼 링을 팀의 이동 경로에 배치
+  description: '적용 상황: 아군이 진입하거나 철수. 평가: 하이퍼 링을 팀의 이동 경로에 배치. 예외: 본인 또는 한 아군의 긴급 이동만으로도 충분한 가치가 있을 수 있음. 필수
+    근거: 링 위치·통과 인원·이동 방향·진입 또는 후퇴 목적. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 실제로 지나갈 길에 링을 두어 필요한 아군의 이동을 도움
+  bad_signs:
+  - 전진 방향과 동떨어진 곳에 설치해 주요 아군이 사용할 수 없음
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 링 위치·통과 인원·이동 방향·진입 또는 후퇴 목적'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.juno; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Juno?oldid=402632'
+    patch_version: null
+- id: juno.skill_usage.glide_reserve
+  category: skill_usage
+  status: draft
+  ability: glide_boost
+  title: 다이브에 대비한 이동 수단
+  description: '적용 상황: 적의 접근 위협이 남아 있음. 평가: 다이브에 대비한 이동 수단. 예외: 안전한 고지대 선점이나 아군 합류의 이득이 크면 선사용 가능. 필수 근거: 사용
+    시점·적 접근 정보·다른 회피 경로. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 즉시 이동이 필요한 위험을 피할 수 있도록 위치와 재사용 상태 관리
+  bad_signs:
+  - 안전한 곳의 작은 이동에 소모한 직후 확인된 다이브에 갇힘
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 사용 시점·적 접근 정보·다른 회피 경로'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.juno; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Juno?oldid=402632'
+    patch_version: null
+- id: juno.ultimate_usage.ray_direction
+  category: ultimate_usage
+  status: draft
+  ability: orbital_ray
+  title: 궤도 광선의 시작점과 진행 방향
+  description: '적용 상황: 아군이 교전을 이어갈 공간 선택. 평가: 궤도 광선의 시작점과 진행 방향. 예외: 방어 중 짧게 활용하거나 적을 밀어내는 목적도 유효하며 끝까지 따라갈
+    의무는 없음. 필수 근거: 시작점·진행 방향·아군 이동·피해·전투 상태. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 아군이 머무르거나 전진할 경로와 광선 진행 방향을 맞춤
+  bad_signs:
+  - 벽이나 적 집중 사격 때문에 아군이 따라갈 수 없는 방향에 사용함
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 시작점·진행 방향·아군 이동·피해·전투 상태'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.juno; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Juno?oldid=402632'
+    patch_version: null

@@ -1,0 +1,180 @@
+hero_id: lifeweaver
+display_name_ko: 라이프위버
+pack_version: 0.1.0
+review_status: draft
+patch_version: null
+profile_type: criterion_fragment_not_HeroProfile
+ability_refs:
+  petal_platform:
+    database_id: lifeweaver:petal-platform
+    name_en: Petal Platform
+    review_required: false
+  healing_blossom:
+    database_id: lifeweaver:healing-blossom
+    name_en: Healing Blossom
+    review_required: false
+  life_grip:
+    database_id: lifeweaver:life-grip
+    name_en: Life Grip
+    review_required: false
+  rejuvenating_dash:
+    database_id: lifeweaver:rejuvenating-dash
+    name_en: Rejuvenating Dash
+    review_required: false
+  tree_of_life:
+    database_id: lifeweaver:tree-of-life
+    name_en: Tree of Life
+    review_required: false
+criteria:
+- id: lifeweaver.positioning.grip_destination
+  category: positioning
+  status: draft
+  ability: null
+  title: 구출받을 아군이 도착할 위치 확보
+  description: '적용 상황: 구원의 손길 사용 가능 상태로 교전 지원. 평가: 구출받을 아군이 도착할 위치 확보. 예외: 즉시 치명적 위험에서 벗어나는 것만으로 가치가 있으면 완벽하지
+    않은 도착점도 허용. 필수 근거: 본인 위치·도착 예상 공간·적 사선·대상의 원래 위험. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 치료 시야와 함께 아군이 끌려와도 안전한 엄폐 공간을 확보함
+  bad_signs:
+  - 본인 위치가 적 사선 안인데 구조 대상도 같은 위험으로 끌어옴
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 본인 위치·도착 예상 공간·적 사선·대상의 원래 위험'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.lifeweaver; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Lifeweaver?oldid=404925'
+    patch_version: null
+- id: lifeweaver.positioning.platform_cover
+  category: positioning
+  status: draft
+  ability: petal_platform
+  title: 단상 위에서도 엄폐와 탈출 확인
+  description: '적용 상황: 단상으로 높이를 얻은 상황. 평가: 단상 위에서도 엄폐와 탈출 확인. 예외: 지상 위험을 피하는 동안에는 공중 노출이 더 나은 선택일 수 있음. 필수
+    근거: 단상 위치·적 사선·치료 대상·지상 위험·하강 위치. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 높이로 치료 시야를 열면서 적 저격 사선을 제한하고 내려갈 곳 확보
+  bad_signs:
+  - 단상을 안전지대로 간주해 열린 공중에 계속 머물며 집중 공격받음
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 단상 위치·적 사선·치료 대상·지상 위험·하강 위치'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.lifeweaver; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Lifeweaver?oldid=404925'
+    patch_version: null
+- id: lifeweaver.positioning.follow_connection
+  category: positioning
+  status: draft
+  ability: null
+  title: 전선 이동에 맞춘 후방 재배치
+  description: '적용 상황: 아군이 모서리나 지형을 넘어 전진. 평가: 전선 이동에 맞춘 후방 재배치. 예외: 아군의 무리한 단독 진입이나 위험한 이동 경로는 추격 의무 없음. 필수
+    근거: 대상 이동·지원 단절·경로 위협·다른 지원. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 치료와 구출이 필요한 아군을 볼 수 있도록 다음 엄폐로 이동함
+  bad_signs:
+  - 안전한 이동 경로가 있는데 너무 뒤에 남아 지원이 끊김
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 대상 이동·지원 단절·경로 위협·다른 지원'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.lifeweaver; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Lifeweaver?oldid=404925'
+    patch_version: null
+- id: lifeweaver.skill_usage.blossom_release
+  category: skill_usage
+  status: draft
+  ability: healing_blossom
+  title: 생명의 꽃 방출 시점과 긴급도
+  description: '적용 상황: 치료를 충전하며 피해받는 아군을 지원. 평가: 생명의 꽃 방출 시점과 긴급도. 예외: 긴급하지 않은 대상을 위한 충전은 합리적이며 고정 충전량 기준을
+    쓰지 않음. 필수 근거: 충전 상태·방출·도착·아군 체력 변화. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 아군이 버틸 수 있는 시간에 맞춰 방출하며 급할 때 과한 충전을 피함
+  bad_signs:
+  - 최대 충전만 기다려 당장 전달할 수 있던 치료가 늦어짐
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 충전 상태·방출·도착·아군 체력 변화'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.lifeweaver; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Lifeweaver?oldid=404925'
+    patch_version: null
+- id: lifeweaver.skill_usage.grip_cost
+  category: skill_usage
+  status: draft
+  ability: life_grip
+  title: 구조 필요와 아군 행동 중단 비용
+  description: '적용 상황: 아군을 당길지 결정하는 순간. 평가: 구조 필요와 아군 행동 중단 비용. 예외: 의도된 재배치나 요청에 따른 이동은 체력이 높아도 타당함. 필수 근거:
+    대상 체력·적 위협·자체 탈출 수단·행동·도착 위치·요청 여부. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 명확한 치명적 위험에서 안전한 위치로 구조함
+  bad_signs:
+  - 스스로 안전하게 싸우던 아군을 당겨 공격·궁극기·거점 유지 기회를 끊음
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 대상 체력·적 위협·자체 탈출 수단·행동·도착 위치·요청 여부'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.lifeweaver; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Lifeweaver?oldid=404925'
+    patch_version: null
+- id: lifeweaver.skill_usage.petal_purpose
+  category: skill_usage
+  status: draft
+  ability: petal_platform
+  title: 단상의 이동·구조 목적 확인
+  description: '적용 상황: 단상 설치 또는 활성화. 평가: 단상의 이동·구조 목적 확인. 예외: 자기 생존용 사전 설치도 유효하며 즉시 탑승하지 않았다고 낭비로 단정 금지. 필수
+    근거: 설치 위치·탑승자·예상 위험·후속 활용. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 필요한 아군의 고지대 접근이나 위험 회피에 실제 연결됨
+  bad_signs:
+  - 이용할 대상이나 이동 목적 없이 소모해 이어지는 구조에 쓸 수 없음
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 설치 위치·탑승자·예상 위험·후속 활용'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.lifeweaver; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Lifeweaver?oldid=404925'
+    patch_version: null
+- id: lifeweaver.skill_usage.dash_landing
+  category: skill_usage
+  status: draft
+  ability: rejuvenating_dash
+  title: 돌진 회복과 종료 위치
+  description: '적용 상황: 본인이 피해를 받거나 위치를 바꿔야 함. 평가: 돌진 회복과 종료 위치. 예외: 즉시 구조 시야나 거점을 확보해야 하는 경우 위험 대비 이득 평가. 필수
+    근거: 돌진 전후 체력·위치·적 사선·아군 지원 필요. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 회복과 함께 엄폐로 이동해 다음 치료를 지속함
+  bad_signs:
+  - 작은 회복을 위해 더 위험한 적 사선으로 돌진함
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 돌진 전후 체력·위치·적 사선·아군 지원 필요'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.lifeweaver; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Lifeweaver?oldid=404925'
+    patch_version: null
+- id: lifeweaver.ultimate_usage.tree_space
+  category: ultimate_usage
+  status: draft
+  ability: tree_of_life
+  title: 생명의 나무로 필요한 공간을 유지
+  description: '적용 상황: 아군이 모여 버티거나 이동해야 함. 평가: 생명의 나무로 필요한 공간을 유지. 예외: 적 경로 차단이나 긴급 보호를 위한 설치는 치료량이 낮아도 가치가
+    있음. 필수 근거: 나무 위치·아군 수혜·충돌 및 가림·전선 이동·실제 방해 효과. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 회복을 받을 공간에 설치하고 아군의 주요 이동·사격을 방해하지 않음
+  bad_signs:
+  - 아군이 이용할 수 없는 곳에 설치하거나 중요한 퇴로를 막음
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 나무 위치·아군 수혜·충돌 및 가림·전선 이동·실제 방해 효과'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.lifeweaver; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Lifeweaver?oldid=404925'
+    patch_version: null

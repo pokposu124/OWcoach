@@ -1,0 +1,184 @@
+hero_id: sombra
+display_name_ko: 솜브라
+pack_version: 0.1.0
+review_status: draft
+patch_version: null
+profile_type: criterion_fragment_not_HeroProfile
+ability_refs:
+  translocator:
+    database_id: sombra:translocator
+    name_en: Translocator
+    review_required: false
+  hotfix:
+    database_id: sombra:hotfix
+    name_en: Hotfix
+    review_required: false
+  cyberspace:
+    database_id: sombra:cyberspace
+    name_en: Cyberspace
+    review_required: false
+  conspirator:
+    database_id: sombra:conspirator
+    name_en: Conspirator
+    review_required: false
+  machine_pistol:
+    database_id: sombra:machine-pistol
+    name_en: Machine Pistol
+    review_required: false
+  emp:
+    database_id: sombra:emp
+    name_en: EMP
+    review_required: false
+criteria:
+- id: sombra.positioning.rework_role
+  category: positioning
+  status: draft
+  ability: null
+  title: 지원형 솜브라의 교전 연결
+  description: '적용 상황: 지원 역할로 개편된 스킬 구성이 확인된 경기. 평가: 지원형 솜브라의 교전 연결. 예외: 고립된 핵심 적 제거나 거점 압박이 더 큰 이득을 만들면 일시적
+    이탈 가능. 필수 근거: 경기 패치·스킬 구성·아군 피해·지원 기술의 실제 연결. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 짧은 측면 압박 중에도 Hotfix와 Cyberspace로 필요한 아군을 지원함
+  bad_signs:
+  - 과거 공격 역할처럼 장시간 단독 잠입해 팀 지원 기회를 잃음
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 경기 패치·스킬 구성·아군 피해·지원 기술의 실제 연결'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.sombra; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Sombra?oldid=404978'
+    patch_version: null
+- id: sombra.positioning.zone_cover
+  category: positioning
+  status: draft
+  ability: null
+  title: Cyberspace와 엄폐를 함께 활용
+  description: '적용 상황: 장판 주변에서 교전. 평가: Cyberspace와 엄폐를 함께 활용. 예외: 거점 접촉이나 확실한 유리 교환을 위한 노출은 별도 판단. 필수 근거: 장판
+    위치·수혜·엄폐·적 사선·피해 변화. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 장판 수혜와 적 약화 가능성을 활용하면서 본체는 사선을 제한함
+  bad_signs:
+  - 장판 안이라는 이유로 열린 곳에서 다수의 적 공격을 받아 버티지 못함
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 장판 위치·수혜·엄폐·적 사선·피해 변화'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.sombra; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Sombra?oldid=404978'
+    patch_version: null
+- id: sombra.positioning.translocator_exit
+  category: positioning
+  status: draft
+  ability: translocator
+  title: 위치변환기 도착점과 지원 복귀
+  description: '적용 상황: 탈출하거나 새 각도로 이동. 평가: 위치변환기 도착점과 지원 복귀. 예외: 즉시 생존이 급하면 지원 복귀보다 안전한 이탈을 우선할 수 있음. 필수 근거:
+    투척·도착 위치·적 방향·이동 후 아군 연결. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 도착 지점이 안전하고 이후 아군 지원 또는 유효한 압박으로 연결됨
+  bad_signs:
+  - 일단 멀어지는 데만 집중해 적에게 노출된 곳이나 지원 불가 위치로 이동함
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 투척·도착 위치·적 방향·이동 후 아군 연결'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.sombra; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Sombra?oldid=404978'
+    patch_version: null
+- id: sombra.skill_usage.hotfix_priority
+  category: skill_usage
+  status: draft
+  ability: hotfix
+  title: Hotfix의 치료 대상 우선순위
+  description: '적용 상황: 아군에게 지속 피해가 들어오는 교전. 평가: Hotfix의 치료 대상 우선순위. 예외: 체력 팩·설치물 상호작용이 전투에 유효한 경우에는 별도 가치 평가.
+    필수 근거: 실제 대상·효과·체력 변화·해당 패치의 상호작용 규칙. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 지원이 필요한 아군에게 효과를 연결하고 실제 회복 여부 확인
+  bad_signs:
+  - 안전한 대상이나 교전과 무관한 상호작용만 반복해 위급한 아군을 놓침
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 실제 대상·효과·체력 변화·해당 패치의 상호작용 규칙'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.sombra; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Sombra?oldid=404978'
+    patch_version: null
+- id: sombra.skill_usage.cyberspace_window
+  category: skill_usage
+  status: draft
+  ability: cyberspace
+  title: 장판을 실제 교전 공간에 설치
+  description: '적용 상황: 아군과 적이 공간을 두고 싸움. 평가: 장판을 실제 교전 공간에 설치. 예외: 통로 진입 억제나 후퇴 경로 확보도 유효함. 필수 근거: 설치 시점·영역
+    위치·적과 아군 이동·효과 수혜. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 아군 회복과 적 약화를 활용할 수 있는 지점에 설치함
+  bad_signs:
+  - 곧 떠날 빈 공간에 사용해 중요한 교전 시점에 효과를 주지 못함
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 설치 시점·영역 위치·적과 아군 이동·효과 수혜'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.sombra; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Sombra?oldid=404978'
+    patch_version: null
+- id: sombra.skill_usage.conspirator_info
+  category: skill_usage
+  status: draft
+  ability: conspirator
+  title: 확인된 적 궁극기 정보를 대응에 활용
+  description: '적용 상황: 패시브가 적의 준비된 궁극기를 보여줌. 평가: 확인된 적 궁극기 정보를 대응에 활용. 예외: 표시가 없다고 궁극기가 없다고 판단하지 않으며 음성 공유를
+    추정하지 않음. 필수 근거: 패시브 표시·적 식별·이후 위치 변화·실제 회피 대안. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 확인된 위협에 맞춰 엄폐·거리·지원 자원을 조정함
+  bad_signs:
+  - 명확히 표시된 위험을 반복해서 무시하고 피할 수 있는 위치에 머묾
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 패시브 표시·적 식별·이후 위치 변화·실제 회피 대안'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.sombra; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Sombra?oldid=404978'
+    patch_version: null
+- id: sombra.skill_usage.pistol_window
+  category: skill_usage
+  status: draft
+  ability: machine_pistol
+  title: 기본 공격과 지원 기술의 공백 관리
+  description: '적용 상황: 공격 가능한 적과 지원 필요한 아군이 함께 있음. 평가: 기본 공격과 지원 기술의 공백 관리. 예외: 공격이 즉시 위협을 제거하거나 지원 기술을 쓸 수
+    없으면 공격 우선 가능. 필수 근거: 공격 대상·지원 기술 HUD·아군 체력·적 위협. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 지원 기술 상태와 아군 위험을 보고 짧은 공격 기회를 활용함
+  bad_signs:
+  - 공격에만 몰두해 사용 가능한 지원 기술과 위급한 아군을 방치함
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 공격 대상·지원 기술 HUD·아군 체력·적 위협'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.sombra; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Sombra?oldid=404978'
+    patch_version: null
+- id: sombra.ultimate_usage.emp_followup
+  category: ultimate_usage
+  status: draft
+  ability: emp
+  title: EMP의 유효 대상과 아군 후속
+  description: '적용 상황: 적 방어를 깨거나 교전을 시작할 시점. 평가: EMP의 유효 대상과 아군 후속. 예외: 한 명의 핵심 적 행동을 끊거나 거점을 지키는 EMP도 유효함.
+    필수 근거: 궁 사용·피격 대상·방어 효과·아군 사선·퇴로·경기 패치. 예외·실행 가능한 대안을 확인한 뒤 판단하며 결과만으로 결정하지 않는다.'
+  good_signs:
+  - 아군이 공격할 준비가 된 적에게 적용하고 이후 본인 생존 경로 확보
+  bad_signs:
+  - 많이 맞히려고 혼자 깊이 들어가 아군 후속 없이 고립됨
+  cannot_judge_when:
+  - '다음 근거의 핵심 요소를 확인할 수 없음: 궁 사용·피격 대상·방어 효과·아군 사선·퇴로·경기 패치'
+  - 사용 여부만 확인되고 대상·도달·당시 위협 또는 필요한 대안 경로가 불명확함
+  - 경기 패치·모드·특전 차이가 이 판정에 영향을 주지만 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.sombra; 전술은 검수 전 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Sombra?oldid=404978'
+    patch_version: null

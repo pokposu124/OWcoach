@@ -1,0 +1,311 @@
+research_date: '2026-10-17'
+pack_date: '2026-10-18'
+repository_commit: 5f098f674081bbb1940898759aabf71ea65949b6
+scope: 일반 5대5 역할 고정. 6대6·스타디움·커스텀 변형에는 재검증 필요.
+provenance_policy: 전술 조건·좋은 신호·나쁜 신호·예외는 작성자의 검수 전 설계다. 커뮤니티 의견을 전문가 합의나 검증된 정답으로 표시하지 않는다. DB는 스킬 존재 및 메커니즘의
+  참조이며 경기 패치 일치를 증명하지 않는다.
+heroes:
+  ana:
+    display_name_ko: 아나
+    community_or_official_reference:
+      id: S04
+      url: https://www.reddit.com/r/OverwatchUniversity/comments/161ygqy
+      access: 검색 제공 본문·댓글
+      scope: 원거리 고립과 아군에게 도움받을 거리. 스킬·궁극기 판정 전체의 직접 근거는 아님.
+    mechanics_source:
+      source_id: wiki:ana
+      publisher: Overwatch Wiki contributors
+      url: https://overwatch.weirdgloop.org/w/Ana
+      revision_url: https://overwatch.weirdgloop.org/w/Ana?oldid=403928
+      revision_id: '403928'
+      last_edited_text: This page was last edited on 12 October 2026, at 22:07.
+      fetched_at_utc: '2026-10-15T13:58:52+00:00'
+      sha256: d0a3bcc82ee3d7c8a962e37c2bee11309226f8d45e1d682717bf065da657870e
+      license: CC BY-NC-SA 3.0
+    strategy_status: editorial_draft_not_coach_validated
+    match_patch_verified: false
+  baptiste:
+    display_name_ko: 바티스트
+    community_or_official_reference:
+      id: S10
+      url: https://www.reddit.com/r/OverwatchUniversity/comments/1dgss3l
+      access: 검색 제공 본문·댓글
+      scope: 측면 거리와 다이브·방어 자원에 따른 위치 조정.
+    mechanics_source:
+      source_id: wiki:baptiste
+      publisher: Overwatch Wiki contributors
+      url: https://overwatch.weirdgloop.org/w/Baptiste
+      revision_url: https://overwatch.weirdgloop.org/w/Baptiste?oldid=404928
+      revision_id: '404928'
+      last_edited_text: This page was last edited on 15 October 2026, at 03:38.
+      fetched_at_utc: '2026-10-15T13:59:08+00:00'
+      sha256: c94b537017e511d1614a3232a65e699cedc0eb8b9e35f31a3edf86f1220a68ca
+      license: CC BY-NC-SA 3.0
+    strategy_status: editorial_draft_not_coach_validated
+    match_patch_verified: false
+  brigitte:
+    display_name_ko: 브리기테
+    community_or_official_reference:
+      id: S08
+      url: https://www.reddit.com/r/OverwatchUniversity/comments/113svha/the_complete_brigitte_guide_2500_word_guide/
+      access: 본문
+      scope: 후방 보호·측면 지원·진입 방해·이탈. 오래된 수치 제외.
+    mechanics_source:
+      source_id: wiki:brigitte
+      publisher: Overwatch Wiki contributors
+      url: https://overwatch.weirdgloop.org/w/Brigitte
+      revision_url: https://overwatch.weirdgloop.org/w/Brigitte?oldid=403761
+      revision_id: '403761'
+      last_edited_text: This page was last edited on 12 October 2026, at 18:45.
+      fetched_at_utc: '2026-10-15T13:59:20+00:00'
+      sha256: b49ad5a9fdfe90c96a23de647e68a60dfa8b6a4e4e6acb38378cd222761859a9
+      license: CC BY-NC-SA 3.0
+    strategy_status: editorial_draft_not_coach_validated
+    match_patch_verified: false
+  doctrine:
+    display_name_ko: 독트린
+    community_or_official_reference:
+      id: S16
+      url: https://note.com/wakamonkun/n/na87c28a84441?hl=en
+      access: 본문
+      scope: 2026-10-15 개인 공략. 아군 지원 거리·강화 자원과 탈출·드론 교전 시점 참고. 스킬명·효과·수치는 DB 우선. 신규 영웅의 합의된 정답으로 보지 않음.
+    mechanics_source:
+      source_id: wiki:doctrine
+      publisher: Overwatch Wiki contributors
+      url: https://overwatch.weirdgloop.org/w/Doctrine
+      revision_url: https://overwatch.weirdgloop.org/w/Doctrine?oldid=404989
+      revision_id: '404989'
+      last_edited_text: This page was last edited on 15 October 2026, at 13:50.
+      fetched_at_utc: '2026-10-15T13:59:38+00:00'
+      sha256: 60a792a40a5db73709ae251b08d4d44e556afae6c63c860533c0da1da0ca41d4
+      license: CC BY-NC-SA 3.0
+    strategy_status: editorial_draft_not_coach_validated
+    match_patch_verified: false
+  illari:
+    display_name_ko: 일리아리
+    community_or_official_reference:
+      id: S17
+      url: https://www.reddit.com/r/OverwatchUniversity/comments/16xpxic/psa_per_pylon_placement/
+      access: 검색 제공 본문·댓글
+      scope: 전선 이동에 따른 태양석 재배치. 전체 키트 코칭의 직접 근거는 아님.
+    mechanics_source:
+      source_id: wiki:illari
+      publisher: Overwatch Wiki contributors
+      url: https://overwatch.weirdgloop.org/w/Illari
+      revision_url: https://overwatch.weirdgloop.org/w/Illari?oldid=401817
+      revision_id: '401817'
+      last_edited_text: This page was last edited on 7 October 2026, at 18:59.
+      fetched_at_utc: '2026-10-15T14:00:37+00:00'
+      sha256: 3654637655875a09ecc5ed6863475178b4bb859190c7f60c50552041acb93a56
+      license: CC BY-NC-SA 3.0
+    strategy_status: editorial_draft_not_coach_validated
+    match_patch_verified: false
+  jetpack-cat:
+    display_name_ko: 제트팩 캣
+    community_or_official_reference:
+      id: S18
+      url: https://www.reddit.com/r/OverwatchUniversity/comments/1r1vcl4/how_to_play_jetpack_cat/
+      access: 본문·댓글
+      scope: 공중 경로와 운송 대상·도착 위치의 중요성. 과장된 처치 보장·특전 의존 콤보 제외.
+    mechanics_source:
+      source_id: wiki:jetpack-cat
+      publisher: Overwatch Wiki contributors
+      url: https://overwatch.weirdgloop.org/w/Jetpack_Cat
+      revision_url: https://overwatch.weirdgloop.org/w/Jetpack_Cat?oldid=403999
+      revision_id: '403999'
+      last_edited_text: This page was last edited on 13 October 2026, at 05:16.
+      fetched_at_utc: '2026-10-15T14:00:43+00:00'
+      sha256: d22fb8fd3aff51863b4041743186eb67c4b6a0cf3e4f2b4fccb42b26fadc0c88
+      license: CC BY-NC-SA 3.0
+    strategy_status: editorial_draft_not_coach_validated
+    match_patch_verified: false
+  juno:
+    display_name_ko: 주노
+    community_or_official_reference:
+      id: S19
+      url: https://us.forums.blizzard.com/en/overwatch/t/i-could-use-some-juno-tips/993655
+      access: 검색 제공 본문·댓글
+      scope: 치료 거리·어뢰 대기 중 치료 공백·링의 이동 지원·궁 방향. 이용자 VOD 댓글만 검토했고 영상은 미시청. 댓글의 수치·랭크 일반화 제외.
+    mechanics_source:
+      source_id: wiki:juno
+      publisher: Overwatch Wiki contributors
+      url: https://overwatch.weirdgloop.org/w/Juno
+      revision_url: https://overwatch.weirdgloop.org/w/Juno?oldid=402632
+      revision_id: '402632'
+      last_edited_text: This page was last edited on 11 October 2026, at 19:46.
+      fetched_at_utc: '2026-10-15T14:01:00+00:00'
+      sha256: 790010d82ebc8997a2a883e7ee95f91707a080a6bdc898d9cf7ce82c3cdc5117
+      license: CC BY-NC-SA 3.0
+    strategy_status: editorial_draft_not_coach_validated
+    match_patch_verified: false
+  kiriko:
+    display_name_ko: 키리코
+    community_or_official_reference:
+      id: S07
+      url: https://www.reddit.com/r/OverwatchUniversity/comments/10umxv7
+      access: 검색 제공 본문·댓글
+      scope: 측면 압박과 순보 복귀 대상. 2023년 수치 미채택.
+    mechanics_source:
+      source_id: wiki:kiriko
+      publisher: Overwatch Wiki contributors
+      url: https://overwatch.weirdgloop.org/w/Kiriko
+      revision_url: https://overwatch.weirdgloop.org/w/Kiriko?oldid=404784
+      revision_id: '404784'
+      last_edited_text: This page was last edited on 15 October 2026, at 03:01.
+      fetched_at_utc: '2026-10-15T14:01:05+00:00'
+      sha256: ebd4289cb0b952675328bf1fc2b177070e68f49aa6951609658cc91bdcbf4612
+      license: CC BY-NC-SA 3.0
+    strategy_status: editorial_draft_not_coach_validated
+    match_patch_verified: false
+  lifeweaver:
+    display_name_ko: 라이프위버
+    community_or_official_reference:
+      id: S20
+      url: https://www.reddit.com/r/OverwatchUniversity/comments/17bpao7/lifeweaver_guide_the_best_comprehensive_guide_to/
+      access: 게시글·댓글
+      scope: Paz 공략 소개와 아군 구조 수단 중복에 관한 댓글 확인. 연결 영상·별도 전사문은 미열람. 따라서 상세 규칙은 DB 메커니즘과 작성자 설계로 구분.
+    mechanics_source:
+      source_id: wiki:lifeweaver
+      publisher: Overwatch Wiki contributors
+      url: https://overwatch.weirdgloop.org/w/Lifeweaver
+      revision_url: https://overwatch.weirdgloop.org/w/Lifeweaver?oldid=404925
+      revision_id: '404925'
+      last_edited_text: This page was last edited on 15 October 2026, at 03:33.
+      fetched_at_utc: '2026-10-15T14:01:11+00:00'
+      sha256: 46aa191377d1a2fb76addf3f7b4191b50e9a929f43316b7917c5f91bd174ffd4
+      license: CC BY-NC-SA 3.0
+    strategy_status: editorial_draft_not_coach_validated
+    match_patch_verified: false
+  lucio:
+    display_name_ko: 루시우
+    community_or_official_reference:
+      id: S12
+      url: https://www.reddit.com/r/OverwatchUniversity/comments/pdgnky
+      access: 검색 제공 본문·댓글
+      scope: 이동 지원·보호·견제 중 역할 선택. OW1 수치와 당시 솜브라 상호작용 제외.
+    mechanics_source:
+      source_id: wiki:lucio
+      publisher: Overwatch Wiki contributors
+      url: https://overwatch.weirdgloop.org/w/L%C3%BAcio
+      revision_url: https://overwatch.weirdgloop.org/w/L%C3%BAcio?oldid=401574
+      revision_id: '401574'
+      last_edited_text: This page was last edited on 7 October 2026, at 09:49.
+      fetched_at_utc: '2026-10-15T14:01:17+00:00'
+      sha256: 94d9982dde28ed5939b9e8bd4579d53c0dace8abeb59999877b05e231fb3987e
+      license: CC BY-NC-SA 3.0
+    strategy_status: editorial_draft_not_coach_validated
+    match_patch_verified: false
+  mercy:
+    display_name_ko: 메르시
+    community_or_official_reference:
+      id: S09
+      url: https://www.reddit.com/r/MercyMains/comments/10u7ris
+      access: 검색 제공 본문·댓글
+      scope: 공중 체류와 엄폐 구분. Flash Heal은 이 오래된 글이 아닌 저장소 DB를 기준으로 설계.
+    mechanics_source:
+      source_id: wiki:mercy
+      publisher: Overwatch Wiki contributors
+      url: https://overwatch.weirdgloop.org/w/Mercy
+      revision_url: https://overwatch.weirdgloop.org/w/Mercy?oldid=402043
+      revision_id: '402043'
+      last_edited_text: This page was last edited on 9 October 2026, at 09:17.
+      fetched_at_utc: '2026-10-15T14:01:39+00:00'
+      sha256: 5b071e10b032638d55d8731d851ab8cf6cba139b8e808a70d038dbee5833c61c
+      license: CC BY-NC-SA 3.0
+    strategy_status: editorial_draft_not_coach_validated
+    match_patch_verified: false
+  mizuki:
+    display_name_ko: 미즈키
+    community_or_official_reference:
+      id: S21
+      url: https://www.reddit.com/r/OverwatchUniversity/comments/1rl4lie/where_do_i_position_as_mizuki_against_dive/
+      access: 본문·댓글
+      scope: 본대 동행과 측면 통제라는 서로 다른 조언 확인. 어느 한쪽을 무조건 규칙으로 채택하지 않고 조합·지원 연결·귀환 조건으로 분기.
+    mechanics_source:
+      source_id: wiki:mizuki
+      publisher: Overwatch Wiki contributors
+      url: https://overwatch.weirdgloop.org/w/Mizuki
+      revision_url: https://overwatch.weirdgloop.org/w/Mizuki?oldid=402066
+      revision_id: '402066'
+      last_edited_text: This page was last edited on 9 October 2026, at 09:52.
+      fetched_at_utc: '2026-10-15T14:01:45+00:00'
+      sha256: 1934a99ef341ed72735247ff6d6cf6081f829a9d8898aadf27ac3632f5d644fd
+      license: CC BY-NC-SA 3.0
+    strategy_status: editorial_draft_not_coach_validated
+    match_patch_verified: false
+  moira:
+    display_name_ko: 모이라
+    community_or_official_reference:
+      id: S13
+      url: https://us.forums.blizzard.com/en/overwatch/t/moira-guide-tiptricks/818895
+      access: 본문
+      scope: 소멸 종료 위치·엄폐·공격과 생존. 블리자드 이용자 포럼이며 공식 공략 아님.
+    mechanics_source:
+      source_id: wiki:moira
+      publisher: Overwatch Wiki contributors
+      url: https://overwatch.weirdgloop.org/w/Moira
+      revision_url: https://overwatch.weirdgloop.org/w/Moira?oldid=404012
+      revision_id: '404012'
+      last_edited_text: This page was last edited on 13 October 2026, at 10:50.
+      fetched_at_utc: '2026-10-15T14:01:52+00:00'
+      sha256: 66e85ba072cf6bb73db9e412c47344c072e949e81f24086c80f79f764d4902b1
+      license: CC BY-NC-SA 3.0
+    strategy_status: editorial_draft_not_coach_validated
+    match_patch_verified: false
+  sombra:
+    display_name_ko: 솜브라
+    community_or_official_reference:
+      id: S22
+      url: https://overwatch.blizzard.com/en-us/news/patch-notes/live/2026/10/
+      access: 검색 제공 공식 패치 본문
+      scope: 2026-10 지원 역할 개편과 Hotfix·Cyberspace 존재 확인용. 전술 권장안의 근거가 아니며 숫자는 저장소 DB만 사용.
+    mechanics_source:
+      source_id: wiki:sombra
+      publisher: Overwatch Wiki contributors
+      url: https://overwatch.weirdgloop.org/w/Sombra
+      revision_url: https://overwatch.weirdgloop.org/w/Sombra?oldid=404978
+      revision_id: '404978'
+      last_edited_text: This page was last edited on 15 October 2026, at 11:56.
+      fetched_at_utc: '2026-10-15T14:02:59+00:00'
+      sha256: b11fee6aa2439c24ac6eb59e2f551baf4ceac9821e11294c872c653b167471b4
+      license: CC BY-NC-SA 3.0
+    strategy_status: editorial_draft_not_coach_validated
+    match_patch_verified: false
+  wuyang:
+    display_name_ko: 우양
+    community_or_official_reference:
+      id: S23
+      url: https://www.reddit.com/r/OverwatchUniversity/comments/1wswox9/learning_wuyang_some_questions/
+      access: 검색 제공 본문·댓글
+      scope: 유도 공격에 오래 집중할 때 지원·주변 관찰 비용. 다른 스킬 세부 기준은 작성자 설계.
+    mechanics_source:
+      source_id: wiki:wuyang
+      publisher: Overwatch Wiki contributors
+      url: https://overwatch.weirdgloop.org/w/Wuyang
+      revision_url: https://overwatch.weirdgloop.org/w/Wuyang?oldid=401819
+      revision_id: '401819'
+      last_edited_text: This page was last edited on 7 October 2026, at 19:01.
+      fetched_at_utc: '2026-10-15T14:03:52+00:00'
+      sha256: 3ed11cdc634feab8a9b3f1522de02cf3deff573a05e9fcf0446bc72ac55825d5
+      license: CC BY-NC-SA 3.0
+    strategy_status: editorial_draft_not_coach_validated
+    match_patch_verified: false
+  zenyatta:
+    display_name_ko: 젠야타
+    community_or_official_reference:
+      id: S24
+      url: https://www.reddit.com/r/OverwatchUniversity/comments/1b0qdw4
+      access: 검색 제공 본문·댓글
+      scope: 엄폐 충전 사격·유효한 부조화 대상·짧은 측면·자기 생존 초월의 가치. 당시 수치 제외.
+    mechanics_source:
+      source_id: wiki:zenyatta
+      publisher: Overwatch Wiki contributors
+      url: https://overwatch.weirdgloop.org/w/Zenyatta
+      revision_url: https://overwatch.weirdgloop.org/w/Zenyatta?oldid=401906
+      revision_id: '401906'
+      last_edited_text: This page was last edited on 8 October 2026, at 05:48.
+      fetched_at_utc: '2026-10-15T14:04:05+00:00'
+      sha256: b4a84a847cf07786c0127b1f01b9c0762c4667af75936480f007cff63d5bf100
+      license: CC BY-NC-SA 3.0
+    strategy_status: editorial_draft_not_coach_validated
+    match_patch_verified: false
