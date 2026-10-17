@@ -6,8 +6,11 @@
 ## 1. 계정 만들기
 
 1. https://www.oracle.com/cloud/free/ 에서 가입합니다. 본인 확인용 카드 등록이 필요하지만, Always Free 범위 안에서는 청구되지 않습니다.
-2. **홈 리전**은 나중에 바꿀 수 없습니다. **South Korea Central (Seoul)** 또는 **South Korea North (Chuncheon)** 를 고릅니다.
-   무료 ARM 서버는 홈 리전에서만 만들 수 있습니다.
+2. **홈 리전**은 나중에 바꿀 수 없고, 무료 ARM 서버는 홈 리전에서만 만들 수 있습니다.
+   목록에 South Korea Central (Seoul) / South Korea North (Chuncheon) 가 있으면 그중 하나를 고릅니다.
+   신규 무료 가입에는 한국 리전이 목록에 없을 수 있습니다(2026-10 사용자 확인). 그때는 **Japan Central (Osaka)**,
+   다음으로 Japan East (Tokyo) 를 고릅니다. 한국에서 지연은 수십 ms 수준이고 업로드가 조금 더 걸리는 정도입니다.
+   싱가포르 등 더 먼 리전은 업로드가 느려 권하지 않습니다.
 
 ## 2. 서버 만들기
 
