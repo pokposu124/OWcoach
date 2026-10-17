@@ -23,3 +23,4 @@ docs/*/media/pass-*.log*
 
 # 베타 서비스 데이터 (DB, 업로드, 분석 캐시, 결과)
 service/data/
+owcoach.env

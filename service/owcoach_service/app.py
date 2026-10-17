@@ -47,6 +47,8 @@ class Settings:
     def __init__(self, env: dict | None = None, config_path: Path | None = None):
         env = os.environ if env is None else env
         self.cfg = yaml.safe_load((config_path or SERVICE_DIR / "config.yaml").read_text("utf-8"))
+        # OWCOACH_PROVIDER=mock: try the whole flow on a new server without paying for Gemini (not real analysis)
+        self.cfg["provider"] = env.get("OWCOACH_PROVIDER") or self.cfg["provider"]
         self.data_dir = Path(env.get("OWCOACH_DATA_DIR", SERVICE_DIR / "data"))
         self.base_url = env.get("OWCOACH_BASE_URL", "http://localhost:8000").rstrip("/")
         self.session_secret = env.get("OWCOACH_SESSION_SECRET", "")

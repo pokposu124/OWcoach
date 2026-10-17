@@ -1,0 +1,24 @@
+# OWcoach 지인 베타: 서비스 + HTTPS(Caddy). 설치 순서는 service/DEPLOY_ORACLE.md
+services:
+  owcoach:
+    build: .
+    restart: unless-stopped
+    env_file: owcoach.env
+    volumes:
+      - owcoach-data:/data
+  caddy:
+    image: caddy:2
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      OWCOACH_DOMAIN: ${OWCOACH_DOMAIN:?OWCOACH_DOMAIN 을 .env 에 적어 주세요}
+    volumes:
+      - ./service/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+    depends_on:
+      - owcoach
+volumes:
+  owcoach-data:
+  caddy-data:

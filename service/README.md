@@ -33,8 +33,11 @@ Google Cloud 결제 예산 알림도 함께 걸어 두는 것을 권합니다(�
 | `OWCOACH_SESSION_SECRET` | 로그인 쿠키 서명 키, 32자 이상 무작위 (`python -c "import secrets;print(secrets.token_urlsafe(48))"`) |
 | `GEMINI_API_KEY`, `OWCOACH_GEMINI_MODEL` | 분석기와 같음 (`gemini-3.6-flash`) |
 | `OWCOACH_DATA_DIR` | DB·업로드·분석 캐시·결과 저장 위치 (도커 이미지 기본 `/data`) |
+| `OWCOACH_PROVIDER` | (선택) `mock`이면 Gemini 없이 흐름만 시험. 결과는 실제 분석이 아님. 비우면 `config.yaml` 값(gemini) |
 
 ## 3. 서버에서 실행 (도커)
+
+Oracle Cloud 무료 서버에 올리는 순서는 [DEPLOY_ORACLE.md](DEPLOY_ORACLE.md)에 단계별로 있습니다.
 
 서버는 리눅스 VM 1대(예: 2 vCPU, 4GB 메모리, 디스크 40GB 이상)를 기준으로 합니다.
 

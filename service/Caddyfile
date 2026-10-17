@@ -1,0 +1,4 @@
+# 도메인 인증서(HTTPS)는 Caddy가 자동으로 받는다. 업로드 크기 제한은 두지 않음(서비스가 2000MB에서 끊음).
+{$OWCOACH_DOMAIN} {
+	reverse_proxy owcoach:8000
+}
