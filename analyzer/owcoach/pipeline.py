@@ -42,6 +42,7 @@ from .hud import (
     player_team_color,
     detect_status_icon,
     min_run_for,
+    strong_ready_for,
     sample_hud,
     scan_dead_periods,
     scan_uses,
@@ -834,7 +835,8 @@ class Pipeline:
             samples = sample_hud(video, max(0.0, start - 3.0), end, hcfg)
             for a in tiles:
                 uses += [{"ability_id": a.id, "time_seconds": x}
-                         for x in use_times(samples, a.hud_slot, min_run_for(hcfg, a.hud_slot)) if start <= x <= end]
+                         for x in use_times(samples, a.hud_slot, min_run_for(hcfg, a.hud_slot), strong_ready_for(hcfg, a.hud_slot))
+                         if start <= x <= end]
         ult = next((a for a in self.hero.abilities if a.hud_slot == "ultimate"), None)
         if ult:
             uses += [{"ability_id": ult.id, "time_seconds": x} for x in self._hud_ult_uses if start <= x <= end]

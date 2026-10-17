@@ -84,23 +84,33 @@ def sample_hud(video: Path, start: float, end: float, cfg: dict) -> list[HudSamp
         hidden = bool(tile_slots) and len(blank) == len(tile_slots)
         states = {k: None if hidden or k in blank else (READY if v >= cfg["ready_ratio"] else NOT_READY)
                   for k, v in ratios.items()}
+        # a tile tinted by the red hit flash reads half white: neither state (see ambiguous_band in config)
+        lo, hi = (cfg.get("ambiguous_band") or (None, None))
+        for k in cfg.get("ambiguous_slots") or []:
+            if lo is not None and lo < ratios[k] < hi:
+                states[k] = None
         # fps filter output frame i covers [start + i/fps, ...); use the frame's start time
         out.append(HudSample(round(start + i / fps, 3), states, {k: round(v, 3) for k, v in ratios.items()}))
     return out
 
 
-def _debounced(samples: list[HudSample], slot: str, min_run: int) -> list[tuple[float, str]]:
-    """(time, state) where state is held for at least min_run consecutive known samples."""
-    runs: list[list] = []  # [state, first_time, count]
+def _debounced(samples: list[HudSample], slot: str, min_run: int, strong: float | None = None) -> list[tuple[float, str]]:
+    """(time, state) where state is held for at least min_run consecutive known samples. With `strong`, a
+    ready run shorter than that also counts when one of its samples is at least that white (a skill used
+    within a second of coming off cooldown, its other samples hidden by the hit flash)."""
+    runs: list[list] = []  # [state, first_time, count, max ratio]
     for s in samples:
         st = s.states.get(slot)
         if st is None:
             continue
+        x = s.ratios.get(slot, 0.0)
         if runs and runs[-1][0] == st:
             runs[-1][2] += 1
+            runs[-1][3] = max(runs[-1][3], x)
         else:
-            runs.append([st, s.time_seconds, 1])
-    stable = [(t, st) for st, t, n in runs if n >= min_run]
+            runs.append([st, s.time_seconds, 1, x])
+    stable = [(t, st) for st, t, n, x in runs
+              if n >= min_run or (strong is not None and st == READY and x >= strong)]
     merged: list[tuple[float, str]] = []
     for t, st in stable:
         if not merged or merged[-1][1] != st:
@@ -113,9 +123,13 @@ def min_run_for(cfg: dict, slot: str) -> int:
     return int(m.get(slot, m["default"]) if isinstance(m, dict) else m)
 
 
-def use_times(samples: list[HudSample], slot: str, min_run: int) -> list[float]:
+def strong_ready_for(cfg: dict, slot: str) -> float | None:
+    return cfg.get("strong_ready_ratio") if slot in (cfg.get("ambiguous_slots") or []) else None
+
+
+def use_times(samples: list[HudSample], slot: str, min_run: int, strong: float | None = None) -> list[float]:
     """Times where the slot changed from ready to not ready (= ability/ultimate used)."""
-    seq = _debounced(samples, slot, min_run)
+    seq = _debounced(samples, slot, min_run, strong)
     return [t for (_, a), (t, b) in zip(seq, seq[1:]) if a == READY and b == NOT_READY]
 
 
@@ -125,7 +139,7 @@ def check_use_claim(claim_time: float, slot: str, samples: list[HudSample], cfg:
     min_run = min_run_for(cfg, slot)
     near = [s for s in samples if abs(s.time_seconds - claim_time) <= tol]
     known = [s for s in near if s.states.get(slot) is not None]
-    uses = use_times(samples, slot, min_run)
+    uses = use_times(samples, slot, min_run, strong_ready_for(cfg, slot))
     hits = [t for t in uses if abs(t - claim_time) <= tol]
     if hits:
         t = min(hits, key=lambda x: abs(x - claim_time))
@@ -213,7 +227,7 @@ def detect_buff_target(video: Path, use_time: float, slots: list[dict], cfg: dic
 
 def scan_uses(video: Path, duration: float, slot: str, cfg: dict) -> list[float]:
     """All ready -> used transitions of one HUD slot over the whole video (e.g. every ultimate)."""
-    return use_times(sample_hud(video, 0.0, duration, cfg), slot, min_run_for(cfg, slot))
+    return use_times(sample_hud(video, 0.0, duration, cfg), slot, min_run_for(cfg, slot), strong_ready_for(cfg, slot))
 
 
 def scan_player_deaths(video: Path, duration: float, cfg: dict) -> list[float]:
