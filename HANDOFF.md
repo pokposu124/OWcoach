@@ -1,10 +1,10 @@
-# 작업 인수인계 (2026-10-16)
+# 작업 인수인계 (2026-10-18)
 
 새 세션은 이 파일과 `CLAUDE.md`를 먼저 읽는다. 브랜치: `claude/clever-turing-34j6ul` (여기서 계속 작업·push, PR은 요청 시에만).
 
 ## 무엇을 만들고 있나
-오버워치 플레이 영상(현재 아나)을 Gemini(`gemini-3.6-flash`, 환경변수 `GEMINI_API_KEY`, `OWCOACH_GEMINI_MODEL`)로 분석해
-코칭 피드백을 만드는 분석기 `analyzer/`(`python -m owcoach analyze <영상> --hero ana --patch "..." --max-scenes 40 --max-feedback 100`).
+오버워치 플레이 영상(아나는 검증 완료, 나머지 53명은 시험 단계)을 Gemini(`gemini-3.6-flash`, 환경변수 `GEMINI_API_KEY`, `OWCOACH_GEMINI_MODEL`)로 분석해
+코칭 피드백을 만드는 분석기 `analyzer/`(`python -m owcoach analyze <영상> --hero auto|ana|<id> --patch "..." --max-scenes 40 --max-feedback 100`).
 결과는 GitHub Pages(`docs/demo`, `docs/demo2`, `owcoach export`)로 공개한다. 닉네임은 가리지 않는다(사용자 결정).
 
 ## 원칙 (사용자와 합의)
@@ -50,6 +50,32 @@ HUD 스킬·궁극기 사용, 사망(체력바 0), 처치자(킬피드 판독 + 
 - 경기 중 영웅 교체: 플레이어 본인 칸의 초상화 이력에서 프로필 외 영웅 구간(교체 시각 앞뒤 판독 공백 포함)을 찾아 HUD 사용·사망 장면·후보 장면·피드백에서 뺌. 결과 skipped_hero_spans 와 결과 화면 안내로 표시. 영웅별 프로필로 나눠 분석하는 것은 딜러·탱커 기준이 온 뒤.
 - 지원 영웅 포지셔닝 지식베이스 `analyzer/knowledge/support_positioning/` (16명, 기준 143개, 전부 draft).
   로더와 분리되어 분석에 쓰이지 않는다. `analyzer/heroes/`로 복사하지 말 것(로더가 draft도 활성화함).
+
+## 베타 서버 현재 상태 (2026-10-18)
+- Oracle Cloud 오사카(Japan Central) Always Free ARM, **1 OCPU · 6GB**, 디스크 100GB, Ubuntu 24.04. 계정은 Pay As You Go(무료 한도 내 0원, $1 예산 알림).
+  공인 IP 152.69.205.181, 도메인 https://owcoach-beta.duckdns.org (DuckDNS), docker compose(owcoach + caddy). 서버 코드: 커밋 7b9161a 까지 반영
+  (74fc138 인코딩 단축은 아직 서버에 없음 → `cd ~/OWcoach && git pull && docker compose up -d --build`).
+- 사용자는 태블릿 + Oracle Cloud Shell 로 접속(`ssh -i ~/owcoach.key ubuntu@152.69.205.181`). Cloud Shell 은 초기화되면 키 파일을 다시 붙여 넣어야 함.
+  설정 파일 `~/OWcoach/.env`(OWCOACH_DOMAIN), `~/OWcoach/owcoach.env`(비밀 값, git 무시). 디스코드 ID는 최대 3명(사용자 + 친구 1명 추가됨).
+- **아직 mock 모드**(`OWCOACH_PROVIDER=mock`). Gemini 키 확인 중 `401 API key not valid, reason ACCESS_TOKEN_TYPE_UNSUPPORTED` →
+  들어간 값이 AI Studio API 키가 아님. 다음 단계: AI Studio(Get API key)에서 키를 다시 복사해
+  `read -rsp "Gemini 키 붙여넣고 Enter: " K && sed -i "s|^GEMINI_API_KEY=.*|GEMINI_API_KEY=$K|" owcoach.env && unset K && echo`,
+  `grep -c $'\r' owcoach.env` 가 0인지, `docker compose up -d --force-recreate owcoach` 후
+  `docker compose exec owcoach python -c "from google import genai; c=genai.Client(); print([m.name for m in c.models.list()][:3])"` 로 확인
+  (Client 를 변수에 담지 않으면 'Cannot send a request' 오류). 키 확인 뒤 mock 끄기: `sed -i '/^OWCOACH_PROVIDER=mock/d' owcoach.env`,
+  시험 기록 삭제(jobs 테이블 delete), force-recreate.
+- 서버 실측(mock, 아나 4분 50초 영상): 분석기 48분 + 결과 화면 약 14분 = 1시간 2분. 단계별(초): preprocess 510, team 65, detail 936,
+  hud_check 573, moment 111 (finalize 값 76075 는 시간 기록 버그였고 74fc138 에서 고침). 인코딩 단축(74fc138)의 효과는 **아직 측정 안 함**:
+  다음 세션에서 이전/새 코드를 1코어(taskset)로 같은 영상에 mock 으로 돌려 비교할 것.
+- 20분 영상 지원 요청 있음(보류): 1 OCPU 로는 4시간 이상 예상 → 서버를 4 OCPU·24GB로 올리거나(Stop→Edit Shape→Start, 무료 한도 내),
+  전체 흐름 분석 5분 단위 분할 + 영상 길이 비례 예산 예약금 구현이 필요. 서버 `System restart required` 표시 있음(분석 없을 때 `sudo reboot`).
+
+## 검수 대기
+- 기준 검수 페이지 https://claude.ai/artifact/66safWXX7LnCkXGsrCLiyq (지원 143 + 딜러·탱커 255 + 아나 승인 공통 기준 3개×딜러/탱커 6장).
+  판정은 그 페이지 db 의 reviews 컬렉션(문서 id `기준ID~검수자ID`, 공통 기준 역할 판정은 `기준ID@damage|tank`). 페이지 원본은 세션 스크래치에만 있었음:
+  다시 만들 때는 두 지식베이스 YAML + config covered_by + heroes/common.yaml 에서 데이터를 뽑아 같은 구조로 생성.
+- 판정이 모이면: 승인 → 해당 지식베이스 기준 status approved, 공통 기준 역할 승인 → heroes/common.yaml 그 기준에 approved_roles 추가
+  (튕겨내기 금지는 이미 [support, damage, tank]).
 
 ## 새 세션에서 필요한 것
 - 영상 두 개는 저장소에 없다(용량). 사용자가 다시 올려야 한다(이전 Google Drive 링크). 분석 캐시(`analyzer/runs`)도 없어서
