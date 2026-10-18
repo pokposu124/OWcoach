@@ -29,7 +29,7 @@ Google Cloud 결제 예산 알림도 함께 걸어 두는 것을 권합니다(�
 |---|---|
 | `DISCORD_CLIENT_ID`, `DISCORD_CLIENT_SECRET` | 1번에서 복사한 값 |
 | `OWCOACH_ALLOWED_DISCORD_IDS` | 쉼표로 구분한 디스코드 사용자 ID, 최대 3개 |
-| `OWCOACH_ADMIN_DISCORD_IDS` | (선택) 운영자 디스코드 ID(쉼표 구분, 위 목록에도 있어야 함). "내 분석" 아래 "전체 분석"에서 모든 사람의 진행·결과 페이지를 봄 |
+| `OWCOACH_ADMIN_DISCORD_IDS` | (선택) 운영자 디스코드 ID(쉼표 구분, 위 목록에도 있어야 함). "내 분석" 아래 "전체 분석"에서 모든 사람의 진행·결과 페이지를 봄, 완료·실패 분석의 '자료 받기'(원본 영상 + 분석 기록 tar) |
 | `OWCOACH_BASE_URL` | `https://<도메인>` (디스코드 Redirect와 같아야 함) |
 | `OWCOACH_SESSION_SECRET` | 로그인 쿠키 서명 키, 32자 이상 무작위 (`python -c "import secrets;print(secrets.token_urlsafe(48))"`) |
 | `GEMINI_API_KEY`, `OWCOACH_GEMINI_MODEL` | 분석기와 같음 (`gemini-3.6-flash`) |
@@ -68,7 +68,7 @@ HTTPS는 앞에 Caddy를 두는 것이 가장 간단합니다 (`/etc/caddy/Caddy
   (`cost_usd`는 분석기가 토큰 수 × `analyzer/config/pricing.yaml` 단가로 계산한 추정치)
 - 로그: `docker logs owcoach` (분석 완료·실패 한 줄씩)
 - 서버가 분석 도중 재시작되면 그 분석은 대기열로 돌아가고, 끝난 단계는 캐시(`/data/runs`)를 다시 씁니다.
-- 원본 영상은 분석이 끝나면 지웁니다. 결과 화면(`/data/results/<작업>`)은 축소 영상(480p)과 근거 프레임을 가집니다.
+- 원본 영상은 분석이 끝나도 `/data/uploads` 에 남깁니다(`config.yaml` keep_original_video, 분석기 개선용). 결과 화면(`/data/results/<작업>`)은 축소 영상(480p)과 근거 프레임을 가집니다. 지우려면 `docker compose exec owcoach sh -c "du -sh /data/uploads"` 로 크기를 보고 운영자가 직접 정리.
   분석 캐시(`/data/runs`)에는 720p 사본이 남으니 디스크가 차면 오래된 것부터 지워도 됩니다(결과 화면은 영향 없음).
 - 결과 화면은 올린 본인만 볼 수 있습니다. 영상 속 다른 플레이어 닉네임은 가리지 않습니다(사용자 결정).
 

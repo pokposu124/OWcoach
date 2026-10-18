@@ -74,6 +74,9 @@ HUD 스킬·궁극기 사용, 사망(체력바 0), 처치자(킬피드 판독 + 
   result.json 의 `map_name`·`main_heroes` → 서비스 DB jobs 열(기존 DB는 시작 시 열 추가). 업로드 페이지에 "리플레이 화면 녹화만" 주의 문구.
 - 운영자 보기: `OWCOACH_ADMIN_DISCORD_IDS`(허용 목록에도 있어야 함) 계정은 "전체 분석" 목록과 모든 결과 페이지를 봄. 사용자 안내 문구는 넣지 않음(사용자 결정).
   서버 반영 완료(2026-10-18, eb46a51까지 pull, 운영자 = 사용자 본인 계정 1명).
+- 원본 보관(사용자 결정 2026-10-18, 친구 영상으로 분석기 개선): config keep_original_video: true. 운영자는 "전체 분석"의 '자료 받기'
+  (`/admin/bundle/<작업>`)로 원본 + runs/<sha12>-* (stages·result.json·evidence, media 제외) + job.json 을 tar 로 받음 → Google Drive 링크로 세션에 전달.
+  친구 영상 사용은 친구 동의 전제. 영상·판정 원문은 저장소에 올리지 않음(판정은 eval 에 시각·판정만).
 
 ## 검수 대기
 - 기준 검수 페이지 https://claude.ai/artifact/66safWXX7LnCkXGsrCLiyq (지원 143 + 딜러·탱커 255 + 아나 승인 공통 기준 3개×딜러/탱커 6장).

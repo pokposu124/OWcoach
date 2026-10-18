@@ -1,7 +1,9 @@
+import io
 import json
 import shutil
 import subprocess
 import sys
+import tarfile
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
@@ -154,9 +156,24 @@ def test_admins_see_every_analysis_and_result(settings, tmp_path):
         page = c.get("/jobs").text
         assert "전체 분석" in page and "<b>friend</b> · f.mp4" in page
         assert "friend result" in c.get(f"/results/{jid}/").text and c.get(f"/jobs/{jid}").status_code == 200
+        # material for improving the analyzer: original video + the analyzer's run, re-encoded media left out
+        video = settings.data_dir / "uploads" / "x.mp4"
+        video.write_bytes(b"video")
+        run = settings.data_dir / "runs" / "abcdef123456-auto"
+        (run / "media").mkdir(parents=True)
+        (run / "result.json").write_text("{}")
+        (run / "media" / "proxy.mp4").write_bytes(b"p")
+        jid2 = store.create_job(FRIEND, "match.mp4", str(video), "", "abcdef123456" + "0" * 52, status="failed")
+        assert f"/admin/bundle/{jid2}" in c.get("/jobs").text
+        r = c.get(f"/admin/bundle/{jid2}")
+        assert r.status_code == 200
+        names = tarfile.open(fileobj=io.BytesIO(r.content)).getnames()
+        assert {"job.json", "original/match.mp4", "runs/abcdef123456-auto/result.json"} <= set(names)
+        assert not any("media" in n for n in names)
         c2 = TestClient(app)
         login(c2, FRIEND)
         assert "전체 분석" not in c2.get("/jobs").text   # everyone else still sees only their own
+        assert c2.get(f"/admin/bundle/{jid2}").status_code == 404
     with pytest.raises(SystemExit):
         Settings({"OWCOACH_DATA_DIR": str(tmp_path), "OWCOACH_SESSION_SECRET": "x" * 40,
                   "OWCOACH_ALLOWED_DISCORD_IDS": "1", "OWCOACH_ADMIN_DISCORD_IDS": "2"})
@@ -199,7 +216,7 @@ def test_worker_runs_the_analyzer_and_exports_the_result(client, tmp_path):
     app.state.worker.run_job(app.state.store.job(jid))
     job = app.state.store.job(jid)
     assert job["status"] == "done", job["error"]
-    assert job["stage"] == "완료" and not Path(job["video_path"]).exists()
+    assert job["stage"] == "완료" and Path(job["video_path"]).exists() == bool(app.state.settings.cfg.get("keep_original_video"))
     page = client.get(f"/results/{jid}/")
     assert page.status_code == 200 and "플레이 분석" in page.text
     head = client.get(f"/results/{jid}/media/web.mp4", headers={"Range": "bytes=0-99"})

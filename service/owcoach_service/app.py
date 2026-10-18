@@ -11,10 +11,12 @@ from __future__ import annotations
 
 import hashlib
 import html
+import io
 import json
 import os
 import secrets
 import sys
+import tarfile
 from contextlib import asynccontextmanager
 from datetime import datetime
 from pathlib import Path
@@ -24,6 +26,8 @@ from zoneinfo import ZoneInfo
 import httpx
 import yaml
 from fastapi import FastAPI, HTTPException, Request
+from starlette.background import BackgroundTask
+from starlette.concurrency import run_in_threadpool
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, RedirectResponse
 from starlette.middleware.sessions import SessionMiddleware
@@ -216,7 +220,7 @@ def create_app(settings: Settings | None = None, start_worker: bool = True,
 <tr><th>요청</th><th>영상</th><th>상태</th><th></th></tr>{rows}</table></div></section>"""
         if u["discord_id"] in s.admins:
             names = store.user_names()
-            every = "".join(_job_row(j, s.cfg["timezone"], hero_names, owner=names.get(j["user_id"], j["user_id"]))
+            every = "".join(_job_row(j, s.cfg["timezone"], hero_names, owner=names.get(j["user_id"], j["user_id"]), bundle=True)
                             for j in sorted(store.jobs_since(""), key=lambda j: j["created_at"], reverse=True)) or "<tr><td colspan=4 class=muted>분석이 없습니다.</td></tr>"
             body += f"""
 <section class=box><h2>전체 분석</h2><div class=scroll><table>
@@ -299,6 +303,19 @@ def create_app(settings: Settings | None = None, start_worker: bool = True,
             raise HTTPException(status_code=404, detail="아직 결과가 없습니다.")
         return _safe_file(s.data_dir / "results" / job_id, path or "index.html")
 
+    @app.get("/admin/bundle/{job_id}")
+    async def bundle(request: Request, job_id: str):
+        """Operator download of one analysis's material for improving the analyzer: the original video, the
+        analyzer's run (stage records, result.json, evidence frames; re-encoded media left out) and the job row."""
+        u = need_user(request)
+        job = store.job(job_id)
+        if u["discord_id"] not in s.admins or not job:
+            raise HTTPException(status_code=404, detail="분석을 찾을 수 없습니다.")
+        out = s.data_dir / "exports" / f"owcoach-{job_id}.tar"
+        await run_in_threadpool(_write_bundle, out, job, s.data_dir)
+        # removed once sent: the bundle repeats the video, so keeping it would double the disk use
+        return FileResponse(out, filename=out.name, media_type="application/x-tar", background=BackgroundTask(out.unlink, missing_ok=True))
+
     @app.get("/demo/{name}/{path:path}")
     async def demo(name: str, path: str = ""):
         if name not in ("demo", "demo2"):
@@ -326,8 +343,30 @@ STATUS_KO = {"queued": "대기", "running": "분석 중", "done": "완료", "fai
 ROLE_KO = {"support": "지원", "damage": "딜러", "tank": "탱커"}
 
 
-def _job_row(j: dict, tz: str, hero_names: dict | None = None, owner: str | None = None) -> str:
+def _write_bundle(out: Path, job: dict, data_dir: Path) -> None:
+    out.parent.mkdir(parents=True, exist_ok=True)
+    tmp = out.with_suffix(".tmp")
+    with tarfile.open(tmp, "w") as tar:   # no compression: almost all of it is the video
+        tar.addfile(*_tar_bytes("job.json", json.dumps(job, ensure_ascii=False, indent=2).encode("utf-8")))
+        video = Path(job["video_path"]) if job["video_path"] else None
+        if video and video.is_file():
+            tar.add(video, arcname="original/" + Path(job["file_name"]).stem + video.suffix)
+        sha = job.get("video_sha") or ""
+        for run in sorted((data_dir / "runs").glob(f"{sha[:12]}-*")) if sha else []:
+            tar.add(run, arcname=f"runs/{run.name}", filter=lambda t: None if "/media" in t.name else t)
+    tmp.replace(out)
+
+
+def _tar_bytes(name: str, data: bytes):
+    info = tarfile.TarInfo(name)
+    info.size = len(data)
+    return info, io.BytesIO(data)
+
+
+def _job_row(j: dict, tz: str, hero_names: dict | None = None, owner: str | None = None, bundle: bool = False) -> str:
     link = (f'<a href="/results/{j["id"]}/">결과 보기</a>' if j["status"] == "done" else f'<a href="/jobs/{j["id"]}">자세히</a>')
+    if bundle and j["status"] in ("done", "failed"):
+        link += f' · <a href="/admin/bundle/{j["id"]}">자료 받기</a>'
     stage = f' <span class=muted>{_e(j["stage"])}</span>' if j["status"] == "running" else ""
     hid = j.get("hero") or "auto"
     hero = "영웅 인식 전" if hid == "auto" else (hero_names or {}).get(hid, hid)

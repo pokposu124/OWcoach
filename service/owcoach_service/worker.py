@@ -92,7 +92,8 @@ class Worker:
                                   cost_usd=float(cost) if cost is not None else None, hero=result.get("hero") or job.get("hero"),
                                   map_name=result.get("map_name") or "",
                                   main_heroes=json.dumps(result.get("main_heroes") or [], ensure_ascii=False))
-            video.unlink(missing_ok=True)      # the result page has its own small copy (media/web.mp4)
+            if not self.cfg.get("keep_original_video"):
+                video.unlink(missing_ok=True)  # the result page has its own small copy (media/web.mp4)
             self.log(f"분석 완료 {jid} (비용 ${cost})")
         except Exception as e:  # noqa: BLE001 - any failure ends this job, the worker keeps going
             self.store.update_job(jid, status="failed", finished_at=now_iso(), error=str(e)[-1000:])

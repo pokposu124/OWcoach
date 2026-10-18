@@ -11,3 +11,5 @@ default_hero: auto                 # auto = 팀 목록의 플레이어 칸 초�
 # 실제 영상으로 HUD 판독·정답 대조를 마친 영웅. 나머지는 자동 생성 프로필이라 결과가 참고용
 verified_heroes: [ana]
 web_video: {height: 480, kbps: 360}  # 결과 화면용 축소 영상 (owcoach export)
+# 분석이 끝난 원본 영상을 남김 (사용자 결정 2026-10-18: 친구 영상으로 분석기 개선. 운영자가 "전체 분석"의 '자료 받기'로 내려받음)
+keep_original_video: true
