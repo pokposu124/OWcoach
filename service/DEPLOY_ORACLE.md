@@ -126,30 +126,39 @@ docker compose exec owcoach python -c "import sqlite3;c=sqlite3.connect('/data/o
 
 ### 8-1. Gemini 키 넣고 확인 (mock 인 채로)
 
-키는 **Google AI Studio → Get API key** 에서 만든 API 키여야 합니다. Google Cloud 콘솔의 OAuth 클라이언트 ID·비밀,
-서비스 계정 JSON, `gcloud auth print-access-token` 값(`ya29.`로 시작)을 넣으면
-`401 API key not valid ... ACCESS_TOKEN_TYPE_UNSUPPORTED` 로 거절됩니다.
+키는 **Google AI Studio(aistudio.google.com/apikey) → Create API key** 에서 만듭니다. 지금 AI Studio 가 주는 키는
+`AQ.` 로 시작하고 39자보다 깁니다(정상, 자르지 않음). 예전 형식은 `AIza` 로 시작하는 39자.
+Google Cloud 콘솔의 OAuth 클라이언트 ID·비밀, 서비스 계정 JSON, `ya29.` 로 시작하는 액세스 토큰은 키가 아닙니다.
 
-서버에서(`cd ~/OWcoach`). 키를 파일에 쓰기 **전에** 먼저 Google 에 직접 물어보고, 통과할 때만 씁니다:
+서버에서(`cd ~/OWcoach`). 키를 파일에 쓰기 **전에** 실제 분석과 같은 요청(generateContent)으로 Google 에 먼저 확인합니다:
 
 ```bash
 read -rsp "Gemini 키 붙여넣고 Enter: " K; echo
 K=$(printf %s "$K" | tr -d '\r\n\t '); echo "글자 수 ${#K}, 앞 4자 ${K:0:4}"
-curl -s -o /dev/null -w "HTTP %{http_code}\n" -H "x-goog-api-key: $K" https://generativelanguage.googleapis.com/v1beta/models
+curl -s -o /dev/null -w "HTTP %{http_code}\n" -H "x-goog-api-key: $K" -H "Content-Type: application/json" \
+  -d '{"contents":[{"parts":[{"text":"hi"}]}]}' \
+  https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent
 ```
 
-`HTTP 200` 이면 파일에 쓰고 서비스에 반영합니다. 401·403 이면 쓰지 말고 AI Studio 에서 키를 다시 복사합니다.
+`HTTP 200` 이면 파일에 씁니다. 401 이면 5분 뒤 curl 만 다시(새 키는 바로 안 될 때가 있음). 그래도 401 이면
+`AQ.` 키에서 같은 401(`ACCESS_TOKEN_TYPE_UNSUPPORTED`)이 나는 사례가 Google 포럼에 여럿 있어(2026-10 기준 확정 해결책 없음),
+Google Cloud 콘솔 → API 및 서비스 → 사용자 인증 정보 → 사용자 인증 정보 만들기 → API 키(같은 프로젝트, API 제한: Generative Language API)로
+`AIza` 키를 만들어 같은 순서로 다시 확인합니다. 거절 이유 보기:
+`curl -s -H "x-goog-api-key: $K" https://generativelanguage.googleapis.com/v1beta/models | grep -E '"(message|reason)"'`
 
 ```bash
-sed -i "s|^GEMINI_API_KEY=.*|GEMINI_API_KEY=$K|" owcoach.env && unset K
+grep -v '^GEMINI_API_KEY=' owcoach.env > owcoach.env.new && printf 'GEMINI_API_KEY=%s\n' "$K" >> owcoach.env.new \
+  && mv owcoach.env.new owcoach.env && chmod 600 owcoach.env && unset K      # 키에 특수문자가 있어도 안전(sed 치환 대신)
 grep -c $'\r' owcoach.env                     # 0 이어야 함 (Windows 줄바꿈이 섞이면 키 끝에 붙음)
 grep -c '^GEMINI_API_KEY=' owcoach.env        # 1 이어야 함
 docker compose up -d --force-recreate owcoach
-docker compose exec owcoach sh -c 'echo "키 길이 ${#GEMINI_API_KEY}"; env | grep -c "^GOOGLE_API_KEY="'   # 두 번째 값 0 (있으면 그 키가 먼저 쓰임)
-docker compose exec owcoach python -c "from google import genai; c=genai.Client(); print([m.name for m in c.models.list()][:3])"
+docker compose exec owcoach sh -c 'echo "키 길이 ${#GEMINI_API_KEY}"; env | grep -c "^GOOGLE_API_KEY="'   # 길이는 위와 같게, 두 번째 값 0 (있으면 그 키가 먼저 쓰임)
+docker compose exec owcoach python -c "import os; from google import genai; c=genai.Client(); print(c.models.generate_content(model=os.environ['OWCOACH_GEMINI_MODEL'], contents='hi').text[:40])"
 ```
 
-마지막 줄에 `models/...` 이름이 나오면 됩니다. (`Client` 를 변수 `c` 에 담지 않으면 'Cannot send a request' 오류가 납니다.)
+마지막 줄에 짧은 답이 나오면 됩니다. (`Client` 를 변수 `c` 에 담지 않으면 'Cannot send a request' 오류가 납니다.)
+curl 은 200 인데 여기서만 401 이면 컨테이너의 google-genai 가 새 키 형식을 모르는 오래된 판일 수 있습니다:
+`docker compose exec owcoach pip show google-genai | grep Version` 확인 후 `docker compose build --no-cache owcoach && docker compose up -d --force-recreate owcoach`.
 
 ### 8-2. mock 끄기
 
