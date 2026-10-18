@@ -1,0 +1,167 @@
+hero_id: dva
+display_name_ko: D.Va
+role: tank
+pack_version: 0.1.0
+review_status: draft
+patch_version: null
+profile_type: criterion_fragment_not_HeroProfile
+ability_refs:
+  boosters:
+    database_id: dva:boosters
+    name_en: Boosters
+    kind: Ability (Mech)
+    review_required: false
+  defense_matrix:
+    database_id: dva:defense-matrix
+    name_en: Defense Matrix
+    kind: Ability (Mech)
+    review_required: false
+  micro_missiles:
+    database_id: dva:micro-missiles
+    name_en: Micro Missiles
+    kind: Ability (Mech)
+    review_required: false
+  self_destruct:
+    database_id: dva:self-destruct
+    name_en: Self-Destruct
+    kind: Ultimate Ability (Mech)
+    review_required: false
+  call_mech:
+    database_id: dva:call-mech
+    name_en: Call Mech
+    kind: Ultimate Ability (Pilot)
+    review_required: false
+criteria:
+- id: dva.positioning.height_control
+  category: positioning
+  status: draft
+  ability: null
+  title: 고지대 거부와 아군 활용
+  description: '적용 상황: 적 딜러가 고지대 사용. 평가 목적: 고지대 거부와 아군 활용. 예외: 목표물 접촉·다른 급한 위협은 우선 가능. 필수 근거: 고지대 적·아군 활용·거점 상태.
+    결정 당시의 정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 적을 밀어내고 아군이 쓸 수 있는 공간 유지
+  bad_signs:
+  - 당장 피해가 적다고 유효 고지대를 무조건 포기
+  cannot_judge_when:
+  - '핵심 근거 미확인: 고지대 적·아군 활용·거점 상태'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.dva; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/D.Va?oldid=404129'
+    patch_version: null
+- id: dva.positioning.boost_exit
+  category: positioning
+  status: draft
+  ability: boosters
+  title: 부스터 종료 위치와 메카 보존
+  description: '적용 상황: 다이브 진입. 평가 목적: 부스터 종료 위치와 메카 보존. 예외: 확실한 핵심 제거·긴급 보호는 비교. 필수 근거: 이동·적 배치·메카 체력·퇴로. 결정 당시의
+    정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 고립 표적 압박 후 엄폐·지원으로 연결
+  bad_signs:
+  - 적 여러 명에게 둘러싸인 채 부스터 공백 발생
+  cannot_judge_when:
+  - '핵심 근거 미확인: 이동·적 배치·메카 체력·퇴로'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.dva; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/D.Va?oldid=404129'
+    patch_version: null
+- id: dva.positioning.assignment
+  category: positioning
+  status: draft
+  ability: null
+  title: 적 각도 견제·다이브·후방 보호 선택
+  description: '적용 상황: 여러 위협이 동시 발생. 평가 목적: 적 각도 견제·다이브·후방 보호 선택. 예외: 탱커가 현재 가장 큰 위협이면 집중 가능. 필수 근거: 적 각도·아군 위험·이동
+    도달 가능성. 결정 당시의 정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 막을 수 있는 주요 위협에 빠르게 대응
+  bad_signs:
+  - 적 탱커만 따라다니며 치명적인 측면 방치
+  cannot_judge_when:
+  - '핵심 근거 미확인: 적 각도·아군 위험·이동 도달 가능성'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.dva; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/D.Va?oldid=404129'
+    patch_version: null
+- id: dva.skill_usage.matrix
+  category: skill_usage
+  status: draft
+  ability: defense_matrix
+  title: 매트릭스의 실제 차단 대상
+  description: '적용 상황: 아군 또는 본인에게 공격. 평가 목적: 매트릭스의 실제 차단 대상. 예외: 치명적 탄이 올 선제 방어도 가능. 필수 근거: 공격 종류·매트릭스 방향·자원·효과.
+    결정 당시의 정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 먹을 수 있는 핵심 공격에 범위·방향 연결
+  bad_signs:
+  - 빔·근접 등 차단 불가 위협까지 막는다고 가정
+  cannot_judge_when:
+  - '핵심 근거 미확인: 공격 종류·매트릭스 방향·자원·효과'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.dva; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/D.Va?oldid=404129'
+    patch_version: null
+- id: dva.skill_usage.missiles
+  category: skill_usage
+  status: draft
+  ability: micro_missiles
+  title: 미사일과 유효한 진입 창
+  description: '적용 상황: 표적에 접근. 평가 목적: 미사일과 유효한 진입 창. 예외: 방벽 파괴가 목적이면 별도 인정. 필수 근거: 발사·도달·방어·아군 압박. 결정 당시의 정보와 실행
+    가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 도달 가능한 표적에 기본 공격과 후속 연결
+  bad_signs:
+  - 방어에 막힌 적에게 소모하며 무리한 추격
+  cannot_judge_when:
+  - '핵심 근거 미확인: 발사·도달·방어·아군 압박'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.dva; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/D.Va?oldid=404129'
+    patch_version: null
+- id: dva.ultimate_usage.bomb
+  category: ultimate_usage
+  status: draft
+  ability: self_destruct
+  title: 자폭의 공간 가치와 파일럿 안전
+  description: '적용 상황: 메카 궁 사용. 평가 목적: 자폭의 공간 가치와 파일럿 안전. 예외: 재탑승·거점 비우기 목적도 유효. 필수 근거: 메카 경로·폭발·적 엄폐·파일럿 위치. 결정
+    당시의 정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 적 엄폐·이동을 제한하고 파일럿 퇴로 확보
+  bad_signs:
+  - 처치만 노려 팀 교전과 무관한 곳에 메카를 보냄
+  cannot_judge_when:
+  - '핵심 근거 미확인: 메카 경로·폭발·적 엄폐·파일럿 위치'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.dva; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/D.Va?oldid=404129'
+    patch_version: null
+- id: dva.ultimate_usage.remech
+  category: ultimate_usage
+  status: draft
+  ability: call_mech
+  title: 재탑승 성공과 위치 회복
+  description: '적용 상황: 파일럿 상태에서 궁 준비. 평가 목적: 재탑승 성공과 위치 회복. 예외: 막판 거점이나 즉시 교환 기회는 예외. 필수 근거: 파일럿 위치·시전 완료·적 방해·아군.
+    결정 당시의 정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 보호된 공간에서 재탑승 후 유효 전선 복귀
+  bad_signs:
+  - 적이 모두 조준하는 곳에서 무리한 재탑승
+  cannot_judge_when:
+  - '핵심 근거 미확인: 파일럿 위치·시전 완료·적 방해·아군'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.dva; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/D.Va?oldid=404129'
+    patch_version: null

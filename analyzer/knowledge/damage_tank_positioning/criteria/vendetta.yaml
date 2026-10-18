@@ -1,0 +1,148 @@
+hero_id: vendetta
+display_name_ko: 벤데타
+role: damage
+pack_version: 0.1.0
+review_status: draft
+patch_version: null
+profile_type: criterion_fragment_not_HeroProfile
+ability_refs:
+  soaring_slice:
+    database_id: vendetta:soaring-slice
+    name_en: Soaring Slice
+    kind: Ability
+    review_required: false
+  warding_stance:
+    database_id: vendetta:warding-stance
+    name_en: Warding Stance
+    kind: Ability
+    review_required: false
+  projected_edge:
+    database_id: vendetta:projected-edge
+    name_en: Projected Edge
+    kind: Ability
+    review_required: false
+  whirlwind_dash:
+    database_id: vendetta:whirlwind-dash
+    name_en: Whirlwind Dash
+    kind: Ability
+    review_required: false
+  sundering_blade:
+    database_id: vendetta:sundering-blade
+    name_en: Sundering Blade
+    kind: Ultimate Ability
+    review_required: false
+criteria:
+- id: vendetta.positioning.approach
+  category: positioning
+  status: draft
+  ability: null
+  title: 검 사거리까지 접근할 엄폐
+  description: '적용 상황: 근접 진입 준비. 평가 목적: 검 사거리까지 접근할 엄폐. 예외: 거점 접촉이 급하면 위험 비교. 필수 근거: 접근·아군 사선·에너지. 결정 당시의 정보와 실행
+    가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 아군 압박과 지형으로 접근 피해 감소
+  bad_signs:
+  - 멀리서 정면 진입하며 방어 에너지 소진
+  cannot_judge_when:
+  - '핵심 근거 미확인: 접근·아군 사선·에너지'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.vendetta; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Vendetta?oldid=404686'
+    patch_version: null
+- id: vendetta.positioning.slice_end
+  category: positioning
+  status: draft
+  ability: soaring_slice
+  title: 검 추적 이동의 종료 공간
+  description: '적용 상황: 고지대·측면 이동. 평가 목적: 검 추적 이동의 종료 공간. 예외: 확실한 처치·합류는 비교. 필수 근거: 투척·도착·적 배치·퇴로. 결정 당시의 정보와 실행
+    가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 도착 후 공격·엄폐·후퇴가 연결됨
+  bad_signs:
+  - 검을 보낸 곳에 적이 모여도 무리하게 진입
+  cannot_judge_when:
+  - '핵심 근거 미확인: 투척·도착·적 배치·퇴로'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.vendetta; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Vendetta?oldid=404686'
+    patch_version: null
+- id: vendetta.positioning.front_only
+  category: positioning
+  status: draft
+  ability: warding_stance
+  title: 전방 방어와 측면 노출
+  description: '적용 상황: 검으로 피해 방어. 평가 목적: 전방 방어와 측면 노출. 예외: 교환 가치가 높은 짧은 노출은 허용. 필수 근거: 공격 방향·방어 에너지·적 위치. 결정 당시의
+    정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 주된 위협을 향하고 엄폐로 측면 제한
+  bad_signs:
+  - 전방 방어를 전방위 생존으로 간주
+  cannot_judge_when:
+  - '핵심 근거 미확인: 공격 방향·방어 에너지·적 위치'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.vendetta; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Vendetta?oldid=404686'
+    patch_version: null
+- id: vendetta.skill_usage.edge_budget
+  category: skill_usage
+  status: draft
+  ability: projected_edge
+  title: 투사체 공격과 방어 에너지 경쟁
+  description: '적용 상황: 원거리 공격 기회. 평가 목적: 투사체 공격과 방어 에너지 경쟁. 예외: 공격으로 위협 제거가 가능하면 허용. 필수 근거: 에너지·발사·적 접근·방어 필요. 결정
+    당시의 정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 남은 방어 필요를 고려해 에너지 사용
+  bad_signs:
+  - 즉각적 압박 앞에서 모두 소모해 방어 불가
+  cannot_judge_when:
+  - '핵심 근거 미확인: 에너지·발사·적 접근·방어 필요'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.vendetta; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Vendetta?oldid=404686'
+    patch_version: null
+- id: vendetta.skill_usage.dash
+  category: skill_usage
+  status: draft
+  ability: whirlwind_dash
+  title: 회전 돌진의 공격과 복귀
+  description: '적용 상황: 근접 거리 조절. 평가 목적: 회전 돌진의 공격과 복귀. 예외: 결정적 마무리면 비교. 필수 근거: 출발·종료·대상·아군 위치. 결정 당시의 정보와 실행 가능한
+    대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 도착 후 고립되지 않을 방향으로 사용
+  bad_signs:
+  - 적 추격에 사용해 아군·엄폐와 단절
+  cannot_judge_when:
+  - '핵심 근거 미확인: 출발·종료·대상·아군 위치'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.vendetta; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Vendetta?oldid=404686'
+    patch_version: null
+- id: vendetta.ultimate_usage.sunder
+  category: ultimate_usage
+  status: draft
+  ability: sundering_blade
+  title: 궁 사선과 방어 관통의 범위
+  description: '적용 상황: 궁 사용. 평가 목적: 궁 사선과 방어 관통의 범위. 예외: 단일 핵심 제거도 유효. 필수 근거: 시전·도달·적 방어 종류·종료. 결정 당시의 정보와 실행 가능한
+    대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 실제 표적과 시전 후 생존 경로 확보
+  bad_signs:
+  - 대부분 방어를 관통한다는 이유로 모든 방어를 무시
+  cannot_judge_when:
+  - '핵심 근거 미확인: 시전·도달·적 방어 종류·종료'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.vendetta; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Vendetta?oldid=404686'
+    patch_version: null

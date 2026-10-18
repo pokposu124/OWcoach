@@ -1,0 +1,148 @@
+hero_id: reaper
+display_name_ko: 리퍼
+role: damage
+pack_version: 0.1.0
+review_status: draft
+patch_version: null
+profile_type: criterion_fragment_not_HeroProfile
+ability_refs:
+  shadow_step:
+    database_id: reaper:shadow-step
+    name_en: Shadow Step
+    kind: Ability
+    review_required: false
+  wraith_form:
+    database_id: reaper:wraith-form
+    name_en: Wraith Form
+    kind: Ability
+    review_required: false
+  hellfire_shotguns:
+    database_id: reaper:hellfire-shotguns
+    name_en: Hellfire Shotguns
+    kind: Weapon
+    review_required: false
+  dire_triggers:
+    database_id: reaper:dire-triggers
+    name_en: Dire Triggers
+    kind: Ability
+    review_required: false
+  death_blossom:
+    database_id: reaper:death-blossom
+    name_en: Death Blossom
+    kind: Ultimate Ability
+    review_required: false
+criteria:
+- id: reaper.positioning.approach
+  category: positioning
+  status: draft
+  ability: null
+  title: 근접 화력을 위한 엄폐 접근
+  description: '적용 상황: 근거리 진입 전. 평가 목적: 근접 화력을 위한 엄폐 접근. 예외: 안전한 접근이 없으면 견제 유지. 필수 근거: 경로·적 사선·자원. 결정 당시의 정보와 실행
+    가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 코너·고지대로 접근해 불필요한 피해 감소
+  bad_signs:
+  - 정면 먼 거리에서 걸어 들어가 자원 소진
+  cannot_judge_when:
+  - '핵심 근거 미확인: 경로·적 사선·자원'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.reaper; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Reaper?oldid=402334'
+    patch_version: null
+- id: reaper.positioning.step_setup
+  category: positioning
+  status: draft
+  ability: shadow_step
+  title: 그림자 밟기의 도착 위험
+  description: '적용 상황: 사전 재배치. 평가 목적: 그림자 밟기의 도착 위험. 예외: 아군이 주의를 분산시키면 공격적 도착 가능. 필수 근거: 시전·도착·적 시선·엄폐. 결정 당시의 정보와
+    실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 적이 쉽게 처벌하지 못할 도착 지점 선택
+  bad_signs:
+  - 적이 보고 있는 열린 곳으로 순간이동
+  cannot_judge_when:
+  - '핵심 근거 미확인: 시전·도착·적 시선·엄폐'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.reaper; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Reaper?oldid=402334'
+    patch_version: null
+- id: reaper.positioning.wraith_exit
+  category: positioning
+  status: draft
+  ability: wraith_form
+  title: 망령화 종료 후의 퇴로
+  description: '적용 상황: 공격 또는 이탈. 평가 목적: 망령화 종료 후의 퇴로. 예외: 확실한 고립 적 처치면 비교. 필수 근거: 종료 위치·위협·다른 경로. 결정 당시의 정보와 실행
+    가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 종료 후 아군·엄폐로 연결
+  bad_signs:
+  - 접근에 사용하고 종료 지점에서 포위
+  cannot_judge_when:
+  - '핵심 근거 미확인: 종료 위치·위협·다른 경로'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.reaper; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Reaper?oldid=402334'
+    patch_version: null
+- id: reaper.skill_usage.shotgun
+  category: skill_usage
+  status: draft
+  ability: hellfire_shotguns
+  title: 흡혈을 생존 보장으로 보지 않기
+  description: '적용 상황: 근접 지속 교전. 평가 목적: 흡혈을 생존 보장으로 보지 않기. 예외: 곧 위협 제거가 가능하면 비교. 필수 근거: 명중·체력 변화·적 방어. 결정 당시의 정보와
+    실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 실제 명중·회복을 보고 공격 지속 판단
+  bad_signs:
+  - 방어에 막혀 회복 안 되는데 계속 버팀
+  cannot_judge_when:
+  - '핵심 근거 미확인: 명중·체력 변화·적 방어'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.reaper; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Reaper?oldid=402334'
+    patch_version: null
+- id: reaper.skill_usage.dire
+  category: skill_usage
+  status: draft
+  ability: dire_triggers
+  title: 장거리 사격과 근접 진입의 선택
+  description: '적용 상황: 현재 키트의 원거리 공격 기회. 평가 목적: 장거리 사격과 근접 진입의 선택. 예외: 근접 접근 자체가 위험하면 견제 지속 가능. 필수 근거: 경기 패치·스킬·거리·사선.
+    결정 당시의 정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 먼 적을 안전하게 견제하며 접근 창 관찰
+  bad_signs:
+  - 추가 공격 수단이 있다고 열린 정면에 고정
+  cannot_judge_when:
+  - '핵심 근거 미확인: 경기 패치·스킬·거리·사선'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.reaper; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Reaper?oldid=402334'
+    patch_version: null
+- id: reaper.ultimate_usage.blossom
+  category: ultimate_usage
+  status: draft
+  ability: death_blossom
+  title: 죽음의 꽃의 도달과 방해 수단
+  description: '적용 상황: 근접 궁 사용. 평가 목적: 죽음의 꽃의 도달과 방해 수단. 예외: 한 명 확실한 제거·접촉 억제도 유효. 필수 근거: 적 거리·관측된 방어·아군 후속. 결정
+    당시의 정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 적에게 닿으며 차단·방해 위험을 관리
+  bad_signs:
+  - 많이 맞히려 혼자 들어가 즉시 중단됨
+  cannot_judge_when:
+  - '핵심 근거 미확인: 적 거리·관측된 방어·아군 후속'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.reaper; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Reaper?oldid=402334'
+    patch_version: null

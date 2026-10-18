@@ -1,0 +1,143 @@
+hero_id: cassidy
+display_name_ko: 캐서디
+role: damage
+pack_version: 0.1.0
+review_status: draft
+patch_version: null
+profile_type: criterion_fragment_not_HeroProfile
+ability_refs:
+  combat_roll:
+    database_id: cassidy:combat-roll
+    name_en: Combat Roll
+    kind: Ability
+    review_required: false
+  flashbang:
+    database_id: cassidy:flashbang
+    name_en: Flashbang
+    kind: Ability
+    review_required: false
+  fan_the_hammer:
+    database_id: cassidy:fan-the-hammer
+    name_en: Fan the Hammer
+    kind: Weapon (Secondary Fire)
+    review_required: false
+  deadeye:
+    database_id: cassidy:deadeye
+    name_en: Deadeye
+    kind: Ultimate Ability
+    review_required: false
+criteria:
+- id: cassidy.positioning.effective_angle
+  category: positioning
+  status: draft
+  ability: null
+  title: 유효 거리에서 유지할 짧은 측면
+  description: '적용 상황: 중거리 교전. 평가 목적: 유효 거리에서 유지할 짧은 측면. 예외: 고립 적 마무리의 이득은 비교. 필수 근거: 대상 거리 근거·엄폐·복귀. 결정 당시의 정보와
+    실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 엄폐와 아군 도움을 유지하며 측면 압박
+  bad_signs:
+  - 빠져나올 수 없는 깊은 측면 진입
+  cannot_judge_when:
+  - '핵심 근거 미확인: 대상 거리 근거·엄폐·복귀'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.cassidy; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Cassidy?oldid=403765'
+    patch_version: null
+- id: cassidy.positioning.mark_flank
+  category: positioning
+  status: draft
+  ability: null
+  title: 측면 방어와 공격 기여의 균형
+  description: '적용 상황: 아군 쪽 적 플랭커 접근. 평가 목적: 측면 방어와 공격 기여의 균형. 예외: 확실한 위협 제거라면 추격 허용. 필수 근거: 플랭커 위치·아군 위험·추격 경로.
+    결정 당시의 정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 접근로를 압박하며 본대 교전에도 기여
+  bad_signs:
+  - 플랭커를 끝까지 쫓아 주요 교전 이탈
+  cannot_judge_when:
+  - '핵심 근거 미확인: 플랭커 위치·아군 위험·추격 경로'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.cassidy; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Cassidy?oldid=403765'
+    patch_version: null
+- id: cassidy.positioning.roll_landing
+  category: positioning
+  status: draft
+  ability: combat_roll
+  title: 구르기 종료 위치
+  description: '적용 상황: 피격 회피·재장전 이동. 평가 목적: 구르기 종료 위치. 예외: 결정적인 마무리 구르기는 비교 평가. 필수 근거: 시작·종료·적 사선·탄약. 결정 당시의 정보와
+    실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 엄폐에 도착하며 다음 공격 연결
+  bad_signs:
+  - 적 쪽 열린 곳에 굴러 집중 공격받음
+  cannot_judge_when:
+  - '핵심 근거 미확인: 시작·종료·적 사선·탄약'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.cassidy; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Cassidy?oldid=403765'
+    patch_version: null
+- id: cassidy.skill_usage.flashbang
+  category: skill_usage
+  status: draft
+  ability: flashbang
+  title: 섬광탄의 접근 차단 가치
+  description: '적용 상황: 적이 근거리 진입. 평가 목적: 섬광탄의 접근 차단 가치. 예외: 공격적 처치 연결도 가능. 필수 근거: 대상·효과 표시·아군 후속. 결정 당시의 정보와 실행
+    가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 위협 행동을 막고 거리나 후속 공격 확보
+  bad_signs:
+  - 보이던 근접 위협보다 무관한 대상에 소모
+  cannot_judge_when:
+  - '핵심 근거 미확인: 대상·효과 표시·아군 후속'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.cassidy; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Cassidy?oldid=403765'
+    patch_version: null
+- id: cassidy.skill_usage.fire_choice
+  category: skill_usage
+  status: draft
+  ability: fan_the_hammer
+  title: 난사할 거리와 이후 공백
+  description: '적용 상황: 근접 교전. 평가 목적: 난사할 거리와 이후 공백. 예외: 방벽 파괴 등 명확한 목적은 허용. 필수 근거: 거리 근거·탄약·적 방어 상태. 결정 당시의 정보와
+    실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 현재 적 거리·방어·탄약에 맞춰 선택
+  bad_signs:
+  - 유효성이 낮은 먼 적에게 탄을 소진
+  cannot_judge_when:
+  - '핵심 근거 미확인: 거리 근거·탄약·적 방어 상태'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.cassidy; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Cassidy?oldid=403765'
+    patch_version: null
+- id: cassidy.ultimate_usage.deadeye
+  category: ultimate_usage
+  status: draft
+  ability: deadeye
+  title: 황야의 무법자의 시야와 노출
+  description: '적용 상황: 궁 사용 결정. 평가 목적: 황야의 무법자의 시야와 노출. 예외: 구역 억제·재장전 목적도 가치 비교. 필수 근거: 시전 위치·적 사선·방어·취소 시점. 결정
+    당시의 정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 적이 노출되는 순간 보호된 각도에서 사용
+  bad_signs:
+  - 넓은 시야만 찾아 본체가 먼저 집중 공격받음
+  cannot_judge_when:
+  - '핵심 근거 미확인: 시전 위치·적 사선·방어·취소 시점'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.cassidy; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Cassidy?oldid=403765'
+    patch_version: null

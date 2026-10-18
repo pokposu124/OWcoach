@@ -1,0 +1,138 @@
+hero_id: sigma
+display_name_ko: 시그마
+role: tank
+pack_version: 0.1.0
+review_status: draft
+patch_version: null
+profile_type: criterion_fragment_not_HeroProfile
+ability_refs:
+  experimental_barrier:
+    database_id: sigma:experimental-barrier
+    name_en: Experimental Barrier
+    kind: Ability
+    review_required: false
+  kinetic_grasp:
+    database_id: sigma:kinetic-grasp
+    name_en: Kinetic Grasp
+    kind: Ability
+    review_required: false
+  gravitic_flux:
+    database_id: sigma:gravitic-flux
+    name_en: Gravitic Flux
+    kind: Ultimate Ability
+    review_required: false
+criteria:
+- id: sigma.positioning.range
+  category: positioning
+  status: draft
+  ability: null
+  title: 초구체 유효 거리와 접근 대응
+  description: '적용 상황: 중거리 교전. 평가 목적: 초구체 유효 거리와 접근 대응. 예외: 아군 후속으로 접근 적을 제거할 수 있으면 유지. 필수 근거: 적 접근·거리 근거·퇴로. 결정
+    당시의 정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 코너 사이로 물러나며 근접 적 접근 제한
+  bad_signs:
+  - 고정된 자리에서 근접 강한 적을 그대로 맞음
+  cannot_judge_when:
+  - '핵심 근거 미확인: 적 접근·거리 근거·퇴로'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.sigma; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Sigma?oldid=399707'
+    patch_version: null
+- id: sigma.positioning.angle
+  category: positioning
+  status: draft
+  ability: null
+  title: 짧은 측면으로 사선 분산
+  description: '적용 상황: 전투 중 재배치. 평가 목적: 짧은 측면으로 사선 분산. 예외: 적 위협이 제한되면 넓은 각도도 가능. 필수 근거: 아군 사선·적 위협·복귀 길. 결정 당시의
+    정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 팀 지원을 유지하면서 다른 공격각 확보
+  bad_signs:
+  - 측면이 너무 넓어 아군과 서로 도움 불가
+  cannot_judge_when:
+  - '핵심 근거 미확인: 아군 사선·적 위협·복귀 길'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.sigma; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Sigma?oldid=399707'
+    patch_version: null
+- id: sigma.positioning.resource_cycle
+  category: positioning
+  status: draft
+  ability: null
+  title: 방벽·흡수 소모 후 위치
+  description: '적용 상황: 방어 수단이 줄어듦. 평가 목적: 방벽·흡수 소모 후 위치. 예외: 적 화력이 제거됐으면 압박 지속 가능. 필수 근거: 방어 HUD·적 압박·엄폐. 결정 당시의
+    정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 엄폐로 노출을 줄이고 다시 공격 준비
+  bad_signs:
+  - 모든 방어가 비었는데 같은 공개된 자리 유지
+  cannot_judge_when:
+  - '핵심 근거 미확인: 방어 HUD·적 압박·엄폐'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.sigma; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Sigma?oldid=399707'
+    patch_version: null
+- id: sigma.skill_usage.barrier
+  category: skill_usage
+  status: draft
+  ability: experimental_barrier
+  title: 방벽의 필요한 사선 선택
+  description: '적용 상황: 적 특정 공격·각도 차단. 평가 목적: 방벽의 필요한 사선 선택. 예외: 아군 이동 보호용 지속 배치도 유효. 필수 근거: 위치·막은 공격·회수·아군 활용. 결정
+    당시의 정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 핵심 사선을 막고 불필요할 때 회수
+  bad_signs:
+  - 무의미한 피해에 방치해 핵심 순간 쓸 수 없음
+  cannot_judge_when:
+  - '핵심 근거 미확인: 위치·막은 공격·회수·아군 활용'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.sigma; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Sigma?oldid=399707'
+    patch_version: null
+- id: sigma.skill_usage.grasp
+  category: skill_usage
+  status: draft
+  ability: kinetic_grasp
+  title: 흡수 효과의 공격 종류와 방향
+  description: '적용 상황: 투사체 피해 대응. 평가 목적: 흡수 효과의 공격 종류와 방향. 예외: 즉각적 아군 보호도 유효. 필수 근거: 공격 종류·흡수 효과·적 방해·퇴로. 결정 당시의
+    정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 흡수할 공격에 연결하고 엄폐 복귀
+  bad_signs:
+  - 흡수 불가 공격·방해를 무시해 고립
+  cannot_judge_when:
+  - '핵심 근거 미확인: 공격 종류·흡수 효과·적 방해·퇴로'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.sigma; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Sigma?oldid=399707'
+    patch_version: null
+- id: sigma.ultimate_usage.flux
+  category: ultimate_usage
+  status: draft
+  ability: gravitic_flux
+  title: 붕괴 표적과 시전 중 본체
+  description: '적용 상황: 궁 사용. 평가 목적: 붕괴 표적과 시전 중 본체. 예외: 한 명 제어·거점 비우기도 가치. 필수 근거: 본체·표적·적 방어·아군 사격. 결정 당시의 정보와 실행
+    가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 표적에 후속이 가능하고 본체도 사선 관리
+  bad_signs:
+  - 여러 명을 잡으려 본체가 집중 공격받음
+  cannot_judge_when:
+  - '핵심 근거 미확인: 본체·표적·적 방어·아군 사격'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.sigma; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Sigma?oldid=399707'
+    patch_version: null

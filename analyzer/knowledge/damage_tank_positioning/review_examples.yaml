@@ -1,0 +1,132 @@
+example_type: synthetic_not_observed_gameplay
+review_status: draft
+purpose: 코치와 AI가 관측·해석·예외를 구분하기 위한 합성 경계 사례. 실제 경기 평가 점수가 아니다.
+examples:
+- id: tracer_alone_not_error
+  hero_id: tracer
+  criterion_id: tracer.positioning.timing
+  observed:
+  - 트레이서 화면에 아군이 보이지 않는다.
+  - 적 지원가가 트레이서 쪽으로 돌아봤다.
+  unknowns: [아군의 공격 시점, 화면 밖 지원 가능성, 트레이서의 퇴로]
+  review_decision: insufficient_evidence
+  reason: 화면에 혼자 보인다는 사실만으로 팀과 타이밍이 어긋난 무리한 진입을 확정할 수 없다.
+  not_a_production_grade: true
+- id: genji_survived_bad_entry
+  hero_id: genji
+  criterion_id: genji.positioning.dash_exit
+  observed:
+  - 건강한 적들이 모인 곳에 질풍참으로 진입했다.
+  - 초기화도 엄폐도 아군 후속도 없었고 가까운 안전한 대기 위치는 보인다.
+  - 적이 공격을 빗맞혀 겐지가 우연히 살아나왔다.
+  unknowns: []
+  review_decision: supported_error
+  reason: 살아남은 결과가 복귀 계획 없이 진입한 의사결정을 정당화하지 않는다. 피해량 대신 당시 위험과 대안을 설명한다.
+  not_a_production_grade: true
+- id: pharah_touch_exception
+  hero_id: pharah
+  criterion_id: pharah.positioning.fuel_landing
+  observed:
+  - 목표물 접촉 시간이 끝나기 직전이며 다른 아군은 도달하지 못한다.
+  - 파라가 남은 이동 자원을 써 열린 거점에 착지한다.
+  - 실제로 접촉 시간이 연장된다.
+  unknowns: []
+  review_decision: acceptable_exception
+  reason: 안전한 착지가 아니라는 사실만으로 실수가 아니다. 접촉 필요가 위험한 위치 선택을 설명한다.
+  not_a_production_grade: true
+- id: mei_wall_blocks_team
+  hero_id: mei
+  criterion_id: mei.skill_usage.wall_followup
+  observed:
+  - 아군이 노출된 적을 집중 공격 중이다.
+  - 메이가 그 사이에 빙벽을 설치해 아군 공격을 막는다.
+  - 막을 적 공격이나 구조할 아군이 없으며 적은 벽 뒤로 퇴각한다.
+  unknowns: []
+  review_decision: supported_error
+  reason: 빙벽 사용·명중 여부가 아니라 아군의 유효 공격을 끊은 결과와 불필요했던 조건을 연결한다.
+  not_a_production_grade: true
+- id: widow_information_good
+  hero_id: widowmaker
+  criterion_id: widowmaker.ultimate_usage.infra
+  observed:
+  - 팀이 시야가 가려진 구역으로 진입하려 한다.
+  - 적외선 투시로 숨어 있던 적의 진입 경로가 보인다.
+  - 아군이 그 경로를 피하고 안전한 위치를 얻는다.
+  unknowns: []
+  review_decision: supported_good
+  reason: 궁극기가 직접 피해를 주지 않아도 관측된 정보가 팀의 행동을 개선했다.
+  not_a_production_grade: true
+- id: anran_revival_unknown
+  hero_id: anran
+  criterion_id: anran.ultimate_usage.revival
+  observed:
+  - 안란이 사망 후 부활 궁극기를 선택한다.
+  - 영상이 부활 완료 전에 끝난다.
+  unknowns: [복귀 지점의 적 대기, 팀 접근, 실제 부활 완료, 목표물 필요]
+  review_decision: insufficient_evidence
+  reason: 생존 중 돌진 궁과 같은 기준으로 처리하거나 복귀 성공을 가정할 수 없다.
+  not_a_production_grade: true
+- id: reinhardt_support_cutoff
+  hero_id: reinhardt
+  criterion_id: reinhardt.positioning.support_link
+  observed:
+  - 아군이 다른 적에게 막혀 이동할 수 없는 상태가 확인된다.
+  - 라인하르트가 혼자 다음 모서리를 넘어 적 여러 명과 싸운다.
+  - 기존 코너에서는 버틸 수 있었고 급한 접촉 필요도 없다.
+  unknowns: []
+  review_decision: supported_error
+  reason: 탱커가 앞에 있다는 사실이 아니라 실제 지원 단절과 피할 수 있던 전진을 근거로 삼는다.
+  not_a_production_grade: true
+- id: dva_height_low_damage_good
+  hero_id: dva
+  criterion_id: dva.positioning.height_control
+  observed:
+  - D.Va가 고지대의 적 딜러를 밀어냈다.
+  - 아군 딜러가 그곳에 올라 유효 사격을 시작했다.
+  - D.Va의 직접 피해량은 낮지만 다른 급한 위협이나 접촉 의무는 없다.
+  unknowns: []
+  review_decision: supported_good
+  reason: 피해량만으로 판단하지 않고 적 각도 제거와 아군이 활용한 공간을 평가한다.
+  not_a_production_grade: true
+- id: sigma_grasp_damage_type
+  hero_id: sigma
+  criterion_id: sigma.skill_usage.grasp
+  observed:
+  - 현재 경기 규칙에서 흡수되지 않는 빔 공격이 확인된다.
+  - 시그마가 손아귀만 유지하며 열린 곳에 서 있다.
+  - 바로 옆 엄폐로 이동할 수 있고 별도 접촉 필요는 없다.
+  unknowns: []
+  review_decision: supported_error
+  reason: 기술이 켜졌다는 사실을 모든 공격에 대한 방어로 해석하면 안 된다. 공격 종류와 가능한 이동이 근거다.
+  not_a_production_grade: true
+- id: ball_backline_unknown
+  hero_id: wrecking-ball
+  criterion_id: wrecking-ball.positioning.team_window
+  observed:
+  - 레킹볼이 적 후방에서 지원가 둘의 시선을 끌고 있다.
+  - 자기 화면에서는 아군이 보이지 않는다.
+  unknowns: [아군 전진 여부, 적 탱커 압박의 변화, 거점 상황, 이탈 경로]
+  review_decision: insufficient_evidence
+  reason: 후방에 있다는 이유로 팀을 버렸다고 단정할 수 없고 적의 시선을 끈 것만으로 팀 기여를 확정할 수도 없다.
+  not_a_production_grade: true
+- id: roadhog_old_patch_unknown
+  hero_id: roadhog
+  criterion_id: roadhog.skill_usage.compactor
+  observed:
+  - 로드호그가 적 투사체에 맞고 있다.
+  - 경기 날짜와 해당 스킬 HUD를 확인할 수 없다.
+  unknowns: [경기 패치, Trash Compactor 존재 여부, 현재 재사용 상태]
+  review_decision: insufficient_evidence
+  reason: 현재 DB의 개편 키트를 과거 영상에 강제 적용해 스킬을 안 썼다고 감점하면 안 된다.
+  not_a_production_grade: true
+- id: zarya_bubble_without_energy
+  hero_id: zarya
+  criterion_id: zarya.skill_usage.ally_bubble
+  observed:
+  - 아군이 즉각적인 위험 공격에 노출된다.
+  - 방벽으로 해당 위험을 피하고 아군이 엄폐로 이동한다.
+  - 에너지 증가량은 작다.
+  unknowns: []
+  review_decision: acceptable_exception
+  reason: 아군 방벽의 가치는 에너지 획득량만이 아니다. 실제 구조와 이동 시간이 확인된다.
+  not_a_production_grade: true

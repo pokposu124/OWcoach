@@ -1,0 +1,138 @@
+hero_id: bastion
+display_name_ko: 바스티온
+role: damage
+pack_version: 0.1.0
+review_status: draft
+patch_version: null
+profile_type: criterion_fragment_not_HeroProfile
+ability_refs:
+  reconfigure:
+    database_id: bastion:reconfigure
+    name_en: Reconfigure
+    kind: Ability
+    review_required: false
+  a_36_tactical_grenade:
+    database_id: bastion:a-36-tactical-grenade
+    name_en: A-36 Tactical Grenade
+    kind: Ability
+    review_required: false
+  configuration_artillery:
+    database_id: bastion:configuration-artillery
+    name_en: 'Configuration: Artillery'
+    kind: Ultimate Ability
+    review_required: false
+criteria:
+- id: bastion.positioning.assault_angle
+  category: positioning
+  status: draft
+  ability: null
+  title: 강습 형태를 활용할 사선 준비
+  description: '적용 상황: 변신 전 위치 선정. 평가 목적: 강습 형태를 활용할 사선 준비. 예외: 적을 밀어내는 공간 이득도 인정. 필수 근거: 변신 위치·적 엄폐·퇴로. 결정 당시의
+    정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 적이 쉽게 숨기 어려운 각도에서 시작
+  bad_signs:
+  - 변신 후 벽만 보이거나 정면 집중 사격받음
+  cannot_judge_when:
+  - '핵심 근거 미확인: 변신 위치·적 엄폐·퇴로'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.bastion; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Bastion?oldid=402044'
+    patch_version: null
+- id: bastion.positioning.cycle
+  category: positioning
+  status: draft
+  ability: null
+  title: 강습 종료 후 재배치
+  description: '적용 상황: 강습 종료 임박. 평가 목적: 강습 종료 후 재배치. 예외: 전투 종료·즉각적 마무리는 허용. 필수 근거: 형태·적 접근·이동 경로. 결정 당시의 정보와 실행
+    가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 다음 엄폐와 아군 지원권으로 이동
+  bad_signs:
+  - 같은 열린 자리에서 방어 수단 없이 버팀
+  cannot_judge_when:
+  - '핵심 근거 미확인: 형태·적 접근·이동 경로'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.bastion; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Bastion?oldid=402044'
+    patch_version: null
+- id: bastion.positioning.size_cover
+  category: positioning
+  status: draft
+  ability: null
+  title: 큰 피격 면적을 줄이는 코너
+  description: '적용 상황: 정면 교전. 평가 목적: 큰 피격 면적을 줄이는 코너. 예외: 긴급 거점 유지면 위험 비교. 필수 근거: 본체 노출·적 사선·가용 엄폐. 결정 당시의 정보와 실행
+    가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 필요한 사선만 열고 측면 노출 제한
+  bad_signs:
+  - 아군 방벽만 믿고 여러 방향에 노출
+  cannot_judge_when:
+  - '핵심 근거 미확인: 본체 노출·적 사선·가용 엄폐'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.bastion; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Bastion?oldid=402044'
+    patch_version: null
+- id: bastion.skill_usage.transform
+  category: skill_usage
+  status: draft
+  ability: reconfigure
+  title: 변신과 적 방어 자원의 시점
+  description: '적용 상황: 강습 사용 결정. 평가 목적: 변신과 적 방어 자원의 시점. 예외: 진입 억제 목적이 확인되면 허용. 필수 근거: 변신·표적 노출·적 방어 효과. 결정 당시의
+    정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 실제 표적과 아군 압박이 있을 때 사용
+  bad_signs:
+  - 적이 완전히 숨은 뒤 변신 시간을 소모
+  cannot_judge_when:
+  - '핵심 근거 미확인: 변신·표적 노출·적 방어 효과'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.bastion; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Bastion?oldid=402044'
+    patch_version: null
+- id: bastion.skill_usage.grenade
+  category: skill_usage
+  status: draft
+  ability: a_36_tactical_grenade
+  title: 수류탄의 경로와 이동 이득
+  description: '적용 상황: 폭발 또는 위치 이동 필요. 평가 목적: 수류탄의 경로와 이동 이득. 예외: 긴급 탈출은 사격 공백 허용. 필수 근거: 투척·반사·폭발·도착 위치. 결정 당시의
+    정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 적 엄폐 압박이나 유효 위치 확보에 연결
+  bad_signs:
+  - 불필요한 이동으로 안전한 사격각 상실
+  cannot_judge_when:
+  - '핵심 근거 미확인: 투척·반사·폭발·도착 위치'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.bastion; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Bastion?oldid=402044'
+    patch_version: null
+- id: bastion.ultimate_usage.artillery
+  category: ultimate_usage
+  status: draft
+  ability: configuration_artillery
+  title: 포격 중 본체 안전과 목표 이동
+  description: '적용 상황: 궁 사용. 평가 목적: 포격 중 본체 안전과 목표 이동. 예외: 막판 거점 압박은 위험 감수 가능. 필수 근거: 본체 위치·표적 이동·포격 지점. 결정 당시의
+    정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 본체를 숨기고 적 퇴로나 교전 구역 압박
+  bad_signs:
+  - 위협 앞에서 조작에 들어가 본체 노출
+  cannot_judge_when:
+  - '핵심 근거 미확인: 본체 위치·표적 이동·포격 지점'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.bastion; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Bastion?oldid=402044'
+    patch_version: null

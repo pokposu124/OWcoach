@@ -1,0 +1,143 @@
+hero_id: domina
+display_name_ko: 도미나
+role: tank
+pack_version: 0.1.0
+review_status: draft
+patch_version: null
+profile_type: criterion_fragment_not_HeroProfile
+ability_refs:
+  barrier_array:
+    database_id: domina:barrier-array
+    name_en: Barrier Array
+    kind: Ability
+    review_required: false
+  sonic_repulsors:
+    database_id: domina:sonic-repulsors
+    name_en: Sonic Repulsors
+    kind: Ability
+    review_required: false
+  crystal_charge:
+    database_id: domina:crystal-charge
+    name_en: Crystal Charge
+    kind: Ability
+    review_required: false
+  panopticon:
+    database_id: domina:panopticon
+    name_en: Panopticon
+    kind: Ultimate Ability
+    review_required: false
+criteria:
+- id: domina.positioning.midrange
+  category: positioning
+  status: draft
+  ability: null
+  title: 중거리 압박과 후퇴 코너
+  description: '적용 상황: 적이 접근. 평가 목적: 중거리 압박과 후퇴 코너. 예외: 아군이 가까운 위협을 제거하면 체류 가능. 필수 근거: 적 접근·코너·아군 대응. 결정 당시의 정보와
+    실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 주무기가 유효한 거리에서 엄폐를 따라 이동
+  bad_signs:
+  - 근접 적이 붙을 때까지 열린 곳에 고정
+  cannot_judge_when:
+  - '핵심 근거 미확인: 적 접근·코너·아군 대응'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.domina; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Domina?oldid=401763'
+    patch_version: null
+- id: domina.positioning.segments
+  category: positioning
+  status: draft
+  ability: barrier_array
+  title: 분절 방벽의 빈틈과 본체 위치
+  description: '적용 상황: 방벽 주변 교전. 평가 목적: 분절 방벽의 빈틈과 본체 위치. 예외: 위험을 감수할 즉시 이득은 비교. 필수 근거: 방벽 구간 상태·적 사선·본체. 결정 당시의
+    정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 살아 있는 방벽 구간과 지형을 함께 활용
+  bad_signs:
+  - 한 구간 파괴 뒤에도 전체가 막는다고 가정
+  cannot_judge_when:
+  - '핵심 근거 미확인: 방벽 구간 상태·적 사선·본체'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.domina; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Domina?oldid=401763'
+    patch_version: null
+- id: domina.positioning.wall_geometry
+  category: positioning
+  status: draft
+  ability: null
+  title: 벽 충돌을 유도할 지형
+  description: '적용 상황: 적이 가까이 진입. 평가 목적: 벽 충돌을 유도할 지형. 예외: 밀쳐내기 자체로 거리 확보해도 유효. 필수 근거: 적·벽·밀리는 방향. 결정 당시의 정보와 실행
+    가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 적과 벽의 관계를 보고 제어 각도 확보
+  bad_signs:
+  - 벽 조건 없이 확정 제어를 기대하고 전진
+  cannot_judge_when:
+  - '핵심 근거 미확인: 적·벽·밀리는 방향'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.domina; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Domina?oldid=401763'
+    patch_version: null
+- id: domina.skill_usage.repulsors
+  category: skill_usage
+  status: draft
+  ability: sonic_repulsors
+  title: 밀쳐내기의 방어와 고립 목적
+  description: '적용 상황: 접근 적 대응. 평가 목적: 밀쳐내기의 방어와 고립 목적. 예외: 자기 생존이 급하면 탈출 우선. 필수 근거: 피격·이동 방향·벽 충돌·아군 사선. 결정 당시의
+    정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 아군을 보호하거나 적을 벽 쪽으로 제어
+  bad_signs:
+  - 아군 공격 중인 적을 안전한 곳으로 밀어냄
+  cannot_judge_when:
+  - '핵심 근거 미확인: 피격·이동 방향·벽 충돌·아군 사선'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.domina; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Domina?oldid=401763'
+    patch_version: null
+- id: domina.skill_usage.crystal
+  category: skill_usage
+  status: draft
+  ability: crystal_charge
+  title: 수정 폭발의 시점과 공간
+  description: '적용 상황: 폭발물 배치. 평가 목적: 수정 폭발의 시점과 공간. 예외: 통로 억제만으로도 가치. 필수 근거: 투사·설치·폭발·적 이동. 결정 당시의 정보와 실행 가능한 대안을
+    비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 적 이동과 아군 압박에 맞춰 폭발
+  bad_signs:
+  - 적이 떠난 뒤 무의미하게 폭발
+  cannot_judge_when:
+  - '핵심 근거 미확인: 투사·설치·폭발·적 이동'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.domina; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Domina?oldid=401763'
+    patch_version: null
+- id: domina.ultimate_usage.panopticon
+  category: ultimate_usage
+  status: draft
+  ability: panopticon
+  title: 가둔 적을 실제로 처리할 공간
+  description: '적용 상황: 궁 사용. 평가 목적: 가둔 적을 실제로 처리할 공간. 예외: 목표물·후퇴 시간을 버는 용도 허용. 필수 근거: 명중·가둔 위치·아군 후속·종료. 결정 당시의
+    정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 후속이 가능한 적을 가두거나 주요 경로 차단
+  bad_signs:
+  - 아군이 접근할 수 없는 곳에 가두고 방치
+  cannot_judge_when:
+  - '핵심 근거 미확인: 명중·가둔 위치·아군 후속·종료'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.domina; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Domina?oldid=401763'
+    patch_version: null

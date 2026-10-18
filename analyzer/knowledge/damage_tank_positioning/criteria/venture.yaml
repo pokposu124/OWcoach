@@ -1,0 +1,138 @@
+hero_id: venture
+display_name_ko: 벤처
+role: damage
+pack_version: 0.1.0
+review_status: draft
+patch_version: null
+profile_type: criterion_fragment_not_HeroProfile
+ability_refs:
+  burrow:
+    database_id: venture:burrow
+    name_en: Burrow
+    kind: Ability
+    review_required: false
+  drill_dash:
+    database_id: venture:drill-dash
+    name_en: Drill Dash
+    kind: Ability
+    review_required: false
+  tectonic_shock:
+    database_id: venture:tectonic-shock
+    name_en: Tectonic Shock
+    kind: Ultimate Ability
+    review_required: false
+criteria:
+- id: venture.positioning.stage
+  category: positioning
+  status: draft
+  ability: null
+  title: 잠복 진입 전 가까운 엄폐 확보
+  description: '적용 상황: 근접 기습 준비. 평가 목적: 잠복 진입 전 가까운 엄폐 확보. 예외: 급한 목표물 접촉은 예외. 필수 근거: 출발·자원·아군 공격. 결정 당시의 정보와 실행
+    가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 아군 교전과 맞춰 안전한 출발 위치 선택
+  bad_signs:
+  - 먼 정면에서 접근에 모든 자원 사용
+  cannot_judge_when:
+  - '핵심 근거 미확인: 출발·자원·아군 공격'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.venture; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Venture?oldid=404959'
+    patch_version: null
+- id: venture.positioning.emerge
+  category: positioning
+  status: draft
+  ability: burrow
+  title: 잠복 종료 지점과 적 대기
+  description: '적용 상황: 지하 이동 중. 평가 목적: 잠복 종료 지점과 적 대기. 예외: 위협을 밀어내는 확실한 기회면 비교. 필수 근거: 출현 지형·적 위치·사용 가능 기술. 결정 당시의
+    정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 적 방어·아군 후속을 보고 출현 지점 결정
+  bad_signs:
+  - 무적 중 안전을 출현 후에도 가정
+  cannot_judge_when:
+  - '핵심 근거 미확인: 출현 지형·적 위치·사용 가능 기술'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.venture; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Venture?oldid=404959'
+    patch_version: null
+- id: venture.positioning.cycle
+  category: positioning
+  status: draft
+  ability: null
+  title: 임시 보호막과 교전 종료
+  description: '적용 상황: 스킬 교환 후. 평가 목적: 임시 보호막과 교전 종료. 예외: 위협이 사라지면 체류 가능. 필수 근거: 보호막 HUD·자원·퇴로. 결정 당시의 정보와 실행 가능한
+    대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 추가 생존 자원이 줄면 엄폐로 복귀
+  bad_signs:
+  - 보호막 이득만 믿고 반복 전진해 고립
+  cannot_judge_when:
+  - '핵심 근거 미확인: 보호막 HUD·자원·퇴로'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.venture; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Venture?oldid=404959'
+    patch_version: null
+- id: venture.skill_usage.drill
+  category: skill_usage
+  status: draft
+  ability: drill_dash
+  title: 드릴 돌진의 밀쳐내기와 도착
+  description: '적용 상황: 공격·탈출 필요. 평가 목적: 드릴 돌진의 밀쳐내기와 도착. 예외: 목표물에서 떼어내는 행동은 가치 인정. 필수 근거: 적과 본인의 전후 위치·경로. 결정 당시의
+    정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 적 위치를 악화하거나 안전한 곳으로 이탈
+  bad_signs:
+  - 목표만 밀고 자신은 적 사선에 남음
+  cannot_judge_when:
+  - '핵심 근거 미확인: 적과 본인의 전후 위치·경로'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.venture; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Venture?oldid=404959'
+    patch_version: null
+- id: venture.skill_usage.burrow_start
+  category: skill_usage
+  status: draft
+  ability: burrow
+  title: 잠복 시작의 취약 구간
+  description: '적용 상황: 피격 중 잠복 시도. 평가 목적: 잠복 시작의 취약 구간. 예외: 긴급 사용 외 대안이 없으면 감점 보류. 필수 근거: 시작·실제 지하 전환·피해 시점. 결정
+    당시의 정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 발동에 필요한 여유와 엄폐 확보
+  bad_signs:
+  - 잠복 버튼만으로 즉시 모든 위험을 피한다고 가정
+  cannot_judge_when:
+  - '핵심 근거 미확인: 시작·실제 지하 전환·피해 시점'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.venture; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Venture?oldid=404959'
+    patch_version: null
+- id: venture.ultimate_usage.tectonic
+  category: ultimate_usage
+  status: draft
+  ability: tectonic_shock
+  title: 충격파의 지면 경로
+  description: '적용 상황: 궁 공격. 평가 목적: 충격파의 지면 경로. 예외: 통로 압박·접촉 억제도 유효. 필수 근거: 지형·발사 방향·방어·실제 도달. 결정 당시의 정보와 실행 가능한
+    대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 지형과 방어를 확인해 적에게 파동 전달
+  bad_signs:
+  - 지면 연결·가림을 무시하고 반복 사용
+  cannot_judge_when:
+  - '핵심 근거 미확인: 지형·발사 방향·방어·실제 도달'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.venture; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Venture?oldid=404959'
+    patch_version: null

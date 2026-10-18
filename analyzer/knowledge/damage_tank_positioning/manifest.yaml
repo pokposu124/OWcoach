@@ -1,0 +1,16 @@
+pack_version: 0.1.0
+created: '2026-10-18'
+database_sha256: 4b7bd4ab07ee95c16c0019f069891809a833e2166794f16d056688ef6f1200ec
+counts:
+  damage_heroes: 23
+  tank_heroes: 15
+  common_criteria: 24
+  hero_criteria: 231
+  positioning: 138
+  skill_usage: 76
+  ultimate_usage: 41
+  total: 255
+all_draft: true
+runtime_integrated: false
+coach_validated: false
+gameplay_accuracy_tested: false

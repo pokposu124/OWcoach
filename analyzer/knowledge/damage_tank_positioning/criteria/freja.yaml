@@ -1,0 +1,143 @@
+hero_id: freja
+display_name_ko: 프레야
+role: damage
+pack_version: 0.1.0
+review_status: draft
+patch_version: null
+profile_type: criterion_fragment_not_HeroProfile
+ability_refs:
+  quick_dash:
+    database_id: freja:quick-dash
+    name_en: Quick Dash
+    kind: Ability
+    review_required: false
+  take_aim:
+    database_id: freja:take-aim
+    name_en: Take Aim
+    kind: Weapon (ADS)
+    review_required: false
+  updraft:
+    database_id: freja:updraft
+    name_en: Updraft
+    kind: Ability
+    review_required: false
+  bola_shot:
+    database_id: freja:bola-shot
+    name_en: Bola Shot
+    kind: Ultimate Ability
+    review_required: false
+criteria:
+- id: freja.positioning.air_peek
+  category: positioning
+  status: draft
+  ability: null
+  title: 상승 후 조준할 각도와 엄폐
+  description: '적용 상황: 고도 확보. 평가 목적: 상승 후 조준할 각도와 엄폐. 예외: 지상 위험 회피용 상승은 허용. 필수 근거: 상승·조준·적 방향·착지. 결정 당시의 정보와 실행
+    가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 공격 순간만 노출하고 다음 엄폐 경로 유지
+  bad_signs:
+  - 열린 정점에서 조준하며 집중 사격받음
+  cannot_judge_when:
+  - '핵심 근거 미확인: 상승·조준·적 방향·착지'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.freja; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Freja?oldid=403748'
+    patch_version: null
+- id: freja.positioning.dash_trade
+  category: positioning
+  status: draft
+  ability: quick_dash
+  title: 조준 갱신과 탈출 수단 비교
+  description: '적용 상황: 추가 조준을 위해 대시. 평가 목적: 조준 갱신과 탈출 수단 비교. 예외: 교전을 끝낼 기회면 자원 투자 가능. 필수 근거: 대시·적 접근·다음 엄폐. 결정 당시의
+    정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 추가 공격 후에도 엄폐·복귀 여지 유지
+  bad_signs:
+  - 조준 갱신에 이동기를 써 다이브 대응 상실
+  cannot_judge_when:
+  - '핵심 근거 미확인: 대시·적 접근·다음 엄폐'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.freja; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Freja?oldid=403748'
+    patch_version: null
+- id: freja.positioning.reposition
+  category: positioning
+  status: draft
+  ability: null
+  title: 발각된 사격각 교체
+  description: '적용 상황: 적이 현재 위치를 압박. 평가 목적: 발각된 사격각 교체. 예외: 적을 물러나게 할 순간은 유지 가능. 필수 근거: 적 대응·대체 각도·이동 비용. 결정 당시의
+    정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 도약·대시 또는 지형으로 다른 각도 확보
+  bad_signs:
+  - 같은 공중 각도를 반복해 적 사격에 고정됨
+  cannot_judge_when:
+  - '핵심 근거 미확인: 적 대응·대체 각도·이동 비용'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.freja; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Freja?oldid=403748'
+    patch_version: null
+- id: freja.skill_usage.aim_window
+  category: skill_usage
+  status: draft
+  ability: take_aim
+  title: 조준 중 이동 변화와 노출
+  description: '적용 상황: 폭발 화살 조준. 평가 목적: 조준 중 이동 변화와 노출. 예외: 짧은 확실한 공격 기회는 허용. 필수 근거: 조준 상태·이동·적 사격. 결정 당시의 정보와 실행
+    가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 적 시야와 자기 노출을 확인해 공격
+  bad_signs:
+  - 조준으로 피하기 어려워진 순간 공개된 사선 체류
+  cannot_judge_when:
+  - '핵심 근거 미확인: 조준 상태·이동·적 사격'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.freja; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Freja?oldid=403748'
+    patch_version: null
+- id: freja.skill_usage.updraft
+  category: skill_usage
+  status: draft
+  ability: updraft
+  title: 상승기의 도착과 재사용 공백
+  description: '적용 상황: 상승 사용. 평가 목적: 상승기의 도착과 재사용 공백. 예외: 긴급 지상 공격 회피는 별도 평가. 필수 근거: 상승 지점·주변 지형·하강 경로. 결정 당시의 정보와
+    실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 유효 사선과 내려갈 공간을 함께 확보
+  bad_signs:
+  - 높이만 얻고 공격·퇴로가 모두 막힘
+  cannot_judge_when:
+  - '핵심 근거 미확인: 상승 지점·주변 지형·하강 경로'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.freja; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Freja?oldid=403748'
+    patch_version: null
+- id: freja.ultimate_usage.bola
+  category: ultimate_usage
+  status: draft
+  ability: bola_shot
+  title: 볼라의 실제 대상과 후속 압박
+  description: '적용 상황: 적을 묶을 기회. 평가 목적: 볼라의 실제 대상과 후속 압박. 예외: 한 명의 핵심 위협 제어도 유효. 필수 근거: 명중·적 이동 제한·아군 사선. 결정 당시의
+    정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 맞힌 대상에 아군이나 본인 공격이 이어짐
+  bad_signs:
+  - 다수 적만 노리다 후속이 불가능한 곳에 사용
+  cannot_judge_when:
+  - '핵심 근거 미확인: 명중·적 이동 제한·아군 사선'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.freja; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Freja?oldid=403748'
+    patch_version: null

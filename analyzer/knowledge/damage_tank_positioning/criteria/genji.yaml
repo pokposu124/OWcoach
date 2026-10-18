@@ -1,0 +1,143 @@
+hero_id: genji
+display_name_ko: 겐지
+role: damage
+pack_version: 0.1.0
+review_status: draft
+patch_version: null
+profile_type: criterion_fragment_not_HeroProfile
+ability_refs:
+  swift_strike:
+    database_id: genji:swift-strike
+    name_en: Swift Strike
+    kind: Ability
+    review_required: false
+  deflect:
+    database_id: genji:deflect
+    name_en: Deflect
+    kind: Ability
+    review_required: false
+  shuriken:
+    database_id: genji:shuriken
+    name_en: Shuriken
+    kind: Weapon (Primary Fire)
+    review_required: false
+  dragonblade:
+    database_id: genji:dragonblade
+    name_en: Dragonblade
+    kind: Ultimate Ability
+    review_required: false
+criteria:
+- id: genji.positioning.stage
+  category: positioning
+  status: draft
+  ability: null
+  title: 벽타기로 진입 전 위치 준비
+  description: '적용 상황: 기습 준비. 평가 목적: 벽타기로 진입 전 위치 준비. 예외: 급한 목표물 접촉은 준비 생략 가능. 필수 근거: 체력·위치·아군 공격 시점. 결정 당시의 정보와
+    실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 엄폐·고지대에서 아군 교전 타이밍 관찰
+  bad_signs:
+  - 준비 중 피해를 받아 진입 자원 소모
+  cannot_judge_when:
+  - '핵심 근거 미확인: 체력·위치·아군 공격 시점'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.genji; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Genji?oldid=404769'
+    patch_version: null
+- id: genji.positioning.dash_exit
+  category: positioning
+  status: draft
+  ability: swift_strike
+  title: 질풍참 종료와 초기화 의존
+  description: '적용 상황: 공격적 질풍참. 평가 목적: 질풍참 종료와 초기화 의존. 예외: 실제 처치 가능 근거가 강하면 비교. 필수 근거: 대상 상태·도착·초기화·다른 퇴로. 결정 당시의
+    정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 초기화가 없어도 버틸 위치로 진입
+  bad_signs:
+  - 처치 초기화를 확정으로 가정해 적 무리 진입
+  cannot_judge_when:
+  - '핵심 근거 미확인: 대상 상태·도착·초기화·다른 퇴로'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.genji; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Genji?oldid=404769'
+    patch_version: null
+- id: genji.positioning.short_pressure
+  category: positioning
+  status: draft
+  ability: null
+  title: 근접 압박의 체류 한계
+  description: '적용 상황: 적 후방 교전. 평가 목적: 근접 압박의 체류 한계. 예외: 아군이 즉시 이득을 얻는 교환은 허용. 필수 근거: 적 시선·방어 사용·아군 후속. 결정 당시의 정보와
+    실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 적 방어 반응과 아군 압박을 보고 이탈
+  bad_signs:
+  - 적이 모두 돌아봤는데도 같은 깊이에 체류
+  cannot_judge_when:
+  - '핵심 근거 미확인: 적 시선·방어 사용·아군 후속'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.genji; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Genji?oldid=404769'
+    patch_version: null
+- id: genji.skill_usage.deflect
+  category: skill_usage
+  status: draft
+  ability: deflect
+  title: 튕겨내기 방향과 막지 못하는 위협
+  description: '적용 상황: 정면 공격 대응. 평가 목적: 튕겨내기 방향과 막지 못하는 위협. 예외: 위협 제거용 공격 반사도 유효. 필수 근거: 적 공격 종류·방향·효과·종료. 결정 당시의
+    정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 관측된 공격 방향을 막으며 엄폐로 이동
+  bad_signs:
+  - 모든 공격을 막는다고 가정하고 포위 유지
+  cannot_judge_when:
+  - '핵심 근거 미확인: 적 공격 종류·방향·효과·종료'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.genji; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Genji?oldid=404769'
+    patch_version: null
+- id: genji.skill_usage.shuriken
+  category: skill_usage
+  status: draft
+  ability: shuriken
+  title: 진입 전 수리검 압박의 목적
+  description: '적용 상황: 아직 가까이 붙기 어려움. 평가 목적: 진입 전 수리검 압박의 목적. 예외: 안전한 접근로가 없으면 견제 유지 가능. 필수 근거: 표적·적 반응·측면 이동 가능성.
+    결정 당시의 정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 유효 표적을 압박하며 진입 기회 관찰
+  bad_signs:
+  - 무효한 정면 공격만 반복해 측면 준비 놓침
+  cannot_judge_when:
+  - '핵심 근거 미확인: 표적·적 반응·측면 이동 가능성'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.genji; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Genji?oldid=404769'
+    patch_version: null
+- id: genji.ultimate_usage.blade
+  category: ultimate_usage
+  status: draft
+  ability: dragonblade
+  title: 용검 시점과 다음 대상 경로
+  description: '적용 상황: 궁 진입. 평가 목적: 용검 시점과 다음 대상 경로. 예외: 적 자원을 빼거나 단일 핵심 처치도 가치. 필수 근거: 궁 시작·적 방어 관측·아군 후속·이동. 결정
+    당시의 정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 적 방어와 아군 교전을 보고 대상·퇴로 선택
+  bad_signs:
+  - 혼자 먼저 들어가 방해 효과에 멈춤
+  cannot_judge_when:
+  - '핵심 근거 미확인: 궁 시작·적 방어 관측·아군 후속·이동'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.genji; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Genji?oldid=404769'
+    patch_version: null

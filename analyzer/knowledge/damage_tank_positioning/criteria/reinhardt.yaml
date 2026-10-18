@@ -1,0 +1,143 @@
+hero_id: reinhardt
+display_name_ko: 라인하르트
+role: tank
+pack_version: 0.1.0
+review_status: draft
+patch_version: null
+profile_type: criterion_fragment_not_HeroProfile
+ability_refs:
+  charge:
+    database_id: reinhardt:charge
+    name_en: Charge
+    kind: Ability
+    review_required: false
+  barrier_field:
+    database_id: reinhardt:barrier-field
+    name_en: Barrier Field
+    kind: Ability
+    review_required: false
+  fire_strike:
+    database_id: reinhardt:fire-strike
+    name_en: Fire Strike
+    kind: Ability
+    review_required: false
+  earthshatter:
+    database_id: reinhardt:earthshatter
+    name_en: Earthshatter
+    kind: Ultimate Ability
+    review_required: false
+criteria:
+- id: reinhardt.positioning.corner
+  category: positioning
+  status: draft
+  ability: null
+  title: 망치가 닿는 코너를 단계적으로 확보
+  description: '적용 상황: 아군과 전진. 평가 목적: 망치가 닿는 코너를 단계적으로 확보. 예외: 아군 속도·방어 지원이 있으면 비교. 필수 근거: 다음 코너·팀 위치·방벽 체력. 결정
+    당시의 정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 엄폐 사이에서 방벽·체력을 보존하며 접근
+  bad_signs:
+  - 열린 정면에서 방벽을 모두 잃고 진입 불가
+  cannot_judge_when:
+  - '핵심 근거 미확인: 다음 코너·팀 위치·방벽 체력'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.reinhardt; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Reinhardt?oldid=402314'
+    patch_version: null
+- id: reinhardt.positioning.support_link
+  category: positioning
+  status: draft
+  ability: null
+  title: 모서리를 넘기 전 아군 연결
+  description: '적용 상황: 다음 구역 진입. 평가 목적: 모서리를 넘기 전 아군 연결. 예외: 고립 적 제거·긴급 접촉은 예외. 필수 근거: 코너 양측·아군 이동·적 배치. 결정 당시의
+    정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 아군 사격·치료가 따라올 수 있는 시점에 전진
+  bad_signs:
+  - 혼자 코너를 넘어 지원 없이 싸움
+  cannot_judge_when:
+  - '핵심 근거 미확인: 코너 양측·아군 이동·적 배치'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.reinhardt; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Reinhardt?oldid=402314'
+    patch_version: null
+- id: reinhardt.positioning.pin_end
+  category: positioning
+  status: draft
+  ability: charge
+  title: 돌진의 끝과 취소 가능 위치
+  description: '적용 상황: 돌진 시작. 평가 목적: 돌진의 끝과 취소 가능 위치. 예외: 결정적 교환·구조용 돌진은 비교. 필수 근거: 경로·도착·취소·지원선. 결정 당시의 정보와 실행
+    가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 도착 후 아군·엄폐 연결이 유지됨
+  bad_signs:
+  - 먼 고정 대상만 보고 적 후방까지 고립
+  cannot_judge_when:
+  - '핵심 근거 미확인: 경로·도착·취소·지원선'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.reinhardt; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Reinhardt?oldid=402314'
+    patch_version: null
+- id: reinhardt.skill_usage.shield
+  category: skill_usage
+  status: draft
+  ability: barrier_field
+  title: 방벽의 통과·핵심 공격 차단 가치
+  description: '적용 상황: 사선 통과 또는 큰 공격 예상. 평가 목적: 방벽의 통과·핵심 공격 차단 가치. 예외: 아군 구조를 위한 전량 소모는 정당. 필수 근거: 막은 공격·방벽 상태·팀
+    이동. 결정 당시의 정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 필요한 순간에 막고 엄폐에서 자원 회복
+  bad_signs:
+  - 의미 없는 견제에 소모해 핵심 순간 방어 불가
+  cannot_judge_when:
+  - '핵심 근거 미확인: 막은 공격·방벽 상태·팀 이동'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.reinhardt; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Reinhardt?oldid=402314'
+    patch_version: null
+- id: reinhardt.skill_usage.fire
+  category: skill_usage
+  status: draft
+  ability: fire_strike
+  title: 화염 강타 중 방어 공백
+  description: '적용 상황: 투사체 압박 기회. 평가 목적: 화염 강타 중 방어 공백. 예외: 즉시 위협 제거 가능하면 비교. 필수 근거: 발사·적 공격·아군 노출. 결정 당시의 정보와 실행
+    가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 위협이 낮은 순간에 사격 후 방어 복귀
+  bad_signs:
+  - 임박한 큰 공격 앞에서 방벽을 내려 사격
+  cannot_judge_when:
+  - '핵심 근거 미확인: 발사·적 공격·아군 노출'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.reinhardt; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Reinhardt?oldid=402314'
+    patch_version: null
+- id: reinhardt.ultimate_usage.shatter
+  category: ultimate_usage
+  status: draft
+  ability: earthshatter
+  title: 대지 분쇄의 도달과 후속
+  description: '적용 상황: 적 방어에 빈틈. 평가 목적: 대지 분쇄의 도달과 후속. 예외: 한 명의 핵심 행동 중단도 유효. 필수 근거: 지면 경로·방어 상태·피격·후속. 결정 당시의 정보와
+    실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 지면·방벽·아군 후속을 보고 사용
+  bad_signs:
+  - 방벽이나 가림에 막히는 걸 보고도 강행
+  cannot_judge_when:
+  - '핵심 근거 미확인: 지면 경로·방어 상태·피격·후속'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.reinhardt; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Reinhardt?oldid=402314'
+    patch_version: null

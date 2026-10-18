@@ -1,0 +1,143 @@
+hero_id: shion
+display_name_ko: 시온
+role: damage
+pack_version: 0.1.0
+review_status: draft
+patch_version: null
+profile_type: criterion_fragment_not_HeroProfile
+ability_refs:
+  joyride:
+    database_id: shion:joyride
+    name_en: Joyride
+    kind: Ability
+    review_required: false
+  evade:
+    database_id: shion:evade
+    name_en: Evade
+    kind: Ability
+    review_required: false
+  execution:
+    database_id: shion:execution
+    name_en: Execution
+    kind: Ability
+    review_required: false
+  satsuriku_spree:
+    database_id: shion:satsuriku-spree
+    name_en: Satsuriku Spree
+    kind: Ultimate Ability
+    review_required: false
+criteria:
+- id: shion.positioning.timing
+  category: positioning
+  status: draft
+  ability: null
+  title: 근거리 공격과 팀 진입의 동시성
+  description: '적용 상황: 측면 진입 준비. 평가 목적: 근거리 공격과 팀 진입의 동시성. 예외: 고립 적을 안전하게 압박하면 예외. 필수 근거: 팀 공격·적 시선·진입. 결정 당시의 정보와
+    실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 적 주의가 분산될 때 공격 시작
+  bad_signs:
+  - 팀보다 일찍 진입해 회피 자원부터 소진
+  cannot_judge_when:
+  - '핵심 근거 미확인: 팀 공격·적 시선·진입'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.shion; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Shion?oldid=401618'
+    patch_version: null
+- id: shion.positioning.bike_route
+  category: positioning
+  status: draft
+  ability: joyride
+  title: 바이크의 진입과 하차 위치
+  description: '적용 상황: 기동으로 교전 접근. 평가 목적: 바이크의 진입과 하차 위치. 예외: 긴급 접촉·확실한 교환은 비교. 필수 근거: 탑승·경로·하차·적 배치. 결정 당시의 정보와
+    실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 하차 후 엄폐와 후속 사격 가능
+  bad_signs:
+  - 빠른 진입만 보고 적 중심에 하차
+  cannot_judge_when:
+  - '핵심 근거 미확인: 탑승·경로·하차·적 배치'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.shion; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Shion?oldid=401618'
+    patch_version: null
+- id: shion.positioning.evade_end
+  category: positioning
+  status: draft
+  ability: evade
+  title: 회피 후 추가 생명력에 대한 의존
+  description: '적용 상황: 회피 사용 후 교전. 평가 목적: 회피 후 추가 생명력에 대한 의존. 예외: 즉시 마무리 가능한 경우 허용. 필수 근거: 회피·추가 생명력·도착 위치. 결정 당시의
+    정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 효과 종료 전 엄폐나 아군에 연결
+  bad_signs:
+  - 일시적 생명력으로 깊은 고립을 계속 유지
+  cannot_judge_when:
+  - '핵심 근거 미확인: 회피·추가 생명력·도착 위치'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.shion; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Shion?oldid=401618'
+    patch_version: null
+- id: shion.skill_usage.execution
+  category: skill_usage
+  status: draft
+  ability: execution
+  title: 집중 발사의 준비와 노출
+  description: '적용 상황: 좁은 탄착 범위가 필요. 평가 목적: 집중 발사의 준비와 노출. 예외: 빠른 발사가 필요하면 최대 집중 불필요. 필수 근거: 충전·발사·대상 이동·노출. 결정
+    당시의 정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 대상 거리와 적 압박에 맞춰 준비
+  bad_signs:
+  - 충전을 위해 열린 사선에 장시간 정지
+  cannot_judge_when:
+  - '핵심 근거 미확인: 충전·발사·대상 이동·노출'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.shion; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Shion?oldid=401618'
+    patch_version: null
+- id: shion.skill_usage.launch
+  category: skill_usage
+  status: draft
+  ability: joyride
+  title: 발사한 바이크의 실제 경로
+  description: '적용 상황: 하차와 공격 연결. 평가 목적: 발사한 바이크의 실제 경로. 예외: 안전한 하차만으로도 목적 달성 가능. 필수 근거: 하차·발사 방향·충돌·본체 위치. 결정 당시의
+    정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 바이크가 적 이동 경로를 압박
+  bad_signs:
+  - 공격 목적 없이 발사하며 본인은 위험한 곳에 남음
+  cannot_judge_when:
+  - '핵심 근거 미확인: 하차·발사 방향·충돌·본체 위치'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.shion; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Shion?oldid=401618'
+    patch_version: null
+- id: shion.ultimate_usage.spree
+  category: ultimate_usage
+  status: draft
+  ability: satsuriku_spree
+  title: 연속 돌진 궁의 경로 계획
+  description: '적용 상황: 궁으로 적 사이 이동. 평가 목적: 연속 돌진 궁의 경로 계획. 예외: 거점 분리·단일 핵심 제거도 인정. 필수 근거: 각 돌진·적 배치·종료 위치. 결정 당시의
+    정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 각 돌진 후 위치와 다음 방향을 조절
+  bad_signs:
+  - 첫 진입만 보고 이후 적 사선에 반복 노출
+  cannot_judge_when:
+  - '핵심 근거 미확인: 각 돌진·적 배치·종료 위치'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.shion; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Shion?oldid=401618'
+    patch_version: null

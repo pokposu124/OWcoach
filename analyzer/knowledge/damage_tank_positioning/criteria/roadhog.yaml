@@ -1,0 +1,143 @@
+hero_id: roadhog
+display_name_ko: 로드호그
+role: tank
+pack_version: 0.1.0
+review_status: draft
+patch_version: null
+profile_type: criterion_fragment_not_HeroProfile
+ability_refs:
+  take_a_breather:
+    database_id: roadhog:take-a-breather
+    name_en: Take a Breather
+    kind: Ability
+    review_required: false
+  chain_hook:
+    database_id: roadhog:chain-hook
+    name_en: Chain Hook
+    kind: Ability
+    review_required: false
+  trash_compactor:
+    database_id: roadhog:trash-compactor
+    name_en: Trash Compactor
+    kind: Ability
+    review_required: false
+  whole_hog:
+    database_id: roadhog:whole-hog
+    name_en: Whole Hog
+    kind: Ultimate Ability
+    review_required: false
+criteria:
+- id: roadhog.positioning.hook_corner
+  category: positioning
+  status: draft
+  ability: null
+  title: 갈고리로 데려올 공간 확보
+  description: '적용 상황: 갈고리 각도 선택. 평가 목적: 갈고리로 데려올 공간 확보. 예외: 거점·궁 중단만으로도 유효. 필수 근거: 본인 위치·도착 공간·아군 사선. 결정 당시의 정보와
+    실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 대상이 도착할 곳에 엄폐·아군 사격 확보
+  bad_signs:
+  - 끌어온 적이 자신이나 아군을 더 위협함
+  cannot_judge_when:
+  - '핵심 근거 미확인: 본인 위치·도착 공간·아군 사선'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.roadhog; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Roadhog?oldid=404697'
+    patch_version: null
+- id: roadhog.positioning.flank_cost
+  category: positioning
+  status: draft
+  ability: null
+  title: 갈고리 측면각과 팀 공백
+  description: '적용 상황: 본대에서 떨어져 기습. 평가 목적: 갈고리 측면각과 팀 공백. 예외: 적 핵심 역할을 묶는 실제 효과면 허용. 필수 근거: 우회·팀 위험·갈고리 위협·복귀. 결정
+    당시의 정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 짧은 측면으로 위협을 주고 팀과 재연결
+  bad_signs:
+  - 긴 우회 동안 팀은 압박받고 갈고리도 기여 없음
+  cannot_judge_when:
+  - '핵심 근거 미확인: 우회·팀 위험·갈고리 위협·복귀'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.roadhog; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Roadhog?oldid=404697'
+    patch_version: null
+- id: roadhog.positioning.breather_position
+  category: positioning
+  status: draft
+  ability: take_a_breather
+  title: 회복 중 이동과 적 방해
+  description: '적용 상황: 체력 회복 필요. 평가 목적: 회복 중 이동과 적 방해. 예외: 긴급 접촉·구조는 위험 비교. 필수 근거: 회복 자원·피해·엄폐·방해. 결정 당시의 정보와 실행
+    가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 엄폐로 이동하며 회복하고 지원 연결
+  bad_signs:
+  - 회복만 믿고 적 전원 앞에 계속 서 있음
+  cannot_judge_when:
+  - '핵심 근거 미확인: 회복 자원·피해·엄폐·방해'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.roadhog; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Roadhog?oldid=404697'
+    patch_version: null
+- id: roadhog.skill_usage.hook
+  category: skill_usage
+  status: draft
+  ability: chain_hook
+  title: 갈고리 대상과 후속 공격
+  description: '적용 상황: 적이 갈고리 사선에 노출. 평가 목적: 갈고리 대상과 후속 공격. 예외: 행동 중단·환경 이탈도 목적 인정. 필수 근거: 대상·명중·도착·방어·후속. 결정 당시의
+    정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 가치 있는 위협을 아군 공격 공간으로 이동
+  bad_signs:
+  - 처리 불가한 적만 반복해 끌거나 보호 대상 노출
+  cannot_judge_when:
+  - '핵심 근거 미확인: 대상·명중·도착·방어·후속'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.roadhog; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Roadhog?oldid=404697'
+    patch_version: null
+- id: roadhog.skill_usage.compactor
+  category: skill_usage
+  status: draft
+  ability: trash_compactor
+  title: 흡수 가능한 공격과 반격 경로
+  description: '적용 상황: 현재 개편 키트로 투사체 대응. 평가 목적: 흡수 가능한 공격과 반격 경로. 예외: 흡수만으로 아군을 살려도 유효. 필수 근거: 경기 패치·공격 종류·흡수·반격.
+    결정 당시의 정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 실제 투사체를 받아 반격 또는 이탈에 활용
+  bad_signs:
+  - 빔·근접도 막는다고 가정해 버팀
+  cannot_judge_when:
+  - '핵심 근거 미확인: 경기 패치·공격 종류·흡수·반격'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.roadhog; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Roadhog?oldid=404697'
+    patch_version: null
+- id: roadhog.ultimate_usage.whole_hog
+  category: ultimate_usage
+  status: draft
+  ability: whole_hog
+  title: 돼재앙의 밀쳐내기 방향
+  description: '적용 상황: 적을 밀거나 집중 공격. 평가 목적: 돼재앙의 밀쳐내기 방향. 예외: 생존·접촉 차단이 목적이면 밀어내기 우선. 필수 근거: 적 전후 위치·궁 사선·팀 필요.
+    결정 당시의 정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 벽·목표물·아군 사선을 고려해 제어
+  bad_signs:
+  - 죽일 적을 안전하게 멀리 보내고 팀 공격 방해
+  cannot_judge_when:
+  - '핵심 근거 미확인: 적 전후 위치·궁 사선·팀 필요'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.roadhog; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Roadhog?oldid=404697'
+    patch_version: null

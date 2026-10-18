@@ -1,0 +1,143 @@
+hero_id: echo
+display_name_ko: 에코
+role: damage
+pack_version: 0.1.0
+review_status: draft
+patch_version: null
+profile_type: criterion_fragment_not_HeroProfile
+ability_refs:
+  flight:
+    database_id: echo:flight
+    name_en: Flight
+    kind: Ability
+    review_required: false
+  sticky_bombs:
+    database_id: echo:sticky-bombs
+    name_en: Sticky Bombs
+    kind: Ability
+    review_required: false
+  focusing_beam:
+    database_id: echo:focusing-beam
+    name_en: Focusing Beam
+    kind: Ability
+    review_required: false
+  duplicate:
+    database_id: echo:duplicate
+    name_en: Duplicate
+    kind: Ultimate Ability
+    review_required: false
+criteria:
+- id: echo.positioning.air_cover
+  category: positioning
+  status: draft
+  ability: null
+  title: 공중 엄폐를 연결하는 공격 경로
+  description: '적용 상황: 비행 교전. 평가 목적: 공중 엄폐를 연결하는 공격 경로. 예외: 지상 위험 회피 체공은 허용. 필수 근거: 건물·적 방향·비행 경로. 결정 당시의 정보와 실행
+    가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 건물 가장자리로 필요한 적만 노출
+  bad_signs:
+  - 높게 뜨기만 해 여러 적에게 사격받음
+  cannot_judge_when:
+  - '핵심 근거 미확인: 건물·적 방향·비행 경로'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.echo; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Echo?oldid=402317'
+    patch_version: null
+- id: echo.positioning.burst_distance
+  category: positioning
+  status: draft
+  ability: null
+  title: 접착 폭탄과 광선을 연결할 거리
+  description: '적용 상황: 짧은 기습 준비. 평가 목적: 접착 폭탄과 광선을 연결할 거리. 예외: 확실한 고립 표적 정리는 가능. 필수 근거: 표적 체력·거리·복귀 경로. 결정 당시의 정보와
+    실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 콤보 후 엄폐로 돌아올 각도 확보
+  bad_signs:
+  - 광선을 맞히려 적 무리 안까지 추격
+  cannot_judge_when:
+  - '핵심 근거 미확인: 표적 체력·거리·복귀 경로'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.echo; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Echo?oldid=402317'
+    patch_version: null
+- id: echo.positioning.flight_end
+  category: positioning
+  status: draft
+  ability: flight
+  title: 비행 종료와 활공 착지
+  description: '적용 상황: 이동기 종료 임박. 평가 목적: 비행 종료와 활공 착지. 예외: 거점 접촉 등 즉각적 목적 허용. 필수 근거: 비행 상태·착지·적 사선. 결정 당시의 정보와 실행
+    가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 엄폐 또는 아군 지원 위치에 착지
+  bad_signs:
+  - 열린 공중에 남아 착지 방향도 상실
+  cannot_judge_when:
+  - '핵심 근거 미확인: 비행 상태·착지·적 사선'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.echo; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Echo?oldid=402317'
+    patch_version: null
+- id: echo.skill_usage.sticky
+  category: skill_usage
+  status: draft
+  ability: sticky_bombs
+  title: 폭탄으로 실제 압박 창 만들기
+  description: '적용 상황: 적이 사선에 노출. 평가 목적: 폭탄으로 실제 압박 창 만들기. 예외: 공간을 비우게 해도 유효. 필수 근거: 부착·폭발·적 방어·후속. 결정 당시의 정보와 실행
+    가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 도달·폭발을 보고 후속 공격 여부 결정
+  bad_signs:
+  - 맞았다고 가정해 위험한 광선 진입
+  cannot_judge_when:
+  - '핵심 근거 미확인: 부착·폭발·적 방어·후속'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.echo; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Echo?oldid=402317'
+    patch_version: null
+- id: echo.skill_usage.beam
+  category: skill_usage
+  status: draft
+  ability: focusing_beam
+  title: 광선의 표적 조건과 위험 비교
+  description: '적용 상황: 광선 사거리에서 교전. 평가 목적: 광선의 표적 조건과 위험 비교. 예외: 긴급 구조를 위한 위협 제거 가능. 필수 근거: 대상 체력·광선 연결·도착 위험. 결정
+    당시의 정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 대상 상태를 확인하고 마무리 기회 활용
+  bad_signs:
+  - 체력·방어 확인 없이 깊게 접근
+  cannot_judge_when:
+  - '핵심 근거 미확인: 대상 체력·광선 연결·도착 위험'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.echo; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Echo?oldid=402317'
+    patch_version: null
+- id: echo.ultimate_usage.duplicate
+  category: ultimate_usage
+  status: draft
+  ability: duplicate
+  title: 복제 대상보다 실제 수행할 역할
+  description: '적용 상황: 궁 대상 선택. 평가 목적: 복제 대상보다 실제 수행할 역할. 예외: 자기 생존용 복제도 유효. 필수 근거: 실제 복제 대상·현재 위치·팀 필요·종료 위치. 결정
+    당시의 정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 복제 후 당장 필요한 역할과 위치 확보
+  bad_signs:
+  - 강한 영웅이라는 이유로 활용 불가 위치에서 복제
+  cannot_judge_when:
+  - '핵심 근거 미확인: 실제 복제 대상·현재 위치·팀 필요·종료 위치'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.echo; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Echo?oldid=402317'
+    patch_version: null

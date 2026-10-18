@@ -1,0 +1,143 @@
+hero_id: sojourn
+display_name_ko: 소전
+role: damage
+pack_version: 0.1.0
+review_status: draft
+patch_version: null
+profile_type: criterion_fragment_not_HeroProfile
+ability_refs:
+  power_slide:
+    database_id: sojourn:power-slide
+    name_en: Power Slide
+    kind: Ability
+    review_required: false
+  charged_shot:
+    database_id: sojourn:charged-shot
+    name_en: Charged Shot
+    kind: Weapon (Secondary Fire)
+    review_required: false
+  disruptor_shot:
+    database_id: sojourn:disruptor-shot
+    name_en: Disruptor Shot
+    kind: Ability
+    review_required: false
+  overclock:
+    database_id: sojourn:overclock
+    name_en: Overclock
+    kind: Ultimate Ability
+    review_required: false
+criteria:
+- id: sojourn.positioning.charge_angle
+  category: positioning
+  status: draft
+  ability: null
+  title: 충전 확보와 유효 표적 사선
+  description: '적용 상황: 기본 공격으로 충전. 평가 목적: 충전 확보와 유효 표적 사선. 예외: 가장 위협적인 탱커 공격도 가능. 필수 근거: 충전 HUD·표적·엄폐. 결정 당시의 정보와
+    실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 충전 뒤 중요한 적을 볼 각도 유지
+  bad_signs:
+  - 충전만 쌓으려 정면에 서서 생존 자원 낭비
+  cannot_judge_when:
+  - '핵심 근거 미확인: 충전 HUD·표적·엄폐'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.sojourn; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Sojourn?oldid=401780'
+    patch_version: null
+- id: sojourn.positioning.slide_end
+  category: positioning
+  status: draft
+  ability: power_slide
+  title: 슬라이드·도약 종료 지점
+  description: '적용 상황: 회피·공격각 변경. 평가 목적: 슬라이드·도약 종료 지점. 예외: 즉시 마무리·접촉이면 위험 비교. 필수 근거: 출발·도약·착지·적 방향. 결정 당시의 정보와
+    실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 도착 후 엄폐와 다음 지원 연결 확보
+  bad_signs:
+  - 도약 정점에서 적 모두에게 노출
+  cannot_judge_when:
+  - '핵심 근거 미확인: 출발·도약·착지·적 방향'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.sojourn; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Sojourn?oldid=401780'
+    patch_version: null
+- id: sojourn.positioning.angle_cycle
+  category: positioning
+  status: draft
+  ability: null
+  title: 측면 체류와 이동기 상태
+  description: '적용 상황: 별도 사격각 유지. 평가 목적: 측면 체류와 이동기 상태. 예외: 적 위협이 제거됐으면 체류 가능. 필수 근거: 쿨타임·적 접근·복귀 길. 결정 당시의 정보와
+    실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 이동기가 없으면 안전한 엄폐 거리로 조절
+  bad_signs:
+  - 슬라이드 소모 후 같은 깊이에 고립
+  cannot_judge_when:
+  - '핵심 근거 미확인: 쿨타임·적 접근·복귀 길'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.sojourn; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Sojourn?oldid=401780'
+    patch_version: null
+- id: sojourn.skill_usage.rail
+  category: skill_usage
+  status: draft
+  ability: charged_shot
+  title: 충전 사격의 실제 기회
+  description: '적용 상황: 유효한 적 노출. 평가 목적: 충전 사격의 실제 기회. 예외: 적이 숨었거나 공격이 위험하면 보유 가능. 필수 근거: 충전·표적 노출·발사 가능 창. 결정 당시의
+    정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 현재 충전과 표적 상태에 맞춰 공격
+  bad_signs:
+  - 완벽한 사격만 기다리다 반복해서 기회 상실
+  cannot_judge_when:
+  - '핵심 근거 미확인: 충전·표적 노출·발사 가능 창'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.sojourn; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Sojourn?oldid=401780'
+    patch_version: null
+- id: sojourn.skill_usage.zone
+  category: skill_usage
+  status: draft
+  ability: disruptor_shot
+  title: 분열 사격의 공간 제한
+  description: '적용 상황: 적이 통로·엄폐 사용. 평가 목적: 분열 사격의 공간 제한. 예외: 거점 접근 억제도 유효. 필수 근거: 영역 위치·적 이동·후속 공격. 결정 당시의 정보와 실행
+    가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 퇴로·진입로를 제한해 사격 기회 생성
+  bad_signs:
+  - 적이 떠난 빈 공간에 관성적으로 사용
+  cannot_judge_when:
+  - '핵심 근거 미확인: 영역 위치·적 이동·후속 공격'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.sojourn; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Sojourn?oldid=401780'
+    patch_version: null
+- id: sojourn.ultimate_usage.overclock
+  category: ultimate_usage
+  status: draft
+  ability: overclock
+  title: 오버클럭 중 공격각 유지
+  description: '적용 상황: 궁 사용. 평가 목적: 오버클럭 중 공격각 유지. 예외: 압박으로 적을 물러나게 해도 유효. 필수 근거: 궁 사용·사격·적 방어·본체 이동. 결정 당시의 정보와
+    실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 적이 노출될 각도와 이탈 공간 확보
+  bad_signs:
+  - 궁을 켠 뒤 무리하게 적 중심으로 도약
+  cannot_judge_when:
+  - '핵심 근거 미확인: 궁 사용·사격·적 방어·본체 이동'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.sojourn; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Sojourn?oldid=401780'
+    patch_version: null

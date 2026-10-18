@@ -1,0 +1,143 @@
+hero_id: winston
+display_name_ko: 윈스턴
+role: tank
+pack_version: 0.1.0
+review_status: draft
+patch_version: null
+profile_type: criterion_fragment_not_HeroProfile
+ability_refs:
+  jump_pack:
+    database_id: winston:jump-pack
+    name_en: Jump Pack
+    kind: Ability
+    review_required: false
+  barrier_projector:
+    database_id: winston:barrier-projector
+    name_en: Barrier Projector
+    kind: Ability
+    review_required: false
+  secondary_fire:
+    database_id: winston:secondary-fire
+    name_en: Secondary Fire
+    kind: Weapon (Secondary Fire)
+    review_required: false
+  primal_rage:
+    database_id: winston:primal-rage
+    name_en: Primal Rage
+    kind: Ultimate Ability
+    review_required: false
+criteria:
+- id: winston.positioning.staging
+  category: positioning
+  status: draft
+  ability: null
+  title: 도약 전 준비 위치와 체력
+  description: '적용 상황: 다이브 준비. 평가 목적: 도약 전 준비 위치와 체력. 예외: 당장 구조·접촉이 필요하면 즉시 진입 가능. 필수 근거: 준비 위치·피해·쿨타임·팀 상태. 결정
+    당시의 정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 엄폐 있는 가까운 고지대에서 자원 보존
+  bad_signs:
+  - 준비하는 동안 정면 피해로 체력·방벽 소모
+  cannot_judge_when:
+  - '핵심 근거 미확인: 준비 위치·피해·쿨타임·팀 상태'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.winston; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Winston?oldid=402351'
+    patch_version: null
+- id: winston.positioning.jump_cycle
+  category: positioning
+  status: draft
+  ability: jump_pack
+  title: 진입과 다음 도약 사이 생존
+  description: '적용 상황: 점프 진입. 평가 목적: 진입과 다음 도약 사이 생존. 예외: 아군 동시 진입·확실한 처치면 비교. 필수 근거: 착지·지원선·방벽·적 배치. 결정 당시의 정보와
+    실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 착지 엄폐·방벽·지원으로 다음 이동까지 버팀
+  bad_signs:
+  - 적 중심에 착지해 이동 공백을 감당 못함
+  cannot_judge_when:
+  - '핵심 근거 미확인: 착지·지원선·방벽·적 배치'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.winston; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Winston?oldid=402351'
+    patch_version: null
+- id: winston.positioning.target_access
+  category: positioning
+  status: draft
+  ability: null
+  title: 점프할 표적과 분리할 지원선
+  description: '적용 상황: 다이브 대상 선택. 평가 목적: 점프할 표적과 분리할 지원선. 예외: 적을 후퇴시키는 공간 이득도 인정. 필수 근거: 대상 위치·아군 사선·적 지원. 결정 당시의
+    정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 아군이 압박할 적 또는 유효 고지대를 선택
+  bad_signs:
+  - 단순히 먼 힐러만 노려 팀이 활용 못 함
+  cannot_judge_when:
+  - '핵심 근거 미확인: 대상 위치·아군 사선·적 지원'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.winston; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Winston?oldid=402351'
+    patch_version: null
+- id: winston.skill_usage.bubble
+  category: skill_usage
+  status: draft
+  ability: barrier_projector
+  title: 방벽의 사선 분리와 경계 이동
+  description: '적용 상황: 착지 후 교전. 평가 목적: 방벽의 사선 분리와 경계 이동. 예외: 아군 구조·목표물 차단용도 가능. 필수 근거: 방벽 위치·피격 방향·아군 수혜. 결정 당시의
+    정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 핵심 공격·지원선을 막고 경계로 피해 조절
+  bad_signs:
+  - 방벽을 놓았다는 이유로 무조건 안전 가정
+  cannot_judge_when:
+  - '핵심 근거 미확인: 방벽 위치·피격 방향·아군 수혜'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.winston; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Winston?oldid=402351'
+    patch_version: null
+- id: winston.skill_usage.poke
+  category: skill_usage
+  status: draft
+  ability: secondary_fire
+  title: 도약을 쓰지 않는 견제 선택
+  description: '적용 상황: 안전한 진입 기회 부족. 평가 목적: 도약을 쓰지 않는 견제 선택. 예외: 팀이 준비 안 됐거나 위험하면 대기 타당. 필수 근거: 아군 상태·표적 노출·진입 가능성.
+    결정 당시의 정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 엄폐에서 견제하며 팀 준비·적 자원 관찰
+  bad_signs:
+  - 견제만 반복해 실제 좋은 진입 창을 놓침
+  cannot_judge_when:
+  - '핵심 근거 미확인: 아군 상태·표적 노출·진입 가능성'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.winston; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Winston?oldid=402351'
+    patch_version: null
+- id: winston.ultimate_usage.primal
+  category: ultimate_usage
+  status: draft
+  ability: primal_rage
+  title: 원시의 분노의 분리·생존 가치
+  description: '적용 상황: 궁 사용. 평가 목적: 원시의 분노의 분리·생존 가치. 예외: 처치 없는 공간 확보·접촉 유지도 유효. 필수 근거: 밀림 방향·팀 사선·궁 종료 위치. 결정 당시의
+    정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 핵심 적을 불리한 위치로 옮기거나 생존 확보
+  bad_signs:
+  - 무작정 밀어 적을 구해 주고 팀과 단절
+  cannot_judge_when:
+  - '핵심 근거 미확인: 밀림 방향·팀 사선·궁 종료 위치'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.winston; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Winston?oldid=402351'
+    patch_version: null

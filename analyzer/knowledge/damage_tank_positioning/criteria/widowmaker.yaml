@@ -1,0 +1,143 @@
+hero_id: widowmaker
+display_name_ko: 위도우메이커
+role: damage
+pack_version: 0.1.0
+review_status: draft
+patch_version: null
+profile_type: criterion_fragment_not_HeroProfile
+ability_refs:
+  grappling_hook:
+    database_id: widowmaker:grappling-hook
+    name_en: Grappling Hook
+    kind: Ability
+    review_required: false
+  venom_mine:
+    database_id: widowmaker:venom-mine
+    name_en: Venom Mine
+    kind: Ability
+    review_required: false
+  take_aim:
+    database_id: widowmaker:take-aim
+    name_en: Take Aim
+    kind: Weapon (ADS)
+    review_required: false
+  infra_sight:
+    database_id: widowmaker:infra-sight
+    name_en: Infra-Sight
+    kind: Ultimate Ability
+    review_required: false
+criteria:
+- id: widowmaker.positioning.lane
+  category: positioning
+  status: draft
+  ability: null
+  title: 장거리 사선과 노출 대상
+  description: '적용 상황: 저격 위치 선정. 평가 목적: 장거리 사선과 노출 대상. 예외: 이동을 제한하는 감시 가치가 있으면 허용. 필수 근거: 표적 경로·엄폐·다이브 접근. 결정 당시의
+    정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 중요한 적이 지날 길과 엄폐·탈출 확보
+  bad_signs:
+  - 사거리만 멀고 실제 표적이 없는 곳에 체류
+  cannot_judge_when:
+  - '핵심 근거 미확인: 표적 경로·엄폐·다이브 접근'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.widowmaker; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Widowmaker?oldid=402353'
+    patch_version: null
+- id: widowmaker.positioning.reveal
+  category: positioning
+  status: draft
+  ability: null
+  title: 발각된 위치의 재사용 비용
+  description: '적용 상황: 사격 후 적 대응. 평가 목적: 발각된 위치의 재사용 비용. 예외: 아군 압박으로 적 대응이 막히면 유지 가능. 필수 근거: 이전 발사·적 조준·대체 각도. 결정
+    당시의 정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 새 각도로 이동하거나 적 대응을 기다림
+  bad_signs:
+  - 적이 미리 조준하는 같은 모서리 반복 노출
+  cannot_judge_when:
+  - '핵심 근거 미확인: 이전 발사·적 조준·대체 각도'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.widowmaker; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Widowmaker?oldid=402353'
+    patch_version: null
+- id: widowmaker.positioning.grapple
+  category: positioning
+  status: draft
+  ability: grappling_hook
+  title: 갈고리 이후 착지와 탈출
+  description: '적용 상황: 공격각·회피 이동. 평가 목적: 갈고리 이후 착지와 탈출. 예외: 즉시 핵심 처치·접촉이면 비교. 필수 근거: 이동·착지·적 진입·재사용 상태. 결정 당시의 정보와
+    실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 도착 후 엄폐와 적 접근로 확인
+  bad_signs:
+  - 멋진 공중 사격만 노려 유일한 퇴로 소모
+  cannot_judge_when:
+  - '핵심 근거 미확인: 이동·착지·적 진입·재사용 상태'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.widowmaker; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Widowmaker?oldid=402353'
+    patch_version: null
+- id: widowmaker.skill_usage.mine
+  category: skill_usage
+  status: draft
+  ability: venom_mine
+  title: 맹독 지뢰의 접근 경보
+  description: '적용 상황: 측면 위협 대비. 평가 목적: 맹독 지뢰의 접근 경보. 예외: 직접 근접 대응용도 가능. 필수 근거: 설치·적 경로·발동·이후 반응. 결정 당시의 정보와 실행
+    가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 보이지 않는 접근로를 감시하고 반응
+  bad_signs:
+  - 사격각과 무관한 위치에 방치해 진입 신호 상실
+  cannot_judge_when:
+  - '핵심 근거 미확인: 설치·적 경로·발동·이후 반응'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.widowmaker; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Widowmaker?oldid=402353'
+    patch_version: null
+- id: widowmaker.skill_usage.scope
+  category: skill_usage
+  status: draft
+  ability: take_aim
+  title: 조준 중 주변 확인
+  description: '적용 상황: 다이브·팀 이동 신호 발생. 평가 목적: 조준 중 주변 확인. 예외: 안전한 사격 창에서는 계속 조준 가능. 필수 근거: 위협 신호·카메라·표적·퇴로. 결정 당시의
+    정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 적 접근을 확인하고 필요시 조준 해제·이동
+  bad_signs:
+  - 관측된 위협에도 같은 조준 유지
+  cannot_judge_when:
+  - '핵심 근거 미확인: 위협 신호·카메라·표적·퇴로'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.widowmaker; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Widowmaker?oldid=402353'
+    patch_version: null
+- id: widowmaker.ultimate_usage.infra
+  category: ultimate_usage
+  status: draft
+  ability: infra_sight
+  title: 적 위치 정보가 유효한 시점
+  description: '적용 상황: 궁으로 정보 확보. 평가 목적: 적 위치 정보가 유효한 시점. 예외: 숨은 적 한 명의 중요한 경로 확인도 가치. 필수 근거: 사용 시점·가려진 적·팀 행동.
+    결정 당시의 정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 팀 진입·상대 이동 전에 정보를 활용
+  bad_signs:
+  - 전투가 끝나거나 이미 모두 보일 때 무목적 사용
+  cannot_judge_when:
+  - '핵심 근거 미확인: 사용 시점·가려진 적·팀 행동'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.widowmaker; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Widowmaker?oldid=402353'
+    patch_version: null

@@ -1,0 +1,138 @@
+hero_id: mei
+display_name_ko: 메이
+role: damage
+pack_version: 0.1.0
+review_status: draft
+patch_version: null
+profile_type: criterion_fragment_not_HeroProfile
+ability_refs:
+  cryo_freeze:
+    database_id: mei:cryo-freeze
+    name_en: Cryo-Freeze
+    kind: Ability
+    review_required: false
+  ice_wall:
+    database_id: mei:ice-wall
+    name_en: Ice Wall
+    kind: Ability
+    review_required: false
+  blizzard:
+    database_id: mei:blizzard
+    name_en: Blizzard
+    kind: Ultimate Ability
+    review_required: false
+criteria:
+- id: mei.positioning.corner_brawl
+  category: positioning
+  status: draft
+  ability: null
+  title: 근접 압박과 고드름 사격의 거리
+  description: '적용 상황: 코너 교전. 평가 목적: 근접 압박과 고드름 사격의 거리. 예외: 거점 접촉이 필요하면 전진 허용. 필수 근거: 적 거리·엄폐·사용 공격. 결정 당시의 정보와
+    실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 붙을 수 있을 때 전진하고 그전에는 안전한 견제
+  bad_signs:
+  - 사거리 이득 없이 넓은 정면에서 피해 누적
+  cannot_judge_when:
+  - '핵심 근거 미확인: 적 거리·엄폐·사용 공격'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.mei; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Mei?oldid=401846'
+    patch_version: null
+- id: mei.positioning.wall_relation
+  category: positioning
+  status: draft
+  ability: null
+  title: 빙벽이 바꾸는 아군과의 연결
+  description: '적용 상황: 벽 설치 전후. 평가 목적: 빙벽이 바꾸는 아군과의 연결. 예외: 긴급 피해 차단은 일시 단절 허용. 필수 근거: 벽 방향·양쪽 배치·지원선. 결정 당시의 정보와
+    실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 고립시킬 적과 아군 사격·치료선을 같이 확인
+  bad_signs:
+  - 적뿐 아니라 자신이나 아군도 위험하게 분리
+  cannot_judge_when:
+  - '핵심 근거 미확인: 벽 방향·양쪽 배치·지원선'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.mei; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Mei?oldid=401846'
+    patch_version: null
+- id: mei.positioning.cryo_end
+  category: positioning
+  status: draft
+  ability: cryo_freeze
+  title: 급속 빙결 종료 후 안전
+  description: '적용 상황: 빙결로 생존. 평가 목적: 급속 빙결 종료 후 안전. 예외: 아군 도착·목표물 지연이면 비교. 필수 근거: 종료 예상 위치·적 배치·아군 접근. 결정 당시의 정보와
+    실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 종료 후 엄폐·벽·아군 지원을 확보
+  bad_signs:
+  - 빙결만 믿고 포위된 위치에 진입
+  cannot_judge_when:
+  - '핵심 근거 미확인: 종료 예상 위치·적 배치·아군 접근'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.mei; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Mei?oldid=401846'
+    patch_version: null
+- id: mei.skill_usage.wall_followup
+  category: skill_usage
+  status: draft
+  ability: ice_wall
+  title: 빙벽의 분리와 사선 차단 목적
+  description: '적용 상황: 적이 위치적으로 전진. 평가 목적: 빙벽의 분리와 사선 차단 목적. 예외: 이동·고지대 접근용도 유효. 필수 근거: 설치·방해한 사선·아군 후속. 결정 당시의
+    정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 아군이 활용할 대상 분리 또는 위협 사선 차단
+  bad_signs:
+  - 탱커만 막으려다 중요한 아군 공격을 차단
+  cannot_judge_when:
+  - '핵심 근거 미확인: 설치·방해한 사선·아군 후속'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.mei; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Mei?oldid=401846'
+    patch_version: null
+- id: mei.skill_usage.cryo_timing
+  category: skill_usage
+  status: draft
+  ability: cryo_freeze
+  title: 회복과 공격 공백의 선택
+  description: '적용 상황: 위험한 피해 또는 방해 효과. 평가 목적: 회복과 공격 공백의 선택. 예외: 위험이 남아 있으면 유지가 타당. 필수 근거: 체력·외부 위협·종료·팀 상태. 결정
+    당시의 정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 위협을 피하고 적절히 교전에 복귀
+  bad_signs:
+  - 안전한 순간에도 오래 비활성화돼 교전 공백
+  cannot_judge_when:
+  - '핵심 근거 미확인: 체력·외부 위협·종료·팀 상태'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.mei; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Mei?oldid=401846'
+    patch_version: null
+- id: mei.ultimate_usage.blizzard
+  category: ultimate_usage
+  status: draft
+  ability: blizzard
+  title: 눈보라의 구역과 후속
+  description: '적용 상황: 적 이동 제한 기회. 평가 목적: 눈보라의 구역과 후속. 예외: 한 명 제어·접촉 억제도 유효. 필수 근거: 투척 도달·적 이동·아군 사선. 결정 당시의 정보와
+    실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 적 퇴로와 아군 공격을 함께 고려
+  bad_signs:
+  - 아군이 못 쓰는 구역에 던져 효과 소실
+  cannot_judge_when:
+  - '핵심 근거 미확인: 투척 도달·적 이동·아군 사선'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.mei; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Mei?oldid=401846'
+    patch_version: null

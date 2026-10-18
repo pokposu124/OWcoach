@@ -1,0 +1,143 @@
+hero_id: tracer
+display_name_ko: 트레이서
+role: damage
+pack_version: 0.1.0
+review_status: draft
+patch_version: null
+profile_type: criterion_fragment_not_HeroProfile
+ability_refs:
+  blink:
+    database_id: tracer:blink
+    name_en: Blink
+    kind: Ability
+    review_required: false
+  recall:
+    database_id: tracer:recall
+    name_en: Recall
+    kind: Ability
+    review_required: false
+  pulse_pistols:
+    database_id: tracer:pulse-pistols
+    name_en: Pulse Pistols
+    kind: Weapon
+    review_required: false
+  pulse_bomb:
+    database_id: tracer:pulse-bomb
+    name_en: Pulse Bomb
+    kind: Ultimate Ability
+    review_required: false
+criteria:
+- id: tracer.positioning.timing
+  category: positioning
+  status: draft
+  ability: null
+  title: 아군 교전과 겹치는 측면 공격
+  description: '적용 상황: 측면 준비 완료. 평가 목적: 아군 교전과 겹치는 측면 공격. 예외: 고립 적에게 안전한 기습은 예외. 필수 근거: 아군 공격·적 시선·자원. 결정 당시의 정보와
+    실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 적이 아군에 대응할 때 압박 시작
+  bad_signs:
+  - 혼자 먼저 들어가 시간 역행부터 소모
+  cannot_judge_when:
+  - '핵심 근거 미확인: 아군 공격·적 시선·자원'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.tracer; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Tracer?oldid=404961'
+    patch_version: null
+- id: tracer.positioning.blink_path
+  category: positioning
+  status: draft
+  ability: blink
+  title: 점멸을 포함한 왕복 경로
+  description: '적용 상황: 적에게 접근. 평가 목적: 점멸을 포함한 왕복 경로. 예외: 결정적 처치·거점 접촉이면 비교. 필수 근거: 점멸 잔량·경로·회복 위치. 결정 당시의 정보와 실행
+    가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 엄폐·회복·귀환을 포함해 자원 배분
+  bad_signs:
+  - 접근에 점멸을 모두 써 열린 곳에 고립
+  cannot_judge_when:
+  - '핵심 근거 미확인: 점멸 잔량·경로·회복 위치'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.tracer; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Tracer?oldid=404961'
+    patch_version: null
+- id: tracer.positioning.recall_anchor
+  category: positioning
+  status: draft
+  ability: recall
+  title: 시간 역행이 돌려놓을 위치
+  description: '적용 상황: 깊게 진입 준비. 평가 목적: 시간 역행이 돌려놓을 위치. 예외: 그 자리에서 즉시 싸울 수 있다면 비교. 필수 근거: 이전 이동 이력·적 위치 변화. 결정 당시의
+    정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 되돌아갈 과거 위치도 안전한지 확인
+  bad_signs:
+  - 과거 위치가 적에게 점유됐는데 탈출 보장으로 간주
+  cannot_judge_when:
+  - '핵심 근거 미확인: 이전 이동 이력·적 위치 변화'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.tracer; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Tracer?oldid=404961'
+    patch_version: null
+- id: tracer.skill_usage.recall_timing
+  category: skill_usage
+  status: draft
+  ability: recall
+  title: 시간 역행의 위험 회피 시점
+  description: '적용 상황: 급격한 피해·방해 위협. 평가 목적: 시간 역행의 위험 회피 시점. 예외: 체력 소모가 작아도 위험 회피는 유효. 필수 근거: 체력·위협·사용·복귀 위치. 결정
+    당시의 정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 회복과 위치 변화가 필요한 순간 사용
+  bad_signs:
+  - 명확한 치명 위험을 보고도 늦게 사용
+  cannot_judge_when:
+  - '핵심 근거 미확인: 체력·위협·사용·복귀 위치'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.tracer; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Tracer?oldid=404961'
+    patch_version: null
+- id: tracer.skill_usage.target_switch
+  category: skill_usage
+  status: draft
+  ability: pulse_pistols
+  title: 회피 자원 소모 후 표적 변경
+  description: '적용 상황: 적이 대응 수단 사용. 평가 목적: 회피 자원 소모 후 표적 변경. 예외: 핵심 적을 묶는 가치가 있으면 유지. 필수 근거: 적 방어·탄약·팀 압박·퇴로. 결정
+    당시의 정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 노출된 다른 적 또는 안전한 압박으로 전환
+  bad_signs:
+  - 방어된 한 명만 추격해 다음 교전 공백
+  cannot_judge_when:
+  - '핵심 근거 미확인: 적 방어·탄약·팀 압박·퇴로'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.tracer; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Tracer?oldid=404961'
+    patch_version: null
+- id: tracer.ultimate_usage.pulse
+  category: ultimate_usage
+  status: draft
+  ability: pulse_bomb
+  title: 펄스 폭탄 전달과 생존 비용
+  description: '적용 상황: 폭탄 사용 기회. 평가 목적: 펄스 폭탄 전달과 생존 비용. 예외: 단일 핵심 제거·진입 차단도 유효. 필수 근거: 접근·부착·폭발·적 방어·복귀. 결정 당시의
+    정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 실제 부착·폭발과 적 대응을 고려
+  bad_signs:
+  - 부착만 노려 자원 없이 적 중심에 진입
+  cannot_judge_when:
+  - '핵심 근거 미확인: 접근·부착·폭발·적 방어·복귀'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.tracer; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Tracer?oldid=404961'
+    patch_version: null

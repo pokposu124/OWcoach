@@ -1,0 +1,138 @@
+hero_id: wrecking-ball
+display_name_ko: 레킹볼
+role: tank
+pack_version: 0.1.0
+review_status: draft
+patch_version: null
+profile_type: criterion_fragment_not_HeroProfile
+ability_refs:
+  piledriver:
+    database_id: wrecking-ball:piledriver
+    name_en: Piledriver
+    kind: Ability
+    review_required: false
+  adaptive_shield:
+    database_id: wrecking-ball:adaptive-shield
+    name_en: Adaptive Shield
+    kind: Ability
+    review_required: false
+  minefield:
+    database_id: wrecking-ball:minefield
+    name_en: Minefield
+    kind: Ultimate Ability
+    review_required: false
+criteria:
+- id: wrecking-ball.positioning.scout_setup
+  category: positioning
+  status: draft
+  ability: null
+  title: 정찰·준비·타격의 연결
+  description: '적용 상황: 진입 준비. 평가 목적: 정찰·준비·타격의 연결. 예외: 급한 거점 접촉은 우회 생략 가능. 필수 근거: 적 정보·경로·팀 공격 시점. 결정 당시의 정보와 실행
+    가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 적 배치와 아군 시점을 보고 접근로 선정
+  bad_signs:
+  - 매번 같은 정면 경로로 진입해 제어당함
+  cannot_judge_when:
+  - '핵심 근거 미확인: 적 정보·경로·팀 공격 시점'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.wrecking-ball; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Wrecking_Ball?oldid=402075'
+    patch_version: null
+- id: wrecking-ball.positioning.exit_route
+  category: positioning
+  status: draft
+  ability: null
+  title: 통과 후 회복·재진입 경로
+  description: '적용 상황: 적 사이를 지나갈 계획. 평가 목적: 통과 후 회복·재진입 경로. 예외: 즉시 역전·목표물 지연이면 비교. 필수 근거: 진입·출구·지형·회복 접근. 결정 당시의
+    정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 빠져나갈 길과 회복 수단을 확보
+  bad_signs:
+  - 진입만 성공하고 막다른 곳에 멈춤
+  cannot_judge_when:
+  - '핵심 근거 미확인: 진입·출구·지형·회복 접근'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.wrecking-ball; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Wrecking_Ball?oldid=402075'
+    patch_version: null
+- id: wrecking-ball.positioning.team_window
+  category: positioning
+  status: draft
+  ability: null
+  title: 교란이 팀 기여로 이어지는가
+  description: '적용 상황: 후방에서 적 시선 유도. 평가 목적: 교란이 팀 기여로 이어지는가. 예외: 고지대 제거·거점 지연의 독립 가치도 인정. 필수 근거: 아군 공격·적 대응·획득 공간.
+    결정 당시의 정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 아군이 전진·공격할 때 교란하고 다시 연결
+  bad_signs:
+  - 팀이 준비 안 됐는데 혼자 오래 돌아다님
+  cannot_judge_when:
+  - '핵심 근거 미확인: 아군 공격·적 대응·획득 공간'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.wrecking-ball; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Wrecking_Ball?oldid=402075'
+    patch_version: null
+- id: wrecking-ball.skill_usage.slam
+  category: skill_usage
+  status: draft
+  ability: piledriver
+  title: 파일드라이버 후 정지 위험
+  description: '적용 상황: 낙하 공격 가능. 평가 목적: 파일드라이버 후 정지 위험. 예외: 빠른 통과가 더 안전할 수 있음. 필수 근거: 낙하·적 방해·후속·출구. 결정 당시의 정보와
+    실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 적 방해와 아군 후속을 확인한 뒤 사용
+  bad_signs:
+  - 관측된 제어 수단 앞에서 매번 정지형 공격
+  cannot_judge_when:
+  - '핵심 근거 미확인: 낙하·적 방해·후속·출구'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.wrecking-ball; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Wrecking_Ball?oldid=402075'
+    patch_version: null
+- id: wrecking-ball.skill_usage.shields
+  category: skill_usage
+  status: draft
+  ability: adaptive_shield
+  title: 보호막 사용 시점과 이후 경로
+  description: '적용 상황: 다수 적 근처에서 피해. 평가 목적: 보호막 사용 시점과 이후 경로. 예외: 거점 유지·아군 보호 효과는 별도 인정. 필수 근거: 사용·주변 적·생명력·탈출.
+    결정 당시의 정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 공격을 버틸 순간에 효과를 얻고 이탈
+  bad_signs:
+  - 추가 생명력만 믿고 포위된 곳에 멈춤
+  cannot_judge_when:
+  - '핵심 근거 미확인: 사용·주변 적·생명력·탈출'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.wrecking-ball; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Wrecking_Ball?oldid=402075'
+    patch_version: null
+- id: wrecking-ball.ultimate_usage.mines
+  category: ultimate_usage
+  status: draft
+  ability: minefield
+  title: 지뢰밭의 구역과 적 이동
+  description: '적용 상황: 궁 사용. 평가 목적: 지뢰밭의 구역과 적 이동. 예외: 처치보다 접촉 지연이 목적일 수 있음. 필수 근거: 지뢰 위치·적 경로·팀 활용. 결정 당시의 정보와
+    실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 퇴로·거점·밀쳐낼 방향을 제한
+  bad_signs:
+  - 적이 쉽게 우회할 빈 곳에 과도하게 배치
+  cannot_judge_when:
+  - '핵심 근거 미확인: 지뢰 위치·적 경로·팀 활용'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.wrecking-ball; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Wrecking_Ball?oldid=402075'
+    patch_version: null

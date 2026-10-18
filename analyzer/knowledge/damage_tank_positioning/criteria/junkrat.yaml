@@ -1,0 +1,138 @@
+hero_id: junkrat
+display_name_ko: 정크랫
+role: damage
+pack_version: 0.1.0
+review_status: draft
+patch_version: null
+profile_type: criterion_fragment_not_HeroProfile
+ability_refs:
+  concussion_mine:
+    database_id: junkrat:concussion-mine
+    name_en: Concussion Mine
+    kind: Ability
+    review_required: false
+  steel_trap:
+    database_id: junkrat:steel-trap
+    name_en: Steel Trap
+    kind: Ability
+    review_required: false
+  rip_tire:
+    database_id: junkrat:rip-tire
+    name_en: RIP-Tire
+    kind: Ultimate Ability
+    review_required: false
+criteria:
+- id: junkrat.positioning.indirect
+  category: positioning
+  status: draft
+  ability: null
+  title: 반사 공격을 활용할 엄폐
+  description: '적용 상황: 좁은 통로 교전. 평가 목적: 반사 공격을 활용할 엄폐. 예외: 진입 억제의 실제 효과가 있으면 허용. 필수 근거: 탄 경로·반사·적 이동. 결정 당시의 정보와
+    실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 몸을 덜 노출하며 유효 경로로 유탄 전달
+  bad_signs:
+  - 탄이 도달하지 않는 곳에서 의미 없는 공격
+  cannot_judge_when:
+  - '핵심 근거 미확인: 탄 경로·반사·적 이동'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.junkrat; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Junkrat?oldid=402076'
+    patch_version: null
+- id: junkrat.positioning.ambush
+  category: positioning
+  status: draft
+  ability: null
+  title: 기습 거리와 빠져나올 길
+  description: '적용 상황: 코너 기습 준비. 평가 목적: 기습 거리와 빠져나올 길. 예외: 긴급 근접 마무리는 비교. 필수 근거: 대기 위치·적 시야·퇴로. 결정 당시의 정보와 실행 가능한
+    대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 적 진입을 기다리며 지뢰·엄폐 퇴로 확보
+  bad_signs:
+  - 적 장거리 사선까지 걸어 나가 자원 소진
+  cannot_judge_when:
+  - '핵심 근거 미확인: 대기 위치·적 시야·퇴로'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.junkrat; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Junkrat?oldid=402076'
+    patch_version: null
+- id: junkrat.positioning.mine_landing
+  category: positioning
+  status: draft
+  ability: concussion_mine
+  title: 지뢰 이동의 착지 위험
+  description: '적용 상황: 공중 이동. 평가 목적: 지뢰 이동의 착지 위험. 예외: 긴급 탈출이면 완벽한 착지 불필요. 필수 근거: 비행·지뢰 상태·착지·적 방향. 결정 당시의 정보와 실행
+    가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 착지할 엄폐와 필요한 교전각 확보
+  bad_signs:
+  - 적이 보는 공중에서 이동 수단 소진
+  cannot_judge_when:
+  - '핵심 근거 미확인: 비행·지뢰 상태·착지·적 방향'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.junkrat; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Junkrat?oldid=402076'
+    patch_version: null
+- id: junkrat.skill_usage.mine_trade
+  category: skill_usage
+  status: draft
+  ability: concussion_mine
+  title: 공격 지뢰와 탈출 자원 비교
+  description: '적용 상황: 추가 폭발 피해 필요. 평가 목적: 공격 지뢰와 탈출 자원 비교. 예외: 마무리로 위협이 사라지면 허용. 필수 근거: 잔여 자원·대상 체력·위협. 결정 당시의
+    정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 처치·거리 확보 목적을 보고 자원 사용
+  bad_signs:
+  - 확인된 진입 위협 앞에서 모든 이동 여지 소진
+  cannot_judge_when:
+  - '핵심 근거 미확인: 잔여 자원·대상 체력·위협'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.junkrat; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Junkrat?oldid=402076'
+    patch_version: null
+- id: junkrat.skill_usage.trap
+  category: skill_usage
+  status: draft
+  ability: steel_trap
+  title: 덫의 감시·진입 방해 경로
+  description: '적용 상황: 측면 또는 좁은 입구 방어. 평가 목적: 덫의 감시·진입 방해 경로. 예외: 정보 수집용 설치도 유효. 필수 근거: 덫 위치·적 이동·발동 근거. 결정 당시의
+    정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 적이 지나갈 경로와 후속 사격을 연결
+  bad_signs:
+  - 교전이 옮겨갔는데 무관한 곳에 방치
+  cannot_judge_when:
+  - '핵심 근거 미확인: 덫 위치·적 이동·발동 근거'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.junkrat; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Junkrat?oldid=402076'
+    patch_version: null
+- id: junkrat.ultimate_usage.tire
+  category: ultimate_usage
+  status: draft
+  ability: rip_tire
+  title: 타이어 경로와 조작 중 본체
+  description: '적용 상황: 궁 사용. 평가 목적: 타이어 경로와 조작 중 본체. 예외: 한 명 제거·거점 비우기도 유효. 필수 근거: 본체 위치·타이어 경로·적 대응. 결정 당시의 정보와
+    실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 본체를 숨기고 방어 반응을 피할 접근 경로 선택
+  bad_signs:
+  - 본체를 노출하거나 같은 경로로 쉽게 파괴됨
+  cannot_judge_when:
+  - '핵심 근거 미확인: 본체 위치·타이어 경로·적 대응'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.junkrat; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Junkrat?oldid=402076'
+    patch_version: null

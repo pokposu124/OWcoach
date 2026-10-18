@@ -1,0 +1,148 @@
+hero_id: ramattra
+display_name_ko: 라마트라
+role: tank
+pack_version: 0.1.0
+review_status: draft
+patch_version: null
+profile_type: criterion_fragment_not_HeroProfile
+ability_refs:
+  nemesis_form:
+    database_id: ramattra:nemesis-form
+    name_en: Nemesis Form
+    kind: Ability
+    review_required: false
+  block:
+    database_id: ramattra:block
+    name_en: Block
+    kind: Ability (Nemesis Form)
+    review_required: false
+  void_barrier:
+    database_id: ramattra:void-barrier
+    name_en: Void Barrier
+    kind: Ability (Omnic Form)
+    review_required: false
+  ravenous_vortex:
+    database_id: ramattra:ravenous-vortex
+    name_en: Ravenous Vortex
+    kind: Ability (both forms)
+    review_required: false
+  annihilation:
+    database_id: ramattra:annihilation
+    name_en: Annihilation
+    kind: Ultimate Ability
+    review_required: false
+criteria:
+- id: ramattra.positioning.form_range
+  category: positioning
+  status: draft
+  ability: null
+  title: 형태에 맞는 교전 거리
+  description: '적용 상황: 옴닉·네메시스 전환. 평가 목적: 형태에 맞는 교전 거리. 예외: 목표물 접촉은 거리 손해 감수 가능. 필수 근거: 형태·표적 거리·엄폐. 결정 당시의 정보와
+    실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 현재 형태로 기여할 거리와 엄폐 유지
+  bad_signs:
+  - 형태와 무관하게 같은 정면 거리를 고집
+  cannot_judge_when:
+  - '핵심 근거 미확인: 형태·표적 거리·엄폐'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.ramattra; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Ramattra?oldid=401792'
+    patch_version: null
+- id: ramattra.positioning.nemesis_end
+  category: positioning
+  status: draft
+  ability: nemesis_form
+  title: 네메시스 종료 후 지원 공간
+  description: '적용 상황: 근접 전진. 평가 목적: 네메시스 종료 후 지원 공간. 예외: 확실한 교전 종료·궁 연결은 비교. 필수 근거: 형태 상태·치료선·퇴로. 결정 당시의 정보와 실행
+    가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 종료 시점에 아군·엄폐로 돌아올 경로 유지
+  bad_signs:
+  - 변신 체력과 압박만 믿고 깊게 고립
+  cannot_judge_when:
+  - '핵심 근거 미확인: 형태 상태·치료선·퇴로'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.ramattra; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Ramattra?oldid=401792'
+    patch_version: null
+- id: ramattra.positioning.block_angle
+  category: positioning
+  status: draft
+  ability: block
+  title: 방어 방향과 아군 기여
+  description: '적용 상황: 근접 형태로 버티기. 평가 목적: 방어 방향과 아군 기여. 예외: 거점 지연·아군 합류 대기는 유효. 필수 근거: 공격 방향·팀 후속·목표물. 결정 당시의 정보와
+    실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 주된 위협을 막으며 팀이 공격할 시간 제공
+  bad_signs:
+  - 방어만 하며 포위된 곳에 남아 팀도 활용 불가
+  cannot_judge_when:
+  - '핵심 근거 미확인: 공격 방향·팀 후속·목표물'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.ramattra; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Ramattra?oldid=401792'
+    patch_version: null
+- id: ramattra.skill_usage.barrier
+  category: skill_usage
+  status: draft
+  ability: void_barrier
+  title: 방벽으로 확보할 짧은 행동 창
+  description: '적용 상황: 통과·사격·구조 필요. 평가 목적: 방벽으로 확보할 짧은 행동 창. 예외: 선제 공간 확보가 목적이면 허용. 필수 근거: 배치·막은 사선·아군 행동. 결정 당시의
+    정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 중요한 피해를 막는 동안 팀 이동·공격 연결
+  bad_signs:
+  - 무의미한 견제에 쓰고 실제 진입 때 공백
+  cannot_judge_when:
+  - '핵심 근거 미확인: 배치·막은 사선·아군 행동'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.ramattra; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Ramattra?oldid=401792'
+    patch_version: null
+- id: ramattra.skill_usage.vortex
+  category: skill_usage
+  status: draft
+  ability: ravenous_vortex
+  title: 소용돌이의 실제 이동 제한
+  description: '적용 상황: 적 이동 경로 관측. 평가 목적: 소용돌이의 실제 이동 제한. 예외: 목표물 접촉 억제도 유효. 필수 근거: 영역·적 이동·후속·지형. 결정 당시의 정보와 실행
+    가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 퇴로·진입로를 묶어 근접 압박 연결
+  bad_signs:
+  - 적이 통과하지 않는 곳에 습관적으로 사용
+  cannot_judge_when:
+  - '핵심 근거 미확인: 영역·적 이동·후속·지형'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.ramattra; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Ramattra?oldid=401792'
+    patch_version: null
+- id: ramattra.ultimate_usage.annihilation
+  category: ultimate_usage
+  status: draft
+  ability: annihilation
+  title: 절멸의 적 연결과 과추격
+  description: '적용 상황: 궁 사용. 평가 목적: 절멸의 적 연결과 과추격. 예외: 한 명 제거·거점 유지도 충분할 수 있음. 필수 근거: 궁 연결·적 퇴로·치료선·방어. 결정 당시의 정보와
+    실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 적에게 효과가 닿는 공간에서 생존·지원 유지
+  bad_signs:
+  - 효과를 유지하려 아군을 떠나 위험한 추격
+  cannot_judge_when:
+  - '핵심 근거 미확인: 궁 연결·적 퇴로·치료선·방어'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.ramattra; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Ramattra?oldid=401792'
+    patch_version: null

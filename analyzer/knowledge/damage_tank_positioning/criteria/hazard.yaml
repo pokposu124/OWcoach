@@ -1,0 +1,143 @@
+hero_id: hazard
+display_name_ko: 해저드
+role: tank
+pack_version: 0.1.0
+review_status: draft
+patch_version: null
+profile_type: criterion_fragment_not_HeroProfile
+ability_refs:
+  jagged_wall:
+    database_id: hazard:jagged-wall
+    name_en: Jagged Wall
+    kind: Ability
+    review_required: false
+  spike_guard:
+    database_id: hazard:spike-guard
+    name_en: Spike Guard
+    kind: Ability
+    review_required: false
+  violent_leap:
+    database_id: hazard:violent-leap
+    name_en: Violent Leap
+    kind: Ability
+    review_required: false
+  downpour:
+    database_id: hazard:downpour
+    name_en: Downpour
+    kind: Ultimate Ability
+    review_required: false
+criteria:
+- id: hazard.positioning.stage
+  category: positioning
+  status: draft
+  ability: null
+  title: 지형을 이용한 짧은 도약 진입
+  description: '적용 상황: 근접 교전 준비. 평가 목적: 지형을 이용한 짧은 도약 진입. 예외: 거점 접촉·확실한 후속이면 비교. 필수 근거: 출발·도착·지원선·적 위치. 결정 당시의 정보와
+    실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 엄폐·턱을 활용해 자원 손실 없이 접근
+  bad_signs:
+  - 먼 정면에서 도약해 적 전원에게 노출
+  cannot_judge_when:
+  - '핵심 근거 미확인: 출발·도착·지원선·적 위치'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.hazard; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Hazard?oldid=403755'
+    patch_version: null
+- id: hazard.positioning.wall_space
+  category: positioning
+  status: draft
+  ability: jagged_wall
+  title: 벽을 사이에 둔 공격과 생존
+  description: '적용 상황: 벽 설치 전후. 평가 목적: 벽을 사이에 둔 공격과 생존. 예외: 긴급 차단은 짧은 단절 허용. 필수 근거: 벽 양측 배치·치료선·적 이동. 결정 당시의 정보와
+    실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 적 사선·퇴로를 제한하며 자기 지원선 유지
+  bad_signs:
+  - 벽으로 자신이나 아군까지 위험하게 고립
+  cannot_judge_when:
+  - '핵심 근거 미확인: 벽 양측 배치·치료선·적 이동'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.hazard; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Hazard?oldid=403755'
+    patch_version: null
+- id: hazard.positioning.guard_angle
+  category: positioning
+  status: draft
+  ability: spike_guard
+  title: 가드의 전방과 측면 관리
+  description: '적용 상황: 가드로 버티기. 평가 목적: 가드의 전방과 측면 관리. 예외: 짧은 확실한 교환은 비교. 필수 근거: 공격 방향·가드·엄폐·후속 자원. 결정 당시의 정보와 실행
+    가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 주된 위협을 향하며 코너로 측면 제한
+  bad_signs:
+  - 전방 방어만 믿고 포위된 곳에 체류
+  cannot_judge_when:
+  - '핵심 근거 미확인: 공격 방향·가드·엄폐·후속 자원'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.hazard; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Hazard?oldid=403755'
+    patch_version: null
+- id: hazard.skill_usage.leap
+  category: skill_usage
+  status: draft
+  ability: violent_leap
+  title: 도약·추가 베기의 종료
+  description: '적용 상황: 접근·처치·이탈. 평가 목적: 도약·추가 베기의 종료. 예외: 즉시 위협 제거가 가능하면 허용. 필수 근거: 도약·추가 입력·적 이동·착지. 결정 당시의 정보와
+    실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 추가 공격과 안전한 종료 중 선택
+  bad_signs:
+  - 베기 피해만 노려 탈출할 지형을 지나침
+  cannot_judge_when:
+  - '핵심 근거 미확인: 도약·추가 입력·적 이동·착지'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.hazard; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Hazard?oldid=403755'
+    patch_version: null
+- id: hazard.skill_usage.wall_timing
+  category: skill_usage
+  status: draft
+  ability: jagged_wall
+  title: 벽의 방어·분리 목적
+  description: '적용 상황: 적 전진 또는 후퇴. 평가 목적: 벽의 방어·분리 목적. 예외: 자기 후퇴 경로 보호도 유효. 필수 근거: 설치 시점·막은 경로·후속. 결정 당시의 정보와 실행
+    가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 후속 가능한 적을 나누거나 위협 사선 차단
+  bad_signs:
+  - 잡을 수 없는 적 뒤에 놓고 방어 기회 상실
+  cannot_judge_when:
+  - '핵심 근거 미확인: 설치 시점·막은 경로·후속'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.hazard; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Hazard?oldid=403755'
+    patch_version: null
+- id: hazard.ultimate_usage.downpour
+  category: ultimate_usage
+  status: draft
+  ability: downpour
+  title: 묶인 적에게 후속을 줄 시점
+  description: '적용 상황: 궁 사용. 평가 목적: 묶인 적에게 후속을 줄 시점. 예외: 단일 핵심 제어·접촉 억제도 가치. 필수 근거: 피격·이동 제한·아군 사선·거리. 결정 당시의 정보와
+    실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 아군이 압박할 대상과 구역 선택
+  bad_signs:
+  - 명중 수만 늘리고 후속 불가 위치에 사용
+  cannot_judge_when:
+  - '핵심 근거 미확인: 피격·이동 제한·아군 사선·거리'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.hazard; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Hazard?oldid=403755'
+    patch_version: null

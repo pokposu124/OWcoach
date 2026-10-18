@@ -1,0 +1,143 @@
+hero_id: mauga
+display_name_ko: 마우가
+role: tank
+pack_version: 0.1.0
+review_status: draft
+patch_version: null
+profile_type: criterion_fragment_not_HeroProfile
+ability_refs:
+  overrun:
+    database_id: mauga:overrun
+    name_en: Overrun
+    kind: Ability
+    review_required: false
+  incendiary_chaingun:
+    database_id: mauga:incendiary-chaingun
+    name_en: Incendiary Chaingun
+    kind: Weapon (Primary Fire)
+    review_required: false
+  cardiac_overdrive:
+    database_id: mauga:cardiac-overdrive
+    name_en: Cardiac Overdrive
+    kind: Ability
+    review_required: false
+  cage_fight:
+    database_id: mauga:cage-fight
+    name_en: Cage Fight
+    kind: Ultimate Ability
+    review_required: false
+criteria:
+- id: mauga.positioning.corner
+  category: positioning
+  status: draft
+  ability: null
+  title: 큰 몸체의 노출과 사격 공간
+  description: '적용 상황: 정면 교전. 평가 목적: 큰 몸체의 노출과 사격 공간. 예외: 팀의 동시 진입이 확실하면 비교. 필수 근거: 적 사선·엄폐·아군 지원. 결정 당시의 정보와 실행
+    가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 코너에서 필요한 표적만 노출하며 압박
+  bad_signs:
+  - 아군 치료만 믿고 여러 사선에 몸을 노출
+  cannot_judge_when:
+  - '핵심 근거 미확인: 적 사선·엄폐·아군 지원'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.mauga; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Mauga?oldid=401820'
+    patch_version: null
+- id: mauga.positioning.overrun_end
+  category: positioning
+  status: draft
+  ability: overrun
+  title: 돌진 종료 후 치료 연결
+  description: '적용 상황: 진입·철수 이동. 평가 목적: 돌진 종료 후 치료 연결. 예외: 긴급 구조·거점 접촉은 별도 평가. 필수 근거: 경로·착지·치료선·적 배치. 결정 당시의 정보와
+    실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 도착 후 엄폐와 아군 지원 유지
+  bad_signs:
+  - 멀리 돌진해 교전 자원과 팀을 분리
+  cannot_judge_when:
+  - '핵심 근거 미확인: 경로·착지·치료선·적 배치'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.mauga; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Mauga?oldid=401820'
+    patch_version: null
+- id: mauga.positioning.overdrive_cycle
+  category: positioning
+  status: draft
+  ability: null
+  title: 심장 효과 종료 후 자리 조절
+  description: '적용 상황: 강화 생존 구간 종료. 평가 목적: 심장 효과 종료 후 자리 조절. 예외: 적 핵심 위협이 제거됐다면 유지 가능. 필수 근거: 효과 상태·체력·적 방어·퇴로.
+    결정 당시의 정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 엄폐로 교환을 끊고 다음 자원 준비
+  bad_signs:
+  - 강화 중 버텼다는 이유로 같은 노출 유지
+  cannot_judge_when:
+  - '핵심 근거 미확인: 효과 상태·체력·적 방어·퇴로'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.mauga; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Mauga?oldid=401820'
+    patch_version: null
+- id: mauga.skill_usage.gun_choice
+  category: skill_usage
+  status: draft
+  ability: incendiary_chaingun
+  title: 발화와 실제 유효 사격
+  description: '적용 상황: 적과 거리·상태 변화. 평가 목적: 발화와 실제 유효 사격. 예외: 긴급 근접 대응은 빠른 집중 공격 허용. 필수 근거: 발화·거리·명중·양쪽 무기 사용. 결정
+    당시의 정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 발화 표시와 명중을 확인해 사격 방식 선택
+  bad_signs:
+  - 모든 거리에서 같은 사격만 해 유효 피해 감소
+  cannot_judge_when:
+  - '핵심 근거 미확인: 발화·거리·명중·양쪽 무기 사용'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.mauga; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Mauga?oldid=401820'
+    patch_version: null
+- id: mauga.skill_usage.overdrive
+  category: skill_usage
+  status: draft
+  ability: cardiac_overdrive
+  title: 심장 효과와 공격 가능한 시간
+  description: '적용 상황: 큰 피해를 주고받음. 평가 목적: 심장 효과와 공격 가능한 시간. 예외: 아군 수혜·긴급 자기 생존도 유효. 필수 근거: 적 방어·실제 명중·체력·아군 수혜.
+    결정 당시의 정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 실제로 공격·수혜가 가능한 순간 사용
+  bad_signs:
+  - 적 공격 차단·이탈로 효과를 못 쓰는데 버티기
+  cannot_judge_when:
+  - '핵심 근거 미확인: 적 방어·실제 명중·체력·아군 수혜'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.mauga; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Mauga?oldid=401820'
+    patch_version: null
+- id: mauga.ultimate_usage.cage
+  category: ultimate_usage
+  status: draft
+  ability: cage_fight
+  title: 가둔 공간의 아군 활용과 위험
+  description: '적용 상황: 궁 사용. 평가 목적: 가둔 공간의 아군 활용과 위험. 예외: 목표물 시간 확보·한 명 제거도 가치. 필수 근거: 영역·대상·아군 사선·자기 생존. 결정 당시의
+    정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 아군이 공격할 적을 묶고 자신도 버틸 공간 확보
+  bad_signs:
+  - 불리한 포위 안에 자신까지 가둠
+  cannot_judge_when:
+  - '핵심 근거 미확인: 영역·대상·아군 사선·자기 생존'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.mauga; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Mauga?oldid=401820'
+    patch_version: null

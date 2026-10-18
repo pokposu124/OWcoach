@@ -1,0 +1,138 @@
+hero_id: ashe
+display_name_ko: 애쉬
+role: damage
+pack_version: 0.1.0
+review_status: draft
+patch_version: null
+profile_type: criterion_fragment_not_HeroProfile
+ability_refs:
+  coach_gun:
+    database_id: ashe:coach-gun
+    name_en: Coach Gun
+    kind: Ability
+    review_required: false
+  dynamite:
+    database_id: ashe:dynamite
+    name_en: Dynamite
+    kind: Ability
+    review_required: false
+  b_o_b:
+    database_id: ashe:b-o-b
+    name_en: B.O.B.
+    kind: Ultimate Ability
+    review_required: false
+criteria:
+- id: ashe.positioning.highground
+  category: positioning
+  status: draft
+  ability: null
+  title: 엄폐 있는 중장거리 사격각
+  description: '적용 상황: 고지대 선점. 평가 목적: 엄폐 있는 중장거리 사격각. 예외: 지상이 더 안전한 사격각이면 허용. 필수 근거: 고지대 접근로·적 위치·엄폐. 결정 당시의 정보와
+    실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 적 노출과 후퇴 경로를 함께 확보
+  bad_signs:
+  - 높지만 다이브를 피할 곳 없는 자리 고집
+  cannot_judge_when:
+  - '핵심 근거 미확인: 고지대 접근로·적 위치·엄폐'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.ashe; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Ashe?oldid=402071'
+    patch_version: null
+- id: ashe.positioning.rotate
+  category: positioning
+  status: draft
+  ability: null
+  title: 발각된 저격각의 재배치
+  description: '적용 상황: 적이 현재 각도를 조준. 평가 목적: 발각된 저격각의 재배치. 예외: 적이 밀려날 상황이면 유지 가능. 필수 근거: 적 사격 방향·대체 각도. 결정 당시의 정보와
+    실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 다른 모서리로 옮겨 유효 사격 지속
+  bad_signs:
+  - 같은 각도를 반복 노출해 피격
+  cannot_judge_when:
+  - '핵심 근거 미확인: 적 사격 방향·대체 각도'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.ashe; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Ashe?oldid=402071'
+    patch_version: null
+- id: ashe.positioning.distance
+  category: positioning
+  status: draft
+  ability: coach_gun
+  title: 충격 샷건 이후의 거리
+  description: '적용 상황: 적 근접 압박. 평가 목적: 충격 샷건 이후의 거리. 예외: 밀쳐내기로 처치·거점 확보 가능. 필수 근거: 후방 공간·사용 전후 위치. 결정 당시의 정보와 실행
+    가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 밀쳐내기와 이동으로 엄폐에 연결
+  bad_signs:
+  - 뒤가 막힌 곳으로 밀려나 다시 고립
+  cannot_judge_when:
+  - '핵심 근거 미확인: 후방 공간·사용 전후 위치'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.ashe; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Ashe?oldid=402071'
+    patch_version: null
+- id: ashe.skill_usage.dynamite
+  category: skill_usage
+  status: draft
+  ability: dynamite
+  title: 다이너마이트의 압박 대상
+  description: '적용 상황: 적이 엄폐에 모이거나 교전. 평가 목적: 다이너마이트의 압박 대상. 예외: 단일 적 퇴각 유도도 유효. 필수 근거: 투척·폭발·적 반응·본체 노출. 결정 당시의
+    정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 폭발로 적 이동·치료 자원 소모 유도
+  bad_signs:
+  - 각도 이득 없이 던지려다 본체 과노출
+  cannot_judge_when:
+  - '핵심 근거 미확인: 투척·폭발·적 반응·본체 노출'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.ashe; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Ashe?oldid=402071'
+    patch_version: null
+- id: ashe.skill_usage.escape_budget
+  category: skill_usage
+  status: draft
+  ability: coach_gun
+  title: 고지대 이동과 탈출 수단의 비용
+  description: '적용 상황: 샷건으로 위치 변경. 평가 목적: 고지대 이동과 탈출 수단의 비용. 예외: 교전 전 안전한 이동은 허용. 필수 근거: 사용 시점·적 접근·대체 퇴로. 결정 당시의
+    정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 도착 후 다른 엄폐나 아군 도움 확보
+  bad_signs:
+  - 접근 중인 다이버 앞에서 유일 탈출기 소모
+  cannot_judge_when:
+  - '핵심 근거 미확인: 사용 시점·적 접근·대체 퇴로'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.ashe; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Ashe?oldid=402071'
+    patch_version: null
+- id: ashe.ultimate_usage.bob
+  category: ultimate_usage
+  status: draft
+  ability: b_o_b
+  title: 밥의 경로와 교차 사선
+  description: '적용 상황: 밥 투입. 평가 목적: 밥의 경로와 교차 사선. 예외: 거점 접촉·구역 통제도 유효. 필수 근거: 돌진 경로·정지 위치·아군 후속. 결정 당시의 정보와 실행 가능한
+    대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 지형에 막히지 않고 유효 교전각 형성
+  bad_signs:
+  - 잘못된 경로로 지나치거나 무용한 위치 정지
+  cannot_judge_when:
+  - '핵심 근거 미확인: 돌진 경로·정지 위치·아군 후속'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.ashe; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Ashe?oldid=402071'
+    patch_version: null

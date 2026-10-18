@@ -1,0 +1,913 @@
+research_date: '2026-10-18'
+database_snapshot_date: '2026-10-15'
+database_path: analyzer/data/overwatch_stats/overwatch.sqlite
+database_sha256: 4b7bd4ab07ee95c16c0019f069891809a833e2166794f16d056688ef6f1200ec
+scope: 일반 5대5 역할 고정
+references:
+  C01:
+    url: https://www.reddit.com/r/OverwatchUniversity/comments/113t1ai/dps_positioning_the_complete_guide_to_the/
+    title: 'Spilo — DPS Positioning: The Complete Guide to the Fundamentals'
+    published: '2023-02-16'
+    access: 검색 제공 게시글 본문
+    adopted: 고지대·각도·엄폐·거리의 네 축. 연결 영상 미시청. 세부 판정 조건은 이 자료의 작성자 설계.
+  C02:
+    url: https://www.reddit.com/r/OverwatchUniversity/comments/1s3j0g5/positioning_as_a_tank_taking_up_space_without/
+    title: Positioning as a tank? Taking up space without face tanking
+    published: '2026-03-25'
+    access: 검색 제공 본문·댓글
+    adopted: 코너·지원 시야·방어 자원과 공간 확보의 관계. 개인 의견이며 랭크·정확성 미검증.
+  C03:
+    url: https://www.reddit.com/r/OverwatchUniversity/comments/14h6vdh
+    title: A COMPLETE Guide to Reinhardt
+    published: '2023-06-23'
+    access: 검색 제공 본문
+    adopted: 코너를 통한 접근과 자원 소모 후 복귀. 적 탱커를 무조건 무시하라는 규칙·과거 수치는 미채택.
+  C04:
+    url: https://www.reddit.com/r/OverwatchUniversity/comments/106v3s4/the_complete_dva_guide_2500_words/
+    title: Kajor — The COMPLETE DVA Guide
+    published: '2023-01-08'
+    access: 검색 제공 본문
+    adopted: 각도 견제·다이브·후방 보호의 역할 분기. 당시 상성 단정·수치·연결 영상은 사용하지 않음.
+  C05:
+    url: https://www.reddit.com/r/OverwatchUniversity/comments/zmuxif
+    title: Kajor — The COMPLETE SIGMA Guide
+    published: '2022-12-15'
+    access: 검색 제공 본문
+    adopted: 중거리 각도 유지와 전투 중 재배치. 당시 피해량·콤보·처치 보장 미채택.
+  C06:
+    url: https://www.reddit.com/r/OverwatchUniversity/comments/1gashfv
+    title: Tracer tips for positioning/timing
+    published: '2024-10-24'
+    access: 검색 제공 본문·댓글
+    adopted: 아군 교전과 측면 공격의 타이밍을 맞추는 일반 원칙.
+  C07:
+    url: https://www.reddit.com/r/OverwatchUniversity/comments/se7i7c
+    title: The 60 Second Genji Guide
+    published: '2022-01-27'
+    access: 검색 제공 본문
+    adopted: 질풍참 후 엄폐·탈출, 팀 진입 시점. OW1 수치·당시 콤보를 현재 키트로 사용하지 않음.
+  C08:
+    url: https://www.reddit.com/r/OverwatchUniversity/comments/10dqn4x
+    title: Kajor — The COMPLETE WRECKING BALL Guide
+    published: '2023-01-16'
+    access: 검색 제공 본문
+    adopted: 다이브·지역 다툼·교란의 역할 구분. 당시 수치 제외.
+  C09:
+    url: https://www.reddit.com/r/OverwatchUniversity/comments/1ub0fma/how_to_stage_as_winston/
+    title: How to stage as Winston
+    published: '2026-06-20'
+    access: 검색 제공 본문·댓글
+    adopted: 준비 중 체력 보존·엄폐·지원 시야·탈출. 연결 리플레이는 분석하지 않음.
+  C10:
+    url: https://www.reddit.com/r/OverwatchUniversity/comments/blr8ol
+    title: How to play Pharah?
+    published: '2019-05-07'
+    access: 검색 제공 본문·댓글
+    adopted: 공중에서도 건물·모서리 엄폐 활용. OW1 자료이며 연료·기동·상성·피해 수치는 미채택.
+  C11:
+    url: https://www.reddit.com/r/OverwatchUniversity/comments/1ukr2uk/how_pro_mei_players_actually_use_ice_wall/
+    title: How Pro Mei Players Actually Use Ice Wall
+    published: '2026-07-01'
+    access: 검색 제공 게시글 요약
+    adopted: 적 분리·위험 사선 차단·고지대 접근의 서로 다른 빙벽 목적. 연결 영상 미시청.
+  C12:
+    url: https://www.reddit.com/r/OverwatchUniversity/comments/1hj0gfq
+    title: Fundamentals of playing Hazard?
+    published: '2024-12-21'
+    access: 검색 제공 본문·댓글
+    adopted: 벽의 공격·방어 목적과 지원 시야. 서로 다른 의견을 절대 규칙으로 취급하지 않음.
+  C13:
+    url: https://www.reddit.com/r/OverwatchUniversity/comments/1tkqkne/fix_your_staging_win_more_games_in_overwatch/
+    title: Fix Your Staging, Win More Games in Overwatch
+    published: '2026-05-22'
+    access: 검색 제공 게시글 요약
+    adopted: 진입 전 가까운 엄폐로 재배치하고 자원·표적을 확인하는 준비 과정. 영상 미시청.
+  O01:
+    url: https://overwatch.blizzard.com/heroes/anran
+    title: Blizzard — Anran
+    published: null
+    access: 검색 결과
+    adopted: 영웅 존재 확인 보조. 전술·현재 수치 검증 자료로 사용하지 않음.
+  O02:
+    url: https://overwatch.blizzard.com/en-us/heroes/shion/
+    title: Blizzard — Shion
+    published: null
+    access: 검색 결과
+    adopted: 영웅 존재 확인 보조. 전술·현재 수치 검증 자료로 사용하지 않음.
+  O03:
+    url: https://overwatch.blizzard.com/en-us/heroes/sierra/
+    title: Blizzard — Sierra
+    published: null
+    access: 검색 결과
+    adopted: 영웅 존재 확인 보조. 전술·현재 수치 검증 자료로 사용하지 않음.
+policy: 커뮤니티 원칙의 확인 범위와 작성자의 설계를 구분한다. 각 기준의 구체적인 좋음·실수·예외·판단 보류는 검수 전 설계이며 전문가 합의가 아니다. 메커니즘은 저장소 DB의 고정 개정을 참조하고
+  경기 패치는 별도 확인한다.
+heroes:
+  anran:
+    name_ko: 안란
+    role: damage
+    mechanics_source:
+      source_id: wiki:anran
+      publisher: Overwatch Wiki contributors
+      url: https://overwatch.weirdgloop.org/w/Anran
+      revision_url: https://overwatch.weirdgloop.org/w/Anran?oldid=402310
+      revision_id: '402310'
+      last_edited_text: This page was last edited on 10 October 2026, at 20:56.
+      fetched_at_utc: '2026-10-15T13:58:58+00:00'
+      sha256: b50a77da9eea367751b1b772cea5db7095d37448beacdf2f51bdc4a9fe74ff52
+      license: CC BY-NC-SA 3.0
+    hero_specific_community_references: []
+    role_level_references:
+    - C01
+    - C13
+    strategy_evidence: role_principles_and_mechanics_only_editorial
+    limitations: 영웅별 구체적 커뮤니티 근거가 확보된 범위만 직접 근거로 표시한다. 역할 공통 원칙을 적용한 설계는 영웅별 검증을 대신하지 못한다.
+    coach_validated: false
+    match_patch_verified: false
+  ashe:
+    name_ko: 애쉬
+    role: damage
+    mechanics_source:
+      source_id: wiki:ashe
+      publisher: Overwatch Wiki contributors
+      url: https://overwatch.weirdgloop.org/w/Ashe
+      revision_url: https://overwatch.weirdgloop.org/w/Ashe?oldid=402071
+      revision_id: '402071'
+      last_edited_text: This page was last edited on 9 October 2026, at 10:05.
+      fetched_at_utc: '2026-10-15T13:59:03+00:00'
+      sha256: 06323ca39458312b50cf0545993a7332efcbdd5257936bb16f416d38cfff6437
+      license: CC BY-NC-SA 3.0
+    hero_specific_community_references: []
+    role_level_references:
+    - C01
+    - C13
+    strategy_evidence: role_principles_and_mechanics_only_editorial
+    limitations: 영웅별 구체적 커뮤니티 근거가 확보된 범위만 직접 근거로 표시한다. 역할 공통 원칙을 적용한 설계는 영웅별 검증을 대신하지 못한다.
+    coach_validated: false
+    match_patch_verified: false
+  bastion:
+    name_ko: 바스티온
+    role: damage
+    mechanics_source:
+      source_id: wiki:bastion
+      publisher: Overwatch Wiki contributors
+      url: https://overwatch.weirdgloop.org/w/Bastion
+      revision_url: https://overwatch.weirdgloop.org/w/Bastion?oldid=402044
+      revision_id: '402044'
+      last_edited_text: This page was last edited on 9 October 2026, at 09:18.
+      fetched_at_utc: '2026-10-15T13:59:14+00:00'
+      sha256: a76d609f44cf858d34ff8e0f4acaf64f11fa7a5c3099fccfe66abe8ae7cc83b8
+      license: CC BY-NC-SA 3.0
+    hero_specific_community_references: []
+    role_level_references:
+    - C01
+    - C13
+    strategy_evidence: role_principles_and_mechanics_only_editorial
+    limitations: 영웅별 구체적 커뮤니티 근거가 확보된 범위만 직접 근거로 표시한다. 역할 공통 원칙을 적용한 설계는 영웅별 검증을 대신하지 못한다.
+    coach_validated: false
+    match_patch_verified: false
+  cassidy:
+    name_ko: 캐서디
+    role: damage
+    mechanics_source:
+      source_id: wiki:cassidy
+      publisher: Overwatch Wiki contributors
+      url: https://overwatch.weirdgloop.org/w/Cassidy
+      revision_url: https://overwatch.weirdgloop.org/w/Cassidy?oldid=403765
+      revision_id: '403765'
+      last_edited_text: This page was last edited on 12 October 2026, at 18:54.
+      fetched_at_utc: '2026-10-15T13:59:26+00:00'
+      sha256: 2675caaed215143afcbfb04302661e9dd1458762c0e313aae1ad8b8501205888
+      license: CC BY-NC-SA 3.0
+    hero_specific_community_references: []
+    role_level_references:
+    - C01
+    - C13
+    strategy_evidence: role_principles_and_mechanics_only_editorial
+    limitations: 영웅별 구체적 커뮤니티 근거가 확보된 범위만 직접 근거로 표시한다. 역할 공통 원칙을 적용한 설계는 영웅별 검증을 대신하지 못한다.
+    coach_validated: false
+    match_patch_verified: false
+  echo:
+    name_ko: 에코
+    role: damage
+    mechanics_source:
+      source_id: wiki:echo
+      publisher: Overwatch Wiki contributors
+      url: https://overwatch.weirdgloop.org/w/Echo
+      revision_url: https://overwatch.weirdgloop.org/w/Echo?oldid=402317
+      revision_id: '402317'
+      last_edited_text: This page was last edited on 11 October 2026, at 00:36.
+      fetched_at_utc: '2026-10-15T14:00:05+00:00'
+      sha256: f371f5440d7ca4118401bd89754b9da410c518bc4fc0d93f26d004b540afe58e
+      license: CC BY-NC-SA 3.0
+    hero_specific_community_references: []
+    role_level_references:
+    - C01
+    - C13
+    strategy_evidence: role_principles_and_mechanics_only_editorial
+    limitations: 영웅별 구체적 커뮤니티 근거가 확보된 범위만 직접 근거로 표시한다. 역할 공통 원칙을 적용한 설계는 영웅별 검증을 대신하지 못한다.
+    coach_validated: false
+    match_patch_verified: false
+  emre:
+    name_ko: 엠레
+    role: damage
+    mechanics_source:
+      source_id: wiki:emre
+      publisher: Overwatch Wiki contributors
+      url: https://overwatch.weirdgloop.org/w/Emre
+      revision_url: https://overwatch.weirdgloop.org/w/Emre?oldid=404772
+      revision_id: '404772'
+      last_edited_text: This page was last edited on 14 October 2026, at 19:28.
+      fetched_at_utc: '2026-10-15T14:00:10+00:00'
+      sha256: f57c68ddd5224e156a6bb8c47a75a1632e36b3a830d19b1621bfd315046cba0e
+      license: CC BY-NC-SA 3.0
+    hero_specific_community_references: []
+    role_level_references:
+    - C01
+    - C13
+    strategy_evidence: role_principles_and_mechanics_only_editorial
+    limitations: 영웅별 구체적 커뮤니티 근거가 확보된 범위만 직접 근거로 표시한다. 역할 공통 원칙을 적용한 설계는 영웅별 검증을 대신하지 못한다.
+    coach_validated: false
+    match_patch_verified: false
+  freja:
+    name_ko: 프레야
+    role: damage
+    mechanics_source:
+      source_id: wiki:freja
+      publisher: Overwatch Wiki contributors
+      url: https://overwatch.weirdgloop.org/w/Freja
+      revision_url: https://overwatch.weirdgloop.org/w/Freja?oldid=403748
+      revision_id: '403748'
+      last_edited_text: This page was last edited on 12 October 2026, at 16:38.
+      fetched_at_utc: '2026-10-15T14:00:16+00:00'
+      sha256: 24b394469b77211d45beef9bd3a5c0ac46896e9406461daf8142b4b6389cf7aa
+      license: CC BY-NC-SA 3.0
+    hero_specific_community_references: []
+    role_level_references:
+    - C01
+    - C13
+    strategy_evidence: role_principles_and_mechanics_only_editorial
+    limitations: 영웅별 구체적 커뮤니티 근거가 확보된 범위만 직접 근거로 표시한다. 역할 공통 원칙을 적용한 설계는 영웅별 검증을 대신하지 못한다.
+    coach_validated: false
+    match_patch_verified: false
+  genji:
+    name_ko: 겐지
+    role: damage
+    mechanics_source:
+      source_id: wiki:genji
+      publisher: Overwatch Wiki contributors
+      url: https://overwatch.weirdgloop.org/w/Genji
+      revision_url: https://overwatch.weirdgloop.org/w/Genji?oldid=404769
+      revision_id: '404769'
+      last_edited_text: This page was last edited on 14 October 2026, at 19:04.
+      fetched_at_utc: '2026-10-15T14:00:22+00:00'
+      sha256: 96fd7282bcf8b8120652c8e87857c3a0ec82abb249440998113d20637fa1c07b
+      license: CC BY-NC-SA 3.0
+    hero_specific_community_references:
+    - C07
+    role_level_references:
+    - C01
+    - C13
+    strategy_evidence: hero_specific_community_plus_editorial
+    limitations: 영웅별 구체적 커뮤니티 근거가 확보된 범위만 직접 근거로 표시한다. 역할 공통 원칙을 적용한 설계는 영웅별 검증을 대신하지 못한다.
+    coach_validated: false
+    match_patch_verified: false
+  hanzo:
+    name_ko: 한조
+    role: damage
+    mechanics_source:
+      source_id: wiki:hanzo
+      publisher: Overwatch Wiki contributors
+      url: https://overwatch.weirdgloop.org/w/Hanzo
+      revision_url: https://overwatch.weirdgloop.org/w/Hanzo?oldid=401813
+      revision_id: '401813'
+      last_edited_text: This page was last edited on 7 October 2026, at 18:53.
+      fetched_at_utc: '2026-10-15T14:00:27+00:00'
+      sha256: 3a48a8fd167799dc22819fd07b1675c341b49dc43def4c0fe99a6c795b206cbf
+      license: CC BY-NC-SA 3.0
+    hero_specific_community_references: []
+    role_level_references:
+    - C01
+    - C13
+    strategy_evidence: role_principles_and_mechanics_only_editorial
+    limitations: 영웅별 구체적 커뮤니티 근거가 확보된 범위만 직접 근거로 표시한다. 역할 공통 원칙을 적용한 설계는 영웅별 검증을 대신하지 못한다.
+    coach_validated: false
+    match_patch_verified: false
+  junkrat:
+    name_ko: 정크랫
+    role: damage
+    mechanics_source:
+      source_id: wiki:junkrat
+      publisher: Overwatch Wiki contributors
+      url: https://overwatch.weirdgloop.org/w/Junkrat
+      revision_url: https://overwatch.weirdgloop.org/w/Junkrat?oldid=402076
+      revision_id: '402076'
+      last_edited_text: This page was last edited on 9 October 2026, at 10:19.
+      fetched_at_utc: '2026-10-15T14:00:53+00:00'
+      sha256: a6cc22ddd89c14529c0321a05a5edf45ced6235b26f14c1a13b6b58306fd62c4
+      license: CC BY-NC-SA 3.0
+    hero_specific_community_references: []
+    role_level_references:
+    - C01
+    - C13
+    strategy_evidence: role_principles_and_mechanics_only_editorial
+    limitations: 영웅별 구체적 커뮤니티 근거가 확보된 범위만 직접 근거로 표시한다. 역할 공통 원칙을 적용한 설계는 영웅별 검증을 대신하지 못한다.
+    coach_validated: false
+    match_patch_verified: false
+  mei:
+    name_ko: 메이
+    role: damage
+    mechanics_source:
+      source_id: wiki:mei
+      publisher: Overwatch Wiki contributors
+      url: https://overwatch.weirdgloop.org/w/Mei
+      revision_url: https://overwatch.weirdgloop.org/w/Mei?oldid=401846
+      revision_id: '401846'
+      last_edited_text: This page was last edited on 7 October 2026, at 22:18.
+      fetched_at_utc: '2026-10-15T14:01:34+00:00'
+      sha256: 26689d34dc987d59d537e9d11fc31f9564a8aff57b3e63757dc5861348857b5a
+      license: CC BY-NC-SA 3.0
+    hero_specific_community_references:
+    - C11
+    role_level_references:
+    - C01
+    - C13
+    strategy_evidence: hero_specific_community_plus_editorial
+    limitations: 영웅별 구체적 커뮤니티 근거가 확보된 범위만 직접 근거로 표시한다. 역할 공통 원칙을 적용한 설계는 영웅별 검증을 대신하지 못한다.
+    coach_validated: false
+    match_patch_verified: false
+  pharah:
+    name_ko: 파라
+    role: damage
+    mechanics_source:
+      source_id: wiki:pharah
+      publisher: Overwatch Wiki contributors
+      url: https://overwatch.weirdgloop.org/w/Pharah
+      revision_url: https://overwatch.weirdgloop.org/w/Pharah?oldid=404962
+      revision_id: '404962'
+      last_edited_text: This page was last edited on 15 October 2026, at 06:50.
+      fetched_at_utc: '2026-10-15T14:02:03+00:00'
+      sha256: a34cb1cec6b951927c5338269ad67b5d91733c21658617d199c992ccc2c10a5d
+      license: CC BY-NC-SA 3.0
+    hero_specific_community_references:
+    - C10
+    role_level_references:
+    - C01
+    - C13
+    strategy_evidence: hero_specific_community_plus_editorial
+    limitations: 영웅별 구체적 커뮤니티 근거가 확보된 범위만 직접 근거로 표시한다. 역할 공통 원칙을 적용한 설계는 영웅별 검증을 대신하지 못한다.
+    coach_validated: false
+    match_patch_verified: false
+  reaper:
+    name_ko: 리퍼
+    role: damage
+    mechanics_source:
+      source_id: wiki:reaper
+      publisher: Overwatch Wiki contributors
+      url: https://overwatch.weirdgloop.org/w/Reaper
+      revision_url: https://overwatch.weirdgloop.org/w/Reaper?oldid=402334
+      revision_id: '402334'
+      last_edited_text: This page was last edited on 11 October 2026, at 05:55.
+      fetched_at_utc: '2026-10-15T14:02:15+00:00'
+      sha256: 30ef73239d85eb6710e10d58a0223ae6609053a9a61e2a14299574720d0b12c0
+      license: CC BY-NC-SA 3.0
+    hero_specific_community_references: []
+    role_level_references:
+    - C01
+    - C13
+    strategy_evidence: role_principles_and_mechanics_only_editorial
+    limitations: 영웅별 구체적 커뮤니티 근거가 확보된 범위만 직접 근거로 표시한다. 역할 공통 원칙을 적용한 설계는 영웅별 검증을 대신하지 못한다.
+    coach_validated: false
+    match_patch_verified: false
+  shion:
+    name_ko: 시온
+    role: damage
+    mechanics_source:
+      source_id: wiki:shion
+      publisher: Overwatch Wiki contributors
+      url: https://overwatch.weirdgloop.org/w/Shion
+      revision_url: https://overwatch.weirdgloop.org/w/Shion?oldid=401618
+      revision_id: '401618'
+      last_edited_text: This page was last edited on 7 October 2026, at 10:14.
+      fetched_at_utc: '2026-10-15T14:02:32+00:00'
+      sha256: fbadb2e37e3f5478927e1def0c6514b237730e8d9166e7653f679191611d30f8
+      license: CC BY-NC-SA 3.0
+    hero_specific_community_references: []
+    role_level_references:
+    - C01
+    - C13
+    strategy_evidence: role_principles_and_mechanics_only_editorial
+    limitations: 영웅별 구체적 커뮤니티 근거가 확보된 범위만 직접 근거로 표시한다. 역할 공통 원칙을 적용한 설계는 영웅별 검증을 대신하지 못한다.
+    coach_validated: false
+    match_patch_verified: false
+  sierra:
+    name_ko: 시에라
+    role: damage
+    mechanics_source:
+      source_id: wiki:sierra
+      publisher: Overwatch Wiki contributors
+      url: https://overwatch.weirdgloop.org/w/Sierra
+      revision_url: https://overwatch.weirdgloop.org/w/Sierra?oldid=401845
+      revision_id: '401845'
+      last_edited_text: This page was last edited on 7 October 2026, at 22:16.
+      fetched_at_utc: '2026-10-15T14:02:38+00:00'
+      sha256: d76c05ab4875af722bd50d15e7f7d00ca4cc6f4f0992bc799aecf984d246a271
+      license: CC BY-NC-SA 3.0
+    hero_specific_community_references: []
+    role_level_references:
+    - C01
+    - C13
+    strategy_evidence: role_principles_and_mechanics_only_editorial
+    limitations: 영웅별 구체적 커뮤니티 근거가 확보된 범위만 직접 근거로 표시한다. 역할 공통 원칙을 적용한 설계는 영웅별 검증을 대신하지 못한다.
+    coach_validated: false
+    match_patch_verified: false
+  sojourn:
+    name_ko: 소전
+    role: damage
+    mechanics_source:
+      source_id: wiki:sojourn
+      publisher: Overwatch Wiki contributors
+      url: https://overwatch.weirdgloop.org/w/Sojourn
+      revision_url: https://overwatch.weirdgloop.org/w/Sojourn?oldid=401780
+      revision_id: '401780'
+      last_edited_text: This page was last edited on 7 October 2026, at 16:38.
+      fetched_at_utc: '2026-10-15T14:02:49+00:00'
+      sha256: 11bc6809934efdb745f5a02627e80655541bdc154025c71d1346ae4fdee46f95
+      license: CC BY-NC-SA 3.0
+    hero_specific_community_references: []
+    role_level_references:
+    - C01
+    - C13
+    strategy_evidence: role_principles_and_mechanics_only_editorial
+    limitations: 영웅별 구체적 커뮤니티 근거가 확보된 범위만 직접 근거로 표시한다. 역할 공통 원칙을 적용한 설계는 영웅별 검증을 대신하지 못한다.
+    coach_validated: false
+    match_patch_verified: false
+  soldier-76:
+    name_ko: '솔저: 76'
+    role: damage
+    mechanics_source:
+      source_id: wiki:soldier-76
+      publisher: Overwatch Wiki contributors
+      url: https://overwatch.weirdgloop.org/w/Soldier:_76
+      revision_url: https://overwatch.weirdgloop.org/w/Soldier:_76?oldid=404960
+      revision_id: '404960'
+      last_edited_text: This page was last edited on 15 October 2026, at 06:47.
+      fetched_at_utc: '2026-10-15T14:02:54+00:00'
+      sha256: a367ff2a6adbedc94d20dc1f3a2fa07762fc92972bfea6ab8d3bf4add045a185
+      license: CC BY-NC-SA 3.0
+    hero_specific_community_references: []
+    role_level_references:
+    - C01
+    - C13
+    strategy_evidence: role_principles_and_mechanics_only_editorial
+    limitations: 영웅별 구체적 커뮤니티 근거가 확보된 범위만 직접 근거로 표시한다. 역할 공통 원칙을 적용한 설계는 영웅별 검증을 대신하지 못한다.
+    coach_validated: false
+    match_patch_verified: false
+  symmetra:
+    name_ko: 시메트라
+    role: damage
+    mechanics_source:
+      source_id: wiki:symmetra
+      publisher: Overwatch Wiki contributors
+      url: https://overwatch.weirdgloop.org/w/Symmetra
+      revision_url: https://overwatch.weirdgloop.org/w/Symmetra?oldid=404744
+      revision_id: '404744'
+      last_edited_text: This page was last edited on 14 October 2026, at 17:19.
+      fetched_at_utc: '2026-10-15T14:03:04+00:00'
+      sha256: 1ce2a03630d4d70b8fb78bace9578f9868af61704e5e2597b4ab66dff041f29c
+      license: CC BY-NC-SA 3.0
+    hero_specific_community_references: []
+    role_level_references:
+    - C01
+    - C13
+    strategy_evidence: role_principles_and_mechanics_only_editorial
+    limitations: 영웅별 구체적 커뮤니티 근거가 확보된 범위만 직접 근거로 표시한다. 역할 공통 원칙을 적용한 설계는 영웅별 검증을 대신하지 못한다.
+    coach_validated: false
+    match_patch_verified: false
+  torbjorn:
+    name_ko: 토르비욘
+    role: damage
+    mechanics_source:
+      source_id: wiki:torbjorn
+      publisher: Overwatch Wiki contributors
+      url: https://overwatch.weirdgloop.org/w/Torbj%C3%B6rn
+      revision_url: https://overwatch.weirdgloop.org/w/Torbj%C3%B6rn?oldid=403760
+      revision_id: '403760'
+      last_edited_text: This page was last edited on 12 October 2026, at 18:43.
+      fetched_at_utc: '2026-10-15T14:03:10+00:00'
+      sha256: c5e849d354d623e9d3ed27fb1b8a6e4194ee41e74b4a102a509603e06ceb903e
+      license: CC BY-NC-SA 3.0
+    hero_specific_community_references: []
+    role_level_references:
+    - C01
+    - C13
+    strategy_evidence: role_principles_and_mechanics_only_editorial
+    limitations: 영웅별 구체적 커뮤니티 근거가 확보된 범위만 직접 근거로 표시한다. 역할 공통 원칙을 적용한 설계는 영웅별 검증을 대신하지 못한다.
+    coach_validated: false
+    match_patch_verified: false
+  tracer:
+    name_ko: 트레이서
+    role: damage
+    mechanics_source:
+      source_id: wiki:tracer
+      publisher: Overwatch Wiki contributors
+      url: https://overwatch.weirdgloop.org/w/Tracer
+      revision_url: https://overwatch.weirdgloop.org/w/Tracer?oldid=404961
+      revision_id: '404961'
+      last_edited_text: This page was last edited on 15 October 2026, at 06:48.
+      fetched_at_utc: '2026-10-15T14:08:32+00:00'
+      sha256: 27e5bea89b1dceb20b28936e3c325c1622330d10d27108597852adb678552d20
+      license: CC BY-NC-SA 3.0
+    hero_specific_community_references:
+    - C06
+    role_level_references:
+    - C01
+    - C13
+    strategy_evidence: hero_specific_community_plus_editorial
+    limitations: 영웅별 구체적 커뮤니티 근거가 확보된 범위만 직접 근거로 표시한다. 역할 공통 원칙을 적용한 설계는 영웅별 검증을 대신하지 못한다.
+    coach_validated: false
+    match_patch_verified: false
+  vendetta:
+    name_ko: 벤데타
+    role: damage
+    mechanics_source:
+      source_id: wiki:vendetta
+      publisher: Overwatch Wiki contributors
+      url: https://overwatch.weirdgloop.org/w/Vendetta
+      revision_url: https://overwatch.weirdgloop.org/w/Vendetta?oldid=404686
+      revision_id: '404686'
+      last_edited_text: This page was last edited on 14 October 2026, at 06:48.
+      fetched_at_utc: '2026-10-15T14:03:16+00:00'
+      sha256: cd96468b6b8c0e8c255e6c68e38bd28771d982f45291756ffc9e2d9fceb4e766
+      license: CC BY-NC-SA 3.0
+    hero_specific_community_references: []
+    role_level_references:
+    - C01
+    - C13
+    strategy_evidence: role_principles_and_mechanics_only_editorial
+    limitations: 영웅별 구체적 커뮤니티 근거가 확보된 범위만 직접 근거로 표시한다. 역할 공통 원칙을 적용한 설계는 영웅별 검증을 대신하지 못한다.
+    coach_validated: false
+    match_patch_verified: false
+  venture:
+    name_ko: 벤처
+    role: damage
+    mechanics_source:
+      source_id: wiki:venture
+      publisher: Overwatch Wiki contributors
+      url: https://overwatch.weirdgloop.org/w/Venture
+      revision_url: https://overwatch.weirdgloop.org/w/Venture?oldid=404959
+      revision_id: '404959'
+      last_edited_text: This page was last edited on 15 October 2026, at 06:45.
+      fetched_at_utc: '2026-10-15T14:03:28+00:00'
+      sha256: ae09dd73f42bf670e1fcb8285cc82f31bf2e700e3d67df33487692528727717e
+      license: CC BY-NC-SA 3.0
+    hero_specific_community_references: []
+    role_level_references:
+    - C01
+    - C13
+    strategy_evidence: role_principles_and_mechanics_only_editorial
+    limitations: 영웅별 구체적 커뮤니티 근거가 확보된 범위만 직접 근거로 표시한다. 역할 공통 원칙을 적용한 설계는 영웅별 검증을 대신하지 못한다.
+    coach_validated: false
+    match_patch_verified: false
+  widowmaker:
+    name_ko: 위도우메이커
+    role: damage
+    mechanics_source:
+      source_id: wiki:widowmaker
+      publisher: Overwatch Wiki contributors
+      url: https://overwatch.weirdgloop.org/w/Widowmaker
+      revision_url: https://overwatch.weirdgloop.org/w/Widowmaker?oldid=402353
+      revision_id: '402353'
+      last_edited_text: This page was last edited on 11 October 2026, at 09:34.
+      fetched_at_utc: '2026-10-15T14:03:34+00:00'
+      sha256: a358d549d94ae0bbc8251c3a03d99a2e78c3497e2f958bccf5839dd9df1bf2aa
+      license: CC BY-NC-SA 3.0
+    hero_specific_community_references: []
+    role_level_references:
+    - C01
+    - C13
+    strategy_evidence: role_principles_and_mechanics_only_editorial
+    limitations: 영웅별 구체적 커뮤니티 근거가 확보된 범위만 직접 근거로 표시한다. 역할 공통 원칙을 적용한 설계는 영웅별 검증을 대신하지 못한다.
+    coach_validated: false
+    match_patch_verified: false
+  dmon:
+    name_ko: D.Mon
+    role: tank
+    mechanics_source:
+      source_id: wiki:dmon
+      publisher: Overwatch Wiki contributors
+      url: https://overwatch.weirdgloop.org/w/D.Mon
+      revision_url: https://overwatch.weirdgloop.org/w/D.Mon?oldid=404630
+      revision_id: '404630'
+      last_edited_text: This page was last edited on 13 October 2026, at 23:21.
+      fetched_at_utc: '2026-10-15T13:59:31+00:00'
+      sha256: fb04a541c826688c23a33c029e9dd1bf14ea1cf53e2e3f5c0dbb56cd79990ddc
+      license: CC BY-NC-SA 3.0
+    hero_specific_community_references: []
+    role_level_references:
+    - C02
+    - C13
+    strategy_evidence: role_principles_and_mechanics_only_editorial
+    limitations: 영웅별 구체적 커뮤니티 근거가 확보된 범위만 직접 근거로 표시한다. 역할 공통 원칙을 적용한 설계는 영웅별 검증을 대신하지 못한다.
+    coach_validated: false
+    match_patch_verified: false
+  domina:
+    name_ko: 도미나
+    role: tank
+    mechanics_source:
+      source_id: wiki:domina
+      publisher: Overwatch Wiki contributors
+      url: https://overwatch.weirdgloop.org/w/Domina
+      revision_url: https://overwatch.weirdgloop.org/w/Domina?oldid=401763
+      revision_id: '401763'
+      last_edited_text: This page was last edited on 7 October 2026, at 15:14.
+      fetched_at_utc: '2026-10-15T13:59:44+00:00'
+      sha256: 2a56364dce2819713f3761a73b05ce4f036cd70d90b598d1ca65cc711fefa031
+      license: CC BY-NC-SA 3.0
+    hero_specific_community_references: []
+    role_level_references:
+    - C02
+    - C13
+    strategy_evidence: role_principles_and_mechanics_only_editorial
+    limitations: 영웅별 구체적 커뮤니티 근거가 확보된 범위만 직접 근거로 표시한다. 역할 공통 원칙을 적용한 설계는 영웅별 검증을 대신하지 못한다.
+    coach_validated: false
+    match_patch_verified: false
+  doomfist:
+    name_ko: 둠피스트
+    role: tank
+    mechanics_source:
+      source_id: wiki:doomfist
+      publisher: Overwatch Wiki contributors
+      url: https://overwatch.weirdgloop.org/w/Doomfist
+      revision_url: https://overwatch.weirdgloop.org/w/Doomfist?oldid=404693
+      revision_id: '404693'
+      last_edited_text: This page was last edited on 14 October 2026, at 08:09.
+      fetched_at_utc: '2026-10-15T13:59:55+00:00'
+      sha256: 61420983a22ff57eaf6520ddd7d3369fbabe2ae5401becb6e825ce6adc775d50
+      license: CC BY-NC-SA 3.0
+    hero_specific_community_references: []
+    role_level_references:
+    - C02
+    - C13
+    strategy_evidence: role_principles_and_mechanics_only_editorial
+    limitations: 영웅별 구체적 커뮤니티 근거가 확보된 범위만 직접 근거로 표시한다. 역할 공통 원칙을 적용한 설계는 영웅별 검증을 대신하지 못한다.
+    coach_validated: false
+    match_patch_verified: false
+  dva:
+    name_ko: D.Va
+    role: tank
+    mechanics_source:
+      source_id: wiki:dva
+      publisher: Overwatch Wiki contributors
+      url: https://overwatch.weirdgloop.org/w/D.Va
+      revision_url: https://overwatch.weirdgloop.org/w/D.Va?oldid=404129
+      revision_id: '404129'
+      last_edited_text: This page was last edited on 13 October 2026, at 10:52.
+      fetched_at_utc: '2026-10-15T14:00:00+00:00'
+      sha256: f896087daa90143a87271b478227d108853b661b83ec363ea34e253eb8023e70
+      license: CC BY-NC-SA 3.0
+    hero_specific_community_references:
+    - C04
+    role_level_references:
+    - C02
+    - C13
+    strategy_evidence: hero_specific_community_plus_editorial
+    limitations: 영웅별 구체적 커뮤니티 근거가 확보된 범위만 직접 근거로 표시한다. 역할 공통 원칙을 적용한 설계는 영웅별 검증을 대신하지 못한다.
+    coach_validated: false
+    match_patch_verified: false
+  hazard:
+    name_ko: 해저드
+    role: tank
+    mechanics_source:
+      source_id: wiki:hazard
+      publisher: Overwatch Wiki contributors
+      url: https://overwatch.weirdgloop.org/w/Hazard
+      revision_url: https://overwatch.weirdgloop.org/w/Hazard?oldid=403755
+      revision_id: '403755'
+      last_edited_text: This page was last edited on 12 October 2026, at 17:58.
+      fetched_at_utc: '2026-10-15T14:00:32+00:00'
+      sha256: 086ba7770c32d33e6ca69ab927de238903b8662047abd01d1c124f16aa708b33
+      license: CC BY-NC-SA 3.0
+    hero_specific_community_references:
+    - C12
+    role_level_references:
+    - C02
+    - C13
+    strategy_evidence: hero_specific_community_plus_editorial
+    limitations: 영웅별 구체적 커뮤니티 근거가 확보된 범위만 직접 근거로 표시한다. 역할 공통 원칙을 적용한 설계는 영웅별 검증을 대신하지 못한다.
+    coach_validated: false
+    match_patch_verified: false
+  junker-queen:
+    name_ko: 정커퀸
+    role: tank
+    mechanics_source:
+      source_id: wiki:junker-queen
+      publisher: Overwatch Wiki contributors
+      url: https://overwatch.weirdgloop.org/w/Junker_Queen
+      revision_url: https://overwatch.weirdgloop.org/w/Junker_Queen?oldid=404740
+      revision_id: '404740'
+      last_edited_text: This page was last edited on 14 October 2026, at 17:06.
+      fetched_at_utc: '2026-10-15T14:00:48+00:00'
+      sha256: 39d274dfe77d53081232d9faff25d52e8fc1d4cbd36266305eb1a5f323385f37
+      license: CC BY-NC-SA 3.0
+    hero_specific_community_references: []
+    role_level_references:
+    - C02
+    - C13
+    strategy_evidence: role_principles_and_mechanics_only_editorial
+    limitations: 영웅별 구체적 커뮤니티 근거가 확보된 범위만 직접 근거로 표시한다. 역할 공통 원칙을 적용한 설계는 영웅별 검증을 대신하지 못한다.
+    coach_validated: false
+    match_patch_verified: false
+  mauga:
+    name_ko: 마우가
+    role: tank
+    mechanics_source:
+      source_id: wiki:mauga
+      publisher: Overwatch Wiki contributors
+      url: https://overwatch.weirdgloop.org/w/Mauga
+      revision_url: https://overwatch.weirdgloop.org/w/Mauga?oldid=401820
+      revision_id: '401820'
+      last_edited_text: This page was last edited on 7 October 2026, at 19:02.
+      fetched_at_utc: '2026-10-15T14:01:22+00:00'
+      sha256: ff77a161473c8a5c53998c585c875c0d23e9b20b52b2c142a392b247a08968a7
+      license: CC BY-NC-SA 3.0
+    hero_specific_community_references: []
+    role_level_references:
+    - C02
+    - C13
+    strategy_evidence: role_principles_and_mechanics_only_editorial
+    limitations: 영웅별 구체적 커뮤니티 근거가 확보된 범위만 직접 근거로 표시한다. 역할 공통 원칙을 적용한 설계는 영웅별 검증을 대신하지 못한다.
+    coach_validated: false
+    match_patch_verified: false
+  orisa:
+    name_ko: 오리사
+    role: tank
+    mechanics_source:
+      source_id: wiki:orisa
+      publisher: Overwatch Wiki contributors
+      url: https://overwatch.weirdgloop.org/w/Orisa
+      revision_url: https://overwatch.weirdgloop.org/w/Orisa?oldid=402328
+      revision_id: '402328'
+      last_edited_text: This page was last edited on 11 October 2026, at 02:08.
+      fetched_at_utc: '2026-10-15T14:01:58+00:00'
+      sha256: a832bb6f52bb93141fa670e73f21b29f59a41f0d99a89ded027936ff2e90d86d
+      license: CC BY-NC-SA 3.0
+    hero_specific_community_references: []
+    role_level_references:
+    - C02
+    - C13
+    strategy_evidence: role_principles_and_mechanics_only_editorial
+    limitations: 영웅별 구체적 커뮤니티 근거가 확보된 범위만 직접 근거로 표시한다. 역할 공통 원칙을 적용한 설계는 영웅별 검증을 대신하지 못한다.
+    coach_validated: false
+    match_patch_verified: false
+  ramattra:
+    name_ko: 라마트라
+    role: tank
+    mechanics_source:
+      source_id: wiki:ramattra
+      publisher: Overwatch Wiki contributors
+      url: https://overwatch.weirdgloop.org/w/Ramattra
+      revision_url: https://overwatch.weirdgloop.org/w/Ramattra?oldid=401792
+      revision_id: '401792'
+      last_edited_text: This page was last edited on 7 October 2026, at 18:20.
+      fetched_at_utc: '2026-10-15T14:02:10+00:00'
+      sha256: e1a7781951846fb5ea18f7a89d50e7e2c34fdacf709d363862e93aee06231eb2
+      license: CC BY-NC-SA 3.0
+    hero_specific_community_references: []
+    role_level_references:
+    - C02
+    - C13
+    strategy_evidence: role_principles_and_mechanics_only_editorial
+    limitations: 영웅별 구체적 커뮤니티 근거가 확보된 범위만 직접 근거로 표시한다. 역할 공통 원칙을 적용한 설계는 영웅별 검증을 대신하지 못한다.
+    coach_validated: false
+    match_patch_verified: false
+  reinhardt:
+    name_ko: 라인하르트
+    role: tank
+    mechanics_source:
+      source_id: wiki:reinhardt
+      publisher: Overwatch Wiki contributors
+      url: https://overwatch.weirdgloop.org/w/Reinhardt
+      revision_url: https://overwatch.weirdgloop.org/w/Reinhardt?oldid=402314
+      revision_id: '402314'
+      last_edited_text: This page was last edited on 10 October 2026, at 21:29.
+      fetched_at_utc: '2026-10-15T14:02:21+00:00'
+      sha256: 8812d43adb2f2e3e5fac678e27552e61496485a0cdd9bd96e34c9637111c76f2
+      license: CC BY-NC-SA 3.0
+    hero_specific_community_references:
+    - C03
+    role_level_references:
+    - C02
+    - C13
+    strategy_evidence: hero_specific_community_plus_editorial
+    limitations: 영웅별 구체적 커뮤니티 근거가 확보된 범위만 직접 근거로 표시한다. 역할 공통 원칙을 적용한 설계는 영웅별 검증을 대신하지 못한다.
+    coach_validated: false
+    match_patch_verified: false
+  roadhog:
+    name_ko: 로드호그
+    role: tank
+    mechanics_source:
+      source_id: wiki:roadhog
+      publisher: Overwatch Wiki contributors
+      url: https://overwatch.weirdgloop.org/w/Roadhog
+      revision_url: https://overwatch.weirdgloop.org/w/Roadhog?oldid=404697
+      revision_id: '404697'
+      last_edited_text: This page was last edited on 14 October 2026, at 10:46.
+      fetched_at_utc: '2026-10-15T14:02:26+00:00'
+      sha256: 8fca027d4011a0e5ecc044e4424b21e789dfbd30f1fd1a1ee54ed59005b8376b
+      license: CC BY-NC-SA 3.0
+    hero_specific_community_references: []
+    role_level_references:
+    - C02
+    - C13
+    strategy_evidence: role_principles_and_mechanics_only_editorial
+    limitations: 영웅별 구체적 커뮤니티 근거가 확보된 범위만 직접 근거로 표시한다. 역할 공통 원칙을 적용한 설계는 영웅별 검증을 대신하지 못한다.
+    coach_validated: false
+    match_patch_verified: false
+  sigma:
+    name_ko: 시그마
+    role: tank
+    mechanics_source:
+      source_id: wiki:sigma
+      publisher: Overwatch Wiki contributors
+      url: https://overwatch.weirdgloop.org/w/Sigma
+      revision_url: https://overwatch.weirdgloop.org/w/Sigma?oldid=399707
+      revision_id: '399707'
+      last_edited_text: This page was last edited on 25 September 2026, at 03:04.
+      fetched_at_utc: '2026-10-15T14:02:43+00:00'
+      sha256: 4b38107d50dc77a97b5ef03087834cfe493526200fced7d509cd09710aaf7de2
+      license: CC BY-NC-SA 3.0
+    hero_specific_community_references:
+    - C05
+    role_level_references:
+    - C02
+    - C13
+    strategy_evidence: hero_specific_community_plus_editorial
+    limitations: 영웅별 구체적 커뮤니티 근거가 확보된 범위만 직접 근거로 표시한다. 역할 공통 원칙을 적용한 설계는 영웅별 검증을 대신하지 못한다.
+    coach_validated: false
+    match_patch_verified: false
+  winston:
+    name_ko: 윈스턴
+    role: tank
+    mechanics_source:
+      source_id: wiki:winston
+      publisher: Overwatch Wiki contributors
+      url: https://overwatch.weirdgloop.org/w/Winston
+      revision_url: https://overwatch.weirdgloop.org/w/Winston?oldid=402351
+      revision_id: '402351'
+      last_edited_text: This page was last edited on 11 October 2026, at 09:31.
+      fetched_at_utc: '2026-10-15T14:03:40+00:00'
+      sha256: 1eef50efa3d4310ef2a5f2352d2bd6515f6fa13d107d3b339f99bef21dee3464
+      license: CC BY-NC-SA 3.0
+    hero_specific_community_references:
+    - C09
+    role_level_references:
+    - C02
+    - C13
+    strategy_evidence: hero_specific_community_plus_editorial
+    limitations: 영웅별 구체적 커뮤니티 근거가 확보된 범위만 직접 근거로 표시한다. 역할 공통 원칙을 적용한 설계는 영웅별 검증을 대신하지 못한다.
+    coach_validated: false
+    match_patch_verified: false
+  wrecking-ball:
+    name_ko: 레킹볼
+    role: tank
+    mechanics_source:
+      source_id: wiki:wrecking-ball
+      publisher: Overwatch Wiki contributors
+      url: https://overwatch.weirdgloop.org/w/Wrecking_Ball
+      revision_url: https://overwatch.weirdgloop.org/w/Wrecking_Ball?oldid=402075
+      revision_id: '402075'
+      last_edited_text: This page was last edited on 9 October 2026, at 10:17.
+      fetched_at_utc: '2026-10-15T14:03:46+00:00'
+      sha256: ba440f263ec1036f8b8924fe1bb82aff4826c48a7bd072a80661204488fbc2c7
+      license: CC BY-NC-SA 3.0
+    hero_specific_community_references:
+    - C08
+    role_level_references:
+    - C02
+    - C13
+    strategy_evidence: hero_specific_community_plus_editorial
+    limitations: 영웅별 구체적 커뮤니티 근거가 확보된 범위만 직접 근거로 표시한다. 역할 공통 원칙을 적용한 설계는 영웅별 검증을 대신하지 못한다.
+    coach_validated: false
+    match_patch_verified: false
+  zarya:
+    name_ko: 자리야
+    role: tank
+    mechanics_source:
+      source_id: wiki:zarya
+      publisher: Overwatch Wiki contributors
+      url: https://overwatch.weirdgloop.org/w/Zarya
+      revision_url: https://overwatch.weirdgloop.org/w/Zarya?oldid=401446
+      revision_id: '401446'
+      last_edited_text: This page was last edited on 7 October 2026, at 01:56.
+      fetched_at_utc: '2026-10-15T14:03:58+00:00'
+      sha256: f8f223afef482da36ad6faa699ed619b08b6002342513673565d59a4e8f2d032
+      license: CC BY-NC-SA 3.0
+    hero_specific_community_references: []
+    role_level_references:
+    - C02
+    - C13
+    strategy_evidence: role_principles_and_mechanics_only_editorial
+    limitations: 영웅별 구체적 커뮤니티 근거가 확보된 범위만 직접 근거로 표시한다. 역할 공통 원칙을 적용한 설계는 영웅별 검증을 대신하지 못한다.
+    coach_validated: false
+    match_patch_verified: false

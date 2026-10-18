@@ -25,7 +25,8 @@ analyzer/
   config/analysis.yaml    샘플링 간격, 앞뒤 분석 범위, 개수 제한 등 모든 조정값
   config/pricing.yaml     확인된 단가만 입력 (비어 있으면 비용 미계산)
   heroes/ana.yaml         영웅별 코칭 기준 (초안, 코치 검수 필요)
-  knowledge/support_positioning/   지원 영웅 16명 포지셔닝·코칭 지식베이스 (검수 전 draft, 분석에 연결 안 됨)
+  knowledge/support_positioning/   지원 영웅 16명 포지셔닝·코칭 지식베이스 (검수 전 draft, 아나 분석에 '검수 전 참고'로 연결)
+  knowledge/damage_tank_positioning/   딜러 23명·탱커 15명 포지셔닝·코칭 지식베이스 (검수 전 draft, 분석에 연결 안 됨)
   prompts/*.md            버전이 붙은 프롬프트
   schemas/analysis_result.schema.json   결과 JSON Schema (python -m owcoach schema 로 생성)
 docs/COACH_REVIEW.md      코치 검수 방법
@@ -37,6 +38,14 @@ docs/COACH_REVIEW.md      코치 검수 방법
 지원 영웅 16명의 개별 기준 128개(포지셔닝 48 · 스킬 64 · 궁극기 16). 모든 기준이 `draft`이고, 분석기 로더(`analyzer/heroes/`)와
 분리해 두어 **실제 분석에는 쓰이지 않는다**. 형식 검증: `python analyzer/knowledge/support_positioning/validate.py`
 (형식만 확인하며 전술 정확도는 검증하지 않음).
+
+### 딜러·탱커 포지셔닝 지식베이스 (검수 전)
+
+[`analyzer/knowledge/damage_tank_positioning/`](analyzer/knowledge/damage_tank_positioning/README.md): 딜러·탱커 역할 공통 원칙 각 12개와
+딜러 23명·탱커 15명의 개별 기준 231개(합계 255개: 포지셔닝 138 · 스킬 76 · 궁극기 41). 모두 `draft`이고 코치 검수 전이다.
+영웅별 근거 수준을 `sources.yaml`에 표시했다(커뮤니티 근거 + 작성자 설계 10명, 역할 원칙·메커니즘만으로 작성 28명).
+`config/analysis.yaml`의 `knowledge_packs`에 등록하지 않아 **실제 분석에는 쓰이지 않는다**. 형식 검증:
+`python analyzer/knowledge/damage_tank_positioning/validate.py` (전술 정확도는 검증하지 않음).
 
 ### 첫 지원 영웅
 

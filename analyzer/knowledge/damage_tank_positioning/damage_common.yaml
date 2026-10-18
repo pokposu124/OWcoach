@@ -1,0 +1,233 @@
+role: damage
+pack_version: 0.1.0
+review_status: draft
+profile_type: criterion_fragment_not_HeroProfile
+criteria:
+- id: damage.positioning.angle
+  category: positioning
+  status: draft
+  ability: null
+  title: 한 방어 방향으로 모두 막히지 않는 공격각
+  description: '적용 상황: 팀과 같은 적을 압박. 평가 목적: 한 방어 방향으로 모두 막히지 않는 공격각. 예외: 정면 집중 공격이 가장 유효하면 합류 가능. 필수 근거: 아군·적 사선·엄폐·압박
+    결과. 결정 당시의 정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 엄폐·후퇴를 갖춘 별도 각도로 적 주의 분산
+  bad_signs:
+  - 본대와 다른 곳에 있지만 적에게 영향도 없음
+  cannot_judge_when:
+  - '핵심 근거 미확인: 아군·적 사선·엄폐·압박 결과'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: sources.yaml -> references; C01, C13; 세부 조건·예외는 작성자 설계
+    patch_version: null
+- id: damage.positioning.range
+  category: positioning
+  status: draft
+  ability: null
+  title: 자기 무기와 적 위협에 맞는 거리
+  description: '적용 상황: 교전 위치 선택. 평가 목적: 자기 무기와 적 위협에 맞는 거리. 예외: 긴급 접촉·구조는 위험 감수 가능. 필수 근거: 거리 근거·무기·적 공격·패치. 결정
+    당시의 정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 유효 피해와 적 접근 위험을 함께 비교
+  bad_signs:
+  - 사거리 이득 없이 노출 또는 근접 강요
+  cannot_judge_when:
+  - '핵심 근거 미확인: 거리 근거·무기·적 공격·패치'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: sources.yaml -> references; C01, C13; 세부 조건·예외는 작성자 설계
+    patch_version: null
+- id: damage.positioning.cover
+  category: positioning
+  status: draft
+  ability: null
+  title: 공격 사이 엄폐 복귀
+  description: '적용 상황: 적 사선에서 사격. 평가 목적: 공격 사이 엄폐 복귀. 예외: 당장 공간을 유지해야 하면 비교. 필수 근거: 공격·재장전·피격·엄폐. 결정 당시의 정보와 실행
+    가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 재장전·준비 구간에 노출을 줄임
+  bad_signs:
+  - 발사하지도 못하는 동안 계속 피격
+  cannot_judge_when:
+  - '핵심 근거 미확인: 공격·재장전·피격·엄폐'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: sources.yaml -> references; C01, C13; 세부 조건·예외는 작성자 설계
+    patch_version: null
+- id: damage.positioning.height
+  category: positioning
+  status: draft
+  ability: null
+  title: 고지대의 사격·이탈 가치
+  description: '적용 상황: 높은 자리 선택. 평가 목적: 고지대의 사격·이탈 가치. 예외: 지상 각도·접촉이 더 중요하면 내려옴. 필수 근거: 표적 경로·접근 적·고저 지형. 결정 당시의
+    정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 표적·엄폐·하강 경로가 함께 확보됨
+  bad_signs:
+  - 높이만 보고 고립되거나 사격 불가 자리 고집
+  cannot_judge_when:
+  - '핵심 근거 미확인: 표적 경로·접근 적·고저 지형'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: sources.yaml -> references; C01, C13; 세부 조건·예외는 작성자 설계
+    patch_version: null
+- id: damage.positioning.timing
+  category: positioning
+  status: draft
+  ability: null
+  title: 아군 압박과 진입 시점 맞추기
+  description: '적용 상황: 공격적 측면·다이브. 평가 목적: 아군 압박과 진입 시점 맞추기. 예외: 고립 적 안전 제거·정찰은 예외. 필수 근거: 팀 공격·적 주의·진입 시간. 결정 당시의
+    정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 아군이 활용할 시간에 적 시선·자원 소모 유도
+  bad_signs:
+  - 아군 준비 전 단독 진입해 모든 자원 상실
+  cannot_judge_when:
+  - '핵심 근거 미확인: 팀 공격·적 주의·진입 시간'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: sources.yaml -> references; C01, C13; 세부 조건·예외는 작성자 설계
+    patch_version: null
+- id: damage.positioning.staging
+  category: positioning
+  status: draft
+  ability: null
+  title: 기습 준비에서 자원 보존
+  description: '적용 상황: 교전 전 우회·고지대 이동. 평가 목적: 기습 준비에서 자원 보존. 예외: 적 압박이 심하면 완벽한 준비 생략 가능. 필수 근거: 우회 경로·팀 상태·체력·기술.
+    결정 당시의 정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 짧은 안전 경로로 가까운 출발점 확보
+  bad_signs:
+  - 준비 중 피해·시간 소모로 본교전에 기여 못 함
+  cannot_judge_when:
+  - '핵심 근거 미확인: 우회 경로·팀 상태·체력·기술'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: sources.yaml -> references; C01, C13; 세부 조건·예외는 작성자 설계
+    patch_version: null
+- id: damage.positioning.exit
+  category: positioning
+  status: draft
+  ability: null
+  title: 진입에 쓴 자원과 복귀 가능성
+  description: '적용 상황: 전진·추격. 평가 목적: 진입에 쓴 자원과 복귀 가능성. 예외: 결정적 교환·목표물은 따로 비교. 필수 근거: 자원 HUD·도착·대체 경로. 결정 당시의 정보와
+    실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 엄폐·이동기·아군 중 실행 가능한 퇴로 유지
+  bad_signs:
+  - 들어갈 수 있다는 이유로 돌아올 수 없는 진입
+  cannot_judge_when:
+  - '핵심 근거 미확인: 자원 HUD·도착·대체 경로'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: sources.yaml -> references; C01, C13; 세부 조건·예외는 작성자 설계
+    patch_version: null
+- id: damage.positioning.target
+  category: positioning
+  status: draft
+  ability: null
+  title: 실제 처리 가능한 위협 선택
+  description: '적용 상황: 여러 적이 보임. 평가 목적: 실제 처리 가능한 위협 선택. 예외: 탱커가 가장 노출되고 위험하면 우선 가능. 필수 근거: 적 체력·방어·사선·팀 압박. 결정
+    당시의 정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 위험도·노출·후속을 보고 표적 선택
+  bad_signs:
+  - 무조건 힐러·무조건 탱커 같은 고정 순서
+  cannot_judge_when:
+  - '핵심 근거 미확인: 적 체력·방어·사선·팀 압박'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: sources.yaml -> references; C01, C13; 세부 조건·예외는 작성자 설계
+    patch_version: null
+- id: damage.positioning.support_cost
+  category: positioning
+  status: draft
+  ability: null
+  title: 치료 접근과 자가 회복 경로
+  description: '적용 상황: 본대 밖에서 교전. 평가 목적: 치료 접근과 자가 회복 경로. 예외: 자가 생존·명확한 교환 가치면 분리 가능. 필수 근거: 지원선·회복 자원·팀 손실. 결정
+    당시의 정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 치료 또는 확인된 회복·귀환 경로 확보
+  bad_signs:
+  - 힐러가 따라와야만 사는 깊은 위치 유지
+  cannot_judge_when:
+  - '핵심 근거 미확인: 지원선·회복 자원·팀 손실'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: sources.yaml -> references; C01, C13; 세부 조건·예외는 작성자 설계
+    patch_version: null
+- id: damage.positioning.rotate
+  category: positioning
+  status: draft
+  ability: null
+  title: 막힌 각도와 전선 변화에 맞춘 이동
+  description: '적용 상황: 적이 숨거나 위치를 바꿈. 평가 목적: 막힌 각도와 전선 변화에 맞춘 이동. 예외: 진입 감시·거점 수비는 대기 가치 인정. 필수 근거: 표적 이동·감시 목적·이동
+    비용. 결정 당시의 정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 다음 유효 사선으로 이동해 압박 복원
+  bad_signs:
+  - 과거에 좋던 위치에서 무효 사격만 반복
+  cannot_judge_when:
+  - '핵심 근거 미확인: 표적 이동·감시 목적·이동 비용'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: sources.yaml -> references; C01, C13; 세부 조건·예외는 작성자 설계
+    patch_version: null
+- id: damage.positioning.objective
+  category: positioning
+  status: draft
+  ability: null
+  title: 목표물 접촉과 사격 위치의 선택
+  description: '적용 상황: 거점·추가시간·호위 상황. 평가 목적: 목표물 접촉과 사격 위치의 선택. 예외: 딜러도 필요하면 직접 접촉해야 함. 필수 근거: 시간·점유·팀 위치·실제 접촉.
+    결정 당시의 정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 접촉 필요와 담당자를 확인하고 역할 배분
+  bad_signs:
+  - 접촉 필요를 무시하거나 불필요하게 모두 목표물에 뭉침
+  cannot_judge_when:
+  - '핵심 근거 미확인: 시간·점유·팀 위치·실제 접촉'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: sources.yaml -> references; C01, C13; 세부 조건·예외는 작성자 설계
+    patch_version: null
+- id: damage.positioning.decision
+  category: positioning
+  status: draft
+  ability: null
+  title: 처치·사망 결과와 판단 분리
+  description: '적용 상황: 한 장면 평가. 평가 목적: 처치·사망 결과와 판단 분리. 예외: 교환 가치와 실제 손해는 별도 기록. 필수 근거: 당시 관측·대안·위험·실제 결과. 결정 당시의
+    정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 결정 당시 정보와 대안을 기준으로 검토
+  bad_signs:
+  - 살았으니 옳음·못 죽였으니 실패로 자동 판정
+  cannot_judge_when:
+  - '핵심 근거 미확인: 당시 관측·대안·위험·실제 결과'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: sources.yaml -> references; C01, C13; 세부 조건·예외는 작성자 설계
+    patch_version: null

@@ -1,0 +1,233 @@
+role: tank
+pack_version: 0.1.0
+review_status: draft
+profile_type: criterion_fragment_not_HeroProfile
+criteria:
+- id: tank.positioning.space
+  category: positioning
+  status: draft
+  ability: null
+  title: 아군이 실제로 활용할 공간 확보
+  description: '적용 상황: 전선 선택. 평가 목적: 아군이 실제로 활용할 공간 확보. 예외: 교란형 탱커는 적 시선 분산으로도 기여. 필수 근거: 아군 이동·적 대응·획득한 경로. 결정
+    당시의 정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 적 사선·접근을 제한해 아군 이동·공격 가능
+  bad_signs:
+  - 혼자 멀리 서 있지만 아군 활동 공간은 줄어듦
+  cannot_judge_when:
+  - '핵심 근거 미확인: 아군 이동·적 대응·획득한 경로'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: sources.yaml -> references; C02, C13; 세부 조건·예외는 작성자 설계
+    patch_version: null
+- id: tank.positioning.cover
+  category: positioning
+  status: draft
+  ability: null
+  title: 몸과 방어기 대신 지형도 활용
+  description: '적용 상황: 전선에서 피해받음. 평가 목적: 몸과 방어기 대신 지형도 활용. 예외: 팀 통과·접촉을 위한 피해는 가치 비교. 필수 근거: 피해 방향·엄폐·팀 행동. 결정 당시의
+    정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 코너를 끼고 필요한 공격만 받아냄
+  bad_signs:
+  - 탱커라는 이유로 모든 사선에 계속 노출
+  cannot_judge_when:
+  - '핵심 근거 미확인: 피해 방향·엄폐·팀 행동'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: sources.yaml -> references; C02, C13; 세부 조건·예외는 작성자 설계
+    patch_version: null
+- id: tank.positioning.connection
+  category: positioning
+  status: draft
+  ability: null
+  title: 지원이 도달할 경로 확인
+  description: '적용 상황: 코너를 넘어 진입. 평가 목적: 지원이 도달할 경로 확인. 예외: 자가 생존·다이브 분리는 퇴로와 후속 확인. 필수 근거: 코너 양측·치료 경로·아군 사선. 결정
+    당시의 정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 아군 치료·공격이 따라올 수 있는 시점 선택
+  bad_signs:
+  - 지원가에게 위험한 추격을 강요하는 진입
+  cannot_judge_when:
+  - '핵심 근거 미확인: 코너 양측·치료 경로·아군 사선'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: sources.yaml -> references; C02, C13; 세부 조건·예외는 작성자 설계
+    patch_version: null
+- id: tank.positioning.resources
+  category: positioning
+  status: draft
+  ability: null
+  title: 자원 우위에 맞춘 전진과 후퇴
+  description: '적용 상황: 방어·이동기 교환. 평가 목적: 자원 우위에 맞춘 전진과 후퇴. 예외: 전투 종료·목표물 필요는 예외. 필수 근거: HUD·적 관측 자원·팀 지원. 결정 당시의
+    정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 체력·기술·팀 지원을 보고 전선 깊이 조절
+  bad_signs:
+  - 모든 생존 수단을 소모한 뒤 같은 노출 유지
+  cannot_judge_when:
+  - '핵심 근거 미확인: HUD·적 관측 자원·팀 지원'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: sources.yaml -> references; C02, C13; 세부 조건·예외는 작성자 설계
+    patch_version: null
+- id: tank.positioning.staging
+  category: positioning
+  status: draft
+  ability: null
+  title: 진입 전 체력·위치 준비
+  description: '적용 상황: 다이브·근접 전진 준비. 평가 목적: 진입 전 체력·위치 준비. 예외: 긴급 구조·접촉은 준비 단축 가능. 필수 근거: 경로·체력·아군 준비·목표. 결정 당시의
+    정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 아군과 타이밍을 맞출 가까운 엄폐 확보
+  bad_signs:
+  - 먼 정면을 횡단하다 자원을 미리 소모
+  cannot_judge_when:
+  - '핵심 근거 미확인: 경로·체력·아군 준비·목표'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: sources.yaml -> references; C02, C13; 세부 조건·예외는 작성자 설계
+    patch_version: null
+- id: tank.positioning.exit
+  category: positioning
+  status: draft
+  ability: null
+  title: 진입 종료 후 생존할 공간
+  description: '적용 상황: 돌진·도약·이동. 평가 목적: 진입 종료 후 생존할 공간. 예외: 결정적 처치·교환의 가치가 있으면 비교. 필수 근거: 도착 지점·남은 수단·후속. 결정 당시의
+    정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 착지 뒤 엄폐·방어·아군 연결 확보
+  bad_signs:
+  - 명중만 보고 적 중심에 고립
+  cannot_judge_when:
+  - '핵심 근거 미확인: 도착 지점·남은 수단·후속'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: sources.yaml -> references; C02, C13; 세부 조건·예외는 작성자 설계
+    patch_version: null
+- id: tank.positioning.angles
+  category: positioning
+  status: draft
+  ability: null
+  title: 주변 적 사격각과 고지대 통제
+  description: '적용 상황: 적 딜러가 팀을 압박. 평가 목적: 주변 적 사격각과 고지대 통제. 예외: 적 탱커가 가장 급하면 먼저 대응. 필수 근거: 공격 방향·아군 피해·접근 가능성.
+    결정 당시의 정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 현재 치명적인 각도를 제한·밀어냄
+  bad_signs:
+  - 적 탱커만 공격해 아군 측면 피해 방치
+  cannot_judge_when:
+  - '핵심 근거 미확인: 공격 방향·아군 피해·접근 가능성'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: sources.yaml -> references; C02, C13; 세부 조건·예외는 작성자 설계
+    patch_version: null
+- id: tank.positioning.peel
+  category: positioning
+  status: draft
+  ability: null
+  title: 후방 보호와 전진 압박의 비용
+  description: '적용 상황: 적이 아군 후방 진입. 평가 목적: 후방 보호와 전진 압박의 비용. 예외: 적 후방 압박이 더 빠른 구조일 수 있음. 필수 근거: 양측 상태·도달 시간·자원.
+    결정 당시의 정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 도달 가능성과 양쪽 위협을 비교해 선택
+  bad_signs:
+  - 항상 뒤돌거나 항상 무시해 가치 큰 대응 놓침
+  cannot_judge_when:
+  - '핵심 근거 미확인: 양측 상태·도달 시간·자원'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: sources.yaml -> references; C02, C13; 세부 조건·예외는 작성자 설계
+    patch_version: null
+- id: tank.positioning.targets
+  category: positioning
+  status: draft
+  ability: null
+  title: 탱커 대치와 다른 대상 압박 구분
+  description: '적용 상황: 여러 공격 대상. 평가 목적: 탱커 대치와 다른 대상 압박 구분. 예외: 탱커를 막아야 아군이 살면 집중 가능. 필수 근거: 사선·적 방어·위협·아군 후속. 결정
+    당시의 정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 실제로 제한·처리할 위협을 선택
+  bad_signs:
+  - 항상 탱커 무시 또는 탱커만 공격
+  cannot_judge_when:
+  - '핵심 근거 미확인: 사선·적 방어·위협·아군 후속'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: sources.yaml -> references; C02, C13; 세부 조건·예외는 작성자 설계
+    patch_version: null
+- id: tank.positioning.barriers
+  category: positioning
+  status: draft
+  ability: null
+  title: 방어 효과의 종류·방향·수혜 확인
+  description: '적용 상황: 방벽·흡수·가드 사용. 평가 목적: 방어 효과의 종류·방향·수혜 확인. 예외: 짧은 구조용 소모도 타당. 필수 근거: 공격 종류·방향·효과·수혜자. 결정 당시의
+    정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 막을 수 있는 핵심 공격에 효과 연결
+  bad_signs:
+  - 전방·투사체 방어를 전방위 무적으로 해석
+  cannot_judge_when:
+  - '핵심 근거 미확인: 공격 종류·방향·효과·수혜자'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: sources.yaml -> references; C02, C13; 세부 조건·예외는 작성자 설계
+    patch_version: null
+- id: tank.positioning.objective
+  category: positioning
+  status: draft
+  ability: null
+  title: 전선과 목표물 담당을 함께 조절
+  description: '적용 상황: 목표물 이동·추가시간. 평가 목적: 전선과 목표물 담당을 함께 조절. 예외: 탱커도 필요하면 직접 접촉·지연. 필수 근거: 점유·시간·팀 담당·진입로. 결정 당시의
+    정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 접촉 필요와 팀 배치를 보고 전선 유지·복귀
+  bad_signs:
+  - 접촉을 놓치거나 불필요하게 모두 거점에 고정
+  cannot_judge_when:
+  - '핵심 근거 미확인: 점유·시간·팀 담당·진입로'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: sources.yaml -> references; C02, C13; 세부 조건·예외는 작성자 설계
+    patch_version: null
+- id: tank.positioning.reset
+  category: positioning
+  status: draft
+  ability: null
+  title: 획득한 공간 유지와 실패 후 재집결
+  description: '적용 상황: 승패가 기울거나 팀 사망. 평가 목적: 획득한 공간 유지와 실패 후 재집결. 예외: 추가시간·궁 역전·시간 지연은 별도 평가. 필수 근거: 킬피드·팀 상태·궁·목표물.
+    결정 당시의 정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 인원·궁·체력을 보고 추격 또는 철수
+  bad_signs:
+  - 인원 수만으로 포기하거나 끝난 전투에 계속 진입
+  cannot_judge_when:
+  - '핵심 근거 미확인: 킬피드·팀 상태·궁·목표물'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: sources.yaml -> references; C02, C13; 세부 조건·예외는 작성자 설계
+    patch_version: null

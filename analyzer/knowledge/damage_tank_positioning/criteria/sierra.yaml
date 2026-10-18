@@ -1,0 +1,143 @@
+hero_id: sierra
+display_name_ko: 시에라
+role: damage
+pack_version: 0.1.0
+review_status: draft
+patch_version: null
+profile_type: criterion_fragment_not_HeroProfile
+ability_refs:
+  anchor_drone:
+    database_id: sierra:anchor-drone
+    name_en: Anchor Drone
+    kind: Ability
+    review_required: false
+  tracking_shot:
+    database_id: sierra:tracking-shot
+    name_en: Tracking Shot
+    kind: Ability
+    review_required: false
+  tremor_charge:
+    database_id: sierra:tremor-charge
+    name_en: Tremor Charge
+    kind: Ability
+    review_required: false
+  trailblazer:
+    database_id: sierra:trailblazer
+    name_en: Trailblazer
+    kind: Ultimate Ability
+    review_required: false
+criteria:
+- id: sierra.positioning.rifle_lane
+  category: positioning
+  status: draft
+  ability: null
+  title: 연속 사격과 엄폐 노출의 비용
+  description: '적용 상황: 소총 지속 사격. 평가 목적: 연속 사격과 엄폐 노출의 비용. 예외: 즉시 제압 가능한 표적이면 비교. 필수 근거: 사격 지속·명중·피격·엄폐. 결정 당시의 정보와
+    실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 정확도 이득을 활용하되 적 사선은 제한
+  bad_signs:
+  - 지속 사격만 고집해 열린 곳에서 피격
+  cannot_judge_when:
+  - '핵심 근거 미확인: 사격 지속·명중·피격·엄폐'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.sierra; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Sierra?oldid=401845'
+    patch_version: null
+- id: sierra.positioning.drone_anchor
+  category: positioning
+  status: draft
+  ability: anchor_drone
+  title: 앵커 드론의 도착 지점
+  description: '적용 상황: 이동 경로 준비. 평가 목적: 앵커 드론의 도착 지점. 예외: 공격용 이동도 후속·퇴로가 있으면 허용. 필수 근거: 드론 위치·존재·이동·적 사선. 결정 당시의
+    정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 드론 도착 공간이 엄폐·아군에 연결
+  bad_signs:
+  - 드론이 있다는 이유로 안전한 귀환을 가정
+  cannot_judge_when:
+  - '핵심 근거 미확인: 드론 위치·존재·이동·적 사선'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.sierra; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Sierra?oldid=401845'
+    patch_version: null
+- id: sierra.positioning.mark_angle
+  category: positioning
+  status: draft
+  ability: null
+  title: 표식 대상에 대한 실제 사격 연결
+  description: '적용 상황: 적에 추적 표식 부여. 평가 목적: 표식 대상에 대한 실제 사격 연결. 예외: 적을 엄폐에 묶어도 공간 가치 가능. 필수 근거: 표식·탄 경로·가림·대상 이동.
+    결정 당시의 정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 대상을 공격할 각도를 안전하게 확보
+  bad_signs:
+  - 추적 효과가 벽·방어를 무시한다고 가정
+  cannot_judge_when:
+  - '핵심 근거 미확인: 표식·탄 경로·가림·대상 이동'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.sierra; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Sierra?oldid=401845'
+    patch_version: null
+- id: sierra.skill_usage.tracking
+  category: skill_usage
+  status: draft
+  ability: tracking_shot
+  title: 추적 사격의 대상 우선순위
+  description: '적용 상황: 표식 사용. 평가 목적: 추적 사격의 대상 우선순위. 예외: 지속적으로 위치를 제한할 가치면 허용. 필수 근거: 실제 표식·아군 사선·적 위협. 결정 당시의 정보와
+    실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 현재 압박할 위협 또는 마무리 대상 선택
+  bad_signs:
+  - 공격 불가능한 대상에 집착해 다른 위협 방치
+  cannot_judge_when:
+  - '핵심 근거 미확인: 실제 표식·아군 사선·적 위협'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.sierra; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Sierra?oldid=401845'
+    patch_version: null
+- id: sierra.skill_usage.tremor
+  category: skill_usage
+  status: draft
+  ability: tremor_charge
+  title: 충격파가 지나갈 지형
+  description: '적용 상황: 충격탄 투척. 평가 목적: 충격파가 지나갈 지형. 예외: 즉각적 근접 피해 자체가 필요하면 비교. 필수 근거: 충돌·지형·방벽·파동 도달. 결정 당시의 정보와
+    실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 충돌 후 적에게 이어질 지면 경로 확인
+  bad_signs:
+  - 벽이나 방벽에 막힐 경로로 반복 소모
+  cannot_judge_when:
+  - '핵심 근거 미확인: 충돌·지형·방벽·파동 도달'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.sierra; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Sierra?oldid=401845'
+    patch_version: null
+- id: sierra.ultimate_usage.trail
+  category: ultimate_usage
+  status: draft
+  ability: trailblazer
+  title: 폭격 드론의 진행 방향
+  description: '적용 상황: 궁 투입. 평가 목적: 폭격 드론의 진행 방향. 예외: 진입 억제·퇴로 차단만으로도 유효. 필수 근거: 시작점·진행·적 이동·아군 활용. 결정 당시의 정보와 실행
+    가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 적 이동로나 거점과 드론 경로를 맞춤
+  bad_signs:
+  - 아군이 활용 못 하는 빈 경로로 전진시킴
+  cannot_judge_when:
+  - '핵심 근거 미확인: 시작점·진행·적 이동·아군 활용'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.sierra; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Sierra?oldid=401845'
+    patch_version: null

@@ -1,0 +1,148 @@
+hero_id: hanzo
+display_name_ko: 한조
+role: damage
+pack_version: 0.1.0
+review_status: draft
+patch_version: null
+profile_type: criterion_fragment_not_HeroProfile
+ability_refs:
+  wall_climb:
+    database_id: hanzo:wall-climb
+    name_en: Wall Climb
+    kind: Passive Ability
+    review_required: false
+  lunge:
+    database_id: hanzo:lunge
+    name_en: Lunge
+    kind: Ability
+    review_required: false
+  sonic_arrow:
+    database_id: hanzo:sonic-arrow
+    name_en: Sonic Arrow
+    kind: Ability
+    review_required: false
+  storm_arrows:
+    database_id: hanzo:storm-arrows
+    name_en: Storm Arrows
+    kind: Ability
+    review_required: false
+  dragonstrike:
+    database_id: hanzo:dragonstrike
+    name_en: Dragonstrike
+    kind: Ultimate Ability
+    review_required: false
+criteria:
+- id: hanzo.positioning.range_angle
+  category: positioning
+  status: draft
+  ability: null
+  title: 엄폐 있는 사격각과 근접 위협
+  description: '적용 상황: 중장거리 견제. 평가 목적: 엄폐 있는 사격각과 근접 위협. 예외: 근거리 결정적 교전은 별도 평가. 필수 근거: 사선·엄폐·접근 적. 결정 당시의 정보와 실행
+    가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 사격과 은폐를 반복하며 접근로 확인
+  bad_signs:
+  - 정면에 고정돼 적 다이브 접근 방치
+  cannot_judge_when:
+  - '핵심 근거 미확인: 사선·엄폐·접근 적'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.hanzo; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Hanzo?oldid=401813'
+    patch_version: null
+- id: hanzo.positioning.vertical
+  category: positioning
+  status: draft
+  ability: wall_climb
+  title: 벽타기 후 고지대의 실용성
+  description: '적용 상황: 고지대 이동. 평가 목적: 벽타기 후 고지대의 실용성. 예외: 짧은 기습각이면 일시적 단절 허용. 필수 근거: 도착 위치·치료 연결·하강. 결정 당시의 정보와
+    실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 적 노출과 내려갈 아군 쪽 경로 확보
+  bad_signs:
+  - 고지대에 갇혀 치료·퇴로 모두 끊김
+  cannot_judge_when:
+  - '핵심 근거 미확인: 도착 위치·치료 연결·하강'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.hanzo; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Hanzo?oldid=401813'
+    patch_version: null
+- id: hanzo.positioning.lunge_exit
+  category: positioning
+  status: draft
+  ability: lunge
+  title: 이단뛰기의 회피 방향
+  description: '적용 상황: 근접 적 또는 투사체 회피. 평가 목적: 이단뛰기의 회피 방향. 예외: 즉시 처치각을 만드는 이동은 비교. 필수 근거: 사용 전후·적 진입·대체 회피. 결정 당시의
+    정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 공격선을 벗어나 다음 엄폐로 연결
+  bad_signs:
+  - 사격 준비만 위해 써 실제 진입에 대응 불가
+  cannot_judge_when:
+  - '핵심 근거 미확인: 사용 전후·적 진입·대체 회피'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.hanzo; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Hanzo?oldid=401813'
+    patch_version: null
+- id: hanzo.skill_usage.sonic
+  category: skill_usage
+  status: draft
+  ability: sonic_arrow
+  title: 음파 정보가 필요한 공간
+  description: '적용 상황: 모서리·측면 진입 전. 평가 목적: 음파 정보가 필요한 공간. 예외: 지속 감시가 필요한 교전은 허용. 필수 근거: 탐지 위치·관측 정보·후속 행동. 결정 당시의
+    정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 실제 접근로나 사격 목표를 확인
+  bad_signs:
+  - 이미 다 보이는 곳에 소모하고 위험 경로 미확인
+  cannot_judge_when:
+  - '핵심 근거 미확인: 탐지 위치·관측 정보·후속 행동'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.hanzo; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Hanzo?oldid=401813'
+    patch_version: null
+- id: hanzo.skill_usage.storm
+  category: skill_usage
+  status: draft
+  ability: storm_arrows
+  title: 폭풍 화살의 노출과 대상
+  description: '적용 상황: 짧은 집중 공격 기회. 평가 목적: 폭풍 화살의 노출과 대상. 예외: 방벽 파괴·다이브 방어도 유효. 필수 근거: 발사·도달·적 방어·본체 이동. 결정 당시의
+    정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 실제로 노출된 적·방벽에 압박 연결
+  bad_signs:
+  - 숨은 적을 쫓아 안전한 코너를 버림
+  cannot_judge_when:
+  - '핵심 근거 미확인: 발사·도달·적 방어·본체 이동'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.hanzo; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Hanzo?oldid=401813'
+    patch_version: null
+- id: hanzo.ultimate_usage.dragon
+  category: ultimate_usage
+  status: draft
+  ability: dragonstrike
+  title: 용의 경로와 적 이동 제한
+  description: '적용 상황: 통로·거점 교전. 평가 목적: 용의 경로와 적 이동 제한. 예외: 처치 없이 구역 확보해도 유효. 필수 근거: 발사 방향·적 퇴로·아군 활용. 결정 당시의 정보와
+    실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 적 퇴로 또는 분리할 공간을 가로지름
+  bad_signs:
+  - 아군 후속 없이 적이 쉽게 피해갈 곳에 사용
+  cannot_judge_when:
+  - '핵심 근거 미확인: 발사 방향·적 퇴로·아군 활용'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.hanzo; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Hanzo?oldid=401813'
+    patch_version: null

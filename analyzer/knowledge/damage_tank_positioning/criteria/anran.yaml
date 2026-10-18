@@ -1,0 +1,167 @@
+hero_id: anran
+display_name_ko: 안란
+role: damage
+pack_version: 0.1.0
+review_status: draft
+patch_version: null
+profile_type: criterion_fragment_not_HeroProfile
+ability_refs:
+  inferno_rush:
+    database_id: anran:inferno-rush
+    name_en: Inferno Rush
+    kind: Ability
+    review_required: false
+  fan_the_flames:
+    database_id: anran:fan-the-flames
+    name_en: Fan the Flames
+    kind: Weapon (Secondary Fire)
+    review_required: false
+  dancing_blaze:
+    database_id: anran:dancing-blaze
+    name_en: Dancing Blaze
+    kind: Ability
+    review_required: false
+  vermillion_ascent:
+    database_id: anran:vermillion-ascent
+    name_en: Vermillion Ascent
+    kind: Ultimate Ability
+    review_required: false
+  vermillion_revival:
+    database_id: anran:vermillion-revival
+    name_en: Vermillion Revival
+    kind: Ultimate Ability
+    review_required: false
+criteria:
+- id: anran.positioning.approach
+  category: positioning
+  status: draft
+  ability: null
+  title: 화염 공격을 연결할 접근 경로
+  description: '적용 상황: 근접 압박 준비. 평가 목적: 화염 공격을 연결할 접근 경로. 예외: 긴급 접촉은 별도 평가. 필수 근거: 접근 경로·아군 공격·자원. 결정 당시의 정보와 실행
+    가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 엄폐로 접근해 아군 교전과 함께 공격
+  bad_signs:
+  - 정면 횡단에 자원을 소진한 뒤 고립
+  cannot_judge_when:
+  - '핵심 근거 미확인: 접근 경로·아군 공격·자원'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.anran; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Anran?oldid=402310'
+    patch_version: null
+- id: anran.positioning.exit
+  category: positioning
+  status: draft
+  ability: inferno_rush
+  title: 돌진 종료 후 이탈 공간
+  description: '적용 상황: 돌진 진입 시. 평가 목적: 돌진 종료 후 이탈 공간. 예외: 확실한 교환 이득이 있으면 허용. 필수 근거: 출발·도착·적 배치. 결정 당시의 정보와 실행 가능한
+    대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 도착 후 엄폐나 아군 합류가 가능
+  bad_signs:
+  - 적 무리 안에 도착해 복귀 불가
+  cannot_judge_when:
+  - '핵심 근거 미확인: 출발·도착·적 배치'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.anran; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Anran?oldid=402310'
+    patch_version: null
+- id: anran.positioning.burn_window
+  category: positioning
+  status: draft
+  ability: null
+  title: 화상 압박의 체류 시간
+  description: '적용 상황: 화상 적을 추격. 평가 목적: 화상 압박의 체류 시간. 예외: 퇴로가 차단된 적 정리는 가능. 필수 근거: 화상 표시·적 이동·퇴로. 결정 당시의 정보와 실행
+    가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 적 방어 반응을 보고 공격 또는 철수
+  bad_signs:
+  - 화상이 있다는 이유만으로 깊게 추격
+  cannot_judge_when:
+  - '핵심 근거 미확인: 화상 표시·적 이동·퇴로'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.anran; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Anran?oldid=402310'
+    patch_version: null
+- id: anran.skill_usage.amplify
+  category: skill_usage
+  status: draft
+  ability: fan_the_flames
+  title: 화상 증폭의 대상과 시점
+  description: '적용 상황: 화상 적을 공격 가능. 평가 목적: 화상 증폭의 대상과 시점. 예외: 긴급 피해가 필요한 경우 비교 평가. 필수 근거: 화상·발사·도달 표시. 결정 당시의 정보와
+    실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 실제 화상 대상에 후속 공격 연결
+  bad_signs:
+  - 화상 상태·사선을 확인하지 않고 소모
+  cannot_judge_when:
+  - '핵심 근거 미확인: 화상·발사·도달 표시'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.anran; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Anran?oldid=402310'
+    patch_version: null
+- id: anran.skill_usage.dodge
+  category: skill_usage
+  status: draft
+  ability: dancing_blaze
+  title: 회피 효과의 종료 위험
+  description: '적용 상황: 큰 피해에 노출. 평가 목적: 회피 효과의 종료 위험. 예외: 아군 후속으로 위험을 제거하면 허용. 필수 근거: 사용 전후 적 위치·효과 종료. 결정 당시의 정보와
+    실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 위험 구간을 피하고 종료 후 엄폐 확보
+  bad_signs:
+  - 회피 중 안전을 종료 후까지 가정
+  cannot_judge_when:
+  - '핵심 근거 미확인: 사용 전후 적 위치·효과 종료'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.anran; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Anran?oldid=402310'
+    patch_version: null
+- id: anran.ultimate_usage.ultimate
+  category: ultimate_usage
+  status: draft
+  ability: vermillion_ascent
+  title: 돌진 궁과 부활 궁의 상황 분리
+  description: '적용 상황: 살아 있을 때 궁 선택. 평가 목적: 돌진 궁과 부활 궁의 상황 분리. 예외: 사망 후 Vermillion Revival은 별도 능력으로 평가. 필수 근거: 생사
+    상태·궁 종류·충돌·도착. 결정 당시의 정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 충돌할 적과 종료 위치를 보고 사용
+  bad_signs:
+  - 많이 맞히려 지원 불가 위치로 돌진
+  cannot_judge_when:
+  - '핵심 근거 미확인: 생사 상태·궁 종류·충돌·도착'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.anran; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Anran?oldid=402310'
+    patch_version: null
+- id: anran.ultimate_usage.revival
+  category: ultimate_usage
+  status: draft
+  ability: vermillion_revival
+  title: 부활 궁의 복귀 지점과 남은 교전
+  description: '적용 상황: 사망 후 부활 선택. 평가 목적: 부활 궁의 복귀 지점과 남은 교전. 예외: 마지막 접촉·결정적 교환은 위험 비교. 필수 근거: 생사·복귀 지점·적 대기·팀 상태.
+    결정 당시의 정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 복귀 후 엄폐·팀 후속이 있는 순간 사용
+  bad_signs:
+  - 적이 대기하는 사망 위치에 다시 혼자 복귀
+  cannot_judge_when:
+  - '핵심 근거 미확인: 생사·복귀 지점·적 대기·팀 상태'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.anran; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Anran?oldid=402310'
+    patch_version: null

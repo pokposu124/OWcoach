@@ -1,0 +1,138 @@
+hero_id: torbjorn
+display_name_ko: 토르비욘
+role: damage
+pack_version: 0.1.0
+review_status: draft
+patch_version: null
+profile_type: criterion_fragment_not_HeroProfile
+ability_refs:
+  overload:
+    database_id: torbjorn:overload
+    name_en: Overload
+    kind: Ability
+    review_required: false
+  deploy_turret:
+    database_id: torbjorn:deploy-turret
+    name_en: Deploy Turret
+    kind: Ability
+    review_required: false
+  molten_core:
+    database_id: torbjorn:molten-core
+    name_en: Molten Core
+    kind: Ultimate Ability
+    review_required: false
+criteria:
+- id: torbjorn.positioning.crossfire
+  category: positioning
+  status: draft
+  ability: null
+  title: 본체와 포탑의 교차 압박
+  description: '적용 상황: 방어 위치 선택. 평가 목적: 본체와 포탑의 교차 압박. 예외: 한 통로에 집중할 필요가 있으면 허용. 필수 근거: 본체·포탑·적 사선. 결정 당시의 정보와 실행
+    가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 서로 다른 유효 각도로 같은 공간 통제
+  bad_signs:
+  - 본체와 포탑이 같은 폭발에 함께 노출
+  cannot_judge_when:
+  - '핵심 근거 미확인: 본체·포탑·적 사선'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.torbjorn; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Torbj%C3%B6rn?oldid=403760'
+    patch_version: null
+- id: torbjorn.positioning.repair_risk
+  category: positioning
+  status: draft
+  ability: null
+  title: 포탑 수리와 본체 기여 비용
+  description: '적용 상황: 포탑이 공격받음. 평가 목적: 포탑 수리와 본체 기여 비용. 예외: 중요한 진입 억제 중이면 수리 가치 비교. 필수 근거: 포탑 체력·적 공격·본체 노출. 결정
+    당시의 정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 안전하게 수리하거나 버리고 다른 기여 선택
+  bad_signs:
+  - 파괴될 포탑 수리에 집착해 본체까지 위험
+  cannot_judge_when:
+  - '핵심 근거 미확인: 포탑 체력·적 공격·본체 노출'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.torbjorn; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Torbj%C3%B6rn?oldid=403760'
+    patch_version: null
+- id: torbjorn.positioning.overload_end
+  category: positioning
+  status: draft
+  ability: overload
+  title: 과부하 종료 전 위치 조절
+  description: '적용 상황: 강화 상태로 전진. 평가 목적: 과부하 종료 전 위치 조절. 예외: 즉시 마무리·접촉이면 비교. 필수 근거: 효과 상태·적 배치·퇴로. 결정 당시의 정보와 실행
+    가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 종료 후 버틸 엄폐와 팀 지원 유지
+  bad_signs:
+  - 일시적 강화를 믿고 깊게 고립
+  cannot_judge_when:
+  - '핵심 근거 미확인: 효과 상태·적 배치·퇴로'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.torbjorn; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Torbj%C3%B6rn?oldid=403760'
+    patch_version: null
+- id: torbjorn.skill_usage.turret
+  category: skill_usage
+  status: draft
+  ability: deploy_turret
+  title: 실제 통제할 사선에 포탑 설치
+  description: '적용 상황: 전선 변화. 평가 목적: 실제 통제할 사선에 포탑 설치. 예외: 후방 감시용 유지도 가능. 필수 근거: 설치 지점·표적 경로·사격. 결정 당시의 정보와 실행 가능한
+    대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 적 측면·공중·접근로에 유효 사선 확보
+  bad_signs:
+  - 옛 위치에 방치해 공격 기회 소실
+  cannot_judge_when:
+  - '핵심 근거 미확인: 설치 지점·표적 경로·사격'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.torbjorn; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Torbj%C3%B6rn?oldid=403760'
+    patch_version: null
+- id: torbjorn.skill_usage.overload_window
+  category: skill_usage
+  status: draft
+  ability: overload
+  title: 과부하의 공격·방어 목적
+  description: '적용 상황: 교전 강도가 높아짐. 평가 목적: 과부하의 공격·방어 목적. 예외: 선제 진입 준비가 명확하면 허용. 필수 근거: 사용 시점·피해·공격 기회. 결정 당시의 정보와
+    실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 피해를 버티거나 유효 공격 창에 사용
+  bad_signs:
+  - 피해도 표적도 없는 때 소모 후 대응 공백
+  cannot_judge_when:
+  - '핵심 근거 미확인: 사용 시점·피해·공격 기회'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.torbjorn; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Torbj%C3%B6rn?oldid=403760'
+    patch_version: null
+- id: torbjorn.ultimate_usage.molten
+  category: ultimate_usage
+  status: draft
+  ability: molten_core
+  title: 용암으로 적 이동 공간 제한
+  description: '적용 상황: 거점·좁은 통로 교전. 평가 목적: 용암으로 적 이동 공간 제한. 예외: 목표물 접촉 억제만으로도 유효. 필수 근거: 용암 위치·적 이동·남은 경로. 결정 당시의
+    정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 적이 밟거나 돌아가야 하는 구역을 막음
+  bad_signs:
+  - 이미 떠난 곳에 겹쳐 뿌려 통제 공백
+  cannot_judge_when:
+  - '핵심 근거 미확인: 용암 위치·적 이동·남은 경로'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.torbjorn; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Torbj%C3%B6rn?oldid=403760'
+    patch_version: null

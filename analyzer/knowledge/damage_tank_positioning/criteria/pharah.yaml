@@ -1,0 +1,138 @@
+hero_id: pharah
+display_name_ko: 파라
+role: damage
+pack_version: 0.1.0
+review_status: draft
+patch_version: null
+profile_type: criterion_fragment_not_HeroProfile
+ability_refs:
+  concussive_blast:
+    database_id: pharah:concussive-blast
+    name_en: Concussive Blast
+    kind: Ability
+    review_required: false
+  jet_dash:
+    database_id: pharah:jet-dash
+    name_en: Jet Dash
+    kind: Ability
+    review_required: false
+  barrage:
+    database_id: pharah:barrage
+    name_en: Barrage
+    kind: Ultimate Ability
+    review_required: false
+criteria:
+- id: pharah.positioning.aerial_cover
+  category: positioning
+  status: draft
+  ability: null
+  title: 건물을 이용한 공중 사선 제한
+  description: '적용 상황: 비행 중 공격. 평가 목적: 건물을 이용한 공중 사선 제한. 예외: 지상 위험 회피 상승은 허용. 필수 근거: 건물·적 사선·비행 경로. 결정 당시의 정보와 실행
+    가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 건물 가장자리에서 필요한 적만 노출
+  bad_signs:
+  - 높이만 믿고 열린 하늘에 계속 체류
+  cannot_judge_when:
+  - '핵심 근거 미확인: 건물·적 사선·비행 경로'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.pharah; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Pharah?oldid=404962'
+    patch_version: null
+- id: pharah.positioning.fuel_landing
+  category: positioning
+  status: draft
+  ability: null
+  title: 연료·이동기를 고려한 착지
+  description: '적용 상황: 공중 교전 지속. 평가 목적: 연료·이동기를 고려한 착지. 예외: 즉각적 승리·접촉이면 위험 비교. 필수 근거: 연료 HUD·이동기·착지 가능 공간. 결정 당시의
+    정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 착지할 엄폐를 정하고 연료와 이동 수단 관리
+  bad_signs:
+  - 연료 부족 뒤 적 앞에 강제 착지
+  cannot_judge_when:
+  - '핵심 근거 미확인: 연료 HUD·이동기·착지 가능 공간'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.pharah; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Pharah?oldid=404962'
+    patch_version: null
+- id: pharah.positioning.pressure_timing
+  category: positioning
+  status: draft
+  ability: null
+  title: 측면 기습과 아군 압박 동시성
+  description: '적용 상황: 적 후방 공격 준비. 평가 목적: 측면 기습과 아군 압박 동시성. 예외: 고립 적에 대한 안전한 기습은 예외. 필수 근거: 아군 공격·적 시선·진입 시점. 결정
+    당시의 정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 아군이 적 주의를 끄는 순간 공격
+  bad_signs:
+  - 팀 교전 전 혼자 노출돼 모든 적 시선 집중
+  cannot_judge_when:
+  - '핵심 근거 미확인: 아군 공격·적 시선·진입 시점'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.pharah; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Pharah?oldid=404962'
+    patch_version: null
+- id: pharah.skill_usage.concussive
+  category: skill_usage
+  status: draft
+  ability: concussive_blast
+  title: 충격탄의 이동·밀쳐내기 방향
+  description: '적용 상황: 거리 조절 또는 적 이동 필요. 평가 목적: 충격탄의 이동·밀쳐내기 방향. 예외: 자기 생존을 위한 밀쳐내기는 허용. 필수 근거: 폭발 위치·전후 이동·아군 사선.
+    결정 당시의 정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 자신의 엄폐 이동이나 적 위치 악화에 연결
+  bad_signs:
+  - 적을 안전한 곳으로 밀거나 자신이 고립
+  cannot_judge_when:
+  - '핵심 근거 미확인: 폭발 위치·전후 이동·아군 사선'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.pharah; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Pharah?oldid=404962'
+    patch_version: null
+- id: pharah.skill_usage.dash
+  category: skill_usage
+  status: draft
+  ability: jet_dash
+  title: 제트 대시 이후의 사격각
+  description: '적용 상황: 공중 회피·재배치. 평가 목적: 제트 대시 이후의 사격각. 예외: 즉시 처치각 확보면 비교 평가. 필수 근거: 대시 전후·피격 방향·연료. 결정 당시의 정보와
+    실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 위협 사선을 끊고 다음 엄폐와 연결
+  bad_signs:
+  - 같은 열린 사선에서만 자원 소모
+  cannot_judge_when:
+  - '핵심 근거 미확인: 대시 전후·피격 방향·연료'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.pharah; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Pharah?oldid=404962'
+    patch_version: null
+- id: pharah.ultimate_usage.barrage
+  category: ultimate_usage
+  status: draft
+  ability: barrage
+  title: 포화 시작 위치와 적 방해
+  description: '적용 상황: 궁극기 공격 창. 평가 목적: 포화 시작 위치와 적 방해. 예외: 결정적인 교환·단일 제거도 가치. 필수 근거: 시전 지점·적 대응 관측·실제 피해. 결정 당시의
+    정보와 실행 가능한 대안을 비교한다. 나쁜 신호 하나만으로 블런더를 확정하지 않는다.'
+  good_signs:
+  - 적 방어·방해를 확인하고 유효한 시야에서 사용
+  bad_signs:
+  - 적이 모두 조준하는 정면에서 무방비 시전
+  cannot_judge_when:
+  - '핵심 근거 미확인: 시전 지점·적 대응 관측·실제 피해'
+  - 카메라 밖 상태·스킬 명중·효과·아군 후속·실행 가능한 대안을 추정으로만 채워야 함
+  - 패치·모드·형태·특전 차이가 판정을 바꾸는데 해당 차이를 확인하지 못함
+  source:
+    type: editorial_synthesis
+    reference: 'sources.yaml -> heroes.pharah; 전술 조건은 작성자 설계. 메커니즘 참조: https://overwatch.weirdgloop.org/w/Pharah?oldid=404962'
+    patch_version: null
