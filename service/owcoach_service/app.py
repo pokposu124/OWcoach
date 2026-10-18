@@ -182,6 +182,7 @@ def create_app(settings: Settings | None = None, start_worker: bool = True,
 <p class=lead>오버워치 플레이 영상을 올리면 장면마다 스킬 사용·포지셔닝·궁극기 사용 피드백을 만들어 줍니다.</p>
 <p><a class=btn href=/login>디스코드로 로그인</a></p>
 <section class=box><h2>지금 지원하는 영상</h2><ul>
+<li><b>리플레이 화면을 녹화한 영상</b>만 분석합니다. 경기 중 실시간 게임 화면을 녹화한 영상은 안 됩니다.</li>
 <li>영웅: 영상 속 팀 목록 초상화로 자동 인식. 아나는 실제 영상으로 검증, 그 외 지원·딜러·탱커 {len(heroes) - 1}명은 시험 단계(피드백은 참고용)</li><li>해상도: 1280×720 ~ 1920×1080, 16:9 화면 비율, 기본 HUD 배치</li>
 <li>길이: {acfg['max_duration_seconds'] // 60}분 이하 · 파일 {acfg['max_file_size_mb']}MB 이하</li>
 <li>분석 시간: 영상 1개에 약 15~20분</li></ul></section>
@@ -348,6 +349,7 @@ td:nth-child(2){white-space:normal;overflow-wrap:anywhere}
 
 UPLOAD_FORM = """
 <form class=form id=up>
+  <p class=warn><b>주의:</b> 리플레이 화면을 녹화한 영상만 올려 주세요. 경기 중 실시간 게임 화면을 녹화한 영상은 분석하지 못합니다.</p>
   <p class=muted>영웅은 영상 속 팀 목록 초상화로 자동 인식합니다. 아나 외 영웅은 시험 단계라 결과가 참고용입니다.</p>
   <label>영상 파일 ({min_w}×{min_h} ~ {max_w}×{max_h} 16:9, {max_sec}초 이하, {max_mb}MB 이하)
     <input type=file id=file accept="video/mp4,video/quicktime,video/x-matroska,video/webm,.mp4,.mov,.mkv,.webm" required></label>
