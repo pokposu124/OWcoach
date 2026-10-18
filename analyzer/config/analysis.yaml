@@ -111,6 +111,7 @@ moment_check:
 knowledge_packs:
   - path: knowledge/support_positioning
     enabled: true
+    roles: [support]
     hero_file: "criteria/{hero}.yaml"
     common_file: common_criteria.yaml
     covered_by:
@@ -125,6 +126,35 @@ knowledge_packs:
       support.positioning.p02: [ana.positioning.face_team_while_moving]
       support.positioning.p08: [ana.positioning.face_team_while_moving]
       support.positioning.p09: [ana.positioning.face_team_while_moving]
+  # 딜러·탱커 지식베이스 (검수 전 draft). 역할별 공통 원칙 파일이 따로 있다.
+  - path: knowledge/damage_tank_positioning
+    enabled: true
+    roles: [damage, tank]
+    hero_file: "criteria/{hero}.yaml"
+    common_file: {damage: damage_common.yaml, tank: tank_common.yaml}
+
+# heroes/<id>.yaml 이 없는 영웅의 프로필을 수집본 DB(이름·역할·스킬)와 위 지식베이스로 만든다 (사용자 결정 2026-10-18).
+# HUD 판독은 아나 영상으로만 맞춰져 있어 연결하지 않는다: 스킬·궁극기 피드백은 HUD 확인 없이 참고·보류로 나간다.
+generated_profiles:
+  enabled: true
+  version: "0.1.0"
+  roles:
+    support: {name_ko: 지원}
+    damage: {name_ko: 딜러}
+    tank: {name_ko: 탱커}
+  observable_signals:
+    - "본인 체력 바 수치와 피격 표시(화면 가장자리 붉은 표시, 피격 방향 표시기)"
+    - "스킬 아이콘의 쿨다운 숫자/어두워짐 여부"
+    - "궁극기 게이지 % 및 사용 시 화면 효과"
+    - "엄폐물(벽, 기둥, 모서리)과 본인 위치 관계"
+    - "화면에 보이는 아군/적의 체력바와 위치 (화면 밖은 판단하지 않음)"
+    - "킬피드(우상단) 내용"
+  # 두 지식베이스 README의 판정 조건: 아군이 화면에 없다는 것과 지원이 불가능하다는 것은 다르고, 선진입·측면은 역할상 정상일 수 있다
+  presence_guidance: |
+    관찰 기록의 alone_spans(화면에 아군 없이 적과 대치)·turned_away_spans(본대가 보이던 방향에서 시선이 돌아감)는 코드가 잰 화면 사실입니다.
+    모델 관찰과 다르면 이 측정을 따르되, 이 구간만으로 나쁜 포지셔닝이라고 판단하지 마세요. 아군이 화면에 없다는 것과
+    아군과 연결이 끊겼다는 것은 다르고, 역할과 영웅에 따라 앞이나 측면에 서는 것이 정상일 수 있습니다. 적용한 기준의
+    적용 상황·예외·필수 근거로 판단하세요. 구간 전체를 '죽지 않았다'로 뭉뚱그려 최선을 주지 마세요.
 
 # 플레이어 사망 직전 상황은 모델이 후보로 고르지 않아도 반드시 분석한다.
 # 사망 시각 = (좌하단 체력 칸 10개가 min_seconds 이상 모두 비어 있는(체력 0) 구간의 시작) + (overview 타임라인에서

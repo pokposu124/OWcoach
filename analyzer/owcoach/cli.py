@@ -30,7 +30,19 @@ def cmd_analyze(args) -> int:
         cfg["overview"]["max_candidates"] = args.max_scenes
     if args.max_feedback is not None:
         cfg["output"]["max_feedback_items"] = args.max_feedback
-    hero = load_hero(args.hero, knowledge_packs=cfg.get("knowledge_packs"))
+    def resolve(hero_id: str):
+        h = load_hero(hero_id, knowledge_packs=cfg.get("knowledge_packs"), generated=cfg.get("generated_profiles"))
+        if h.generated:
+            print(f"※ {h.display_name_ko}: 자동 생성 프로필(검수 전 기준, HUD 판독 미연결). 피드백은 참고용입니다.")
+        return h
+
+    hero = None
+    if args.hero != "auto":
+        try:
+            hero = resolve(args.hero)
+        except ValueError as e:
+            print(f"오류: {e}", file=sys.stderr)
+            return 2
     provider_name = args.provider or cfg["provider"]["name"]
     try:
         provider = create_provider(provider_name, cfg["provider"])
@@ -39,7 +51,7 @@ def cmd_analyze(args) -> int:
         return 2
     if provider.is_mock:
         print("※ mock 공급자로 실행합니다. 실제 AI 분석이 아닙니다.")
-    pipe = Pipeline(cfg, load_pricing(), provider, hero, runs_dir=Path(args.runs_dir))
+    pipe = Pipeline(cfg, load_pricing(), provider, hero, runs_dir=Path(args.runs_dir), resolve_hero=resolve)
     rerun = {s.strip() for s in args.rerun.split(",") if s.strip()} if args.rerun else set()
     try:
         result, run_dir = pipe.run(Path(args.video), run_id=args.run_id, game_patch=args.patch, force_stages=rerun)
@@ -104,9 +116,12 @@ def cmd_evaluate(args) -> int:
 
 
 def cmd_heroes(args) -> int:
-    for h in available_heroes():
-        p = load_hero(h)
-        print(f"{p.hero_id}\t{p.display_name_ko}\tprofile {p.profile_version}\t{p.review_status}\tpatch {p.patch_version}\t기준 {len(p.criteria)}개")
+    cfg = load_config(args.config)
+    packs, gen = cfg.get("knowledge_packs"), cfg.get("generated_profiles")
+    for h in available_heroes(knowledge_packs=packs, generated=gen):
+        p = load_hero(h, knowledge_packs=packs, generated=gen)
+        print(f"{p.hero_id}\t{p.display_name_ko}\t{p.role}\t{'자동 생성' if p.generated else '프로필'}\tprofile {p.profile_version}"
+              f"\t승인 {sum(c.status == 'approved' for c in p.criteria)} / 기준 {len(p.criteria)}개")
     return 0
 
 
@@ -126,7 +141,7 @@ def main(argv: list[str] | None = None) -> int:
 
     a = sub.add_parser("analyze", help="로컬 영상 분석")
     a.add_argument("video")
-    a.add_argument("--hero", required=True)
+    a.add_argument("--hero", required=True, help="영웅 id, 또는 auto(팀 목록의 플레이어 칸 초상화로 자동 인식)")
     a.add_argument("--provider", choices=["gemini", "mock"])
     a.add_argument("--run-id", help="작업 ID. 같은 ID로 재실행하면 완료된 단계를 재사용")
     a.add_argument("--patch", help="영상이 녹화된 게임 패치 버전(기록용)")

@@ -33,6 +33,7 @@ from .worker import ANALYZER_DIR, Worker
 
 sys.path.insert(0, str(ANALYZER_DIR))
 from owcoach.config import load_config as load_analyzer_config  # noqa: E402
+from owcoach.heroes import available_heroes, load_hero  # noqa: E402
 from owcoach.media import InputRejected, probe, validate_input  # noqa: E402
 
 SERVICE_DIR = Path(__file__).resolve().parents[1]
@@ -71,7 +72,15 @@ def create_app(settings: Settings | None = None, start_worker: bool = True,
     s = settings or Settings()
     store = Store(s.data_dir / "owcoach.db")
     worker = Worker(store, s.cfg, s.data_dir)
-    acfg = load_analyzer_config()["input"]
+    analyzer_cfg = load_analyzer_config()
+    acfg = analyzer_cfg["input"]
+    # heroes the analyzer can take: Ana's own profile, every other hero from the review packs (trial stage)
+    packs, gen = analyzer_cfg.get("knowledge_packs"), analyzer_cfg.get("generated_profiles")
+    heroes = []
+    for hid in available_heroes(knowledge_packs=packs, generated=gen):
+        h = load_hero(hid, knowledge_packs=packs, generated=gen)
+        heroes.append({"id": hid, "name": h.display_name_ko, "role": h.role, "verified": hid in s.cfg["verified_heroes"]})
+    hero_names = {h["id"]: h["name"] for h in heroes}
     uploads = s.data_dir / "uploads"
     uploads.mkdir(parents=True, exist_ok=True)
 
@@ -173,7 +182,7 @@ def create_app(settings: Settings | None = None, start_worker: bool = True,
 <p class=lead>오버워치 플레이 영상을 올리면 장면마다 스킬 사용·포지셔닝·궁극기 사용 피드백을 만들어 줍니다.</p>
 <p><a class=btn href=/login>디스코드로 로그인</a></p>
 <section class=box><h2>지금 지원하는 영상</h2><ul>
-<li>영웅: 아나</li><li>해상도: 1280×720 ~ 1920×1080, 16:9 화면 비율, 기본 HUD 배치</li>
+<li>영웅: 영상 속 팀 목록 초상화로 자동 인식. 아나는 실제 영상으로 검증, 그 외 지원·딜러·탱커 {len(heroes) - 1}명은 시험 단계(피드백은 참고용)</li><li>해상도: 1280×720 ~ 1920×1080, 16:9 화면 비율, 기본 HUD 배치</li>
 <li>길이: {acfg['max_duration_seconds'] // 60}분 이하 · 파일 {acfg['max_file_size_mb']}MB 이하</li>
 <li>분석 시간: 영상 1개에 약 15~20분</li></ul></section>
 {f'<section class=box><h2>결과 예시</h2><ul>{demos}</ul></section>' if demos else ''}
@@ -187,7 +196,7 @@ def create_app(settings: Settings | None = None, start_worker: bool = True,
             return RedirectResponse("/", status_code=302)
         us = usage(store, u["discord_id"], s.cfg)
         refusal = us.refusal()
-        rows = "".join(_job_row(j, s.cfg["timezone"]) for j in store.jobs_of(u["discord_id"])) \
+        rows = "".join(_job_row(j, s.cfg["timezone"], hero_names) for j in store.jobs_of(u["discord_id"])) \
             or "<tr><td colspan=4 class=muted>아직 분석한 영상이 없습니다.</td></tr>"
         upload = (f"<p class=warn>{_e(refusal)}</p>" if refusal else UPLOAD_FORM.format(
             max_mb=acfg["max_file_size_mb"], max_sec=acfg["max_duration_seconds"],
@@ -227,8 +236,11 @@ def create_app(settings: Settings | None = None, start_worker: bool = True,
         return {k: job[k] for k in ("id", "status", "stage", "file_name", "created_at", "finished_at", "error")}
 
     @app.put("/api/upload")
-    async def upload(request: Request, name: str = "video.mp4", patch: str = ""):
+    async def upload(request: Request, name: str = "video.mp4", patch: str = "", hero: str = ""):
         u = need_user(request)
+        hero = hero or s.cfg["default_hero"]
+        if hero != "auto" and hero not in hero_names:
+            return JSONResponse({"error": f"분석할 수 없는 영웅입니다: {hero}"}, status_code=400)
         refusal = usage(store, u["discord_id"], s.cfg).refusal()
         if refusal:
             return JSONResponse({"error": refusal}, status_code=429)
@@ -257,13 +269,13 @@ def create_app(settings: Settings | None = None, start_worker: bool = True,
         if reasons:
             dst.unlink(missing_ok=True)
             jid = store.create_job(u["discord_id"], Path(name).name[:200], "", patch[:80], sha.hexdigest(),
-                                   status="rejected", error="\n".join(reasons))
+                                   status="rejected", error="\n".join(reasons), hero=hero)
             return JSONResponse({"error": "\n".join(reasons), "job": jid}, status_code=400)
         same = store.done_job_for_video(u["discord_id"], sha.hexdigest())
         if same:                                 # same file again: no new run, no request used
             dst.unlink(missing_ok=True)
             return {"job": same["id"], "existing": True}
-        jid = store.create_job(u["discord_id"], Path(name).name[:200], str(dst), patch[:80], sha.hexdigest())
+        jid = store.create_job(u["discord_id"], Path(name).name[:200], str(dst), patch[:80], sha.hexdigest(), hero=hero)
         worker.notify()
         return {"job": jid}
 
@@ -298,10 +310,15 @@ def _local(iso: str, tz: str) -> str:
 STATUS_KO = {"queued": "대기", "running": "분석 중", "done": "완료", "failed": "실패", "rejected": "입력 조건 불충족"}
 
 
-def _job_row(j: dict, tz: str) -> str:
+ROLE_KO = {"support": "지원", "damage": "딜러", "tank": "탱커"}
+
+
+def _job_row(j: dict, tz: str, hero_names: dict | None = None) -> str:
     link = (f'<a href="/results/{j["id"]}/">결과 보기</a>' if j["status"] == "done" else f'<a href="/jobs/{j["id"]}">자세히</a>')
     stage = f' <span class=muted>{_e(j["stage"])}</span>' if j["status"] == "running" else ""
-    return (f"<tr><td>{_local(j['created_at'], tz)}</td><td>{_e(j['file_name'])}</td>"
+    hid = j.get("hero") or "auto"
+    hero = "영웅 인식 전" if hid == "auto" else (hero_names or {}).get(hid, hid)
+    return (f"<tr><td>{_local(j['created_at'], tz)}</td><td>{_e(j['file_name'])} <span class=muted>· {_e(hero)}</span></td>"
             f"<td><span class='st st-{j['status']}'>{STATUS_KO.get(j['status'], j['status'])}</span>{stage}</td><td>{link}</td></tr>")
 
 
@@ -331,7 +348,8 @@ td:nth-child(2){white-space:normal;overflow-wrap:anywhere}
 
 UPLOAD_FORM = """
 <form class=form id=up>
-  <label>영상 파일 (아나, {min_w}×{min_h} ~ {max_w}×{max_h} 16:9, {max_sec}초 이하, {max_mb}MB 이하)
+  <p class=muted>영웅은 영상 속 팀 목록 초상화로 자동 인식합니다. 아나 외 영웅은 시험 단계라 결과가 참고용입니다.</p>
+  <label>영상 파일 ({min_w}×{min_h} ~ {max_w}×{max_h} 16:9, {max_sec}초 이하, {max_mb}MB 이하)
     <input type=file id=file accept="video/mp4,video/quicktime,video/x-matroska,video/webm,.mp4,.mov,.mkv,.webm" required></label>
   <label>게임 패치 (선택, 기록용) <input type=text id=patch maxlength=80 placeholder="예: 시즌 19 중반"></label>
   <p class=muted id=check></p>

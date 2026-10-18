@@ -2,6 +2,8 @@
 # 영웅과 무관하게 성립하는 판단(적 영웅의 방어 스킬에 대한 대응 등)만 둔다.
 # 형식은 heroes/<hero>.yaml 의 observable_signals / criteria 와 같다. criterion id 는 common. 으로 시작한다.
 common_version: "0.4.0"
+# 아래 approved 기준은 아나 코칭에서 승인됐다. 다른 역할 영웅에는 그 역할로 검수될 때까지 '검수 전 참고'(draft)로 붙는다.
+approved_roles: [support]
 
 # 적이 막거나 되돌리는 스킬. 플레이어 스킬 사용 순간마다 이 중 하나가 그 방향에서 켜져 있었는지 따로 확인한다(moment 단계).
 skill_counters:

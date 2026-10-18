@@ -349,8 +349,9 @@ def finalize_feedback(
                 bad = _situation_flags(scene.get("situation_track", []), s, e)
                 # code-measured: enemies on screen with no ally in view, or looking away from where the team
                 # was (user rule: behind the team by default; coach: face the team while moving)
-                bad += [sp["note"] for key in ("alone_spans", "turned_away_spans") for sp in scene.get(key, [])
-                        if sp["start_seconds"] <= e + 1 and sp["end_seconds"] >= s - 1]
+                if hero.presence_withholds_good_positioning:
+                    bad += [sp["note"] for key in ("alone_spans", "turned_away_spans") for sp in scene.get(key, [])
+                            if sp["start_seconds"] <= e + 1 and sp["end_seconds"] >= s - 1]
                 if bad:
                     grade = "withheld"
                     reasons.append("관찰 기록에 " + "; ".join(bad) + " → 좋은 판정 보류")

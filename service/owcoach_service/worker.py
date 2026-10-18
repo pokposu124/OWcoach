@@ -58,7 +58,8 @@ class Worker:
         jid = job["id"]
         self.store.update_job(jid, status="running", started_at=now_iso(), stage="분석 시작", error="")
         video = Path(job["video_path"])
-        cmd = [sys.executable, "-m", "owcoach", "analyze", str(video), *self.cfg["analyze_args"],
+        cmd = [sys.executable, "-m", "owcoach", "analyze", str(video), "--hero", job.get("hero") or self.cfg["default_hero"],
+               *self.cfg["analyze_args"],
                "--provider", self.cfg["provider"], "--runs-dir", str(self.runs_dir)]
         if job["patch"]:
             cmd += ["--patch", job["patch"]]
@@ -88,7 +89,7 @@ class Worker:
             result = json.loads((run_dir / "result.json").read_text("utf-8"))
             cost = (result.get("cost") or {}).get("total")
             self.store.update_job(jid, status="done", stage="완료", finished_at=now_iso(),
-                                  cost_usd=float(cost) if cost is not None else None)
+                                  cost_usd=float(cost) if cost is not None else None, hero=result.get("hero") or job.get("hero"))
             video.unlink(missing_ok=True)      # the result page has its own small copy (media/web.mp4)
             self.log(f"분석 완료 {jid} (비용 ${cost})")
         except Exception as e:  # noqa: BLE001 - any failure ends this job, the worker keeps going

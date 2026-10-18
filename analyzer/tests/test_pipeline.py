@@ -1329,3 +1329,52 @@ def test_scenes_lose_other_hero_stretches(cfg):
     assert [(s.scene_id, s.window_start, s.window_end) for s in out] == [
         ("scene-01", 10, 40), ("scene-02", 110, 120), ("scene-04", 206, 230)]
     assert [d.scene_id for d in discarded] == ["scene-03"] and "키리코" in discarded[0].summary
+
+
+def test_generated_profile_for_a_damage_hero(cfg):
+    """Tracer has no heroes/ file: the profile comes from the stats DB (names, role, abilities, no HUD slot)
+    and the damage pack (hero + damage common criteria, all draft). Support-pack principles and the Ana
+    presence rule do not apply; the approved common criteria come in as drafts for a non-support role."""
+    from owcoach.heroes import available_heroes
+
+    packs, gen = cfg["knowledge_packs"], cfg["generated_profiles"]
+    t = load_hero("tracer", knowledge_packs=packs, generated=gen)
+    assert t.generated and t.role == "damage" and t.display_name_ko == "트레이서"
+    assert [a.name_en for a in t.abilities] == ["Pulse Pistols", "Blink", "Recall", "Pulse Bomb"]
+    assert all(a.hud_slot is None for a in t.abilities)
+    prefixes = {c.id.split(".")[0] for c in t.criteria}
+    assert prefixes == {"tracer", "damage", "common"} and {c.status for c in t.criteria} == {"draft"}
+    assert not t.presence_withholds_good_positioning and "damage.positioning.angle" in t.positioning_guidance
+    r = load_hero("reinhardt", knowledge_packs=packs, generated=gen)
+    assert {c.id.split(".")[0] for c in r.criteria} == {"reinhardt", "tank", "common"}
+    k = load_hero("kiriko", knowledge_packs=packs, generated=gen)          # another support: support pack, common stays approved
+    assert "support" in {c.id.split(".")[0] for c in k.criteria}
+    assert k.criterion("common.skill.no_skills_into_deflect").status == "approved"
+    ana = load_hero("ana", knowledge_packs=packs, generated=gen)
+    assert not ana.generated and ana.presence_withholds_good_positioning and ana.positioning_guidance.startswith("아나 포지셔닝의 기본")
+    assert len(available_heroes(knowledge_packs=packs, generated=gen)) == 54
+    assert available_heroes() == ["ana"]
+    with pytest.raises(ValueError):
+        load_hero("tracer")                                                 # generation off: only real profiles
+
+
+def test_player_hero_is_the_longest_played_on_the_players_slot():
+    from owcoach.heroes import hero_id_for_name
+    from owcoach.pipeline import player_hero
+
+    h = lambda hero, a, b: {"hero": hero, "start_seconds": a, "end_seconds": b}
+    rec = {"team_identification": {"player_name": "ME"},
+           "roster": [{"slot": 9, "player_name": "ME", "hero_history": [h("아나", 0, 60), h("솔저: 76", 70, 290)]}]}
+    name, how = player_hero(rec)
+    assert name == "솔저: 76" and "교체 1회" in how and hero_id_for_name(name) == "soldier-76"
+    assert player_hero({**rec, "team_identification": {"player_name": "X"}})[0] is None
+    assert player_hero(None)[0] is None
+
+
+def test_auto_hero_without_a_readable_team_list_stops_at_team(video, cfg, tmp_path):
+    """A synthetic video has no team list: auto recognition cannot name the hero and the run stops there."""
+    pipe = Pipeline(cfg, {"models": {}}, MockProvider(), None, runs_dir=tmp_path, log=lambda *_: None,
+                    resolve_hero=lambda hid: load_hero(hid))
+    with pytest.raises(StageFailed) as e:
+        pipe.run(video, run_id="auto1")
+    assert e.value.stage == "team" and "자동으로 알아보지 못했습니다" in e.value.reason

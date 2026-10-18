@@ -50,7 +50,7 @@ from .hud import (
 )
 from .timefmt import fmt_range, fmt_time
 from .gamedata import load_gamedata
-from .heroes import HeroProfile, load_comp_notes
+from .heroes import HeroProfile, hero_id_for_name, load_comp_notes
 from .portraits import roster_timeline, identify, load_portraits
 from .media import (
     InputRejected,
@@ -224,6 +224,25 @@ def comp_note_lines(team: dict, notes: list[dict]) -> list[str]:
     return lines
 
 
+def player_hero(team_record: dict | None) -> tuple[str | None, str]:
+    """The hero the player spent the longest on, from their own team-list slot (portrait timeline, code
+    match), and how it was decided. (None, reason) when the player's slot or its hero is unknown."""
+    team_record = team_record or {}
+    me = (team_record.get("team_identification") or {}).get("player_name")
+    slot = next((r for r in team_record.get("roster") or [] if me and r.get("player_name") == me), None)
+    if not slot:
+        return None, f"팀 목록에서 플레이어 '{me or '?'}' 칸을 찾지 못함"
+    total: dict[str, float] = {}
+    for h in slot.get("hero_history") or []:
+        total[h["hero"]] = total.get(h["hero"], 0.0) + h["end_seconds"] - h["start_seconds"]
+    if total:
+        name = max(total, key=total.get)
+        return name, f"팀 목록 {me} 칸 초상화, 플레이 시간 가장 긴 영웅" + (f" (교체 {len(total) - 1}회 있음)" if len(total) > 1 else "")
+    if slot.get("hero") and slot.get("hero_confidence") in ("high", "timeline"):
+        return slot["hero"], f"팀 목록 {me} 칸 초상화"
+    return None, f"{me} 칸 초상화를 대조하지 못함"
+
+
 def other_hero_spans(team_record: dict | None, hero_name: str, duration: float) -> list[dict]:
     """Stretches the player spent on another hero than the profile's, from the player's own team-list slot
     (portrait timeline, code-read). The unreadable gap next to another hero's stretch goes with it (the swap
@@ -302,9 +321,15 @@ class RunStore:
 
 
 class Pipeline:
-    def __init__(self, cfg: dict, pricing: dict, provider: AnalysisProvider, hero: HeroProfile,
-                 runs_dir: Path = DEFAULT_RUNS_DIR, log: Callable[[str], None] = print):
+    def __init__(self, cfg: dict, pricing: dict, provider: AnalysisProvider, hero: HeroProfile | None,
+                 runs_dir: Path = DEFAULT_RUNS_DIR, log: Callable[[str], None] = print,
+                 resolve_hero: Callable[[str], HeroProfile] | None = None):
+        """hero=None with resolve_hero: the hero is recognised from the player's team-list slot after team
+        identification, and resolve_hero(hero_id) gives its profile."""
         self.cfg, self.pricing, self.provider, self.hero = cfg, pricing, provider, hero
+        self._resolve_hero = resolve_hero if hero is None else None
+        if hero is None and resolve_hero is None:
+            raise ValueError("hero 또는 resolve_hero 가 필요합니다")
         self.runs_dir = Path(runs_dir)
         self.log = log
         self.prompts = {k: load_prompt(k) for k in ("team", "overview", "detail", "moment", "coaching", "killer", "killfeed")}
@@ -914,9 +939,9 @@ class Pipeline:
         t_total = time.monotonic()
         t0 = time.monotonic()
         sha = sha256_file(video)
-        run_id = run_id or f"{sha[:12]}-{self.hero.hero_id}"
+        run_id = run_id or f"{sha[:12]}-{self.hero.hero_id if self.hero else 'auto'}"
         store = RunStore(self.runs_dir / run_id)
-        store.meta.update({"run_id": run_id, "video": str(video), "hero": self.hero.hero_id,
+        store.meta.update({"run_id": run_id, "video": str(video), "hero": self.hero.hero_id if self.hero else "auto",
                            "provider": self.provider.name, "updated_at": now_iso()})
         store.meta.setdefault("created_at", now_iso())
         store.save_meta()
@@ -951,7 +976,7 @@ class Pipeline:
         # cache keys hold what each stage actually sends: the hero profile version is not part of the
         # base, so editing coaching criteria re-runs coaching only (detail keys include the abilities and
         # observable signals, coaching keys the criteria)
-        ai_fp_base = {"provider": prov.name, "model": prov.model, "hero": hero.hero_id}
+        ai_fp_base = {"provider": prov.name, "model": prov.model, "hero": hero.hero_id if hero else "auto"}
 
         # 1. probe / input conditions -------------------------------------------------
         self.log("[1/5] 입력 확인")
@@ -988,11 +1013,28 @@ class Pipeline:
         t = time.monotonic()
         team, team_record = self._team_stage(store, video, sha, duration, ai_fp_base, force)
         self._team_record = team_record
+        if hero is None:
+            name, how = player_hero(team_record)
+            hid = hero_id_for_name(name) if name else None
+            if not hid:
+                store.set_stage("team", status="failed", error="플레이어 영웅을 알아보지 못함")
+                raise StageFailed("team", f"플레이어 영웅을 자동으로 알아보지 못했습니다 ({how}).")
+            try:
+                hero = self.hero = self._resolve_hero(hid)
+            except ValueError as e:
+                raise StageFailed("team", f"{name}: {e}") from None
+            self.log(f"  플레이어 영웅(자동 인식): {hero.display_name_ko} — {how}")
+            ai_fp_base = {**ai_fp_base, "hero": hero.hero_id}
+            store.meta["hero"] = hero.hero_id
+            store.save_meta()
         tcfg = cfg.get("team") or {}
         self._team_color = player_team_color(video, duration, tcfg["player_portrait"]) if "player_portrait" in tcfg else None
         if self._team_color:
             self.log(f"  아군 색(내 초상화 테두리): {self._team_color.get('ally_color') or '판별 못 함'} — {self._team_color['note']}")
         team_context = team_context_text(team_record, self._team_color, load_comp_notes())
+        if hero.generated:
+            self.warnings.append(f"{hero.display_name_ko}: 자동 생성 프로필(수집본 DB + 검수 전 지식베이스 기준)로 분석함. 스킬·궁극기 사용은 "
+                                 "HUD로 확인하지 않았고, 사망(체력바) 판독은 아나 영상으로만 확인됨")
         # the profile covers one hero: stretches on another hero (a mid-match swap) are left out everywhere
         self._other_spans = other_hero_spans(team_record, hero.display_name_ko, duration)
         for sp in self._other_spans:
@@ -1149,10 +1191,11 @@ class Pipeline:
         out = cfg["output"]
         game_facts = self._game_facts()
         coaching_fp = fingerprint(ai_fp_base, detail_fps, scene_records, team_context, game_facts, cfg["coaching"], out["max_feedback_items"],
-                                  out["max_action_items"], cp.version, hero.criteria_for_prompt())
+                                  out["max_action_items"], cp.version, hero.criteria_for_prompt(), hero.positioning_guidance)
         if scene_records:
             prompt = cp.render(
                 hero_name_ko=hero.display_name_ko,
+                positioning_guidance=hero.positioning_guidance.strip().replace("\n", "\n  "),
                 criteria=json.dumps(hero.criteria_for_prompt(), ensure_ascii=False, indent=1),
                 observations=json.dumps(list(scene_records.values()), ensure_ascii=False, indent=1),
                 team_context=team_context, game_facts=game_facts,

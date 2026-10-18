@@ -83,6 +83,14 @@ class HeroProfile(BaseModel):
     numeric_facts: list[NumericFact] = Field(default_factory=list)
     # enemy skills that block or reflect the player's skills (checked at every HUD-detected use)
     skill_counters: list[str] = Field(default_factory=list)
+    # coaching prompt paragraph on how this hero positions (and how to read the code-measured on-screen
+    # presence spans); Ana's is the user's own rule, generated profiles get the role's common principles
+    positioning_guidance: str = ""
+    # code-measured "no ally on screen" / "looking away from the team" spans withhold a good positioning grade
+    # (Ana: the user's rule "behind the team by default"; not for roles that stand ahead or flank)
+    presence_withholds_good_positioning: bool = False
+    # built from the stats DB and review packs, not from a heroes/<id>.yaml: no HUD slot is calibrated
+    generated: bool = False
 
     def criterion(self, criterion_id: str) -> Criterion | None:
         return next((c for c in self.criteria if c.id == criterion_id), None)
@@ -112,8 +120,13 @@ class HeroProfile(BaseModel):
 COMMON_FILE = "common.yaml"
 
 
-def available_heroes(heroes_dir: Path = HEROES_DIR) -> list[str]:
-    return sorted(p.stem for p in heroes_dir.glob("*.yaml") if p.name != COMMON_FILE)
+def available_heroes(heroes_dir: Path = HEROES_DIR, knowledge_packs: list[dict] | None = None,
+                     generated: dict | None = None) -> list[str]:
+    """Heroes with a profile file, plus (when generated profiles are on) every hero a review pack covers."""
+    own = {p.stem for p in heroes_dir.glob("*.yaml") if p.name != COMMON_FILE}
+    if generated and generated.get("enabled"):
+        own |= pack_heroes(knowledge_packs)
+    return sorted(own)
 
 
 def load_comp_notes(heroes_dir: Path = HEROES_DIR) -> list[dict]:
@@ -122,46 +135,119 @@ def load_comp_notes(heroes_dir: Path = HEROES_DIR) -> list[dict]:
     return list(load_yaml(path).get("comp_notes") or []) if path.exists() else []
 
 
-def knowledge_criteria(hero_id: str, have: set[str], packs: list[dict] | None) -> list[dict]:
+def _pack_files(pack: dict, hero_id: str, role: str) -> list[Path]:
+    """The hero's file and the pack's common file for the role, when the pack covers that role."""
+    if not pack.get("enabled") or role not in (pack.get("roles") or [role]):
+        return []
+    root = ANALYZER_ROOT / pack["path"]
+    common = pack["common_file"]
+    common = common.get(role) if isinstance(common, dict) else common
+    return [p for p in (root / pack["hero_file"].format(hero=hero_id), root / common if common else None) if p and p.exists()]
+
+
+def knowledge_criteria(hero_id: str, have: set[str], packs: list[dict] | None, role: str = "support") -> list[dict]:
     """Criteria from review packs under analyzer/ (e.g. knowledge/support_positioning): the hero's file and
-    the pack's common file. A pack criterion listed in covered_by is skipped when the profile already has
-    one of the criteria it maps to (the pack's own table: the same mistake is not graded twice)."""
+    the pack's common file for the hero's role. A pack criterion listed in covered_by is skipped when the
+    profile already has one of the criteria it maps to (the pack's own table: the same mistake is not
+    graded twice)."""
     out = []
     for pack in packs or []:
-        if not pack.get("enabled"):
-            continue
-        root = ANALYZER_ROOT / pack["path"]
         covered = pack.get("covered_by") or {}
-        for rel in (pack["hero_file"].format(hero=hero_id), pack["common_file"]):
-            path = root / rel
-            if not path.exists():
-                continue
+        for path in _pack_files(pack, hero_id, role):
             for c in load_yaml(path).get("criteria") or []:
                 if not set(covered.get(c["id"], [])) & have:
                     out.append(c)
     return out
 
 
-def load_hero(hero_id: str, heroes_dir: Path = HEROES_DIR, knowledge_packs: list[dict] | None = None) -> HeroProfile:
+def pack_heroes(packs: list[dict] | None) -> set[str]:
+    """Heroes an enabled review pack has a criteria file for."""
+    out = set()
+    for pack in packs or []:
+        if pack.get("enabled"):
+            out |= {p.stem for p in (ANALYZER_ROOT / pack["path"]).glob(pack["hero_file"].format(hero="*"))}
+    return out
+
+
+def hero_id_for_name(name_ko: str) -> str | None:
+    """Stats-DB hero id for a Korean hero name as the portrait sheet writes it (e.g. "솔저: 76" -> soldier-76)."""
+    import json
+
+    path = ANALYZER_ROOT / "data" / "overwatch_stats" / "hero_localizations.json"
+    return next((x["key"] for x in json.loads(path.read_text("utf-8")) if x["name"] == name_ko), None)
+
+
+def generated_profile_data(hero_id: str, packs: list[dict] | None, gcfg: dict) -> dict | None:
+    """Profile data for a hero without heroes/<id>.yaml, from the bundled stats DB (names, role, abilities)
+    and the review packs (criteria, role principles). Ability names are the DB's English names (the DB has
+    no Korean ones; none is made up). No ability gets a HUD slot: HUD reading is calibrated on Ana only."""
+    import json
+    import sqlite3
+
+    data_dir = ANALYZER_ROOT / "data" / "overwatch_stats"
+    db = sqlite3.connect(f"file:{data_dir / 'overwatch.sqlite'}?mode=ro", uri=True)
+    row = db.execute("SELECT name_en, lower(role) FROM heroes WHERE hero_id=?", (hero_id,)).fetchone()
+    if not row or hero_id not in pack_heroes(packs):
+        return None
+    name_en, role = row
+    names_ko = {x["key"]: x["name"] for x in json.loads((data_dir / "hero_localizations.json").read_text("utf-8"))}
+    abilities = [{"id": aid.split(":", 1)[1].replace("-", "_"), "name_ko": n, "name_en": n, "hud_hint": kind}
+                 for aid, n, kind in db.execute(
+                     "SELECT ability_id, name_en, kind FROM abilities WHERE hero_id=? AND is_perk=0 "
+                     "AND kind IN ('Weapon','Ability','Ultimate Ability') ORDER BY rowid", (hero_id,))]
+    rcfg = (gcfg.get("roles") or {}).get(role) or {}
+    titles = []
+    for pack in packs or []:
+        if pack.get("enabled") and role in (pack.get("roles") or [role]):
+            common = pack["common_file"]
+            common = common.get(role) if isinstance(common, dict) else common
+            path = ANALYZER_ROOT / pack["path"] / common if common else None
+            if path and path.exists():
+                titles += [f"{c['id']}: {c['title']}" for c in load_yaml(path).get("criteria") or []]
+    guidance = "\n".join([
+        f"{names_ko.get(hero_id, name_en)}({rcfg.get('name_ko', role)}) 포지셔닝: 아래 역할 공통 원칙(검수 전 초안, 기준 목록에 있음)과 이 영웅의 기준으로 판단하세요.",
+        *(f"- {t}" for t in titles),
+        *(gcfg.get("presence_guidance") or "").strip().splitlines(),
+    ])
+    return {
+        "hero_id": hero_id, "display_name_ko": names_ko.get(hero_id, name_en), "display_name_en": name_en,
+        "role": role, "profile_version": f"generated-{gcfg.get('version', '0')}", "review_status": "draft",
+        "patch_version": "unverified",
+        "patch_note": "자동 생성 프로필: 수집본 DB의 이름·역할·스킬과 검수 전 지식베이스 기준. HUD 판독은 아나 영상으로만 맞춰져 있어 연결하지 않음.",
+        "abilities": abilities, "observable_signals": list(gcfg.get("observable_signals") or []), "criteria": [],
+        "positioning_guidance": guidance, "generated": True,
+    }
+
+
+def load_hero(hero_id: str, heroes_dir: Path = HEROES_DIR, knowledge_packs: list[dict] | None = None,
+              generated: dict | None = None) -> HeroProfile:
     path = heroes_dir / f"{hero_id}.yaml"
-    if not path.exists():
-        raise ValueError(f"지원하지 않는 영웅: {hero_id!r} (지원: {', '.join(available_heroes(heroes_dir))})")
-    data = load_yaml(path)
+    if path.exists():
+        data = load_yaml(path)
+    else:
+        data = generated_profile_data(hero_id, knowledge_packs, generated) if generated and generated.get("enabled") else None
+        if data is None:
+            raise ValueError(f"지원하지 않는 영웅: {hero_id!r} (지원: {', '.join(available_heroes(heroes_dir, knowledge_packs, generated))})")
     common_path = heroes_dir / COMMON_FILE
     if common_path.exists():
         # knowledge that holds for every hero (e.g. no skills into an enemy Genji's deflect)
         common = load_yaml(common_path)
         data["observable_signals"] = [*data.get("observable_signals", []), *common.get("observable_signals", [])]
-        data["criteria"] = [*data.get("criteria", []), *common.get("criteria", [])]
+        # approvals were given for the roles in approved_roles (Ana coaching): for another role the same
+        # criteria come in as drafts until someone reviews them for that role
+        ok_roles = common.get("approved_roles")
+        shared = [c if not ok_roles or data.get("role") in ok_roles or c.get("status") != "approved"
+                  else {**c, "status": "draft"} for c in common.get("criteria", [])]
+        data["criteria"] = [*data.get("criteria", []), *shared]
         data["skill_counters"] = [*data.get("skill_counters", []), *common.get("skill_counters", [])]
         data["profile_version"] = f"{data['profile_version']}+common-{common.get('common_version', '?')}"
     if knowledge_packs:
-        extra = knowledge_criteria(hero_id, {c["id"] for c in data["criteria"]}, knowledge_packs)
+        extra = knowledge_criteria(hero_id, {c["id"] for c in data["criteria"]}, knowledge_packs, data.get("role", "support"))
         if extra:
             data["criteria"] = [*data["criteria"], *extra]
             data["profile_version"] += "+knowledge-" + "-".join(
-                str(load_yaml(ANALYZER_ROOT / p["path"] / p["common_file"]).get("pack_version", "?"))
-                for p in knowledge_packs if p.get("enabled"))
+                str(load_yaml(f).get("pack_version", "?")) for p in knowledge_packs
+                for f in _pack_files(p, hero_id, data.get("role", "support"))[-1:])
     profile = HeroProfile.model_validate(data)
     if profile.hero_id != hero_id:
         raise ValueError(f"{path}: hero_id {profile.hero_id!r} does not match file name")

@@ -27,6 +27,7 @@ CREATE TABLE IF NOT EXISTS jobs (
   file_name TEXT NOT NULL,
   video_path TEXT NOT NULL,
   video_sha TEXT NOT NULL DEFAULT '',
+  hero TEXT NOT NULL DEFAULT 'auto',   -- auto until the analyzer recognises the player's hero
   patch TEXT NOT NULL DEFAULT '',
   created_at TEXT NOT NULL,
   started_at TEXT,
@@ -48,6 +49,8 @@ class Store:
         self.path.parent.mkdir(parents=True, exist_ok=True)
         with self.conn() as c:
             c.executescript(SCHEMA)
+            if "hero" not in {r[1] for r in c.execute("PRAGMA table_info(jobs)")}:   # DB made before hero selection
+                c.execute("ALTER TABLE jobs ADD COLUMN hero TEXT NOT NULL DEFAULT 'ana'")
 
     @contextmanager
     def conn(self):
@@ -73,16 +76,16 @@ class Store:
 
     # jobs ----------------------------------------------------------------------
     def create_job(self, user_id: str, file_name: str, video_path: str, patch: str, video_sha: str = "",
-                   status: str = "queued", error: str = "") -> str:
+                   status: str = "queued", error: str = "", hero: str = "auto") -> str:
         job_id = uuid.uuid4().hex[:16]
         with self.conn() as c:
-            c.execute("INSERT INTO jobs (id, user_id, status, file_name, video_path, video_sha, patch, created_at, error) "
-                      "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                      (job_id, user_id, status, file_name, video_path, video_sha, patch, now_iso(), error))
+            c.execute("INSERT INTO jobs (id, user_id, status, file_name, video_path, video_sha, hero, patch, created_at, error) "
+                      "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                      (job_id, user_id, status, file_name, video_path, video_sha, hero, patch, now_iso(), error))
         return job_id
 
     def done_job_for_video(self, user_id: str, video_sha: str) -> dict | None:
-        """The user's finished analysis of the same video file, if any (shown again instead of re-running)."""
+        """The user's analysis of the same video file, if any (shown again instead of re-running)."""
         with self.conn() as c:
             r = c.execute("SELECT * FROM jobs WHERE user_id=? AND video_sha=? AND status IN ('queued','running','done') "
                           "ORDER BY created_at DESC LIMIT 1", (user_id, video_sha)).fetchone()

@@ -98,6 +98,19 @@ def test_upload_queues_a_job_and_counts_toward_the_week(client, tmp_path):
     assert r.status_code == 429 and "이번 주 분석 2회를 모두 썼습니다" in r.json()["error"]
 
 
+def test_hero_is_recognised_not_chosen(client, tmp_path):
+    """No hero picker: a job starts as auto and the list says the hero is not recognised yet; an explicit
+    hero (operator use) must be one the analyzer knows."""
+    login(client, ME)
+    page = client.get("/jobs").text
+    assert "<select" not in page and "자동 인식" in page
+    v = _video(tmp_path / "t.mp4", "1280x720")
+    assert client.put("/api/upload?name=t.mp4&hero=nobody", content=v.read_bytes()).status_code == 400
+    jid = client.put("/api/upload?name=t.mp4", content=v.read_bytes()).json()["job"]
+    assert client.app_ref.state.store.job(jid)["hero"] == "auto"
+    assert "t.mp4 <span class=muted>· 영웅 인식 전</span>" in client.get("/jobs").text
+
+
 def test_upload_rejects_unsupported_video_without_using_a_request(client, tmp_path):
     login(client, ME)
     low = _video(tmp_path / "low.mp4", "640x360")
@@ -158,7 +171,7 @@ def test_worker_runs_the_analyzer_and_exports_the_result(client, tmp_path):
     uploaded original is deleted (the page keeps its own small copy)."""
     login(client, ME)
     v = _video(tmp_path / "e2e.mp4", "1280x720", seconds=20)
-    jid = client.put("/api/upload?name=e2e.mp4", content=v.read_bytes()).json()["job"]
+    jid = client.put("/api/upload?name=e2e.mp4&hero=ana", content=v.read_bytes()).json()["job"]
     app = client.app_ref
     app.state.worker.run_job(app.state.store.job(jid))
     job = app.state.store.job(jid)
