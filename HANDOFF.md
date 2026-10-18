@@ -53,20 +53,18 @@ HUD 스킬·궁극기 사용, 사망(체력바 0), 처치자(킬피드 판독 + 
 
 ## 베타 서버 현재 상태 (2026-10-18)
 - Oracle Cloud 오사카(Japan Central) Always Free ARM, **1 OCPU · 6GB**, 디스크 100GB, Ubuntu 24.04. 계정은 Pay As You Go(무료 한도 내 0원, $1 예산 알림).
-  공인 IP 152.69.205.181, 도메인 https://owcoach-beta.duckdns.org (DuckDNS), docker compose(owcoach + caddy). 서버 코드: 커밋 7b9161a 까지 반영
-  (74fc138 인코딩 단축은 아직 서버에 없음 → `cd ~/OWcoach && git pull && docker compose up -d --build`).
+  공인 IP 152.69.205.181, 도메인 https://owcoach-beta.duckdns.org (DuckDNS), docker compose(owcoach + caddy). 서버 코드: 2026-10-18 실제 분석 전환 때 git pull(74fc138 포함).
 - 사용자는 태블릿 + Oracle Cloud Shell 로 접속(`ssh -i ~/owcoach.key ubuntu@152.69.205.181`). Cloud Shell 은 초기화되면 키 파일을 다시 붙여 넣어야 함.
   설정 파일 `~/OWcoach/.env`(OWCOACH_DOMAIN), `~/OWcoach/owcoach.env`(비밀 값, git 무시). 디스코드 ID는 최대 3명(사용자 + 친구 1명 추가됨).
-- **아직 mock 모드**(`OWCOACH_PROVIDER=mock`). Gemini 키 확인 중 `401 API key not valid, reason ACCESS_TOKEN_TYPE_UNSUPPORTED` →
-  들어간 값이 AI Studio API 키가 아님. 다음 단계: AI Studio(Get API key)에서 키를 다시 복사해
-  `read -rsp "Gemini 키 붙여넣고 Enter: " K && sed -i "s|^GEMINI_API_KEY=.*|GEMINI_API_KEY=$K|" owcoach.env && unset K && echo`,
-  `grep -c $'\r' owcoach.env` 가 0인지, `docker compose up -d --force-recreate owcoach` 후
-  `docker compose exec owcoach python -c "from google import genai; c=genai.Client(); print([m.name for m in c.models.list()][:3])"` 로 확인
-  (Client 를 변수에 담지 않으면 'Cannot send a request' 오류). 키 확인 뒤 mock 끄기: `sed -i '/^OWCOACH_PROVIDER=mock/d' owcoach.env`,
-  시험 기록 삭제(jobs 테이블 delete), force-recreate.
+- **실제 분석 모드**(2026-10-18 전환, `OWCOACH_PROVIDER` 줄 삭제 → config.yaml 의 gemini). mock 시험 기록(jobs)은 삭제함.
+  Gemini 키는 AI Studio 가 새로 주는 `AQ.` 형식(39자보다 김). 처음 넣은 값의 `401 ... ACCESS_TOKEN_TYPE_UNSUPPORTED`는 키 문제였고,
+  새로 만든 `AQ.` 키로 generateContent curl 200, 컨테이너 안 google-genai `generate_content` 응답까지 확인.
+  키 교체·확인 순서는 `service/DEPLOY_ORACLE.md` 8-1(쓰기 전에 curl 로 확인, sed 대신 grep -v + printf 로 기록).
+  같은 전환에서 `git pull && docker compose up -d --build` 로 서버 코드도 최신(74fc138 인코딩 단축 포함)으로 맞춤.
+  남은 것: 사용자 본인 영상으로 첫 실제 분석(시간·비용 확인), 분석 없을 때 `sudo reboot`.
 - 서버 실측(mock, 아나 4분 50초 영상): 분석기 48분 + 결과 화면 약 14분 = 1시간 2분. 단계별(초): preprocess 510, team 65, detail 936,
   hud_check 573, moment 111 (finalize 값 76075 는 시간 기록 버그였고 74fc138 에서 고침). 인코딩 단축(74fc138)의 효과는 **아직 측정 안 함**:
-  다음 세션에서 이전/새 코드를 1코어(taskset)로 같은 영상에 mock 으로 돌려 비교할 것.
+  `analyzer/tools/bench_encoding.sh 영상` 으로 이전/새 코드를 1코어(taskset)·mock 으로 돌려 비교(스크립트는 합성 영상으로 동작 확인만 함, 실제 영상 측정 대기).
 - 20분 영상 지원 요청 있음(보류): 1 OCPU 로는 4시간 이상 예상 → 서버를 4 OCPU·24GB로 올리거나(Stop→Edit Shape→Start, 무료 한도 내),
   전체 흐름 분석 5분 단위 분할 + 영상 길이 비례 예산 예약금 구현이 필요. 서버 `System restart required` 표시 있음(분석 없을 때 `sudo reboot`).
 
