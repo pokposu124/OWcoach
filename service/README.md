@@ -29,6 +29,7 @@ Google Cloud 결제 예산 알림도 함께 걸어 두는 것을 권합니다(�
 |---|---|
 | `DISCORD_CLIENT_ID`, `DISCORD_CLIENT_SECRET` | 1번에서 복사한 값 |
 | `OWCOACH_ALLOWED_DISCORD_IDS` | 쉼표로 구분한 디스코드 사용자 ID, 최대 3개 |
+| `OWCOACH_ADMIN_DISCORD_IDS` | (선택) 운영자 디스코드 ID(쉼표 구분, 위 목록에도 있어야 함). "내 분석" 아래 "전체 분석"에서 모든 사람의 진행·결과 페이지를 봄 |
 | `OWCOACH_BASE_URL` | `https://<도메인>` (디스코드 Redirect와 같아야 함) |
 | `OWCOACH_SESSION_SECRET` | 로그인 쿠키 서명 키, 32자 이상 무작위 (`python -c "import secrets;print(secrets.token_urlsafe(48))"`) |
 | `GEMINI_API_KEY`, `OWCOACH_GEMINI_MODEL` | 분석기와 같음 (`gemini-3.6-flash`) |

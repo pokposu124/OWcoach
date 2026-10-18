@@ -140,6 +140,28 @@ def test_results_are_private_to_their_owner(client, tmp_path):
     assert c2.get(f"/results/{jid}/../../owcoach.db").status_code == 404
 
 
+def test_admins_see_every_analysis_and_result(settings, tmp_path):
+    settings.admins = [ME]
+    app = create_app(settings, start_worker=False, discord_user=_fake_discord)
+    with TestClient(app) as c:
+        store = app.state.store
+        store.upsert_user(FRIEND, "friend")
+        jid = store.create_job(FRIEND, "f.mp4", "", "", "sha", status="done")
+        out = settings.data_dir / "results" / jid
+        out.mkdir(parents=True)
+        (out / "index.html").write_text("<p>friend result</p>")
+        login(c, ME)
+        page = c.get("/jobs").text
+        assert "전체 분석" in page and "<b>friend</b> · f.mp4" in page
+        assert "friend result" in c.get(f"/results/{jid}/").text and c.get(f"/jobs/{jid}").status_code == 200
+        c2 = TestClient(app)
+        login(c2, FRIEND)
+        assert "전체 분석" not in c2.get("/jobs").text   # everyone else still sees only their own
+    with pytest.raises(SystemExit):
+        Settings({"OWCOACH_DATA_DIR": str(tmp_path), "OWCOACH_SESSION_SECRET": "x" * 40,
+                  "OWCOACH_ALLOWED_DISCORD_IDS": "1", "OWCOACH_ADMIN_DISCORD_IDS": "2"})
+
+
 def test_monthly_budget_holds_reserves_for_unfinished_jobs(tmp_path):
     store = Store(tmp_path / "db.sqlite")
     store.upsert_user(ME, "me")

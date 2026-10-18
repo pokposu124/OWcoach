@@ -106,6 +106,10 @@ class Store:
         with self.conn() as c:
             return [dict(r) for r in c.execute("SELECT * FROM jobs WHERE user_id=? ORDER BY created_at DESC", (user_id,))]
 
+    def user_names(self) -> dict[str, str]:
+        with self.conn() as c:
+            return {r["discord_id"]: r["name"] for r in c.execute("SELECT discord_id, name FROM users")}
+
     def jobs_since(self, since_iso: str, user_id: str | None = None) -> list[dict]:
         q, args = "SELECT * FROM jobs WHERE created_at >= ?", [since_iso]
         if user_id:

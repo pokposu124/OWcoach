@@ -59,6 +59,10 @@ class Settings:
         self.allowed = [x.strip() for x in env.get("OWCOACH_ALLOWED_DISCORD_IDS", "").split(",") if x.strip()]
         if len(self.allowed) > int(self.cfg["max_users"]):
             raise SystemExit(f"OWCOACH_ALLOWED_DISCORD_IDS 에 {len(self.allowed)}명이 있습니다. 베타 최대 {self.cfg['max_users']}명.")
+        # operators: also see everyone's analyses and result pages (they have to be allowed users)
+        self.admins = [x.strip() for x in env.get("OWCOACH_ADMIN_DISCORD_IDS", "").split(",") if x.strip()]
+        if set(self.admins) - set(self.allowed):
+            raise SystemExit("OWCOACH_ADMIN_DISCORD_IDS 의 ID는 OWCOACH_ALLOWED_DISCORD_IDS 에도 있어야 합니다.")
         if len(self.session_secret) < 32:
             raise SystemExit("OWCOACH_SESSION_SECRET 이 없거나 짧습니다 (32자 이상).")
 
@@ -136,7 +140,7 @@ def create_app(settings: Settings | None = None, start_worker: bool = True,
     def own_job(request: Request, job_id: str) -> dict:
         u = need_user(request)
         job = store.job(job_id)
-        if not job or job["user_id"] != u["discord_id"]:
+        if not job or (job["user_id"] != u["discord_id"] and u["discord_id"] not in s.admins):
             raise HTTPException(status_code=404, detail="분석을 찾을 수 없습니다.")
         return job
 
@@ -210,6 +214,13 @@ def create_app(settings: Settings | None = None, start_worker: bool = True,
 {upload}</section>
 <section class=box><h2>내 분석</h2><div class=scroll><table>
 <tr><th>요청</th><th>영상</th><th>상태</th><th></th></tr>{rows}</table></div></section>"""
+        if u["discord_id"] in s.admins:
+            names = store.user_names()
+            every = "".join(_job_row(j, s.cfg["timezone"], hero_names, owner=names.get(j["user_id"], j["user_id"]))
+                            for j in sorted(store.jobs_since(""), key=lambda j: j["created_at"], reverse=True)) or "<tr><td colspan=4 class=muted>분석이 없습니다.</td></tr>"
+            body += f"""
+<section class=box><h2>전체 분석</h2><div class=scroll><table>
+<tr><th>요청</th><th>사용자 · 영상</th><th>상태</th><th></th></tr>{every}</table></div></section>"""
         return page("내 분석", body, u)
 
     @app.get("/jobs/{job_id}", response_class=HTMLResponse)
@@ -315,7 +326,7 @@ STATUS_KO = {"queued": "대기", "running": "분석 중", "done": "완료", "fai
 ROLE_KO = {"support": "지원", "damage": "딜러", "tank": "탱커"}
 
 
-def _job_row(j: dict, tz: str, hero_names: dict | None = None) -> str:
+def _job_row(j: dict, tz: str, hero_names: dict | None = None, owner: str | None = None) -> str:
     link = (f'<a href="/results/{j["id"]}/">결과 보기</a>' if j["status"] == "done" else f'<a href="/jobs/{j["id"]}">자세히</a>')
     stage = f' <span class=muted>{_e(j["stage"])}</span>' if j["status"] == "running" else ""
     hid = j.get("hero") or "auto"
@@ -327,7 +338,8 @@ def _job_row(j: dict, tz: str, hero_names: dict | None = None) -> str:
     if mains:   # most played heroes (code-read team-list portraits), with their share of the match
         hero = ", ".join(m["hero"] + (f" {round(m['share'] * 100)}%" if m.get("share") is not None else "") for m in mains[:3])
     info = " · ".join(x for x in (j.get("map_name") or "", hero) if x)
-    return (f"<tr><td>{_local(j['created_at'], tz)}</td><td>{_e(j['file_name'])} <span class=muted>· {_e(info)}</span></td>"
+    who = f"<b>{_e(owner)}</b> · " if owner else ""
+    return (f"<tr><td>{_local(j['created_at'], tz)}</td><td>{who}{_e(j['file_name'])} <span class=muted>· {_e(info)}</span></td>"
             f"<td><span class='st st-{j['status']}'>{STATUS_KO.get(j['status'], j['status'])}</span>{stage}</td><td>{link}</td></tr>")
 
 
