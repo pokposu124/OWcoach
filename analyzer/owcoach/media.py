@@ -116,29 +116,31 @@ def validate_input(path: Path, info: ProbeInfo, rules: dict) -> list[str]:
     return reasons
 
 
-def make_proxy(src: Path, dst: Path, max_height: int, crf: int, fps: int) -> Path:
+def make_proxy(src: Path, dst: Path, max_height: int, crf: int, fps: int, preset: str = "veryfast") -> Path:
     """Re-encode without trimming so that proxy timestamps equal original timestamps."""
     dst.parent.mkdir(parents=True, exist_ok=True)
     tmp = dst.with_suffix(".tmp.mp4")
     _run([
         _require("ffmpeg"), "-y", "-v", "error", "-i", str(src),
         "-vf", f"scale=-2:'min({max_height},ih)',fps={fps}",
-        "-c:v", "libx264", "-preset", "veryfast", "-crf", str(crf), "-pix_fmt", "yuv420p",
+        "-c:v", "libx264", "-preset", preset, "-crf", str(crf), "-pix_fmt", "yuv420p",
         "-an", "-movflags", "+faststart", str(tmp),
     ])
     tmp.replace(dst)
     return dst
 
 
-def cut_clip(src: Path, dst: Path, start: float, end: float, max_height: int, crf: int) -> Path:
-    """Frame-accurate cut (re-encoded). Clip time 0 corresponds to original time `start`."""
+def cut_clip(src: Path, dst: Path, start: float, end: float, max_height: int, crf: int,
+             fps: float | None = None, preset: str = "veryfast") -> Path:
+    """Frame-accurate cut (re-encoded). Clip time 0 corresponds to original time `start`. fps caps the
+    frame rate (the model samples clips at a few frames per second; code readings use the original)."""
     dst.parent.mkdir(parents=True, exist_ok=True)
     tmp = dst.with_suffix(".tmp.mp4")
     _run([
         _require("ffmpeg"), "-y", "-v", "error", "-ss", f"{start:.3f}", "-i", str(src),
         "-t", f"{end - start:.3f}",
-        "-vf", f"scale=-2:'min({max_height},ih)'",
-        "-c:v", "libx264", "-preset", "veryfast", "-crf", str(crf), "-pix_fmt", "yuv420p",
+        "-vf", f"scale=-2:'min({max_height},ih)'" + (f",fps={fps}" if fps else ""),
+        "-c:v", "libx264", "-preset", preset, "-crf", str(crf), "-pix_fmt", "yuv420p",
         "-an", "-movflags", "+faststart", str(tmp),
     ])
     tmp.replace(dst)

@@ -327,7 +327,7 @@ def write_report(run_dir: Path) -> Path:
 def export_site(run_dir: Path, out_dir: Path, video: Path, video_height: int = 480, video_kbps: int = 360) -> Path:
     """Static, self-contained copy of the result view for web hosting (e.g. GitHub Pages).
 
-    Writes out_dir/index.html, out_dir/evidence/*.jpg and out_dir/media/web.mp4, a smaller two-pass
+    Writes out_dir/index.html, out_dir/evidence/*.jpg and out_dir/media/web.mp4, a smaller one-pass
     re-encode of the source video (same timeline) so the page stays light enough to host.
     """
     import shutil
@@ -345,11 +345,10 @@ def export_site(run_dir: Path, out_dir: Path, video: Path, video_height: int = 4
         for fr in f.evidence_frames:
             shutil.copy2(run_dir / fr.path, out_dir / fr.path)
     web = out_dir / "media" / "web.mp4"
-    common = ["-i", str(video), "-vf", f"scale=-2:{video_height}", "-c:v", "libx264", "-preset", "medium",
-              "-b:v", f"{video_kbps}k", "-an", "-passlogfile", str(out_dir / "media" / "pass")]
-    subprocess.run([_require("ffmpeg"), "-v", "error", "-y", *common, "-pass", "1", "-f", "mp4", "/dev/null"], check=True)
-    subprocess.run([_require("ffmpeg"), "-v", "error", "-y", *common, "-pass", "2", "-movflags", "+faststart", str(web)], check=True)
-    for log in (out_dir / "media").glob("pass*"):
-        log.unlink()
+    # one pass, quality-targeted and rate-capped: a two-pass "medium" encode took twice as long on one core
+    # (60 s sample: 48.6 s vs 22.2 s) for a page that only needs to be watchable
+    subprocess.run([_require("ffmpeg"), "-v", "error", "-y", "-i", str(video), "-vf", f"scale=-2:{video_height}",
+                    "-c:v", "libx264", "-preset", "veryfast", "-crf", "30", "-maxrate", f"{video_kbps}k",
+                    "-bufsize", f"{video_kbps * 2}k", "-an", "-movflags", "+faststart", str(web)], check=True)
     (out_dir / "index.html").write_text(build_report_html(result, "media/web.mp4"), "utf-8")
     return out_dir / "index.html"

@@ -860,7 +860,7 @@ class Pipeline:
 
                     def run_moment(a=a, x=x, start=start, end=end, name=name):
                         clip = store.dir / "media" / "clips" / f"{name}.mp4"
-                        cut_clip(video, clip, start, end, pcfg["max_height"], pcfg["crf"])
+                        cut_clip(video, clip, start, end, pcfg["max_height"], pcfg["crf"], pcfg.get("clip_fps"), pcfg.get("preset", "veryfast"))
                         prompt = mp.render(clip_duration_seconds=round(end - start, 2), use_offset_seconds=round(x - start, 2),
                                            hero_name_ko=hero.display_name_ko, ability_name=a.name_ko,
                                            team_context=team_context, counters=counters)
@@ -1000,7 +1000,7 @@ class Pipeline:
         if pcfg["enabled"]:
             if force & {"proxy"} or store.load_stage("proxy", proxy_fp) is None or not proxy_path.exists():
                 self.log("  프록시 영상 생성")
-                make_proxy(video, proxy_path, pcfg["max_height"], pcfg["crf"], pcfg["fps"])
+                make_proxy(video, proxy_path, pcfg["max_height"], pcfg["crf"], pcfg["fps"], pcfg.get("preset", "veryfast"))
                 store.save_stage("proxy", {"fingerprint": proxy_fp, "output": {"path": "media/proxy.mp4"}})
             upload_src = proxy_path
         else:
@@ -1141,7 +1141,7 @@ class Pipeline:
 
             def run_detail(scene: Scene = scene):
                 clip = store.dir / "media" / "clips" / f"{scene.scene_id}.mp4"
-                cut_clip(video, clip, scene.window_start, scene.window_end, pcfg["max_height"], pcfg["crf"])
+                cut_clip(video, clip, scene.window_start, scene.window_end, pcfg["max_height"], pcfg["crf"], pcfg.get("clip_fps"), pcfg.get("preset", "veryfast"))
                 prompt = dp.render(
                     clip_duration_seconds=scene.duration, hero_name_ko=hero.display_name_ko,
                     hero_name_en=hero.display_name_en, candidate_reasons=" / ".join(scene.reasons),
@@ -1231,7 +1231,7 @@ class Pipeline:
 
         # 5. finalize -------------------------------------------------------------------
         self.log("[5/5] 검증·중복 제거·근거 프레임 추출")
-        t = time.monotonic()
+        t_fin = time.monotonic()
         evidence_dir = store.dir / "evidence"
         if evidence_dir.exists():
             shutil.rmtree(evidence_dir)
@@ -1263,10 +1263,10 @@ class Pipeline:
             feedback = kept
         dpre = float((cfg.get("death_check") or {}).get("pre_seconds", 10.0))
         for d in self._deaths:
-            t = d["time_seconds"]
+            td = d["time_seconds"]
             # the feedback has to run up to the death itself, not merely overlap the 10 s before it
-            if not any(f.start_time_seconds <= t + 1 and f.end_time_seconds >= t - 3 for f in feedback):
-                self.warnings.append(f"사망 {fmt_time(t)} 직전 {dpre:g}초에 대한 피드백이 없음")
+            if not any(f.start_time_seconds <= td + 1 and f.end_time_seconds >= td - 3 for f in feedback):
+                self.warnings.append(f"사망 {fmt_time(td)} 직전 {dpre:g}초에 대한 피드백이 없음")
         # kill feed of each item's time span (all scenes: an item can sit at a scene's edge)
         feed = sorted({(e["time_seconds"], e["killer"]["player_name"], e["victim"]["player_name"]): e
                        for rec in scene_records.values() for e in rec.get("kill_feed", [])}.values(), key=lambda e: e["time_seconds"])
@@ -1281,7 +1281,7 @@ class Pipeline:
                     x = e["hud_check"]["hud_use_time_seconds"]
                     covered.add((e["ability_id"], x))
                     self.warnings.append(f"{ability_ko.get(e['ability_id'], e['ability_id'])} {fmt_time(x)} 사용에 대한 피드백이 없음")
-        self.timings["finalize"] = round(time.monotonic() - t, 3)
+        self.timings["finalize"] = round(time.monotonic() - t_fin, 3)
 
         result = AnalysisResult(
             run_id=run_id,

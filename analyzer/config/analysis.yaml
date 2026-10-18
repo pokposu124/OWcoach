@@ -22,7 +22,12 @@ preprocess:
     enabled: true
     max_height: 720
     crf: 28
-    fps: 30
+    # 인코딩 시간 단축 (서버 1코어 실측: 4분 50초 영상 사본 만들기 8분 30초). 전체 흐름 분석은 초당 1장, 장면은 초당 4~10장만 보므로
+    # 사본 10fps·장면 클립 15fps면 충분하고, 코드 판독(HUD·윤곽선 등)은 원본에서 한다. 1코어 60초 영상 기준 veryfast 30fps 41.5초 →
+    # ultrafast 15.7초, 10fps 23.1초.
+    fps: 10
+    clip_fps: 15
+    preset: ultrafast
   evidence_frame_max_width: 1280   # 근거 프레임 JPEG 최대 폭
 
 # 팀 판별: 영상 전체(저해상도)로는 상단 팀 목록의 작은 글씨를 읽지 못해 이름을 지어내는 문제가 있어(실측),
