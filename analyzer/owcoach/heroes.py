@@ -236,8 +236,11 @@ def load_hero(hero_id: str, heroes_dir: Path = HEROES_DIR, knowledge_packs: list
         # approvals were given for the roles in approved_roles (Ana coaching): for another role the same
         # criteria come in as drafts until someone reviews them for that role
         ok_roles = common.get("approved_roles")
-        shared = [c if not ok_roles or data.get("role") in ok_roles or c.get("status") != "approved"
-                  else {**c, "status": "draft"} for c in common.get("criteria", [])]
+        shared = []
+        for c in common.get("criteria", []):
+            roles = c.get("approved_roles") or ok_roles
+            c = {k: v for k, v in c.items() if k != "approved_roles"}
+            shared.append(c if not roles or data.get("role") in roles or c.get("status") != "approved" else {**c, "status": "draft"})
         data["criteria"] = [*data.get("criteria", []), *shared]
         data["skill_counters"] = [*data.get("skill_counters", []), *common.get("skill_counters", [])]
         data["profile_version"] = f"{data['profile_version']}+common-{common.get('common_version', '?')}"

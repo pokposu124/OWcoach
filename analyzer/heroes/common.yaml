@@ -3,6 +3,7 @@
 # 형식은 heroes/<hero>.yaml 의 observable_signals / criteria 와 같다. criterion id 는 common. 으로 시작한다.
 common_version: "0.4.0"
 # 아래 approved 기준은 아나 코칭에서 승인됐다. 다른 역할 영웅에는 그 역할로 검수될 때까지 '검수 전 참고'(draft)로 붙는다.
+# 기준마다 approved_roles 를 적으면 그 기준은 그 역할들에 승인으로 붙는다.
 approved_roles: [support]
 
 # 적이 막거나 되돌리는 스킬. 플레이어 스킬 사용 순간마다 이 중 하나가 그 방향에서 켜져 있었는지 따로 확인한다(moment 단계).
@@ -35,6 +36,7 @@ criteria:
   - id: common.skill.no_skills_into_deflect
     category: skill_usage
     status: approved
+    approved_roles: [support, damage, tank]   # 역할과 무관한 대응 (사용자 2026-10-18: 모든 역할에 승인)
     title: "겐지 튕겨내기 중 스킬 사용 금지"
     description: >
       적 겐지가 튕겨내기를 쓰는 동안 그 겐지 쪽으로 스킬을 쓰면 대부분 되돌아오거나 낭비된다.

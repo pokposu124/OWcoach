@@ -1343,7 +1343,9 @@ def test_generated_profile_for_a_damage_hero(cfg):
     assert [a.name_en for a in t.abilities] == ["Pulse Pistols", "Blink", "Recall", "Pulse Bomb"]
     assert all(a.hud_slot is None for a in t.abilities)
     prefixes = {c.id.split(".")[0] for c in t.criteria}
-    assert prefixes == {"tracer", "damage", "common"} and {c.status for c in t.criteria} == {"draft"}
+    assert prefixes == {"tracer", "damage", "common"}
+    # the deflect rule is approved for every role (user 2026-10-18); the other Ana-era common criteria stay drafts
+    assert {c.id for c in t.criteria if c.status == "approved"} == {"common.skill.no_skills_into_deflect"}
     assert not t.presence_withholds_good_positioning and "damage.positioning.angle" in t.positioning_guidance
     r = load_hero("reinhardt", knowledge_packs=packs, generated=gen)
     assert {c.id.split(".")[0] for c in r.criteria} == {"reinhardt", "tank", "common"}
