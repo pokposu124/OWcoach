@@ -50,6 +50,27 @@ class Scene:
         }
 
 
+def outside_spans(scenes: list[Scene], spans: list[dict], min_seconds: float,
+                  discarded: list[DiscardedItem]) -> list[Scene]:
+    """Scenes with the given spans cut out (spans: [{start_seconds, end_seconds, hero}], e.g. stretches the
+    player spent on a hero this profile does not cover). A scene keeps its longest remaining piece if that
+    is at least min_seconds long; otherwise it is dropped and listed in discarded."""
+    out = []
+    for sc in scenes:
+        pieces = [(sc.window_start, sc.window_end)]
+        for sp in spans:
+            a, b = sp["start_seconds"], sp["end_seconds"]
+            pieces = [q for x, y in pieces for q in ((x, min(y, a)), (max(x, b), y)) if q[1] - q[0] > 0]
+        best = max(pieces, key=lambda q: q[1] - q[0], default=None)
+        if best and best[1] - best[0] >= min_seconds:
+            out.append(Scene(sc.scene_id, round(best[0], 2), round(best[1], 2), sc.categories, sc.reasons, sc.priority))
+        else:
+            hero = next((sp["hero"] for sp in spans if sp["start_seconds"] < sc.window_end and sp["end_seconds"] > sc.window_start), "")
+            discarded.append(DiscardedItem(reason="지원하지 않는 영웅 구간", scene_id=sc.scene_id,
+                                           summary=f"{fmt_range(sc.window_start, sc.window_end)} 장면: 플레이어가 {hero}(으)로 플레이한 구간이라 분석하지 않음"))
+    return out
+
+
 def plan_scenes(overview: OverviewResponse, duration: float, cfg: dict, max_candidates: int,
                 discarded: list[DiscardedItem], forced: list[SceneCandidate] | None = None) -> list[Scene]:
     """forced: candidates that must be analysed (player deaths, HUD-detected ultimates and force_scene skills). They are always

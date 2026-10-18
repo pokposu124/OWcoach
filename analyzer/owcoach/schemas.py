@@ -15,7 +15,7 @@ Category = Literal["skill_usage", "positioning", "ultimate_usage"]
 Visibility = Literal["clear", "partial", "unclear"]
 Level = Literal["low", "medium", "high"]
 
-RESULT_SCHEMA_VERSION = "1.3.0"
+RESULT_SCHEMA_VERSION = "1.4.0"
 
 
 # ---------------------------------------------------------------- stage 2: overview (model output)
@@ -304,6 +304,8 @@ class AnalysisResult(BaseModel):
     skill_uses: list[dict] = Field(default_factory=list,
                                    description="HUD로 확인한 스킬·궁극기 사용과 코드 판별 결과(대상·명중), 순간 확인(모델) 포함")
     hud_ultimate_uses_seconds: list[float] = Field(default_factory=list, description="HUD로 감지한 궁극기 사용 시각(초)")
+    skipped_hero_spans: list[dict] = Field(default_factory=list,
+                                           description="플레이어가 이 영웅 프로필 외 영웅으로 플레이해 분석하지 않은 구간 (hero, start_seconds, end_seconds; 팀 목록 초상화로 코드 확인)")
     team: dict | None = Field(default=None, description="팀 판별 단계 결과 (team_identification, roster, 사용한 프레임 시각)")
     overview: dict
     feedback: list[FeedbackItem]

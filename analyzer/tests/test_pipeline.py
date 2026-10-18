@@ -1294,3 +1294,38 @@ def test_knowledge_pack_criteria_join_as_draft_references(cfg):
     assert merged.profile_version.endswith("+knowledge-0.1.0")
     off = [{**cfg["knowledge_packs"][0], "enabled": False}]
     assert len(load_hero("ana", knowledge_packs=off).criteria) == len(plain.criteria)
+
+
+def test_other_hero_spans_from_the_players_slot():
+    """Ana 0-120 s, an unreadable gap, Kiriko 128-200 s, Ana again 206 s on: the stretch from the end of
+    the first Ana stretch to the start of the second is skipped (the swap lies inside the gaps). A gap
+    between two Ana stretches stays; another player's swap and an unknown player change nothing."""
+    from owcoach.pipeline import other_hero_spans
+
+    def record(me, segs):
+        return {"team_identification": {"player_name": me},
+                "roster": [{"slot": 9, "player_name": "ME", "hero_history": segs},
+                           {"slot": 1, "player_name": "OTHER", "hero_history": [{"hero": "겐지", "start_seconds": 0, "end_seconds": 300}]}]}
+
+    h = lambda hero, a, b: {"hero": hero, "start_seconds": a, "end_seconds": b}
+    swap = record("ME", [h("아나", 0, 120), h("키리코", 128, 200), h("아나", 206, 300)])
+    assert other_hero_spans(swap, "아나", 300) == [{"hero": "키리코", "start_seconds": 120, "end_seconds": 206}]
+    tail = record("ME", [h("아나", 0, 120), h("키리코", 128, 200), h("루시우", 204, 290)])
+    assert other_hero_spans(tail, "아나", 300) == [{"hero": "키리코, 루시우", "start_seconds": 120, "end_seconds": 300}]
+    head = record("ME", [h("메르시", 0, 40), h("아나", 46, 300)])
+    assert other_hero_spans(head, "아나", 300) == [{"hero": "메르시", "start_seconds": 0.0, "end_seconds": 46}]
+    assert other_hero_spans(record("ME", [h("아나", 0, 100), h("아나", 130, 300)]), "아나", 300) == []
+    assert other_hero_spans(record("NOBODY", [h("키리코", 0, 300)]), "아나", 300) == []
+    assert other_hero_spans(None, "아나", 300) == []
+
+
+def test_scenes_lose_other_hero_stretches(cfg):
+    from owcoach.postprocess import Scene, outside_spans
+
+    spans = [{"hero": "키리코", "start_seconds": 120, "end_seconds": 206}]
+    scenes = [Scene("scene-01", 10, 40), Scene("scene-02", 110, 130), Scene("scene-03", 130, 200), Scene("scene-04", 204, 230)]
+    discarded = []
+    out = outside_spans(scenes, spans, 3.0, discarded)
+    assert [(s.scene_id, s.window_start, s.window_end) for s in out] == [
+        ("scene-01", 10, 40), ("scene-02", 110, 120), ("scene-04", 206, 230)]
+    assert [d.scene_id for d in discarded] == ["scene-03"] and "키리코" in discarded[0].summary

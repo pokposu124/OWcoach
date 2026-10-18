@@ -258,6 +258,9 @@ def build_report_html(result: AnalysisResult, video_src: str, fragment: bool = F
              f"<section class=enemy><h2>적</h2><ul>{side('enemy')}</ul></section></div>") if team else ""
 
     notice = (f'<p class="notice mock">{_e(result.notice)}</p>' if result.analysis_mode == "mock" else "")
+    for sp in result.skipped_hero_spans:
+        notice += (f'<p class=notice>{_t(sp["start_seconds"])} ~ {_t(sp["end_seconds"])}: {_e(sp["hero"])}(으)로 플레이한 구간입니다. '
+                   f'아직 {_e(result.hero_display_name)} 외 영웅은 지원하지 않아 이 구간은 분석하지 않았습니다.</p>')
     if any(f.criteria_review_status != "approved" for f in feedback):
         notice += '<p class=notice>코칭 기준이 코치 검수 전 초안입니다. 등급과 판단은 참고용입니다.</p>'
 

@@ -62,7 +62,7 @@ from .media import (
     sha256_file,
     validate_input,
 )
-from .postprocess import Scene, detail_to_original, finalize_feedback, plan_scenes, validate_result
+from .postprocess import Scene, detail_to_original, finalize_feedback, outside_spans, plan_scenes, validate_result
 from .prompts import load_prompt
 from .providers import AnalysisProvider, ImageRequest, ProviderError, TextRequest, VideoRequest
 from .schemas import (
@@ -222,6 +222,32 @@ def comp_note_lines(team: dict, notes: list[dict]) -> list[str]:
         if hit:
             lines.append(f"- 코치 조합 메모 ({fmt_time(hit[0])}부터 해당하는 조합): {n['note'].strip()}")
     return lines
+
+
+def other_hero_spans(team_record: dict | None, hero_name: str, duration: float) -> list[dict]:
+    """Stretches the player spent on another hero than the profile's, from the player's own team-list slot
+    (portrait timeline, code-read). The unreadable gap next to another hero's stretch goes with it (the swap
+    happened somewhere inside it); a gap between two stretches of the profile's hero stays. Empty when the
+    player's slot or its history is unknown. [{hero, start_seconds, end_seconds}]"""
+    team_record = team_record or {}
+    me = (team_record.get("team_identification") or {}).get("player_name")
+    slot = next((r for r in team_record.get("roster") or [] if me and r.get("player_name") == me), None)
+    segs = sorted((slot or {}).get("hero_history") or [], key=lambda h: h["start_seconds"])
+    if not segs:
+        return []
+    spans = []
+    for i, h in enumerate(segs):
+        if h["hero"] == hero_name:
+            continue
+        prev, nxt = (segs[i - 1] if i else None), (segs[i + 1] if i + 1 < len(segs) else None)
+        start = prev["end_seconds"] if prev else 0.0
+        end = nxt["start_seconds"] if nxt else duration
+        if spans and spans[-1]["end_seconds"] >= start:          # two other heroes in a row: one stretch
+            spans[-1]["end_seconds"] = end
+            spans[-1]["hero"] += f", {h['hero']}"
+        else:
+            spans.append({"hero": h["hero"], "start_seconds": round(start, 2), "end_seconds": round(end, 2)})
+    return spans
 
 
 class RunStore:
@@ -430,6 +456,9 @@ class Pipeline:
             if low:
                 self.warnings.append("초상화 대조로 영웅을 확정하지 못함(불명 처리): " + ", ".join(low))
         return team, record
+
+    def _on_other_hero(self, t: float) -> bool:
+        return any(sp["start_seconds"] <= t <= sp["end_seconds"] for sp in getattr(self, "_other_spans", []))
 
     def _presence_track(self, video: Path, start: float, end: float) -> list[dict]:
         """Allies / enemies on screen (outline colours) every 1/fps s, each sample marked alive or not."""
@@ -964,6 +993,13 @@ class Pipeline:
         if self._team_color:
             self.log(f"  아군 색(내 초상화 테두리): {self._team_color.get('ally_color') or '판별 못 함'} — {self._team_color['note']}")
         team_context = team_context_text(team_record, self._team_color, load_comp_notes())
+        # the profile covers one hero: stretches on another hero (a mid-match swap) are left out everywhere
+        self._other_spans = other_hero_spans(team_record, hero.display_name_ko, duration)
+        for sp in self._other_spans:
+            msg = (f"{fmt_range(sp['start_seconds'], sp['end_seconds'])}: {sp['hero']}(으)로 플레이 (팀 목록 초상화, 코드 확인). "
+                   f"아직 {hero.display_name_ko} 외 영웅은 지원하지 않아 이 구간은 분석하지 않음")
+            self.log("  " + msg)
+            self.warnings.append(msg)
         self.timings["team"] = round(time.monotonic() - t, 3)
 
         # 2b. overview ------------------------------------------------------------------
@@ -1000,7 +1036,7 @@ class Pipeline:
         hcfg = cfg.get("hud_check") or {"enabled": False}
         self._hud_ult_uses = []
         if hcfg.get("enabled") and any(a.hud_slot == "ultimate" for a in hero.abilities) and "ultimate" in hcfg["regions"]:
-            self._hud_ult_uses = scan_uses(video, duration, "ultimate", hcfg)
+            self._hud_ult_uses = [x for x in scan_uses(video, duration, "ultimate", hcfg) if not self._on_other_hero(x)]
             if self._hud_ult_uses:
                 self.log("  HUD 궁극기 사용 감지: " + ", ".join(fmt_time(x) for x in self._hud_ult_uses))
         hud_candidates = [SceneCandidate(
@@ -1012,7 +1048,8 @@ class Pipeline:
         if hcfg.get("enabled"):
             for a in hero.abilities:
                 if a.force_scene and a.hud_slot and a.hud_slot != "ultimate" and a.hud_slot in hcfg["regions"]:
-                    self._hud_skill_uses[a.id] = scan_uses(video, duration, a.hud_slot, hcfg)
+                    # the slot belongs to another hero's ability while the player is on that hero
+                    self._hud_skill_uses[a.id] = [x for x in scan_uses(video, duration, a.hud_slot, hcfg) if not self._on_other_hero(x)]
                     if self._hud_skill_uses[a.id]:
                         self.log(f"  HUD {a.name_ko} 사용 감지: " + ", ".join(fmt_time(x) for x in self._hud_skill_uses[a.id]))
         names_ko = {a.id: a.name_ko for a in hero.abilities}
@@ -1034,9 +1071,11 @@ class Pipeline:
             start_time_seconds=max(0.0, round(d["time_seconds"] - dpre, 2)), end_time_seconds=d["time_seconds"],
             category="positioning", priority=5,
             reason_observed=f"사망 {fmt_time(d['time_seconds'])}: 직전 {dpre:g}초 상황 분석 필수 ({d['source']})")
-            for d in self._deaths]
+            for d in self._deaths if not self._on_other_hero(d["time_seconds"])]
         scenes = plan_scenes(overview, duration, cfg["detail"], ocfg["max_candidates"], self.discarded,
                              forced=[*hud_candidates, *skill_candidates, *death_candidates])
+        if self._other_spans:
+            scenes = outside_spans(scenes, self._other_spans, float(cfg["detail"]["min_scene_seconds"]), self.discarded)
         self.log(f"  후보 장면 {len(scenes)}개: " + ", ".join(f"{s.window_start:.1f}-{s.window_end:.1f}s" for s in scenes))
 
         # 3. detail ---------------------------------------------------------------------
@@ -1165,7 +1204,20 @@ class Pipeline:
 
         feedback, actions = finalize_feedback(coaching, scene_records, hero, duration, out, extract, self.discarded,
                                               hud_enabled=bool(hcfg.get("enabled")),
-                                              death_times=[d["time_seconds"] for d in self._deaths])
+                                              death_times=[d["time_seconds"] for d in self._deaths
+                                                           if not self._on_other_hero(d["time_seconds"])])
+        # safety net: nothing graded with this hero's criteria inside another hero's stretch
+        kept = [f for f in feedback if not any(sp["start_seconds"] < f.end_time_seconds and sp["end_seconds"] > f.start_time_seconds
+                                               for sp in self._other_spans)]
+        for f in feedback:
+            if f not in kept:
+                self.discarded.append(DiscardedItem(reason="지원하지 않는 영웅 구간", scene_id=f.scene_id,
+                                                    summary=f"{fmt_range(f.start_time_seconds, f.end_time_seconds)} {f.category}: {f.observation[:80]}"))
+        if len(kept) != len(feedback):
+            ids = {f.id for f in kept}
+            for a in actions:
+                a.related_feedback_ids = [r for r in a.related_feedback_ids if r in ids]
+            feedback = kept
         dpre = float((cfg.get("death_check") or {}).get("pre_seconds", 10.0))
         for d in self._deaths:
             t = d["time_seconds"]
@@ -1195,6 +1247,7 @@ class Pipeline:
             hero=hero.hero_id, hero_display_name=hero.display_name_ko,
             game_patch_version=game_patch, criteria_patch_version=hero.patch_version, team=team_record,
             hud_ultimate_uses_seconds=self._hud_ult_uses, player_deaths=self._deaths,
+            skipped_hero_spans=self._other_spans,
             skill_uses=self._skill_uses(scene_records),
             video=VideoInfo(file_name=video.name, sha256=sha, duration_seconds=duration, width=info.width,
                             height=info.height, fps=info.fps, codec=info.codec),

@@ -57,6 +57,19 @@
           "default": null,
           "title": "Total"
         },
+        "full_run_total": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "캐시 없이 처음부터 분석했을 때의 비용 (재사용한 단계 포함)",
+          "title": "Full Run Total"
+        },
         "note": {
           "title": "Note",
           "type": "string"
@@ -255,6 +268,21 @@
           ],
           "title": "Verification",
           "type": "string"
+        },
+        "game_rule": {
+          "default": "",
+          "description": "판단에 쓴 게임 규칙·수치 (Overwatch Wiki 수집본, 단위·조건 포함)",
+          "title": "Game Rule",
+          "type": "string"
+        },
+        "kill_feed": {
+          "description": "이 피드백 시간대의 킬피드 (처치자 > 죽은 사람, 팀·영웅은 팀 목록과 대조)",
+          "items": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "title": "Kill Feed",
+          "type": "array"
         }
       },
       "required": [
@@ -375,6 +403,76 @@
           "default": null,
           "description": "무력화 스킬 사용 후 플레이어가 죽기까지 걸린 시간(초)",
           "title": "Death After Seconds"
+        },
+        "ally_health": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "사용 순간 아군 체력 (팀 목록 체력바 비율, 치명상 아군)",
+          "title": "Ally Health"
+        },
+        "heal_check": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "수류탄을 맞은 아군·자신 (머리 위 체력바 노란 테두리, 내 HUD 아이콘 노랑)",
+          "title": "Heal Check"
+        },
+        "antiheal_check": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "치유 차단을 받은 플레이어 (팀 목록 체력바 보라 테두리)",
+          "title": "Antiheal Check"
+        },
+        "kill_check": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "사용 직후 처치 관여 (화면 처치 알림 + 팀 목록 적 칸 변화)",
+          "title": "Kill Check"
+        },
+        "reflect_check": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "반사 판별 (생체 수류탄: 직후 자신에게 치유 차단 아이콘 = 튕겨내기 등에 반사됨)",
+          "title": "Reflect Check"
         }
       },
       "required": [
@@ -542,6 +640,20 @@
         "config_fingerprint": {
           "title": "Config Fingerprint",
           "type": "string"
+        },
+        "game_data": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "게임 수치 자료 (수집일, 공식 패치 대조 범위, 출처·라이선스)",
+          "title": "Game Data"
         }
       },
       "required": [
@@ -618,7 +730,7 @@
   },
   "properties": {
     "schema_version": {
-      "default": "1.2.0",
+      "default": "1.4.0",
       "title": "Schema Version",
       "type": "string"
     },
@@ -673,7 +785,7 @@
       "$ref": "#/$defs/VideoInfo"
     },
     "player_deaths": {
-      "description": "감지한 플레이어 사망 (time_seconds, source)",
+      "description": "감지한 플레이어 사망 (time_seconds, source, killer: 킬피드로 확인한 처치자)",
       "items": {
         "additionalProperties": true,
         "type": "object"
@@ -696,6 +808,15 @@
         "type": "number"
       },
       "title": "Hud Ultimate Uses Seconds",
+      "type": "array"
+    },
+    "skipped_hero_spans": {
+      "description": "플레이어가 이 영웅 프로필 외 영웅으로 플레이해 분석하지 않은 구간 (hero, start_seconds, end_seconds; 팀 목록 초상화로 코드 확인)",
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Skipped Hero Spans",
       "type": "array"
     },
     "team": {
