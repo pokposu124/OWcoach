@@ -124,10 +124,40 @@ docker compose exec owcoach python -c "import sqlite3;c=sqlite3.connect('/data/o
 
 ## 8. 실제 분석으로 전환
 
-`owcoach.env` 에서 `OWCOACH_PROVIDER=mock` 줄을 지우고:
+### 8-1. Gemini 키 넣고 확인 (mock 인 채로)
+
+키는 **Google AI Studio → Get API key** 에서 만든 API 키여야 합니다. Google Cloud 콘솔의 OAuth 클라이언트 ID·비밀,
+서비스 계정 JSON, `gcloud auth print-access-token` 값(`ya29.`로 시작)을 넣으면
+`401 API key not valid ... ACCESS_TOKEN_TYPE_UNSUPPORTED` 로 거절됩니다.
+
+서버에서(`cd ~/OWcoach`). 키를 파일에 쓰기 **전에** 먼저 Google 에 직접 물어보고, 통과할 때만 씁니다:
 
 ```bash
-docker compose up -d
+read -rsp "Gemini 키 붙여넣고 Enter: " K; echo
+K=$(printf %s "$K" | tr -d '\r\n\t '); echo "글자 수 ${#K}, 앞 4자 ${K:0:4}"
+curl -s -o /dev/null -w "HTTP %{http_code}\n" -H "x-goog-api-key: $K" https://generativelanguage.googleapis.com/v1beta/models
+```
+
+`HTTP 200` 이면 파일에 쓰고 서비스에 반영합니다. 401·403 이면 쓰지 말고 AI Studio 에서 키를 다시 복사합니다.
+
+```bash
+sed -i "s|^GEMINI_API_KEY=.*|GEMINI_API_KEY=$K|" owcoach.env && unset K
+grep -c $'\r' owcoach.env                     # 0 이어야 함 (Windows 줄바꿈이 섞이면 키 끝에 붙음)
+grep -c '^GEMINI_API_KEY=' owcoach.env        # 1 이어야 함
+docker compose up -d --force-recreate owcoach
+docker compose exec owcoach sh -c 'echo "키 길이 ${#GEMINI_API_KEY}"; env | grep -c "^GOOGLE_API_KEY="'   # 두 번째 값 0 (있으면 그 키가 먼저 쓰임)
+docker compose exec owcoach python -c "from google import genai; c=genai.Client(); print([m.name for m in c.models.list()][:3])"
+```
+
+마지막 줄에 `models/...` 이름이 나오면 됩니다. (`Client` 를 변수 `c` 에 담지 않으면 'Cannot send a request' 오류가 납니다.)
+
+### 8-2. mock 끄기
+
+```bash
+sed -i '/^OWCOACH_PROVIDER=/d' owcoach.env
+git pull && docker compose up -d --build --force-recreate owcoach      # 최신 코드(인코딩 단축 포함)도 같이 반영
+docker compose exec owcoach sh -c 'echo "provider=[${OWCOACH_PROVIDER:-}]"'   # provider=[] 이면 config.yaml 의 gemini
+docker compose exec owcoach python -c "import sqlite3;c=sqlite3.connect('/data/owcoach.db');c.execute('delete from jobs');c.commit()"   # mock 시험 기록 삭제(주간 횟수·월 예산 원상복구)
 ```
 
 첫 실제 분석은 운영자 본인 영상으로 돌려 보고, 걸린 시간과 비용(`/jobs`에서 결과 확인 후 README 4번의 비용 확인 명령)을 봅니다.
