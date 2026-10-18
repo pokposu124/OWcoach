@@ -224,17 +224,36 @@ def comp_note_lines(team: dict, notes: list[dict]) -> list[str]:
     return lines
 
 
+def _player_slot(team_record: dict | None) -> tuple[str | None, dict | None]:
+    team_record = team_record or {}
+    me = (team_record.get("team_identification") or {}).get("player_name")
+    return me, next((r for r in team_record.get("roster") or [] if me and r.get("player_name") == me), None)
+
+
+def player_hero_times(team_record: dict | None) -> dict[str, float]:
+    """Seconds the player spent on each hero, from their own team-list slot (portrait timeline, code match),
+    longest first. Empty when the slot or its history is unknown."""
+    total: dict[str, float] = {}
+    for h in (_player_slot(team_record)[1] or {}).get("hero_history") or []:
+        total[h["hero"]] = total.get(h["hero"], 0.0) + h["end_seconds"] - h["start_seconds"]
+    return dict(sorted(total.items(), key=lambda kv: -kv[1]))
+
+
+def main_heroes(team_record: dict | None, top: int = 3) -> list[dict]:
+    """The player's most played heroes (code-read portrait timeline): [{hero, seconds, share}], share of the
+    time the slot was read."""
+    total = player_hero_times(team_record)
+    whole = sum(total.values())
+    return [{"hero": h, "seconds": round(s, 1), "share": round(s / whole, 3)} for h, s in list(total.items())[:top] if whole > 0]
+
+
 def player_hero(team_record: dict | None) -> tuple[str | None, str]:
     """The hero the player spent the longest on, from their own team-list slot (portrait timeline, code
     match), and how it was decided. (None, reason) when the player's slot or its hero is unknown."""
-    team_record = team_record or {}
-    me = (team_record.get("team_identification") or {}).get("player_name")
-    slot = next((r for r in team_record.get("roster") or [] if me and r.get("player_name") == me), None)
+    me, slot = _player_slot(team_record)
     if not slot:
         return None, f"팀 목록에서 플레이어 '{me or '?'}' 칸을 찾지 못함"
-    total: dict[str, float] = {}
-    for h in slot.get("hero_history") or []:
-        total[h["hero"]] = total.get(h["hero"], 0.0) + h["end_seconds"] - h["start_seconds"]
+    total = player_hero_times(team_record)
     if total:
         name = max(total, key=total.get)
         return name, f"팀 목록 {me} 칸 초상화, 플레이 시간 가장 긴 영웅" + (f" (교체 {len(total) - 1}회 있음)" if len(total) > 1 else "")
@@ -1291,6 +1310,8 @@ class Pipeline:
             game_patch_version=game_patch, criteria_patch_version=hero.patch_version, team=team_record,
             hud_ultimate_uses_seconds=self._hud_ult_uses, player_deaths=self._deaths,
             skipped_hero_spans=self._other_spans,
+            map_name=overview.map_name.strip(),
+            main_heroes=main_heroes(team_record) or [{"hero": hero.display_name_ko, "seconds": None, "share": None}],
             skill_uses=self._skill_uses(scene_records),
             video=VideoInfo(file_name=video.name, sha256=sha, duration_seconds=duration, width=info.width,
                             height=info.height, fps=info.fps, codec=info.codec),

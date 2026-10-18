@@ -1,3 +1,4 @@
+import json
 import shutil
 import subprocess
 import sys
@@ -182,3 +183,6 @@ def test_worker_runs_the_analyzer_and_exports_the_result(client, tmp_path):
     head = client.get(f"/results/{jid}/media/web.mp4", headers={"Range": "bytes=0-99"})
     assert head.status_code == 206 and len(head.content) == 100
     assert "결과 보기" in client.get("/jobs").text
+    # the list shows the map and the most played heroes the analyzer reported
+    assert job["map_name"] == "[모의] 맵" and json.loads(job["main_heroes"])[0]["hero"] == "아나"
+    assert "[모의] 맵 · 아나" in client.get("/jobs").text

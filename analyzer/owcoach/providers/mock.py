@@ -74,6 +74,7 @@ class MockProvider(AnalysisProvider):
             "hero_evidence": "[모의] 무기와 스킬 아이콘으로 확인",
             "hud_readable": "yes",
             "video_quality_notes": "[모의] 화질 양호",
+            "map_name": "[모의] 맵",
             "timeline": [
                 {"time_seconds": at(0.1), "event": "[모의] 교전 시작", "visible_evidence": "[모의] 적 체력바 표시"},
                 {"time_seconds": at(0.5), "event": "[모의] 본인 체력 급감", "visible_evidence": "[모의] 체력 바 감소"},

@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import hashlib
 import html
+import json
 import os
 import secrets
 import sys
@@ -319,7 +320,14 @@ def _job_row(j: dict, tz: str, hero_names: dict | None = None) -> str:
     stage = f' <span class=muted>{_e(j["stage"])}</span>' if j["status"] == "running" else ""
     hid = j.get("hero") or "auto"
     hero = "영웅 인식 전" if hid == "auto" else (hero_names or {}).get(hid, hid)
-    return (f"<tr><td>{_local(j['created_at'], tz)}</td><td>{_e(j['file_name'])} <span class=muted>· {_e(hero)}</span></td>"
+    try:
+        mains = json.loads(j.get("main_heroes") or "[]")
+    except ValueError:
+        mains = []
+    if mains:   # most played heroes (code-read team-list portraits), with their share of the match
+        hero = ", ".join(m["hero"] + (f" {round(m['share'] * 100)}%" if m.get("share") is not None else "") for m in mains[:3])
+    info = " · ".join(x for x in (j.get("map_name") or "", hero) if x)
+    return (f"<tr><td>{_local(j['created_at'], tz)}</td><td>{_e(j['file_name'])} <span class=muted>· {_e(info)}</span></td>"
             f"<td><span class='st st-{j['status']}'>{STATUS_KO.get(j['status'], j['status'])}</span>{stage}</td><td>{link}</td></tr>")
 
 

@@ -33,6 +33,8 @@ CREATE TABLE IF NOT EXISTS jobs (
   started_at TEXT,
   finished_at TEXT,
   cost_usd REAL,                   -- this run's Gemini cost from result.json (null until done)
+  map_name TEXT NOT NULL DEFAULT '',     -- map the analyzer read (result.json map_name, model reading)
+  main_heroes TEXT NOT NULL DEFAULT '',  -- JSON [{hero, seconds, share}], the player's most played heroes (up to 3)
   error TEXT NOT NULL DEFAULT ''
 );
 CREATE INDEX IF NOT EXISTS jobs_user ON jobs(user_id, created_at);
@@ -49,8 +51,12 @@ class Store:
         self.path.parent.mkdir(parents=True, exist_ok=True)
         with self.conn() as c:
             c.executescript(SCHEMA)
-            if "hero" not in {r[1] for r in c.execute("PRAGMA table_info(jobs)")}:   # DB made before hero selection
+            cols = {r[1] for r in c.execute("PRAGMA table_info(jobs)")}
+            if "hero" not in cols:   # DB made before hero selection
                 c.execute("ALTER TABLE jobs ADD COLUMN hero TEXT NOT NULL DEFAULT 'ana'")
+            for col in ("map_name", "main_heroes"):   # DB made before the list showed map and heroes
+                if col not in cols:
+                    c.execute(f"ALTER TABLE jobs ADD COLUMN {col} TEXT NOT NULL DEFAULT ''")
 
     @contextmanager
     def conn(self):

@@ -1373,6 +1373,19 @@ def test_player_hero_is_the_longest_played_on_the_players_slot():
     assert player_hero(None)[0] is None
 
 
+def test_main_heroes_are_the_three_longest_with_their_share():
+    from owcoach.pipeline import main_heroes
+
+    h = lambda hero, a, b: {"hero": hero, "start_seconds": a, "end_seconds": b}
+    rec = {"team_identification": {"player_name": "ME"},
+           "roster": [{"slot": 2, "player_name": "ME", "hero_history": [
+               h("아나", 0, 100), h("키리코", 100, 150), h("아나", 150, 200), h("루시우", 200, 220), h("메르시", 220, 230)]}]}
+    assert main_heroes(rec) == [{"hero": "아나", "seconds": 150.0, "share": 0.652},
+                                {"hero": "키리코", "seconds": 50.0, "share": 0.217},
+                                {"hero": "루시우", "seconds": 20.0, "share": 0.087}]
+    assert main_heroes(None) == []
+
+
 def test_auto_hero_without_a_readable_team_list_stops_at_team(video, cfg, tmp_path):
     """A synthetic video has no team list: auto recognition cannot name the hero and the run stops there."""
     pipe = Pipeline(cfg, {"models": {}}, MockProvider(), None, runs_dir=tmp_path, log=lambda *_: None,

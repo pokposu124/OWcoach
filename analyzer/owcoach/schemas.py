@@ -73,6 +73,7 @@ class OverviewResponse(BaseModel):
     hero_evidence: str
     hud_readable: Literal["yes", "partial", "no"]
     video_quality_notes: str
+    map_name: str = Field(default="", description="화면에서 확인한 맵 이름(한국어 공식 이름). 확실하지 않으면 빈 문자열")
     timeline: list[TimelineEvent]
     candidates: list[SceneCandidate]
 
@@ -306,6 +307,10 @@ class AnalysisResult(BaseModel):
     hud_ultimate_uses_seconds: list[float] = Field(default_factory=list, description="HUD로 감지한 궁극기 사용 시각(초)")
     skipped_hero_spans: list[dict] = Field(default_factory=list,
                                            description="플레이어가 이 영웅 프로필 외 영웅으로 플레이해 분석하지 않은 구간 (hero, start_seconds, end_seconds; 팀 목록 초상화로 코드 확인)")
+    map_name: str = Field(default="", description="전체 흐름 분석에서 모델이 화면으로 읽은 맵 이름 (코드 확인 없음). 모르면 빈 문자열")
+    main_heroes: list[dict] = Field(default_factory=list,
+                                    description="플레이어가 가장 오래 한 영웅 최대 3개 (hero, seconds, share; 팀 목록 초상화로 코드 확인). "
+                                                "초상화 이력이 없으면 분석한 프로필 영웅 하나(seconds·share 없음)")
     team: dict | None = Field(default=None, description="팀 판별 단계 결과 (team_identification, roster, 사용한 프레임 시각)")
     overview: dict
     feedback: list[FeedbackItem]
